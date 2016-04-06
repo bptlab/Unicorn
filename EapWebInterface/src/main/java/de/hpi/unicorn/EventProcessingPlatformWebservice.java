@@ -90,8 +90,7 @@ public class EventProcessingPlatformWebservice {
 		// generate input stream from xml for creating the doc
 		// test for already existing
 		if (EapEventType.findBySchemaName(schemaName) != null) {
-			GETLogManager.logError("registerEventType-DuplicatedSchemaException",
-					String.format("Duplicated schema name %s. Already on the server.", schemaName));
+			logger.error(String.format("Duplicated schema name %s. Already on the server.", schemaName));
 			throw new DuplicatedSchemaException(schemaName);
 		}
 
@@ -126,8 +125,7 @@ public class EventProcessingPlatformWebservice {
 		final EapEventType eventType = EapEventType.findBySchemaName(eventTypeName);
 
 		if (eventType == null) {
-			GETLogManager.logError("getAttributeNames-EventTypeNotFoundException",
-					String.format("Event type '%s' not found.", eventTypeName));
+			logger.error(String.format("Event type '%s' not found.", eventTypeName));
 			throw new EventTypeNotFoundException(eventTypeName);
 		}
 
@@ -147,8 +145,7 @@ public class EventProcessingPlatformWebservice {
 		final EapEventType eventType = EapEventType.findBySchemaName(eventTypeName);
 
 		if (eventType == null) {
-			GETLogManager.logError("getEventTypeXSD-EventTypeNotFoundException",
-					String.format("Event type '%s' not found.", eventTypeName));
+			logger.error(String.format("Event type '%s' not found.", eventTypeName));
 			throw new EventTypeNotFoundException(eventTypeName);
 		}
 		return eventType.getXsdString();
@@ -201,7 +198,7 @@ public class EventProcessingPlatformWebservice {
 			notificationRule.save();
 			return notificationRule.getUuid();
 		} catch (final EPException e) {
-			GETLogManager.logError("registerQueryForQueue-EPException", e.getMessage());
+			logger.error("registerQueryForQueue-EPException", e);
 			return "EPException: " + e.getMessage();
 		}
 	}
@@ -216,7 +213,7 @@ public class EventProcessingPlatformWebservice {
 			notificationRule.save();
 			return notificationRule.getUuid();
 		} catch (final EPException e) {
-			GETLogManager.logError("registerQueryForRest-EPException", e.getMessage());
+			logger.error("registerQueryForRest-EPException", e);
 			return "EPException: " + e.getMessage();
 		}
 	}
@@ -299,25 +296,25 @@ public class EventProcessingPlatformWebservice {
 		try {
 			if (ruleName == null || ruleName.isEmpty()) {
 				message = "Registration of event aggregation rule failed - please provide a name for the event aggregation rule.";
-				GETLogManager.logError("registerEventAggregationRule-Exception", message);
+				logger.error(message);
 				return message;
 			} else if (eventTypeName == null || eventTypeName.isEmpty()) {
 				message = "Registration of event aggregation rule failed - please provide an event type.";
-				GETLogManager.logError("registerEventAggregationRule-Exception", message);
+				logger.error(message);
 				return message;
 			} else if (eventAggregationRule == null || eventAggregationRule.isEmpty()) {
 				message = "Registration of event aggregation rule failed - please provide an event aggregation rule.";
-				GETLogManager.logError("registerEventAggregationRule-Exception", message);
+				logger.error(message);
 				return message;
 			} else {
 				final EapEventType eventType = EapEventType.findByTypeName(eventTypeName);
 				if (eventType == null) {
 					message = "Registration of event aggregation rule failed - event type was not found.";
-					GETLogManager.logError("registerEventAggregationRule-Exception", message);
+					logger.error(message);
 					return message;
 				} else if (TransformationRule.findByEventTypeAndTitle(eventTypeName, ruleName) != null) {
 					message = "Registration of event aggregation rule failed - a rule with the given name and the given event type exists.";
-					GETLogManager.logError("registerEventAggregationRule-Exception", message);
+					logger.error(message);
 					return message;
 				}
 				final TransformationRule transformationRule = new TransformationRule(eventType, ruleName,
@@ -327,8 +324,8 @@ public class EventProcessingPlatformWebservice {
 				return "Registration of event aggregation rule was successful.";
 			}
 		} catch (final EPException e) {
-			message = "Registration of event aggregation rule failed - " + e.getMessage();
-			GETLogManager.logError("registerEventAggregationRule-Exception", message);
+			message = "Registration of event aggregation rule failed.";
+			logger.error(message, e);
 			return message;
 		}
 	}
@@ -356,7 +353,7 @@ public class EventProcessingPlatformWebservice {
 			final String firstAttribute, final String secondEventType, final String secondAttribute) {
 		// TODO: implement it
 		String message = "Thanks for using our platform! This feature will be implemented in a future version of this webservice!";
-		GETLogManager.logError("registerEventAggregationRule-Exception", message);
+		logger.error(message);
 		throw new NotImplementedException(message);
 	}
 
