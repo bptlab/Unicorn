@@ -24,6 +24,7 @@ import com.espertech.esper.client.EventBean;
 import com.espertech.esper.client.UpdateListener;
 import com.espertech.esper.event.xml.XMLEventBean;
 
+import de.hpi.unicorn.esper.StreamProcessingAdapter;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.AttributeTypeTree;
@@ -32,14 +33,40 @@ import de.hpi.unicorn.monitoring.QueryMonitoringPoint;
 import de.hpi.unicorn.process.CorrelationProcessInstance;
 import de.hpi.unicorn.utils.SetUtil;
 
+/**
+ * This class implements a listener for live queries (see {@link QueryWrapper}). 
+ * 
+ * Instances of this class are created by the {@link StreamProcessingAdapter} when adding
+ * live queries via the {@code addLiveQuery(query)} method. The listener is then registered 
+ * in Esper as listener for the EPL statement that represents the query. The listener will 
+ * be triggered by Esper when the query matches.
+ * @author the Unicorn team
+ */
 public class LiveQueryListener implements UpdateListener {
 
+    	/**
+    	 * The live query this listener belongs to.
+    	 */
 	protected QueryWrapper query;
 
+	/**
+	 * Creates a new listener for a given {@link QueryWrapper} (live query).
+	 * @param liveQuery
+	 */
 	public LiveQueryListener(final QueryWrapper liveQuery) {
 		this.query = liveQuery;
 	}
 
+	/**
+	 * This method is called by Esper when the live query, this listener belongs to
+	 * is matched by one or several events. The events that matched the query are 
+	 * passed as arrays of {@link EventBean}'s.
+	 * TODO: explain how newData and oldData differ
+	 * 
+	 * Unicorn only uses the first event that matches the query!
+	 * The match is logged, then notifications are produced and monitoring points are
+	 * triggerd.
+	 */
 	@Override
 	public void update(final EventBean[] newData, final EventBean[] oldData) {
 		Map<Object, Serializable> map = new HashMap<Object, Serializable>();
