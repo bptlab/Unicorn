@@ -86,11 +86,12 @@ public class RestNotificationRule extends NotificationRule {
             if(response.getStatus() != 200) {
                 System.out.println("Notification POST failed.");
             } else {
-                final QueryWrapper query = this.getQuery();
-                this.remove();
-                if (query.getNotificationRulesForQuery().isEmpty()) {
-                    query.remove();
-                }
+                // Do not remove the query
+//        	final QueryWrapper query = this.getQuery();
+//                this.remove();
+//                if (query.getNotificationRulesForQuery().isEmpty()) {
+//                    query.remove();
+//                }
                 return true;
             }
         } catch (UnsupportedJsonTransformation e) {
