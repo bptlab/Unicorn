@@ -58,7 +58,7 @@
 		<class>de.hpi.unicorn.semantic.EventMapping</class>
 				
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="${db.dev.url}" />
 			<property name="javax.persistence.jdbc.user" value="${db.user}" />
 			<property name="javax.persistence.jdbc.password" value="${db.passw}" />
@@ -124,7 +124,7 @@
 		<class>de.hpi.unicorn.semantic.EventMapping</class>
 		
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.url" value="${db.test.url}" />
 			<property name="javax.persistence.jdbc.user" value="${db.user}" />
 			<property name="javax.persistence.jdbc.password" value="${db.passw}" />
