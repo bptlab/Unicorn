@@ -1,7 +1,0 @@
-#mvn -f Esper/pom.xml clean install -DskipTests
-mvn -f SushiCommon/pom.xml clean install -DskipTests
-mvn -f SushiImport/pom.xml clean install -DskipTests
-mvn -f SushiSemantic/pom.xml clean install -DskipTests
-mvn -f SushiEsper/pom.xml clean install -DskipTests
-mvn -f SushiSimulation/pom.xml clean install -DskipTests
-mvn -f SushiWicket/pom.xml clean install tomcat:redeploy
