@@ -1,7 +1,10 @@
 package de.hpi.unicorn.application.rest;
 
+import com.espertech.esper.client.EPException;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import de.hpi.unicorn.EventProcessingPlatformWebservice;
+import de.hpi.unicorn.notification.NotificationRule;
 import de.hpi.unicorn.notification.NotificationRuleForQuery;
 import de.hpi.unicorn.notification.RestNotificationRule;
 import de.hpi.unicorn.query.QueryWrapper;
@@ -28,16 +31,21 @@ public class EventQueryRestWebservice {
 	@GET
 	@Path("/EventQuery/{eventQueryUuid}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String getEventQuery(@PathParam("eventQueryUuid") String eventQueryUuid) {
-		try {
-			final NotificationRuleForQuery notificationRule = NotificationRuleForQuery.findByUUID(eventQueryUuid);
-			final QueryWrapper query = notificationRule.getQuery();
-			return query.getQueryString();
-		} catch (Exception e) {
-			final RestNotificationRule notificationRule = RestNotificationRule.findByUUID(eventQueryUuid);
-			final QueryWrapper query = notificationRule.getQuery();
-			return query.getQueryString();
+	public Response getEventQuery(@PathParam("eventQueryUuid") String eventQueryUuid) {
+		NotificationRule notificationRule = NotificationRuleForQuery.findByUUID(eventQueryUuid);
+		if (notificationRule == null) {
+			notificationRule = RestNotificationRule.findByUUID(eventQueryUuid);
+			if (notificationRule == null) {
+				return Response.status(Response.Status.BAD_REQUEST)
+						.type(MediaType.TEXT_PLAIN)
+						.entity("No query found for given id.")
+						.build();
+			}
+			QueryWrapper query = ((RestNotificationRule) notificationRule).getQuery();
+			return Response.ok(query.getQueryString(), MediaType.TEXT_PLAIN).build();
 		}
+		QueryWrapper query = ((NotificationRuleForQuery) notificationRule).getQuery();
+		return Response.ok(query.getQueryString(), MediaType.TEXT_PLAIN).build();
 	}
 
 	/**
@@ -50,9 +58,8 @@ public class EventQueryRestWebservice {
 	 */
 	@DELETE
 	@Path("/EventQuery/Queue/{eventQueryUuid}")
-	public void deleteEventQueryWithQueue(@PathParam("eventQueryUuid") String eventQueryUuid) {
-		EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-		service.unregisterQueryFromQueue(eventQueryUuid);
+	public Response deleteEventQueryWithQueue(@PathParam("eventQueryUuid") String eventQueryUuid) {
+		return deleteEventQuery(eventQueryUuid);
 	}
 
 	/**
@@ -64,9 +71,22 @@ public class EventQueryRestWebservice {
 	 */
 	@DELETE
 	@Path("/EventQuery/REST/{eventQueryUuid}")
-	public void deleteEventQueryWithRest(@PathParam("eventQueryUuid") String eventQueryUuid) {
+	public Response deleteEventQueryWithRest(@PathParam("eventQueryUuid") String eventQueryUuid) {
+		return deleteEventQuery(eventQueryUuid);
+	}
+
+
+	private Response deleteEventQuery(String eventQueryUuid) {
 		EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-		service.unregisterQueryFromRest(eventQueryUuid);
+		boolean success = service.unregisterQuery(eventQueryUuid);
+		if (success) {
+			return Response.ok().build();
+		} else {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity("Query could not be found, or an error occurred on deletion.")
+					.type(MediaType.TEXT_PLAIN)
+					.build();
+		}
 	}
 
 	/**
@@ -82,16 +102,16 @@ public class EventQueryRestWebservice {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createEventQueryWithQueue(String queryJson) {
-		Gson gson = new Gson();
-		EventQueryJsonForQueue ele = gson.fromJson(queryJson, EventQueryJsonForQueue.class);
-		EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-		// returns the uuid of the NotificationRule
-		// or an error message if the query could not be registered
-		String uuid = service.registerQueryForQueue(ele.getTitle(), ele.getQueryString(), ele.getEmail());
-		if (uuid.startsWith("EPException")) {
-			return Response.status(500).entity(uuid).type("text/plain").build();
-		} else {
+		try {
+			Gson gson = new Gson();
+			EventQueryJsonForQueue ele = gson.fromJson(queryJson, EventQueryJsonForQueue.class);
+			EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
+			String uuid = service.registerQueryForQueue(ele.getTitle(), ele.getQueryString(), ele.getEmail());
 			return Response.ok(uuid).build();
+		} catch (EPException | JsonSyntaxException e) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity("Event Query could not be registered: " + e.getMessage())
+					.type("text/plain").build();
 		}
 	}
 
@@ -110,16 +130,16 @@ public class EventQueryRestWebservice {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createEventQueryWithRest(String queryJson) {
-		Gson gson = new Gson();
-		EventQueryJsonForRest ele = gson.fromJson(queryJson, EventQueryJsonForRest.class);
-		EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-		// returns the uuid of the NotificationRule
-		// or an error message if the query could not be registered
-		String uuid = service.registerQueryForRest(ele.getQueryString(), ele.getNotificationPath());
-		if (uuid.startsWith("EPException")) {
-			return Response.status(500).entity(uuid).type("text/plain").build();
-		} else {
+		try {
+			Gson gson = new Gson();
+			EventQueryJsonForRest ele = gson.fromJson(queryJson, EventQueryJsonForRest.class);
+			EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
+			String uuid = service.registerQueryForRest(ele.getQueryString(), ele.getNotificationPath());
 			return Response.ok(uuid).build();
+		} catch (EPException | JsonSyntaxException e) {
+			return Response.status(Response.Status.BAD_REQUEST)
+					.entity("Event Query could not be registered: " + e.getMessage())
+					.type("text/plain").build();
 		}
 	}
 
@@ -137,24 +157,12 @@ public class EventQueryRestWebservice {
 			return email;
 		}
 
-		public void setEmail(String email) {
-			this.email = email;
-		}
-
 		public String getQueryString() {
 			return queryString;
 		}
 
-		public void setQueryString(String queryString) {
-			this.queryString = queryString;
-		}
-
 		public String getTitle() {
 			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
 		}
 	}
 
@@ -171,16 +179,8 @@ public class EventQueryRestWebservice {
 			return queryString;
 		}
 
-		public void setQueryString(String queryString) {
-			this.queryString = queryString;
-		}
-
 		public String getNotificationPath() {
 			return notificationPath;
-		}
-
-		public void setNotificationPath(String notificationPath) {
-			this.notificationPath = notificationPath;
 		}
 	}
 

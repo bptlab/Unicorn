@@ -50,7 +50,7 @@ public class EventProcessingPlatformWebservice {
 
 
 	/**
-	 * import xml-event if eventtyp of event is registered to the EPP
+	 * import xml-event if eventtype of event is registered to the EPP
 	 *
 	 * @throws XMLParsingException
 	 * @throws UnparsableException
@@ -185,71 +185,50 @@ public class EventProcessingPlatformWebservice {
 	 * @param queryString
 	 * @return queue id
 	 */
-	public String registerQueryForQueue(final String title, final String queryString, final String eMail) {
-		try {
-			final QueryWrapper query = new QueryWrapper(title, queryString, QueryTypeEnum.LIVE);
-			query.addToEsper();
-			query.save();
+	public String registerQueryForQueue(final String title,
+										final String queryString,
+										final String eMail) throws EPException {
+		final QueryWrapper query = new QueryWrapper(title, queryString, QueryTypeEnum.LIVE);
+		query.addToEsper();
+		query.save();
 
-			final EapUser user = this.findOrCreateUserByEMail(eMail);
+		final EapUser user = this.findOrCreateUserByEMail(eMail);
 
-			final NotificationRuleForQuery notificationRule = new NotificationRuleForQuery(query, user,
-					NotificationMethod.QUEUE);
-			notificationRule.save();
-			return notificationRule.getUuid();
-		} catch (final EPException e) {
-			logger.error("registerQueryForQueue-EPException", e);
-			return "EPException: " + e.getMessage();
-		}
+		final NotificationRuleForQuery notificationRule = new NotificationRuleForQuery(query, user,
+				NotificationMethod.QUEUE);
+		notificationRule.save();
+		return notificationRule.getUuid();
 	}
 
-	public String registerQueryForRest(final String queryString, final String notificationPath) {
-		try {
-			final QueryWrapper query = new QueryWrapper("Automatic", queryString, QueryTypeEnum.LIVE);
-			query.addToEsper();
-			query.save();
+	public String registerQueryForRest(final String queryString,
+									   final String notificationPath) throws EPException {
+		final QueryWrapper query = new QueryWrapper("Automatic", queryString, QueryTypeEnum.LIVE);
+		query.addToEsper();
+		query.save();
 
-			final RestNotificationRule notificationRule = new RestNotificationRule(query, notificationPath);
-			notificationRule.save();
-			return notificationRule.getUuid();
-		} catch (final EPException e) {
-			logger.error("registerQueryForRest-EPException", e);
-			return "EPException: " + e.getMessage();
-		}
+		final RestNotificationRule notificationRule = new RestNotificationRule(query, notificationPath);
+		notificationRule.save();
+		return notificationRule.getUuid();
 	}
 
 	/**
-	 * Unregisters the query and destroys the corresponding queue.
-	 *
+	 * Unregisters the query and destroys the corresponding notification rule.
+	 * Also destroys the message queue, if one is used.
 	 * @param uuid
 	 */
-	public boolean unregisterQueryFromQueue(final String uuid) {
+	public boolean unregisterQuery(final String uuid) {
 		final NotificationRuleForQuery notificationRule = NotificationRuleForQuery.findByUUID(uuid);
-		final QueryWrapper query = notificationRule.getQuery();
-		notificationRule.remove();
-		if (query.getNotificationRulesForQuery().isEmpty()) {
-			query.remove();
-			return true;
-		} else {
-			return false;
+		if (notificationRule != null) {
+			final QueryWrapper query = notificationRule.getQuery();
+			notificationRule.remove();
+			if (query.getNotificationRulesForQuery().isEmpty()) {
+				query.remove();
+				return true;
+			} else {
+				return false;
+			}
 		}
-	}
-
-	/**
-	 * Unregisters the query from the corresponding REST notification rule.
-	 *
-	 * @param uuid
-	 */
-	public boolean unregisterQueryFromRest(final String uuid) {
-		final RestNotificationRule notificationRule = RestNotificationRule.findByUUID(uuid);
-		final QueryWrapper query = notificationRule.getQuery();
-		notificationRule.remove();
-		if (query.getNotificationRulesForQuery().isEmpty()) {
-			query.remove();
-			return true;
-		} else {
-			return false;
-		}
+		return false;
 	}
 
 	/**

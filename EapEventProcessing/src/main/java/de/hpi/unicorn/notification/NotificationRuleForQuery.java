@@ -72,7 +72,7 @@ public class NotificationRuleForQuery extends NotificationRule {
 	 * @param eventObject
 	 */
 	@SuppressWarnings("incomplete-switch")
-	public void trigger(final Map<Object, Serializable> eventObject) {
+	public boolean trigger(final Map<Object, Serializable> eventObject) {
 		try {
 			final JSONObject event = NotificationRuleUtils.toJSON(eventObject);
 			final NotificationForQuery notification = new NotificationForQuery(this.user, event.toString(), this);
@@ -89,8 +89,10 @@ public class NotificationRuleForQuery extends NotificationRule {
 				JMSProvider.sendMessage(JMSProvider.HOST, JMSProvider.PORT, this.getUuid(), event.toString());
 				break;
 			}
+			return true;
 		} catch (final UnsupportedJsonTransformation e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 

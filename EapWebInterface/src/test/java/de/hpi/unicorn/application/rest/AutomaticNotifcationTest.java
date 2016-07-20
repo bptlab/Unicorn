@@ -30,6 +30,7 @@ import java.util.List;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -79,6 +80,7 @@ public class AutomaticNotifcationTest extends JerseyTest {
         String notificationPath = "http://localhost:9000/my/resource";
         RestNotificationRule rule = new RestNotificationRule(wrapper, notificationPath);
         boolean succesfulRule = rule.trigger(new HashMap<Object, Serializable>());
+        assertTrue(succesfulRule);
         System.out.println(succesfulRule);
     }
 
@@ -112,9 +114,7 @@ public class AutomaticNotifcationTest extends JerseyTest {
         EapEvent newEvent = events.get(0);
         Broker.getEventImporter().importEvent(newEvent);
 
-        // RestNotificationRules are deleted after they trigger
-        // (if they trigger correctly)
-        assertNull(RestNotificationRule.findByUUID(uuid));
+        assertTrue(service.unregisterQuery(uuid));
     }
 
 

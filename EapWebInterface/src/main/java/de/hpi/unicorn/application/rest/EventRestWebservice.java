@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -27,8 +28,8 @@ public class EventRestWebservice {
     @POST
     @Path("/Event")
     @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response postEvent(Document eventXmlDoc) {
-        EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
         try {
             if (eventXmlDoc == null) {
                 throw new UnparsableException(UnparsableException.ParseType.EVENT);
@@ -37,14 +38,10 @@ public class EventRestWebservice {
             EapEvent newEvent = events.get(0);
             Broker.getEventImporter().importEvent(newEvent);
 
-            return Response.status(Response.Status.OK)
-                    .type(MediaType.TEXT_PLAIN)
-                    .entity(newEvent.getID())
-                    .build();
+            return Response.ok(newEvent.getID()).build();
         } catch(UnparsableException | XMLParsingException e) {
-            e.printStackTrace();
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Event xml could not be parsed.")
+                    .entity("Event xml could not be parsed: " + e.getMessage())
                     .build();
         }
     }

@@ -80,7 +80,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 
 		assertEquals(restQueryString, queryString);
 
-		service.unregisterQueryFromQueue(uuid);
+		service.unregisterQuery(uuid);
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 
 		assertEquals(restQueryString, queryString);
 
-		service.unregisterQueryFromRest(uuid);
+		service.unregisterQuery(uuid);
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		assertEquals(notificationRule, null);
 
 		if(notificationRule != null) {
-			service.unregisterQueryFromQueue(uuid);
+			service.unregisterQuery(uuid);
 		}
 	}
 
@@ -126,7 +126,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		assertEquals(notificationRule, null);
 
 		if(notificationRule != null) {
-			service.unregisterQueryFromRest(uuid);
+			service.unregisterQuery(uuid);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		}
 		assertEquals(restQueryString, queryString);
 
-		service.unregisterQueryFromQueue(postUuid);
+		service.unregisterQuery(postUuid);
 	}
 
 	@Test
@@ -182,7 +182,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		}
 		assertEquals(restQueryString, queryString);
 
-		service.unregisterQueryFromRest(postUuid);
+		service.unregisterQuery(postUuid);
 	}
 
 	private class EventQueryJsonForQueue {

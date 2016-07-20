@@ -14,6 +14,8 @@ paths:
       summary: Creates an event
       description: |
         Takes an event xml string and creates an EapEvent which is then saved to the database.
+      consumes: ['application/json']
+      produces: ['text/plain']
       tags:
         - Event
       responses:
@@ -21,14 +23,18 @@ paths:
           description: The EapEvent ID
         '400':
           description: Event could not be parsed.
-        '500':
-          description: Unexpected error
+
   /EventQuery/Queue:
     post:
-      summary: Creates a new event query with a message queue for notification
+      summary: Creates a new event query with a message queue for notification.
       description: |
+        Receives an EventQuery in the specified JSON format.
         Stores a new EventQuery on the Server. Also returns a Uuid for the Message Queue receiving
         notifications about events filtered by the query.
+        
+        The JMS host and port for the message queues are defined in the Unicorn properties. 
+      consumes: ['application/json']
+      produces: ['text/plain']
       parameters:
         - name: queryJson
           in: body
@@ -40,9 +46,9 @@ paths:
         - EventQuery
       responses:
         '200':
-          description: The UUID of the notifying message queue.
-        '500':
-          description: Event Query could not be parsed.
+          description: Contains the UUID of the notifying message queue.
+        '400':
+          description: Event Query could not be parsed or registered.
   /EventQuery/Queue/{uuid}:
       delete:
             summary: Deletes an event query.
@@ -60,8 +66,8 @@ paths:
             responses:
               '200':
                 description: Empty if the deletion was succesfull.
-              '500':
-                description: Unexpected error
+              '400':
+                description: Query could not be found, or an error occurred during deletion.
   /EventQuery/REST/{uuid}:
         delete:
               summary: Deletes an event query.
@@ -79,14 +85,16 @@ paths:
               responses:
                 '200':
                   description: Empty if the deletion was succesfull.
-                '500':
-                  description: Unexpected error
+                '400':
+                  description: Query could not be found, or an error occurred during deletion.
   /EventQuery/REST:
       post:
         summary: Creates a new event query with a REST call notification
         description: |
           Stores a new EventQuery on the Server. The events filtered by the query
           will be sent via REST.
+        consumes: ['application/json']
+        produces: ['text/plain']
         parameters:
           - name: queryJsonRest
             in: body
@@ -99,8 +107,8 @@ paths:
         responses:
           '200':
             description: The UUID of the notifying message queue.
-          '500':
-            description: Event Query could not be parsed.
+          '400':
+            description: Event Query could not be parsed or registered.
   /EventQuery/{uuid}:
     get:
       summary: Returns an event query.
@@ -117,14 +125,15 @@ paths:
       responses:
         '200':
           description: The query string.
-
-        '500':
-          description: Unexpected error
+        '400':
+          description: No NotificationRule could not be found for the given ID.
   /EventType:
     post:
       summary: Creates a new EventType and saves it in the database.
       description: |
-        This endpoint takes an event type object, creates a new event type from it and saves it to the database.
+        This endpoint takes an event type object, creates a new event type from it and saves it to the database. The object format is specified below.
+      consumes: ['application/json']
+      produces: ['text/plain']
       parameters:
         - name: eventTypeJson
           in: body
@@ -137,13 +146,14 @@ paths:
       responses:
         '200':
           description: Empty if the registration was successful.
-        '500':
-          description: Unexpected error
+        '400':
+          description: Contains the error message, if the JsonObject or XSD could not be parsed, or if the event type already exists.
   /EventType/{schemaName}:
     get:
       summary: Returns the XSD definition of the event type.
       description: |
         Returns a string containing the event type xsd.
+        produces: ['text/plain']
       parameters:
         - name: schemaName
           in: path
@@ -156,12 +166,13 @@ paths:
       responses:
         '200':
           description: The event type xsd string.
-        '500':
-          description: Unexpected error
+        '400':
+          description: No event type could be found for the given schema name.
     delete:
       summary: Deletes an event type from the database.
       description: |
         This endpoint deletes an event type based on the event type name.
+        produces: ['text/plain']
       parameters:
         - name: schemaName
           in: path
@@ -173,8 +184,8 @@ paths:
       responses:
         '200':
           description: Empty if the deletion was successful.
-        '500':
-          description: Unexpected error
+        '400':
+          description: No event type found, or an error occurred upon deletion.
           
 definitions:
   EventQueryJsonForQueue:

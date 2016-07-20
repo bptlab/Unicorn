@@ -5,6 +5,7 @@ import de.hpi.unicorn.event.EapEventType;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.gson.*;
 import de.hpi.unicorn.exception.DuplicatedSchemaException;
@@ -27,9 +28,16 @@ public class EventTypeRestWebservice {
     @GET
     @Path("/EventType/{schemaName}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getEventType(@PathParam("schemaName") String schemaName) {
+    public Response getEventType(@PathParam("schemaName") String schemaName) {
         EapEventType type = EapEventType.findBySchemaName(schemaName);
-        return type.getXsdString();
+        if (type != null) {
+            return Response.ok(type.getXsdString()).build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity("Event type could not be found.")
+                    .build();
+        }
     }
 
 	/**
@@ -40,9 +48,18 @@ public class EventTypeRestWebservice {
 	 */
     @DELETE
     @Path("/EventType/{schemaName}")
-    public void deleteEventType(@PathParam("schemaName") String schemaName) {
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteEventType(@PathParam("schemaName") String schemaName) {
         EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-        service.unregisterEventType(schemaName);
+        boolean success = service.unregisterEventType(schemaName);
+        if (success) {
+            return Response.ok().build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity("Event type could not be found or unregistered.")
+                    .build();
+        }
     }
 
 	/**
@@ -53,14 +70,19 @@ public class EventTypeRestWebservice {
     @POST
     @Path("/EventType")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void createEventType(String typeJson) {
-        Gson gson = new Gson();
-        EventTypeJson ele = gson.fromJson(typeJson, EventTypeJson.class);
-        EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response createEventType(String typeJson) {
         try {
+            Gson gson = new Gson();
+            EventTypeJson ele = gson.fromJson(typeJson, EventTypeJson.class);
+            EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
             service.registerEventType(ele.getXsd(), ele.getSchemaName(), ele.getTimestampName());
-        } catch (DuplicatedSchemaException | UnparsableException e) {
-            e.printStackTrace();
+            return Response.ok().build();
+        } catch (DuplicatedSchemaException | UnparsableException | JsonSyntaxException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .type(MediaType.TEXT_PLAIN)
+                    .entity("Event type could not be created: " + e.getMessage())
+                    .build();
         }
     }
 

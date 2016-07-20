@@ -55,7 +55,7 @@
 		<operation name="registerQueryForQueue">
 			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
 		</operation>
-		<operation name="unregisterQueryFromQueue">
+		<operation name="unregisterQuery">
 			<messageReceiver class="org.apache.axis2.rpc.receivers.RPCMessageReceiver" />
 		</operation>
 		<operation name="unregisterQueriesFromQueue">

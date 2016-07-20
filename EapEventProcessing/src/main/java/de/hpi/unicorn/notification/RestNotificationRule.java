@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
@@ -25,12 +24,7 @@ import net.sf.json.JSONObject;
  */
 @Entity
 @DiscriminatorValue("R")
-public class RestNotificationRule extends NotificationRule {
-
-    @ManyToOne
-    protected QueryWrapper query;
-
-    protected String uuid;
+public class RestNotificationRule extends NotificationRuleForQuery {
 
     // Needed for REST Notifications
     protected String notificationPath;
@@ -72,6 +66,7 @@ public class RestNotificationRule extends NotificationRule {
         return this.query;
     }
 
+    @Override
     public boolean trigger(final Map<Object, Serializable> eventObject) {
         try {
             final JSONObject event = NotificationRuleUtils.toJSON(eventObject);
@@ -83,17 +78,7 @@ public class RestNotificationRule extends NotificationRule {
 
             Response response = target.request()
                     .post(javax.ws.rs.client.Entity.json(event.toString()));
-            if(response.getStatus() != 200) {
-                System.out.println("Notification POST failed.");
-            } else {
-                // Do not remove the query
-//        	final QueryWrapper query = this.getQuery();
-//                this.remove();
-//                if (query.getNotificationRulesForQuery().isEmpty()) {
-//                    query.remove();
-//                }
-                return true;
-            }
+            return response.getStatus() == 200;
         } catch (UnsupportedJsonTransformation e) {
             e.printStackTrace();
         }
