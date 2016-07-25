@@ -27,7 +27,7 @@ import net.sf.json.JSONObject;
 public class RestNotificationRule extends NotificationRuleForQuery {
 
     // Needed for REST Notifications
-    protected String notificationPath;
+    private String notificationPath;
 
     /**
      *
@@ -57,8 +57,11 @@ public class RestNotificationRule extends NotificationRuleForQuery {
 
     @Override
     public EapUser getUser() {
-        String errorMsg = "REST-notification can't have users";
-        throw new UnsupportedOperationException(errorMsg);
+        EapUser user = new EapUser();
+        user.setID(-1);
+        user.setMail("");
+        user.setName("");
+        return user;
     }
 
     @Override
@@ -102,22 +105,4 @@ public class RestNotificationRule extends NotificationRuleForQuery {
             return (RestNotificationRule) q.getResultList().get(0);
         }
     }
-
-
-    public QueryWrapper getQuery() {
-        return this.query;
-    }
-
-    public void setQuery(final QueryWrapper query) {
-        this.query = query;
-    }
-
-    public String getUuid() {
-        return this.uuid;
-    }
-
-    public void setUuid(final String uuid) {
-        this.uuid = uuid;
-    }
-
 }
