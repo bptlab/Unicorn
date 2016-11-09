@@ -12,9 +12,9 @@ To build and run Unicorn you need the following software:
 1. clone the repository
 2. unzip jbpt.zip
 3. run ```mvn install``` in folder jbpt
-4. Create schemas 'eap_development' and 'eap_testing' in your Mysql DB
-5. copy unicorn-template.properties to unicorn.properties and configure DB credentials
-6. run ```mvn install -DskipTests``` in main folder
+4. create schemas 'eap_development' and 'eap_testing' in your MySQL database
+5. copy the file unicorn_template.properties, rename it to unicorn.properties and configure your database credentials
+6. build Unicorn by executing ```mvn install -DskipTests```
 
 ### Deployment to Tomcat
 
