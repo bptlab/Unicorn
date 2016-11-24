@@ -19,7 +19,6 @@ public class AddViewModal extends BootstrapModal {
 	private final ViewConfigurationPanel panel;
 
 	/**
-	 * 
 	 * @param visualisation
 	 * @param window
 	 */

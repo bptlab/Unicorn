@@ -25,11 +25,10 @@ import de.hpi.unicorn.monitoring.bpmn.ProcessMonitor;
 /**
  * This class is the provider for {@link ProcessMonitor}s. A filter can be
  * specified to return only some ProcessMonitors.
- * 
+ *
  * @author micha
  */
-public class ProcessMonitoringProvider extends AbstractDataProvider implements
-		ISortableDataProvider<ProcessMonitor, String>, IFilterStateLocator {
+public class ProcessMonitoringProvider extends AbstractDataProvider implements ISortableDataProvider<ProcessMonitor, String>, IFilterStateLocator {
 
 	private static final long serialVersionUID = 1L;
 	private static List<ProcessMonitor> processMonitors;
@@ -52,12 +51,10 @@ public class ProcessMonitoringProvider extends AbstractDataProvider implements
 
 	@Override
 	public Iterator<? extends ProcessMonitor> iterator(final long first, final long count) {
-		return ProcessMonitoringProvider.processMonitors.subList((int) first,
-				(int) Math.min(first + count, ProcessMonitoringProvider.processMonitors.size())).iterator();
+		return ProcessMonitoringProvider.processMonitors.subList((int) first, (int) Math.min(first + count, ProcessMonitoringProvider.processMonitors.size())).iterator();
 	}
 
-	private List<ProcessMonitor> filterProcessMonitors(final List<ProcessMonitor> processMonitorsToFilter,
-			final ProcessMonitoringFilter processMonitorFilter) {
+	private List<ProcessMonitor> filterProcessMonitors(final List<ProcessMonitor> processMonitorsToFilter, final ProcessMonitoringFilter processMonitorFilter) {
 		final List<ProcessMonitor> returnedProcessMonitors = new ArrayList<ProcessMonitor>();
 		for (final ProcessMonitor processMonitor : processMonitorsToFilter) {
 			if (processMonitorFilter.match(processMonitor)) {
@@ -81,12 +78,12 @@ public class ProcessMonitoringProvider extends AbstractDataProvider implements
 		return ProcessMonitoringProvider.processMonitors;
 	}
 
-	public List<ProcessMonitor> getSelectedProcessMonitors() {
-		return ProcessMonitoringProvider.selectedProcessMonitors;
-	}
-
 	public static void setProcessMonitors(final List<ProcessMonitor> processMonitorList) {
 		ProcessMonitoringProvider.processMonitors = processMonitorList;
+	}
+
+	public List<ProcessMonitor> getSelectedProcessMonitors() {
+		return ProcessMonitoringProvider.selectedProcessMonitors;
 	}
 
 	@Override
@@ -110,8 +107,7 @@ public class ProcessMonitoringProvider extends AbstractDataProvider implements
 
 	public void setProcessMonitorFilter(final ProcessMonitoringFilter processMonitorFilter) {
 		this.processMonitorFilter = processMonitorFilter;
-		ProcessMonitoringProvider.processMonitors = this.filterProcessMonitors(
-				ProcessMonitoringProvider.processMonitors, processMonitorFilter);
+		ProcessMonitoringProvider.processMonitors = this.filterProcessMonitors(ProcessMonitoringProvider.processMonitors, processMonitorFilter);
 	}
 
 	@Override

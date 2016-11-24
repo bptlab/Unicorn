@@ -30,26 +30,20 @@ public class AttributeCorrelator {
 	 * Defines the correlation for a process using single event type attributes
 	 * and correlates existing events for the process. One definition of a
 	 * correlation per process only.
-	 * 
-	 * @param selectedEventTypes
-	 *            events of the given event types will be correlated - event
-	 *            types must be related to the process
-	 * @param correlationAttributes
-	 *            single event type attributes defining the correlation of the
-	 *            given process - all the event types must contain this
-	 *            attribute (i.e. if an attribute with attribute expression 'A'
-	 *            is given and the event types are E1, E2, and E3, the
-	 *            correlation is E1.A=E2.A, E1.A=E3.A and E2.A=E3.A
-	 * @param process
-	 *            the process from which the process instances are derived and
-	 *            created
-	 * @param timeCondition
-	 *            (optional) rule for advanced time correlation related to the
-	 *            process
+	 *
+	 * @param selectedEventTypes    events of the given event types will be correlated - event
+	 *                              types must be related to the process
+	 * @param correlationAttributes single event type attributes defining the correlation of the
+	 *                              given process - all the event types must contain this
+	 *                              attribute (i.e. if an attribute with attribute expression 'A'
+	 *                              is given and the event types are E1, E2, and E3, the
+	 *                              correlation is E1.A=E2.A, E1.A=E3.A and E2.A=E3.A
+	 * @param process               the process from which the process instances are derived and
+	 *                              created
+	 * @param timeCondition         (optional) rule for advanced time correlation related to the
+	 *                              process
 	 */
-	public static void correlate(final Set<EapEventType> selectedEventTypes,
-			final List<TypeTreeNode> correlationAttributes, final CorrelationProcess process,
-			final TimeCondition timeCondition) {
+	public static void correlate(final Set<EapEventType> selectedEventTypes, final List<TypeTreeNode> correlationAttributes, final CorrelationProcess process, final TimeCondition timeCondition) {
 		process.setEventTypes(new HashSet<EapEventType>(selectedEventTypes));
 		process.addCorrelationAttributes(correlationAttributes);
 		if (timeCondition != null) {
@@ -64,8 +58,7 @@ public class AttributeCorrelator {
 		final Iterator<EapEvent> eventIterator = eventsToCorrelate.iterator();
 		while (eventIterator.hasNext()) {
 			final EapEvent actualEvent = eventIterator.next();
-			AttributeCorrelator.correlateEventToProcessInstance(actualEvent, correlationAttributes, process,
-					timeCondition);
+			AttributeCorrelator.correlateEventToProcessInstance(actualEvent, correlationAttributes, process, timeCondition);
 		}
 	}
 
@@ -73,25 +66,19 @@ public class AttributeCorrelator {
 	 * Correlates an event to a process instance using single event type
 	 * attributes. If no matching process instance is found, a new process
 	 * instance is created and the event is be correlated to this instance.
-	 * 
-	 * @param actualEvent
-	 *            the event to be correlated to a process instance
-	 * @param correlationAttributes
-	 *            single event type attributes defining the correlation of the
-	 *            given process - all the event types must contain this
-	 *            attribute (i.e. if an attribute with attribute expression 'A'
-	 *            is given and the event types are E1, E2, and E3, the
-	 *            correlation is E1.A=E2.A, E1.A=E3.A and E2.A=E3.A
-	 * @param process
-	 *            the process from which the process instances are derived and
-	 *            created
-	 * @param timeCondition
-	 *            (optional) rule for advanced time correlation related to the
-	 *            process
+	 *
+	 * @param actualEvent           the event to be correlated to a process instance
+	 * @param correlationAttributes single event type attributes defining the correlation of the
+	 *                              given process - all the event types must contain this
+	 *                              attribute (i.e. if an attribute with attribute expression 'A'
+	 *                              is given and the event types are E1, E2, and E3, the
+	 *                              correlation is E1.A=E2.A, E1.A=E3.A and E2.A=E3.A
+	 * @param process               the process from which the process instances are derived and
+	 *                              created
+	 * @param timeCondition         (optional) rule for advanced time correlation related to the
+	 *                              process
 	 */
-	static void correlateEventToProcessInstance(final EapEvent actualEvent,
-			final List<TypeTreeNode> correlationAttributes, final CorrelationProcess process,
-			final TimeCondition timeCondition) {
+	static void correlateEventToProcessInstance(final EapEvent actualEvent, final List<TypeTreeNode> correlationAttributes, final CorrelationProcess process, final TimeCondition timeCondition) {
 
 		boolean insertedInExistingProcessInstance = false;
 		final List<CorrelationProcessInstance> processInstances = CorrelationProcessInstance.findByProcess(process);
@@ -109,16 +96,13 @@ public class AttributeCorrelator {
 			for (final TypeTreeNode actualCorrelationAttribute : correlationAttributes) {
 				final String nameOfactualAttribute = actualCorrelationAttribute.getAttributeExpression();
 				final Map<String, Serializable> valuesOfEvent = actualEvent.getValues();
-				if (actualProcessInstance.getCorrelationAttributesAndValues().get(nameOfactualAttribute) == null
-						|| !actualProcessInstance.getCorrelationAttributesAndValues().get(nameOfactualAttribute)
-								.equals(valuesOfEvent.get(nameOfactualAttribute))) {
+				if (actualProcessInstance.getCorrelationAttributesAndValues().get(nameOfactualAttribute) == null || !actualProcessInstance.getCorrelationAttributesAndValues().get(nameOfactualAttribute).equals(valuesOfEvent.get(nameOfactualAttribute))) {
 					processInstanceAndEventMatch = false;
 					break;
 				}
 			}
 			if (processInstanceAndEventMatch && timeCondition != null) {
-				processInstanceAndEventMatch = timeCondition.belongsEventToTimerEvent(actualEvent,
-						actualProcessInstance.getTimerEvent());
+				processInstanceAndEventMatch = timeCondition.belongsEventToTimerEvent(actualEvent, actualProcessInstance.getTimerEvent());
 			}
 			if (processInstanceAndEventMatch) {
 				actualProcessInstance.addEvent(actualEvent);
@@ -155,8 +139,7 @@ public class AttributeCorrelator {
 			}
 			for (final TypeTreeNode actualCorrelationAttribute : correlationAttributes) {
 				final String correlationAttribute = actualCorrelationAttribute.getAttributeExpression();
-				final Serializable correlationValue = actualEvent.getValues().get(
-						actualCorrelationAttribute.getAttributeExpression());
+				final Serializable correlationValue = actualEvent.getValues().get(actualCorrelationAttribute.getAttributeExpression());
 				newProcessInstance.addCorrelationAttributeAndValue(correlationAttribute, correlationValue);
 			}
 			newProcessInstance.addEvent(actualEvent);

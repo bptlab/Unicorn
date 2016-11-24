@@ -18,7 +18,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents the start events in a BPMN process.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -39,8 +39,7 @@ public class BPMNStartEvent extends AbstractBPMNElement {
 		this.startEventType = BPMNEventType.Blank;
 	}
 
-	public BPMNStartEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints,
-			final BPMNEventType startEventType) {
+	public BPMNStartEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints, final BPMNEventType startEventType) {
 		super(ID, name, monitoringPoints);
 		this.startEventType = startEventType;
 	}

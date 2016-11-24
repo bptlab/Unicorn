@@ -27,11 +27,9 @@ import org.apache.wicket.model.Model;
 /**
  * tree table component for visualization of hierarchical elements nodes are not
  * selectable
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
- * @param <S>
- *            the type of the sort property
+ *
+ * @param <T> the type of nodes to be stored in the tree
+ * @param <S> the type of the sort property
  */
 public class LabelTreeTable<T, S> extends TableTree<T, S> {
 
@@ -39,22 +37,16 @@ public class LabelTreeTable<T, S> extends TableTree<T, S> {
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param columns
-	 *            list of IColumn objects
-	 * @param provider
-	 *            provider see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param rowsPerPage
-	 *            number of rows per page
-	 * @param state
-	 *            state see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id          wicket identifier used in the corresponding HTML file
+	 * @param columns     list of IColumn objects
+	 * @param provider    provider see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param rowsPerPage number of rows per page
+	 * @param state       state see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
-	public LabelTreeTable(final String id, final List<? extends IColumn<T, S>> columns,
-			final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
+	public LabelTreeTable(final String id, final List<? extends IColumn<T, S>> columns, final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
 		super(id, columns, provider, rowsPerPage, state);
 		this.getTable().add(new AttributeAppender("class", Model.of("table table-striped")));
 		this.setTheme();

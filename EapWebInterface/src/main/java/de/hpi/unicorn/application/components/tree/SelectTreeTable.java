@@ -20,37 +20,29 @@ import org.apache.wicket.model.IModel;
 /**
  * tree table component for visualization of hierarchical elements nodes are
  * selectable
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
- * @param <S>
- *            the type of the sort property
+ *
+ * @param <T> the type of nodes to be stored in the tree
+ * @param <S> the type of the sort property
  */
 public class SelectTreeTable<T, S> extends LabelTreeTable<T, S> {
 
 	private static final long serialVersionUID = 1L;
-	private IModel<T> selectedElement;
 	private final SelectTreeTable<T, S> selectTree;
 	private final ITreeProvider<T> provider;
+	private IModel<T> selectedElement;
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param columns
-	 *            list of IColumn objects
-	 * @param provider
-	 *            provider see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param rowsPerPage
-	 *            number of rows per page
-	 * @param state
-	 *            state see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id          wicket identifier used in the corresponding HTML file
+	 * @param columns     list of IColumn objects
+	 * @param provider    provider see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param rowsPerPage number of rows per page
+	 * @param state       state see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
-	public SelectTreeTable(final String id, final List<? extends IColumn<T, S>> columns,
-			final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
+	public SelectTreeTable(final String id, final List<? extends IColumn<T, S>> columns, final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
 		super(id, columns, provider, rowsPerPage, state);
 		this.provider = provider;
 		this.selectTree = this;

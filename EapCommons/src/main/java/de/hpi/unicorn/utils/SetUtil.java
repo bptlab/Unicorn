@@ -16,14 +16,14 @@ import de.hpi.unicorn.bpmn.element.BPMNXORGateway;
 
 /**
  * This class combines various methods for modification of lists.
- * 
+ *
  * @author micha
  */
 public class SetUtil {
 
 	/**
 	 * Calculates the intersection between a list of sets.
-	 * 
+	 *
 	 * @param sets
 	 * @return
 	 */
@@ -40,7 +40,7 @@ public class SetUtil {
 
 	/**
 	 * Calculates the union between a list of sets.
-	 * 
+	 *
 	 * @param sets
 	 * @return
 	 */
@@ -57,7 +57,7 @@ public class SetUtil {
 
 	/**
 	 * Returns the element at the ordered position of the given index.
-	 * 
+	 *
 	 * @param <T>
 	 * @param successors
 	 * @param index
@@ -75,7 +75,7 @@ public class SetUtil {
 
 	/**
 	 * Returns the elements of the given set as list.
-	 * 
+	 *
 	 * @param elements
 	 * @return
 	 */

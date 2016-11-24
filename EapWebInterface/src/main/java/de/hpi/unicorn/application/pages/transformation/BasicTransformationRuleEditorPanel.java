@@ -38,17 +38,17 @@ import de.hpi.unicorn.transformation.TransformationRule;
 public class BasicTransformationRuleEditorPanel extends Panel {
 
 	private static final long serialVersionUID = -3517674159437927655L;
+	private final Form<Void> layoutForm;
+	private final TransformationPage transformationPage;
 	private String selectedEventTypeName;
 	private EapEventType selectedEventType;
 	private String transformationRule;
 	private TextField<String> transformationRuleNameTextField;
 	private String transformationRuleName;
-	private final Form<Void> layoutForm;
 	private TextArea<String> transformationRuleTextArea;
 	private SelectTree<EventTreeElement<String>> transformationRuleTree;
 	private EventTree<String> transformationRuleTreeStructure;
 	private DropDownChoice<String> eventTypeDropDownChoice;
-	private final TransformationPage transformationPage;
 	// private CheckBoxMultipleChoice<EapEventType>
 	// eventTypesCheckBoxMultipleChoice;
 	private List<EapEventType> eventTypesOfIncomingEvents = new ArrayList<EapEventType>();
@@ -68,14 +68,12 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 	}
 
 	private void buildTextFields() {
-		this.transformationRuleNameTextField = new TextField<String>("transformationRuleNameTextField",
-				new PropertyModel<String>(this, "transformationRuleName"));
+		this.transformationRuleNameTextField = new TextField<String>("transformationRuleNameTextField", new PropertyModel<String>(this, "transformationRuleName"));
 		this.transformationRuleNameTextField.setOutputMarkupId(true);
 		this.layoutForm.add(this.transformationRuleNameTextField);
 
 		final List<String> eventTypes = EapEventType.getAllTypeNames();
-		this.eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice", new PropertyModel<String>(
-				this, "selectedEventTypeName"), eventTypes);
+		this.eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice", new PropertyModel<String>(this, "selectedEventTypeName"), eventTypes);
 		this.eventTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
@@ -86,8 +84,7 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 		});
 		this.layoutForm.add(this.eventTypeDropDownChoice);
 
-		this.transformationRuleTextArea = new TextArea<String>("transformationRuleTextArea", new PropertyModel<String>(
-				this, "transformationRule"));
+		this.transformationRuleTextArea = new TextArea<String>("transformationRuleTextArea", new PropertyModel<String>(this, "transformationRule"));
 		this.transformationRuleTextArea.setOutputMarkupId(true);
 		this.layoutForm.add(this.transformationRuleTextArea);
 	}
@@ -145,16 +142,11 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 
 				if (BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement() != null) {
-					BasicTransformationRuleEditorPanel.this.selectedEventTypeName = BasicTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getParent().getValue().toString();
-					BasicTransformationRuleEditorPanel.this.transformationRuleName = BasicTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getValue().toString();
-					final TransformationRule rule = TransformationRule.findByEventTypeAndTitle(
-							BasicTransformationRuleEditorPanel.this.selectedEventTypeName,
-							BasicTransformationRuleEditorPanel.this.transformationRuleName);
+					BasicTransformationRuleEditorPanel.this.selectedEventTypeName = BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getParent().getValue().toString();
+					BasicTransformationRuleEditorPanel.this.transformationRuleName = BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getValue().toString();
+					final TransformationRule rule = TransformationRule.findByEventTypeAndTitle(BasicTransformationRuleEditorPanel.this.selectedEventTypeName, BasicTransformationRuleEditorPanel.this.transformationRuleName);
 					BasicTransformationRuleEditorPanel.this.transformationRule = rule.getQuery();
-					BasicTransformationRuleEditorPanel.this.eventTypesOfIncomingEvents = rule
-							.getEventTypesOfIncomingEvents();
+					BasicTransformationRuleEditorPanel.this.eventTypesOfIncomingEvents = rule.getEventTypesOfIncomingEvents();
 					target.add(BasicTransformationRuleEditorPanel.this.transformationRuleNameTextField);
 					target.add(BasicTransformationRuleEditorPanel.this.eventTypeDropDownChoice);
 					target.add(BasicTransformationRuleEditorPanel.this.transformationRuleTextArea);
@@ -173,12 +165,9 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				if (BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement() != null) {
-					final String eventTypeNameFromTree = BasicTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getParent().getValue().toString();
-					final String transformationRuleNameFromTree = BasicTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getValue().toString();
-					BasicTransformationRuleEditorPanel.this.removeTransformationRule(eventTypeNameFromTree,
-							transformationRuleNameFromTree);
+					final String eventTypeNameFromTree = BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getParent().getValue().toString();
+					final String transformationRuleNameFromTree = BasicTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getValue().toString();
+					BasicTransformationRuleEditorPanel.this.removeTransformationRule(eventTypeNameFromTree, transformationRuleNameFromTree);
 					BasicTransformationRuleEditorPanel.this.renderOrUpdateTransformationRuleTree();
 					target.add(BasicTransformationRuleEditorPanel.this.transformationRuleTree);
 					BasicTransformationRuleEditorPanel.this.clearFields(target);
@@ -193,26 +182,17 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				try {
-					if (BasicTransformationRuleEditorPanel.this.transformationRuleName == null
-							|| BasicTransformationRuleEditorPanel.this.transformationRuleName.isEmpty()) {
-						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(
-								"Please enter an transformation rule name!");
+					if (BasicTransformationRuleEditorPanel.this.transformationRuleName == null || BasicTransformationRuleEditorPanel.this.transformationRuleName.isEmpty()) {
+						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error("Please enter an transformation rule name!");
 						target.add(BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel());
 					} else if (BasicTransformationRuleEditorPanel.this.selectedEventType == null) {
-						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(
-								"Please select an event type!");
+						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error("Please select an event type!");
 						target.add(BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel());
-					} else if (BasicTransformationRuleEditorPanel.this.transformationRule == null
-							|| BasicTransformationRuleEditorPanel.this.transformationRule.isEmpty()) {
-						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(
-								"Please enter an transformation rule!");
+					} else if (BasicTransformationRuleEditorPanel.this.transformationRule == null || BasicTransformationRuleEditorPanel.this.transformationRule.isEmpty()) {
+						BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error("Please enter an transformation rule!");
 						target.add(BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel());
 					} else {
-						BasicTransformationRuleEditorPanel.this.saveTransformationRule(target,
-								BasicTransformationRuleEditorPanel.this.selectedEventType,
-								BasicTransformationRuleEditorPanel.this.eventTypesOfIncomingEvents,
-								BasicTransformationRuleEditorPanel.this.transformationRuleName,
-								BasicTransformationRuleEditorPanel.this.transformationRule);
+						BasicTransformationRuleEditorPanel.this.saveTransformationRule(target, BasicTransformationRuleEditorPanel.this.selectedEventType, BasicTransformationRuleEditorPanel.this.eventTypesOfIncomingEvents, BasicTransformationRuleEditorPanel.this.transformationRuleName, BasicTransformationRuleEditorPanel.this.transformationRule);
 					}
 				} catch (final EPException e) {
 					BasicTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(e.getMessage());
@@ -232,27 +212,19 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 		target.add(this.transformationRuleTextArea);
 	}
 
-	private void saveTransformationRule(final AjaxRequestTarget target, final EapEventType selectedEventType,
-			final List<EapEventType> eventTypesOfIncomingEvents, final String transformationRuleName,
-			final String transformationRule) {
+	private void saveTransformationRule(final AjaxRequestTarget target, final EapEventType selectedEventType, final List<EapEventType> eventTypesOfIncomingEvents, final String transformationRuleName, final String transformationRule) {
 		if (TransformationRule.findByEventTypeAndTitle(this.selectedEventTypeName, transformationRuleName) != null) {
 			this.removeTransformationRule(this.selectedEventTypeName, transformationRuleName);
 		}
-		this.addTransformationRule(selectedEventType, eventTypesOfIncomingEvents, transformationRuleName,
-				transformationRule);
+		this.addTransformationRule(selectedEventType, eventTypesOfIncomingEvents, transformationRuleName, transformationRule);
 		this.renderOrUpdateTransformationRuleTree();
 		target.add(this.transformationRuleTree);
-		this.transformationPage.getFeedbackPanel().success(
-				"Saved transformation rule '" + transformationRuleName + "' for event type '"
-						+ this.selectedEventTypeName + "'.");
+		this.transformationPage.getFeedbackPanel().success("Saved transformation rule '" + transformationRuleName + "' for event type '" + this.selectedEventTypeName + "'.");
 		target.add(this.transformationPage.getFeedbackPanel());
 	}
 
-	protected void addTransformationRule(final EapEventType selectedEventType,
-			final List<EapEventType> eventTypesOfIncomingEvents, final String transformationRuleName,
-			final String transformationQuery) throws EPException {
-		final TransformationRule transformationRule = new TransformationRule(selectedEventType,
-				eventTypesOfIncomingEvents, transformationRuleName, transformationQuery);
+	protected void addTransformationRule(final EapEventType selectedEventType, final List<EapEventType> eventTypesOfIncomingEvents, final String transformationRuleName, final String transformationQuery) throws EPException {
+		final TransformationRule transformationRule = new TransformationRule(selectedEventType, eventTypesOfIncomingEvents, transformationRuleName, transformationQuery);
 		Broker.getInstance().register(transformationRule);
 		transformationRule.save();
 		final String eventTypeName = selectedEventType.getTypeName();
@@ -276,23 +248,19 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 		this.transformationRuleTreeStructure = new EventTree<String>();
 		final List<TransformationRule> transformationRules = TransformationRule.findAll();
 		for (final TransformationRule transformationRule : transformationRules) {
-			this.addTransformationRuleToTreeStructure(transformationRule.getEventType().getTypeName(),
-					transformationRule.getTitle());
+			this.addTransformationRuleToTreeStructure(transformationRule.getEventType().getTypeName(), transformationRule.getTitle());
 		}
 		this.renderOrUpdateTransformationRuleTree();
 	}
 
 	private void renderOrUpdateTransformationRuleTree() {
 
-		this.transformationRuleTree = new SelectTree<EventTreeElement<String>>("transformationRuleTree",
-				new TreeProvider<String>(this.generateNodesOfTransformationRuleTree()),
-				new TreeExpansionModel<String>()) {
+		this.transformationRuleTree = new SelectTree<EventTreeElement<String>>("transformationRuleTree", new TreeProvider<String>(this.generateNodesOfTransformationRuleTree()), new TreeExpansionModel<String>()) {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void select(final EventTreeElement<String> element,
-					final AbstractTree<EventTreeElement<String>> tree, final AjaxRequestTarget target) {
+			protected void select(final EventTreeElement<String> element, final AbstractTree<EventTreeElement<String>> tree, final AjaxRequestTarget target) {
 				// only the transformation rules are selectable
 				if (element.hasParent()) {
 					super.select(element, tree, target);
@@ -311,15 +279,13 @@ public class BasicTransformationRuleEditorPanel extends Panel {
 			final EventTreeElement<String> rootElement = new EventTreeElement<String>(eventType);
 			treeElements.add(rootElement);
 			if (this.transformationRuleTreeStructure.hasChildren(eventType)) {
-				this.fillTreeLevel(rootElement, this.transformationRuleTreeStructure.getChildren(eventType),
-						this.transformationRuleTreeStructure);
+				this.fillTreeLevel(rootElement, this.transformationRuleTreeStructure.getChildren(eventType), this.transformationRuleTreeStructure);
 			}
 		}
 		return treeElements;
 	}
 
-	private void fillTreeLevel(final EventTreeElement<String> parent, final List<String> children,
-			final EventTree<String> transformationRuleTreeStructure) {
+	private void fillTreeLevel(final EventTreeElement<String> parent, final List<String> children, final EventTree<String> transformationRuleTreeStructure) {
 		for (final String newValue : children) {
 			new EventTreeElement<String>(parent, newValue.toString());
 			// EventTreeElement<String> newElement = new

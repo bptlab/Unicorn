@@ -41,14 +41,12 @@ import de.hpi.unicorn.visualisation.EventView;
  */
 public class EventViewOptions extends Options {
 
-	public EventView eventView;
-
+	private static final long serialVersionUID = 1L;
 	private final List<Coordinate<String, Number>> eventsWithoutProcessInstance = new ArrayList<Coordinate<String, Number>>();
 	private final HashMap<CorrelationProcessInstance, List<Coordinate<String, Number>>> processSeriesData = new HashMap<CorrelationProcessInstance, List<Coordinate<String, Number>>>();
 
 	private final HashMap<EapEventType, Integer> mappingTypeToInt = new HashMap<EapEventType, Integer>();
-
-	private static final long serialVersionUID = 1L;
+	public EventView eventView;
 
 	public EventViewOptions(final EventView configuration) {
 		this.eventView = configuration;
@@ -67,9 +65,7 @@ public class EventViewOptions extends Options {
 		final Axis xAxis = new Axis();
 		xAxis.setType(AxisType.DATETIME);
 
-		final DateTimeLabelFormat dateTimeLabelFormat = new DateTimeLabelFormat()
-				.setProperty(DateTimeProperties.DAY, "%e.%m.%Y").setProperty(DateTimeProperties.MONTH, "%m/%Y")
-				.setProperty(DateTimeProperties.YEAR, "%Y");
+		final DateTimeLabelFormat dateTimeLabelFormat = new DateTimeLabelFormat().setProperty(DateTimeProperties.DAY, "%e.%m.%Y").setProperty(DateTimeProperties.MONTH, "%m/%Y").setProperty(DateTimeProperties.YEAR, "%Y");
 		xAxis.setDateTimeLabelFormats(dateTimeLabelFormat);
 
 		this.setxAxis(xAxis);
@@ -86,8 +82,7 @@ public class EventViewOptions extends Options {
 
 		// Tooltip
 		final Tooltip tooltip = new Tooltip();
-		tooltip.setFormatter(new Function(
-				"return '<b>'+ this.series.name +'</b><br/>'+Highcharts.dateFormat('%e.%m.%Y', this.x);"));
+		tooltip.setFormatter(new Function("return '<b>'+ this.series.name +'</b><br/>'+Highcharts.dateFormat('%e.%m.%Y', this.x);"));
 		this.setTooltip(tooltip);
 
 		// create a mapping from eventtypes to integer values, because in a
@@ -99,8 +94,7 @@ public class EventViewOptions extends Options {
 		}
 
 		// add series for each process instance to diagram
-		for (final Entry<CorrelationProcessInstance, List<Coordinate<String, Number>>> seriesTuple : this.processSeriesData
-				.entrySet()) {
+		for (final Entry<CorrelationProcessInstance, List<Coordinate<String, Number>>> seriesTuple : this.processSeriesData.entrySet()) {
 			final List<Coordinate<String, Number>> seriesData = seriesTuple.getValue();
 			final CustomCoordinatesSeries<String, Number> series = new CustomCoordinatesSeries<String, Number>();
 			series.setName(seriesTuple.getKey().toString());
@@ -113,7 +107,25 @@ public class EventViewOptions extends Options {
 		series.setName("uncorrelated");
 		series.setData(this.eventsWithoutProcessInstance);
 		this.addSeries(series);
-	};
+	}
+
+	;
+
+	/**
+	 * inverts a map, so that the former values become keys
+	 *
+	 * @param map
+	 * @return inverted map
+	 */
+	private static <V, K> Map<V, K> invert(final Map<K, V> map) {
+		final Map<V, K> inv = new HashMap<V, K>();
+
+		for (final Entry<K, V> entry : map.entrySet()) {
+			inv.put(entry.getValue(), entry.getKey());
+		}
+
+		return inv;
+	}
 
 	private void generateMappingForEventTypes() {
 		// save an integer value for each event type
@@ -142,14 +154,13 @@ public class EventViewOptions extends Options {
 	}
 
 	private Coordinate<String, Number> getCoordinate(final EapEvent event, final EapEventType eventType) {
-		return new Coordinate<String, Number>(DateUtils.format(event.getTimestamp(),
-				"'Date.UTC('yyyy, M, d, h, m, s')'"), this.mappingTypeToInt.get(eventType));
+		return new Coordinate<String, Number>(DateUtils.format(event.getTimestamp(), "'Date.UTC('yyyy, M, d, h, m, s')'"), this.mappingTypeToInt.get(eventType));
 	}
 
 	/**
 	 * creates an explanation string that translates the mapping from integer
 	 * values to event types
-	 * 
+	 *
 	 * @return explanation string
 	 */
 	public String getExplanationString() {
@@ -160,22 +171,6 @@ public class EventViewOptions extends Options {
 			explanation += (i) + " : " + intToEvent.get(i).getTypeName() + "\t";
 		}
 		return explanation;
-	}
-
-	/**
-	 * inverts a map, so that the former values become keys
-	 * 
-	 * @param map
-	 * @return inverted map
-	 */
-	private static <V, K> Map<V, K> invert(final Map<K, V> map) {
-		final Map<V, K> inv = new HashMap<V, K>();
-
-		for (final Entry<K, V> entry : map.entrySet()) {
-			inv.put(entry.getValue(), entry.getKey());
-		}
-
-		return inv;
 	}
 
 }

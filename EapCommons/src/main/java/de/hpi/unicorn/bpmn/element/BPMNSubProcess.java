@@ -18,7 +18,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents a sub process in a BPMN process.
- * 
+ *
  * @author micha
  */
 @Entity

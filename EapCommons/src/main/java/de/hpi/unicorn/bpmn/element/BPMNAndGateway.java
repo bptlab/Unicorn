@@ -18,7 +18,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents the parallel gateways in a BPMN process.
- * 
+ *
  * @author micha
  */
 @Entity

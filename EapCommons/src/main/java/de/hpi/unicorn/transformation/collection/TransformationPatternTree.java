@@ -47,21 +47,17 @@ import de.hpi.unicorn.transformation.element.PatternOperatorElement;
 public class TransformationPatternTree extends Persistable {
 
 	private static final long serialVersionUID = 4641263893746532464L;
-
+	@Column(name = "Auxiliary")
+	private final String auxiliary = "Auxiliary";
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "patternTreeID", referencedColumnName = "TransformationPatternTreeID")
+	private final List<EventTreeElement<Serializable>> elements = new ArrayList<EventTreeElement<Serializable>>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "TransformationPatternTreeID")
 	protected int ID;
-
-	@Column(name = "Auxiliary")
-	private final String auxiliary = "Auxiliary";
-
 	@OneToOne(mappedBy = "patternTree")
 	private TransformationRule transformationRule;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "patternTreeID", referencedColumnName = "TransformationPatternTreeID")
-	private final List<EventTreeElement<Serializable>> elements = new ArrayList<EventTreeElement<Serializable>>();
 
 	public TransformationPatternTree() {
 		this.ID = 0;
@@ -80,6 +76,24 @@ public class TransformationPatternTree extends Persistable {
 		this.elements.addAll(elements);
 	}
 
+	public static List<TransformationPatternTree> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM TransformationPatternTree t");
+		return q.getResultList();
+	}
+
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM TransformationPatternTree");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
 	public boolean isEmpty() {
 		return this.elements.isEmpty();
 	}
@@ -91,7 +105,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all elements of the pattern tree.
-	 * 
+	 *
 	 * @return list of elements
 	 */
 	public List<EventTreeElement<Serializable>> getElements() {
@@ -100,7 +114,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all elements without parents.
-	 * 
+	 *
 	 * @return list of root elements in an adequate order
 	 */
 	public List<EventTreeElement<Serializable>> getRoots() {
@@ -115,7 +129,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all elements without children.
-	 * 
+	 *
 	 * @return list of root elements in an adequate order
 	 */
 	public List<EventTreeElement<Serializable>> getLeafs() {
@@ -130,7 +144,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all pattern operator elements of the pattern tree.
-	 * 
+	 *
 	 * @return list of pattern operator elements
 	 */
 	public List<PatternOperatorElement> getPatternOperatorElements() {
@@ -145,7 +159,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all event type elements of the pattern tree.
-	 * 
+	 *
 	 * @return list of event type elements
 	 */
 	public List<EventTypeElement> getEventTypeElements() {
@@ -160,7 +174,7 @@ public class TransformationPatternTree extends Persistable {
 
 	/**
 	 * Method to retrieve all filter expression elements of the pattern tree.
-	 * 
+	 *
 	 * @return list of filter expression elements
 	 */
 	public List<FilterExpressionElement> getFilterExpressionElements() {
@@ -185,9 +199,8 @@ public class TransformationPatternTree extends Persistable {
 	 * Removes the given element from the tree. If an element has parent and
 	 * child elements, the child elements will be connected to the parent
 	 * elements.
-	 * 
-	 * @param element
-	 *            the element to be removed
+	 *
+	 * @param element the element to be removed
 	 * @return true if removal was successful
 	 */
 	public boolean removeElement(final EventTreeElement<Serializable> element) {
@@ -223,11 +236,10 @@ public class TransformationPatternTree extends Persistable {
 	/**
 	 * Method to retrieve all elements from lower levels that are referenced
 	 * directly or indirectly by the given element.
-	 * 
-	 * @param element
-	 *            the element from which all lower level elements shall be found
+	 *
+	 * @param element the element from which all lower level elements shall be found
 	 * @return list of elements from lower levels that are referenced directly
-	 *         or indirectly by the given element
+	 * or indirectly by the given element
 	 */
 	private List<EventTreeElement<Serializable>> getAllChildrenFromElement(final EventTreeElement<Serializable> element) {
 		final List<EventTreeElement<Serializable>> allChildren = new ArrayList<EventTreeElement<Serializable>>();
@@ -242,8 +254,7 @@ public class TransformationPatternTree extends Persistable {
 		return allChildren;
 	}
 
-	private void getAllChildrenFromChild(final List<EventTreeElement<Serializable>> allChildren,
-			final EventTreeElement<Serializable> element) {
+	private void getAllChildrenFromChild(final List<EventTreeElement<Serializable>> allChildren, final EventTreeElement<Serializable> element) {
 		allChildren.add(element);
 		if (element.hasChildren()) {
 			for (final EventTreeElement<Serializable> child : element.getChildren()) {
@@ -255,11 +266,10 @@ public class TransformationPatternTree extends Persistable {
 	/**
 	 * Method to retrieve all elements from higher levels that are referenced
 	 * directly or indirectly by the given element.
-	 * 
-	 * @param element
-	 *            the element from which all higher shall be found
+	 *
+	 * @param element the element from which all higher shall be found
 	 * @return list of elements from higher levels that are referenced directly
-	 *         or indirectly by the given element
+	 * or indirectly by the given element
 	 */
 	private List<EventTreeElement<Serializable>> getAllParentsFromElement(final EventTreeElement<Serializable> element) {
 		final List<EventTreeElement<Serializable>> allParents = new ArrayList<EventTreeElement<Serializable>>();
@@ -273,29 +283,10 @@ public class TransformationPatternTree extends Persistable {
 		return allParents;
 	}
 
-	private void getAllParentsFromParent(final List<EventTreeElement<Serializable>> allParents,
-			final EventTreeElement<Serializable> element) {
+	private void getAllParentsFromParent(final List<EventTreeElement<Serializable>> allParents, final EventTreeElement<Serializable> element) {
 		allParents.add(element);
 		if (element.hasParent()) {
 			this.getAllChildrenFromChild(allParents, element.getParent());
-		}
-	}
-
-	public static List<TransformationPatternTree> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM TransformationPatternTree t");
-		return q.getResultList();
-	}
-
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM TransformationPatternTree");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
 		}
 	}
 

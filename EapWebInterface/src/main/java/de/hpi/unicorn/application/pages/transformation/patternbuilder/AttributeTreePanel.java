@@ -42,10 +42,10 @@ public class AttributeTreePanel extends Panel {
 
 	private static final long serialVersionUID = -3517674159437927655L;
 	private final Form<Void> layoutForm;
+	private final AdvancedTransformationRuleEditorPanel advancedRuleEditorPanel;
 	private DropDownChoice<EapEventType> eventTypeDropDownChoice;
 	private AttributeTreeProvider attributeTreeTableProvider;
 	private LabelTreeTable<TypeTreeNode, String> attributeTreeTable;
-	private final AdvancedTransformationRuleEditorPanel advancedRuleEditorPanel;
 	private Map<String, String> attributeIdentifiersAndExpressions;
 	private Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge;
 
@@ -66,8 +66,7 @@ public class AttributeTreePanel extends Panel {
 	private void buildEventTypeDropDownChoice() {
 
 		final List<EapEventType> eventTypes = EapEventType.findAll();
-		this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice",
-				new Model<EapEventType>(), eventTypes);
+		this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice", new Model<EapEventType>(), eventTypes);
 		this.eventTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
@@ -76,18 +75,14 @@ public class AttributeTreePanel extends Panel {
 
 				if (AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject() != null) {
 					final List<TypeTreeNode> rootAttributes = new ArrayList<TypeTreeNode>();
-					final TypeTreeNode timestampAttribute = new TypeTreeNode(
-							AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject().getTimestampName(),
-							AttributeTypeEnum.DATE);
+					final TypeTreeNode timestampAttribute = new TypeTreeNode(AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject().getTimestampName(), AttributeTypeEnum.DATE);
 					timestampAttribute.setTimestamp(true);
 					rootAttributes.add(timestampAttribute);
-					rootAttributes.addAll(AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject()
-							.getRootLevelValueTypes());
+					rootAttributes.addAll(AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject().getRootLevelValueTypes());
 					AttributeTreePanel.this.attributeTreeTableProvider = new AttributeTreeProvider(rootAttributes);
 					AttributeTreePanel.this.attributeIdentifiersAndExpressions.keySet().clear();
 					AttributeTreePanel.this.attributeIdentifiersAndExpressions.put("Timestamp", "");
-					for (final String attributeIdentifier : AttributeTreePanel.this.eventTypeDropDownChoice
-							.getModelObject().getAttributeExpressionsWithoutTimestampName()) {
+					for (final String attributeIdentifier : AttributeTreePanel.this.eventTypeDropDownChoice.getModelObject().getAttributeExpressionsWithoutTimestampName()) {
 						AttributeTreePanel.this.attributeIdentifiersAndExpressions.put(attributeIdentifier, "");
 					}
 					AttributeTreePanel.this.renderOrUpdateAttributeTreeTable();
@@ -141,8 +136,7 @@ public class AttributeTreePanel extends Panel {
 		return this.attributeIdentifiersWithExternalKnowledge;
 	}
 
-	public void setAttributeIdentifiersWithExternalKnowledge(
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
+	public void setAttributeIdentifiersWithExternalKnowledge(final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
 		this.attributeIdentifiersWithExternalKnowledge = attributeIdentifiersWithExternalKnowledge;
 	}
 
@@ -150,23 +144,18 @@ public class AttributeTreePanel extends Panel {
 
 		final List<IColumn<TypeTreeNode, String>> columns = this.createColumns();
 
-		this.attributeTreeTable = new LabelTreeTable<TypeTreeNode, String>("attributeTreeTable", columns,
-				this.attributeTreeTableProvider, Integer.MAX_VALUE, new AttributeTreeExpansionModel());
+		this.attributeTreeTable = new LabelTreeTable<TypeTreeNode, String>("attributeTreeTable", columns, this.attributeTreeTableProvider, Integer.MAX_VALUE, new AttributeTreeExpansionModel());
 
 		this.attributeTreeTable.setOutputMarkupId(true);
 		AttributeTreeExpansion.get().expandAll();
-		this.attributeTreeTable.getTable().addTopToolbar(
-				new HeadersToolbar<String>(this.attributeTreeTable.getTable(), this.attributeTreeTableProvider));
+		this.attributeTreeTable.getTable().addTopToolbar(new HeadersToolbar<String>(this.attributeTreeTable.getTable(), this.attributeTreeTableProvider));
 
 		this.layoutForm.addOrReplace(this.attributeTreeTable);
 	}
 
-	public void updateAttributeTreeTable(final AjaxRequestTarget target,
-			final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
+	public void updateAttributeTreeTable(final AjaxRequestTarget target, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
 		final List<TypeTreeNode> rootAttributes = new ArrayList<TypeTreeNode>();
-		final TypeTreeNode timestampAttribute = new TypeTreeNode(this.eventTypeDropDownChoice.getModelObject()
-				.getTimestampName(), AttributeTypeEnum.DATE);
+		final TypeTreeNode timestampAttribute = new TypeTreeNode(this.eventTypeDropDownChoice.getModelObject().getTimestampName(), AttributeTypeEnum.DATE);
 		timestampAttribute.setTimestamp(true);
 		rootAttributes.add(timestampAttribute);
 		rootAttributes.addAll(this.eventTypeDropDownChoice.getModelObject().getRootLevelValueTypes());
@@ -187,10 +176,7 @@ public class AttributeTreePanel extends Panel {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final TypeTreeNode attribute = ((TypeTreeNode) rowModel.getObject());
-				cellItem.add(new AttributeSelectionPanel(componentId, attribute,
-						AttributeTreePanel.this.attributeIdentifiersAndExpressions,
-						AttributeTreePanel.this.attributeIdentifiersWithExternalKnowledge,
-						AttributeTreePanel.this.advancedRuleEditorPanel.getPatternBuilderPanel()));
+				cellItem.add(new AttributeSelectionPanel(componentId, attribute, AttributeTreePanel.this.attributeIdentifiersAndExpressions, AttributeTreePanel.this.attributeIdentifiersWithExternalKnowledge, AttributeTreePanel.this.advancedRuleEditorPanel.getPatternBuilderPanel()));
 
 			}
 		});

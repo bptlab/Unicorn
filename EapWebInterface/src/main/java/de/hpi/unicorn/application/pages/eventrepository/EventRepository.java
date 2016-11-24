@@ -23,7 +23,7 @@ import de.hpi.unicorn.configuration.EapConfiguration;
 /**
  * The event repository gives information about events, event types, processes
  * and process instances, stored in the application.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")

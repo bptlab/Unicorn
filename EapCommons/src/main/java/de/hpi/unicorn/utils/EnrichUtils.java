@@ -26,13 +26,12 @@ import javax.net.ssl.X509TrustManager;
 
 /**
  * @author baumgrass
- * 
  */
 public class EnrichUtils {
 
 	/**
 	 * Returns the estimated time of arrival (ETA) of a vessel.
-	 * 
+	 *
 	 * @return ETA date as string
 	 * @throws NoSuchAlgorithmException
 	 */
@@ -42,7 +41,7 @@ public class EnrichUtils {
 		vesselID = "VESSEL_ID";
 
 		// Create a trust manager that does not validate certificate chains
-		final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+		final TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
 			@Override
 			public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
 			}
@@ -55,7 +54,7 @@ public class EnrichUtils {
 			public X509Certificate[] getAcceptedIssuers() {
 				return null;
 			}
-		} };
+		}};
 
 		// Install the all-trusting trust manager
 		final SSLContext sslContext = SSLContext.getInstance("SSL");
@@ -71,8 +70,7 @@ public class EnrichUtils {
 		// All set up, we can get a resource through https now:
 		URLConnection urlCon = null;
 		try {
-			urlCon = new URL("https://www.rd.npcs.portbase.com/restlet-nextlogic/api/test/arrival/" + vesselID)
-					.openConnection();
+			urlCon = new URL("https://www.rd.npcs.portbase.com/restlet-nextlogic/api/test/arrival/" + vesselID).openConnection();
 		} catch (final IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

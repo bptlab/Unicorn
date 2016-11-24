@@ -19,7 +19,7 @@ import de.hpi.unicorn.user.EapUser;
 
 /**
  * This class tests the saving, finding and removing of {@link EapUser}.
- * 
+ *
  * @author micha
  */
 public class UserPersistenceTest implements PersistenceTest {

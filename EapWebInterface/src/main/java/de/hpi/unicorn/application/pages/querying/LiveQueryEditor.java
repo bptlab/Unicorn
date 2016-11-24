@@ -31,14 +31,7 @@ import de.hpi.unicorn.query.QueryWrapper;
 public class LiveQueryEditor extends QueryEditor {
 
 	private static final long serialVersionUID = 1L;
-	private static final String LIVE_QUERY_HELP_TEXT = "Live Queries are either asked from the eventtypes"
-			+ QueryEditor.lineBreak + "or defined by a pattern. " + QueryEditor.lineBreak + QueryEditor.lineBreak
-			+ "Example-Query:" + QueryEditor.lineBreak + "SELECT ValueName, Timestamp" + QueryEditor.lineBreak
-			+ "FROM EventType" + QueryEditor.lineBreak + "WHERE eventType = 'ValueNameX'" + QueryEditor.lineBreak
-			+ QueryEditor.lineBreak + "Example-Query for Patterns:" + QueryEditor.lineBreak
-			+ "SELECT A.Value1, B.Value2 Timestamp" + QueryEditor.lineBreak + "FROM Pattern[ every A=EventType1 "
-			+ QueryEditor.lineBreak + "-> B=EventType2(A.Value1 = B.Value1)]" + QueryEditor.lineBreak
-			+ QueryEditor.lineBreak + "Other useful constructs might be: and, or, not" + QueryEditor.lineBreak;
+	private static final String LIVE_QUERY_HELP_TEXT = "Live Queries are either asked from the eventtypes" + QueryEditor.lineBreak + "or defined by a pattern. " + QueryEditor.lineBreak + QueryEditor.lineBreak + "Example-Query:" + QueryEditor.lineBreak + "SELECT ValueName, Timestamp" + QueryEditor.lineBreak + "FROM EventType" + QueryEditor.lineBreak + "WHERE eventType = 'ValueNameX'" + QueryEditor.lineBreak + QueryEditor.lineBreak + "Example-Query for Patterns:" + QueryEditor.lineBreak + "SELECT A.Value1, B.Value2 Timestamp" + QueryEditor.lineBreak + "FROM Pattern[ every A=EventType1 " + QueryEditor.lineBreak + "-> B=EventType2(A.Value1 = B.Value1)]" + QueryEditor.lineBreak + QueryEditor.lineBreak + "Other useful constructs might be: and, or, not" + QueryEditor.lineBreak;
 
 	private BlockingAjaxButton showQueryLogButton;
 	private AjaxButton editQueryButton, deleteQueryButton, saveQueryButton, deleteQueriesWithoutNotificationRuleButton;
@@ -74,8 +67,7 @@ public class LiveQueryEditor extends QueryEditor {
 						target.add(LiveQueryEditor.this.getFeedbackPanel());
 						return;
 					}
-					final QueryWrapper liveQuery = new QueryWrapper(queryTitle, LiveQueryEditor.this.queryString,
-							QueryTypeEnum.LIVE);
+					final QueryWrapper liveQuery = new QueryWrapper(queryTitle, LiveQueryEditor.this.queryString, QueryTypeEnum.LIVE);
 					epAdapter.addLiveQuery(liveQuery);
 					LiveQueryEditor.this.queries.add(liveQuery);
 					liveQuery.setQuery(LiveQueryEditor.this.queryString);
@@ -107,8 +99,7 @@ public class LiveQueryEditor extends QueryEditor {
 					LiveQueryEditor.this.getFeedbackPanel().error("No query selected.");
 					target.add(LiveQueryEditor.this.getFeedbackPanel());
 				} else {
-					LiveQueryEditor.this.textFieldDefaultValues
-							.setQueryNameTextField(LiveQueryEditor.this.selectedQuery.getTitle());
+					LiveQueryEditor.this.textFieldDefaultValues.setQueryNameTextField(LiveQueryEditor.this.selectedQuery.getTitle());
 					LiveQueryEditor.this.queryString = LiveQueryEditor.this.selectedQuery.getQueryString();
 					LiveQueryEditor.this.updateQueryListChoice();
 					target.add(LiveQueryEditor.this.queryNameTextField);
@@ -164,15 +155,14 @@ public class LiveQueryEditor extends QueryEditor {
 				LiveQueryEditor.this.queryListChoice.setChoices(LiveQueryEditor.this.queries);
 				target.add(LiveQueryEditor.this.queryListChoice);
 				switch (numberOfRemovedQueries) {
-				case 0:
-					LiveQueryEditor.this.getFeedbackPanel().error("No query has been deleted.");
-					break;
-				case 1:
-					LiveQueryEditor.this.getFeedbackPanel().success("1 query has been deleted.");
-					break;
-				default:
-					LiveQueryEditor.this.getFeedbackPanel().success(
-							numberOfRemovedQueries + " queries have been deleted.");
+					case 0:
+						LiveQueryEditor.this.getFeedbackPanel().error("No query has been deleted.");
+						break;
+					case 1:
+						LiveQueryEditor.this.getFeedbackPanel().success("1 query has been deleted.");
+						break;
+					default:
+						LiveQueryEditor.this.getFeedbackPanel().success(numberOfRemovedQueries + " queries have been deleted.");
 				}
 				target.add(LiveQueryEditor.this.getFeedbackPanel());
 			}
@@ -207,11 +197,9 @@ public class LiveQueryEditor extends QueryEditor {
 		final ArrayList<LabelTreeElement<String>> treeElements = new ArrayList<LabelTreeElement<String>>();
 		final List<EapEventType> eventTypes = EapEventType.findAll();
 		for (final EapEventType eventType : eventTypes) {
-			final LabelTreeElement<String> eventTypeRootElement = new LabelTreeElement<String>(count++,
-					eventType.getTypeName());
+			final LabelTreeElement<String> eventTypeRootElement = new LabelTreeElement<String>(count++, eventType.getTypeName());
 			treeElements.add(eventTypeRootElement);
-			final List<LabelTreeElement<String>> rootElements = this.convertToTreeElements(count,
-					eventType.getRootLevelValueTypes());
+			final List<LabelTreeElement<String>> rootElements = this.convertToTreeElements(count, eventType.getRootLevelValueTypes());
 			for (final LabelTreeElement<String> element : rootElements) {
 				element.setParent(eventTypeRootElement);
 			}

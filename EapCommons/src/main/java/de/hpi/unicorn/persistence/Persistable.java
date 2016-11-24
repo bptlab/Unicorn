@@ -22,7 +22,7 @@ public abstract class Persistable implements Serializable {
 
 	/**
 	 * Saves the current object to the database.
-	 * 
+	 *
 	 * @return
 	 */
 	public Persistable save() {
@@ -40,7 +40,7 @@ public abstract class Persistable implements Serializable {
 
 	/**
 	 * Merges the state of the current object to the database.
-	 * 
+	 *
 	 * @return
 	 */
 	public Persistable merge() {
@@ -58,7 +58,7 @@ public abstract class Persistable implements Serializable {
 
 	/**
 	 * Removes this Persistable from the database.
-	 * 
+	 *
 	 * @return the removed Persistable
 	 */
 	public Persistable remove() {
@@ -78,7 +78,7 @@ public abstract class Persistable implements Serializable {
 	/**
 	 * Refreshes the state of the current object from the database. Overwrites
 	 * changes made to the object, if any.
-	 * 
+	 *
 	 * @return
 	 */
 	public Persistable refresh() {
@@ -96,7 +96,7 @@ public abstract class Persistable implements Serializable {
 
 	/**
 	 * Returns the database ID for the object.
-	 * 
+	 *
 	 * @return
 	 */
 	public abstract int getID();

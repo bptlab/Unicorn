@@ -19,7 +19,7 @@ import de.agilecoders.wicket.Bootstrap;
 /**
  * This is a {@link Panel} subclass and is rendered as a Bootstrap modal for
  * visualizing a kind of pop-up.
- * 
+ *
  * @author micha
  */
 public abstract class BootstrapModal extends Panel {
@@ -30,15 +30,9 @@ public abstract class BootstrapModal extends Panel {
 
 	Model<String> visibleModel = new Model<String>("display: block;");
 
-	@Override
-	public void renderHead(final IHeaderResponse response) {
-		super.renderHead(response);
-		Bootstrap.renderHead(response);
-	}
-
 	/**
 	 * Constructor for a Bootstrap modal for visualizing a kind of pop-up.
-	 * 
+	 *
 	 * @param id
 	 * @param heading
 	 */
@@ -52,13 +46,19 @@ public abstract class BootstrapModal extends Panel {
 		this.buildMainLayout();
 	}
 
+	@Override
+	public void renderHead(final IHeaderResponse response) {
+		super.renderHead(response);
+		Bootstrap.renderHead(response);
+	}
+
 	private void buildMainLayout() {
 		this.add(new Label("modalHeadline", this.heading));
 	}
 
 	/**
 	 * Show the modal in an ajax request.
-	 * 
+	 *
 	 * @param target
 	 */
 	public void show(final AjaxRequestTarget target) {
@@ -67,7 +67,7 @@ public abstract class BootstrapModal extends Panel {
 
 	/**
 	 * Close the modal in an ajax request.
-	 * 
+	 *
 	 * @param target
 	 */
 	public void close(final AjaxRequestTarget target) {

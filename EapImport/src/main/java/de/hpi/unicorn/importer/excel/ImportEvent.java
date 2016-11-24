@@ -17,7 +17,7 @@ import de.hpi.unicorn.event.EapEvent;
 /**
  * This class produces events for a preview. The events know their import time
  * and their timestamp, if any.
- * 
+ *
  * @author micha
  */
 public class ImportEvent extends EapEvent {
@@ -28,14 +28,13 @@ public class ImportEvent extends EapEvent {
 
 	/**
 	 * Constructor to create a new {@link ImportEvent}.
-	 * 
+	 *
 	 * @param extractedTimestamp
 	 * @param values
 	 * @param extractedTimestampName
 	 * @param currentTimestamp
 	 */
-	public ImportEvent(final Date extractedTimestamp, final Map<String, Serializable> values,
-			final String extractedTimestampName, final Date currentTimestamp) {
+	public ImportEvent(final Date extractedTimestamp, final Map<String, Serializable> values, final String extractedTimestampName, final Date currentTimestamp) {
 		super(extractedTimestamp, values);
 		this.extractedTimestampName = extractedTimestampName;
 		this.importTime = currentTimestamp;
@@ -43,7 +42,7 @@ public class ImportEvent extends EapEvent {
 
 	/**
 	 * Returns the time of importing this event into the platform.
-	 * 
+	 *
 	 * @return
 	 */
 	public Date getImportTime() {
@@ -52,7 +51,7 @@ public class ImportEvent extends EapEvent {
 
 	/**
 	 * Returns the time of creation of this event.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getExtractedTimestampName() {
@@ -61,8 +60,7 @@ public class ImportEvent extends EapEvent {
 
 	@Override
 	public String toString() {
-		String eventText = "Import event with ID: " + this.ID + " time: " + this.timestamp + " import time: "
-				+ this.importTime.toString();
+		String eventText = "Import event with ID: " + this.ID + " time: " + this.timestamp + " import time: " + this.importTime.toString();
 		final Map<String, Serializable> values = this.getValues();
 		final Iterator<String> valueIterator = values.keySet().iterator();
 		while (valueIterator.hasNext()) {

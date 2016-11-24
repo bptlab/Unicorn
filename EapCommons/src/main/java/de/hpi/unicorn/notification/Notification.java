@@ -55,11 +55,75 @@ public abstract class Notification extends Persistable {
 	@ManyToOne
 	protected NotificationRule notificationRule;
 
+	/**
+	 * Finds all notifications in the database.
+	 *
+	 * @return all notifications
+	 */
+	public static List<Notification> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM Notification t");
+		return q.getResultList();
+	}
+
+	// Getter and Setter
+
+	/**
+	 * Finds all notifications for a user
+	 *
+	 * @param user
+	 * @return all notifications for a user
+	 */
+	public static List<Notification> findForUser(final EapUser user) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "'", Notification.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds unseen notifications for a user
+	 *
+	 * @param user
+	 * @return unseen notifications for a user
+	 */
+	public static List<Notification> findUnseenForUser(final EapUser user) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0", Notification.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds all notifications belonging to a notification rule
+	 *
+	 * @param notification rule
+	 * @return all notifications for a notification rule
+	 */
+	public static List<Notification> findForNotificationRule(final NotificationRule rule) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE NOTIFICATIONRULE_ID = '" + rule.getID() + "'", Notification.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Deletes all notifications from the database.
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM Notification");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
 	public boolean isSeen() {
 		return this.seen;
 	}
 
-	// Getter and Setter
+	public void setSeen(final boolean seen) {
+		this.seen = seen;
+		this.merge();
+	}
 
 	@Override
 	public int getID() {
@@ -78,14 +142,11 @@ public abstract class Notification extends Persistable {
 		this.notificationRule = notificationRule;
 	}
 
-	public void setSeen(final boolean seen) {
-		this.seen = seen;
-		this.merge();
-	}
-
 	public Date getTimestamp() {
 		return this.timestamp;
 	}
+
+	// JPA-Methods
 
 	public void setTimestamp(final Date timestamp) {
 		this.timestamp = timestamp;
@@ -105,70 +166,5 @@ public abstract class Notification extends Persistable {
 	}
 
 	public abstract String getTriggeringText();
-
-	// JPA-Methods
-
-	/**
-	 * Finds all notifications in the database.
-	 * 
-	 * @return all notifications
-	 */
-	public static List<Notification> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM Notification t");
-		return q.getResultList();
-	}
-
-	/**
-	 * Finds all notifications for a user
-	 * 
-	 * @param user
-	 * @return all notifications for a user
-	 */
-	public static List<Notification> findForUser(final EapUser user) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "'", Notification.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds unseen notifications for a user
-	 * 
-	 * @param user
-	 * @return unseen notifications for a user
-	 */
-	public static List<Notification> findUnseenForUser(final EapUser user) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0", Notification.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds all notifications belonging to a notification rule
-	 * 
-	 * @param notification
-	 *            rule
-	 * @return all notifications for a notification rule
-	 */
-	public static List<Notification> findForNotificationRule(final NotificationRule rule) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE NOTIFICATIONRULE_ID = '" + rule.getID() + "'", Notification.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Deletes all notifications from the database.
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM Notification");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
 
 }

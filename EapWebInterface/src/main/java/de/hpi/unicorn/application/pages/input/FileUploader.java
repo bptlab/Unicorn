@@ -62,8 +62,7 @@ public class FileUploader extends AbstractEapPage {
 						// info("Saved file: " + fileName);
 					} catch (final IOException e) {
 						try {
-							throw new IllegalStateException("Error: File could not be saved under "
-									+ newFile.getCanonicalPath() + ".");
+							throw new IllegalStateException("Error: File could not be saved under " + newFile.getCanonicalPath() + ".");
 						} catch (final IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -117,11 +116,9 @@ public class FileUploader extends AbstractEapPage {
 					} else if (fileExtension.toLowerCase().equals("txt") || fileExtension.toLowerCase().equals("edi")) {
 						List<EapEvent> uploadedEvents;
 						try {
-							uploadedEvents = EdifactImporter.getInstance().generateEventFromEdifact(
-									newFile.getAbsolutePath());
+							uploadedEvents = EdifactImporter.getInstance().generateEventFromEdifact(newFile.getAbsolutePath());
 							for (final EapEvent uploadedEvent : uploadedEvents) {
-								if (!Broker.getEventAdministrator().getAllEventTypes()
-										.contains(uploadedEvent.getEventType())) {
+								if (!Broker.getEventAdministrator().getAllEventTypes().contains(uploadedEvent.getEventType())) {
 									Broker.getEventAdministrator().importEventType(uploadedEvent.getEventType());
 								}
 								Broker.getEventImporter().importEvent(uploadedEvent);
@@ -153,13 +150,11 @@ public class FileUploader extends AbstractEapPage {
 
 		fileNormalizer = (fileExtension.toLowerCase().contains("xls")) ? new ExcelImporter() : new CSVImporter();
 
-		final List<String> attributeNames = fileNormalizer.getColumnTitlesFromFile(pageParameters.get("filePath")
-				.toString());
+		final List<String> attributeNames = fileNormalizer.getColumnTitlesFromFile(pageParameters.get("filePath").toString());
 		final List<String> trimmedAttributeNames = new ArrayList<String>();
 		for (final String attributeName : attributeNames) {
 			trimmedAttributeNames.add(attributeName.replace(" +", "_"));
 		}
-		return EapEventType.findMatchingEventTypesForNonHierarchicalAttributes(trimmedAttributeNames,
-				ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME).isEmpty();
+		return EapEventType.findMatchingEventTypesForNonHierarchicalAttributes(trimmedAttributeNames, ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME).isEmpty();
 	}
 }

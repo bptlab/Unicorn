@@ -49,20 +49,20 @@ import de.hpi.unicorn.query.bpmn.QueryGenerationException;
  * {@link BPMNProcess}. The user has to choose a {@link CorrelationProcess} on
  * the page and can associate monitoring points to the BPMN process elements in
  * the {@link MonitoringPointsPanel}.
- * 
+ *
  * @author micha
  */
 public class BPMNQueryEditor extends AbstractEapPage {
 
 	private static final long serialVersionUID = -7896431319431474548L;
+	private final BPMNQueryEditor page;
+	private final BPMNTreeTableProvider treeTableProvider;
 	private Form<Void> layoutForm;
 	private ArrayList<String> bpmnProcessNameList;
 	private DropDownChoice<String> bpmnProcessSelect;
 	private BPMNProcess selectedBPMNProcess;
 	private BlockingAjaxButton createQueriesButton;
-	private final BPMNQueryEditor page;
 	private LabelTreeTable<BPMNTreeTableElement, String> treeTable;
-	private final BPMNTreeTableProvider treeTableProvider;
 	private BPMNQueryEditorHelpModal helpModal;
 
 	/**
@@ -95,8 +95,7 @@ public class BPMNQueryEditor extends AbstractEapPage {
 			this.bpmnProcessNameList.add(bpmnProcess.getName());
 		}
 
-		this.bpmnProcessSelect = new DropDownChoice<String>("bpmnProcessSelect", new Model<String>(),
-				this.bpmnProcessNameList);
+		this.bpmnProcessSelect = new DropDownChoice<String>("bpmnProcessSelect", new Model<String>(), this.bpmnProcessNameList);
 		this.bpmnProcessSelect.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
@@ -104,8 +103,7 @@ public class BPMNQueryEditor extends AbstractEapPage {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				final String processValue = BPMNQueryEditor.this.bpmnProcessSelect.getValue();
 				if (processValue != null && !processValue.isEmpty()) {
-					final List<BPMNProcess> processList = BPMNProcess.findByName(BPMNQueryEditor.this.bpmnProcessSelect
-							.getChoices().get(Integer.parseInt(BPMNQueryEditor.this.bpmnProcessSelect.getValue())));
+					final List<BPMNProcess> processList = BPMNProcess.findByName(BPMNQueryEditor.this.bpmnProcessSelect.getChoices().get(Integer.parseInt(BPMNQueryEditor.this.bpmnProcessSelect.getValue())));
 					if (processList.size() > 0) {
 						BPMNQueryEditor.this.selectedBPMNProcess = processList.get(0);
 
@@ -139,18 +137,16 @@ public class BPMNQueryEditor extends AbstractEapPage {
 	private void createTreeTable() {
 		final List<IColumn<BPMNTreeTableElement, String>> columns = this.createColumns();
 
-		this.treeTable = new LabelTreeTable<BPMNTreeTableElement, String>("bpmnComponentTreeTable", columns,
-				this.treeTableProvider, Integer.MAX_VALUE, new BPMNTreeTableExpansionModel());
+		this.treeTable = new LabelTreeTable<BPMNTreeTableElement, String>("bpmnComponentTreeTable", columns, this.treeTableProvider, Integer.MAX_VALUE, new BPMNTreeTableExpansionModel());
 
 		this.treeTable.setOutputMarkupId(true);
 
-		this.treeTable.getTable().addTopToolbar(
-				new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
+		this.treeTable.getTable().addTopToolbar(new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
 
 		this.layoutForm.addOrReplace(this.treeTable);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked", "serial" })
+	@SuppressWarnings({"rawtypes", "unchecked", "serial"})
 	private List<IColumn<BPMNTreeTableElement, String>> createColumns() {
 		final List<IColumn<BPMNTreeTableElement, String>> columns = new ArrayList<IColumn<BPMNTreeTableElement, String>>();
 
@@ -164,13 +160,10 @@ public class BPMNQueryEditor extends AbstractEapPage {
 
 				final int entryId = treeTableElement.getID();
 				final boolean isTask = treeTableElement.getContent() instanceof BPMNTask;
-				final boolean isMonitorableEvent = (treeTableElement.getContent() instanceof BPMNIntermediateEvent && !((BPMNIntermediateEvent) treeTableElement
-						.getContent()).getIntermediateEventType().equals(BPMNEventType.Timer))
-						|| (treeTableElement.getContent() instanceof BPMNStartEvent);
+				final boolean isMonitorableEvent = (treeTableElement.getContent() instanceof BPMNIntermediateEvent && !((BPMNIntermediateEvent) treeTableElement.getContent()).getIntermediateEventType().equals(BPMNEventType.Timer)) || (treeTableElement.getContent() instanceof BPMNStartEvent);
 
 				if (isTask || isMonitorableEvent) {
-					final MonitoringPointsPanel monitoringPointsPanel = new MonitoringPointsPanel(componentId, entryId,
-							treeTableElement);
+					final MonitoringPointsPanel monitoringPointsPanel = new MonitoringPointsPanel(componentId, entryId, treeTableElement);
 					cellItem.add(monitoringPointsPanel);
 				} else {
 					cellItem.add(new EmptyPanel(componentId, entryId, BPMNQueryEditor.this.treeTableProvider));
@@ -195,11 +188,9 @@ public class BPMNQueryEditor extends AbstractEapPage {
 					BPMNQueryEditor.this.page.getFeedbackPanel().error("Select a BPMN process!");
 					target.add(BPMNQueryEditor.this.page.getFeedbackPanel());
 				} else {
-					final CorrelationProcess process = CorrelationProcess
-							.findByBPMNProcess(BPMNQueryEditor.this.selectedBPMNProcess);
+					final CorrelationProcess process = CorrelationProcess.findByBPMNProcess(BPMNQueryEditor.this.selectedBPMNProcess);
 					if (process == null) {
-						BPMNQueryEditor.this.page.getFeedbackPanel()
-								.error("Process does not exit for this BPMN model!");
+						BPMNQueryEditor.this.page.getFeedbackPanel().error("Process does not exit for this BPMN model!");
 						target.add(BPMNQueryEditor.this.page.getFeedbackPanel());
 					}
 					if (!process.hasCorrelation()) {
@@ -209,8 +200,7 @@ public class BPMNQueryEditor extends AbstractEapPage {
 						// BPMNProcess in RPST umwandeln
 						final RPSTBuilder rpst = new RPSTBuilder(BPMNQueryEditor.this.selectedBPMNProcess);
 
-						BPMNQueryMonitor.getInstance().getProcessMonitorForProcess(process).getProcess()
-								.setProcessDecompositionTree(rpst.getProcessDecompositionTree());
+						BPMNQueryMonitor.getInstance().getProcessMonitorForProcess(process).getProcess().setProcessDecompositionTree(rpst.getProcessDecompositionTree());
 
 						// Queries erzeugen und bei Esper registrieren
 						// RPST in Queries umwandeln
@@ -222,8 +212,7 @@ public class BPMNQueryEditor extends AbstractEapPage {
 							BPMNQueryEditor.this.page.getFeedbackPanel().success("Queries created!");
 							target.add(BPMNQueryEditor.this.page.getFeedbackPanel());
 						} catch (final QueryGenerationException e) {
-							BPMNQueryEditor.this.page.getFeedbackPanel().error(
-									"Query could not be create because:" + e.getMessage());
+							BPMNQueryEditor.this.page.getFeedbackPanel().error("Query could not be create because:" + e.getMessage());
 							target.add(BPMNQueryEditor.this.page.getFeedbackPanel());
 						}
 

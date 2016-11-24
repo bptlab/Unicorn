@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<unexpectedTraffic xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="unexpectedtrafficGETService.xsd">
-	<title>On the road from Roosendaal to Rotterdam there are currently delays of 30min due to heavy traffic.</title>
-	<source>7276</source>
+<unexpectedTraffic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="" xsi:noNamespaceSchemaLocation="unexpectedtrafficGETService.xsd">
+    <title>On the road from Roosendaal to Rotterdam there are currently delays of 30min due to heavy traffic.</title>
+    <source>7276</source>
     <delay>30</delay>
-	<timestamp>2012-02-01T15:52:44.694</timestamp>
-		<coordinate>
-			<latitude>49.02088</latitude>
-			<longitude>8.46256</longitude>
-		</coordinate>
+    <timestamp>2012-02-01T15:52:44.694</timestamp>
+    <coordinate>
+        <latitude>49.02088</latitude>
+        <longitude>8.46256</longitude>
+    </coordinate>
 </unexpectedTraffic>

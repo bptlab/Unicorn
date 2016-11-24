@@ -9,13 +9,13 @@ package de.hpi.unicorn.exception;
 
 public class DuplicatedSchemaException extends Exception {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -1695521740939760047L;
+
 	public DuplicatedSchemaException(final String schemaName) {
 		super(String.format("Duplicated schema name %s. Already on the server.", schemaName));
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -1695521740939760047L;
 
 }

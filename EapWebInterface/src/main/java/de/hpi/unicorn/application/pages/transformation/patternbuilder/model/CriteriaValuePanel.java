@@ -25,8 +25,7 @@ public class CriteriaValuePanel extends Panel {
 	private final Map<String, String> criteriaAttributesAndValues;
 	private final TransformationPatternTree patternTree;
 
-	public CriteriaValuePanel(final String id, final String attributeExpression,
-			final Map<String, String> criteriaAttributesAndValues, final TransformationPatternTree patternTree) {
+	public CriteriaValuePanel(final String id, final String attributeExpression, final Map<String, String> criteriaAttributesAndValues, final TransformationPatternTree patternTree) {
 		super(id);
 
 		this.attributeExpression = attributeExpression;
@@ -40,8 +39,7 @@ public class CriteriaValuePanel extends Panel {
 	}
 
 	private void buildCriteriaValueInput() {
-		final AttributeExpressionTextField criteriaValueInput = new AttributeExpressionTextField("criteriaValueInput",
-				new Model<String>(), this.patternTree);
+		final AttributeExpressionTextField criteriaValueInput = new AttributeExpressionTextField("criteriaValueInput", new Model<String>(), this.patternTree);
 		criteriaValueInput.setOutputMarkupId(true);
 
 		final OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
@@ -50,11 +48,9 @@ public class CriteriaValuePanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (criteriaValueInput.getModelObject() == null || criteriaValueInput.getModelObject().trim().isEmpty()) {
-					CriteriaValuePanel.this.criteriaAttributesAndValues
-							.remove(CriteriaValuePanel.this.attributeExpression);
+					CriteriaValuePanel.this.criteriaAttributesAndValues.remove(CriteriaValuePanel.this.attributeExpression);
 				} else {
-					CriteriaValuePanel.this.criteriaAttributesAndValues.put(
-							CriteriaValuePanel.this.attributeExpression, criteriaValueInput.getModelObject());
+					CriteriaValuePanel.this.criteriaAttributesAndValues.put(CriteriaValuePanel.this.attributeExpression, criteriaValueInput.getModelObject());
 				}
 			}
 		};

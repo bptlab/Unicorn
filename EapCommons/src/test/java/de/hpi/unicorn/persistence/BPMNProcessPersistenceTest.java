@@ -22,7 +22,7 @@ import de.hpi.unicorn.persistence.Persistor;
 
 /**
  * This class tests the saving, finding and removing of {@link BPMNProcess}.
- * 
+ *
  * @author micha
  */
 public class BPMNProcessPersistenceTest implements PersistenceTest {

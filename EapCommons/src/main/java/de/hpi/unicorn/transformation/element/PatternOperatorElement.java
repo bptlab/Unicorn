@@ -26,7 +26,7 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
  * Representation of a tree node for pattern operators. A range element is
  * required for REPEAT and UNTIL pattern operators. Distinct attributes are
  * required for the EVERY-DISTINCT pattern operator.
- * 
+ *
  * @see PatternOperatorEnum
  */
 @Entity
@@ -52,11 +52,9 @@ public class PatternOperatorElement extends EventTreeElement<Serializable> imple
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            pattern operator
+	 *
+	 * @param id      the identifier
+	 * @param content pattern operator
 	 */
 	public PatternOperatorElement(final int id, final PatternOperatorEnum content) {
 		super(id, content);
@@ -66,15 +64,12 @@ public class PatternOperatorElement extends EventTreeElement<Serializable> imple
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            pattern operator
+	 * @param id      the identifier
+	 * @param content pattern operator
 	 */
-	public PatternOperatorElement(final EventTreeElement<Serializable> parent, final int id,
-			final PatternOperatorEnum content) {
+	public PatternOperatorElement(final EventTreeElement<Serializable> parent, final int id, final PatternOperatorEnum content) {
 		super(parent, id, content);
 		this.rangeElement = new RangeElement();
 		this.distinctAttributes = new ArrayList<String>();

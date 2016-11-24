@@ -40,8 +40,7 @@ public class FlexConditionInputPanel extends Panel {
 	public FlexConditionInputPanel(final String id) {
 		super(id);
 
-		this.conditionAttributeSelect = new DropDownChoice<String>("conditionAttributeSelect",
-				new PropertyModel<String>(this, "selectedConditionAttribute"), new ArrayList<String>());
+		this.conditionAttributeSelect = new DropDownChoice<String>("conditionAttributeSelect", new PropertyModel<String>(this, "selectedConditionAttribute"), new ArrayList<String>());
 		this.conditionAttributeSelect.setOutputMarkupId(true);
 		this.conditionAttributeSelect.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -50,15 +49,13 @@ public class FlexConditionInputPanel extends Panel {
 				// collect all attributes
 				final Set<Serializable> attributes = new HashSet<Serializable>();
 				for (final EapEventType eventType : FlexConditionInputPanel.this.selectedEventTypes) {
-					attributes.addAll(eventType
-							.findAttributeValues(FlexConditionInputPanel.this.selectedConditionAttribute));
+					attributes.addAll(eventType.findAttributeValues(FlexConditionInputPanel.this.selectedConditionAttribute));
 				}
 			}
 		});
 		this.add(this.conditionAttributeSelect);
 
-		this.conditionValueInput = new TextField("conditionValueInput", new PropertyModel<String>(this,
-				"selectedConditionValue"));
+		this.conditionValueInput = new TextField("conditionValueInput", new PropertyModel<String>(this, "selectedConditionValue"));
 		this.conditionValueInput.setOutputMarkupId(true);
 		this.add(this.conditionValueInput);
 	}

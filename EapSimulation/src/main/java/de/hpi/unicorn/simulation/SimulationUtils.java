@@ -24,8 +24,7 @@ import de.hpi.unicorn.utils.Tuple;
 public class SimulationUtils {
 
 	// TODO: methodenname nicht aussagekräftig
-	public static Map<AbstractBPMNElement, String> getBPMNElementsFromEventTypes(
-			final Map<EapEventType, String> eventTypesDurationStringMap, final BPMNProcess bpmnProcess) {
+	public static Map<AbstractBPMNElement, String> getBPMNElementsFromEventTypes(final Map<EapEventType, String> eventTypesDurationStringMap, final BPMNProcess bpmnProcess) {
 		final Map<AbstractBPMNElement, String> tasksDurationString = new HashMap<AbstractBPMNElement, String>();
 		for (final AbstractBPMNElement bpmnElement : bpmnProcess.getSubElementsWithMonitoringpoints()) {
 			for (final MonitoringPoint monitoringPoint : bpmnElement.getMonitoringPoints()) {
@@ -35,8 +34,7 @@ public class SimulationUtils {
 		return tasksDurationString;
 	}
 
-	public static Map<AbstractBPMNElement, DerivationType> getBPMNElementsFromEventTypes2(
-			final Map<EapEventType, DerivationType> eventTypesDurationStringMap, final BPMNProcess bpmnProcess) {
+	public static Map<AbstractBPMNElement, DerivationType> getBPMNElementsFromEventTypes2(final Map<EapEventType, DerivationType> eventTypesDurationStringMap, final BPMNProcess bpmnProcess) {
 		final Map<AbstractBPMNElement, DerivationType> tasksDurationString = new HashMap<AbstractBPMNElement, DerivationType>();
 		for (final AbstractBPMNElement bpmnElement : bpmnProcess.getSubElementsWithMonitoringpoints()) {
 			for (final MonitoringPoint monitoringPoint : bpmnElement.getMonitoringPoints()) {
@@ -46,8 +44,7 @@ public class SimulationUtils {
 		return tasksDurationString;
 	}
 
-	public static AbstractBPMNElement getBPMNElementFromEventType(final EapEventType eventType,
-			final BPMNProcess bpmnProcess) {
+	public static AbstractBPMNElement getBPMNElementFromEventType(final EapEventType eventType, final BPMNProcess bpmnProcess) {
 		for (final AbstractBPMNElement bpmnElement : bpmnProcess.getSubElementsWithMonitoringpoints()) {
 			for (final MonitoringPoint monitoringPoint : bpmnElement.getMonitoringPoints()) {
 				if (eventType.equals(monitoringPoint.getEventType())) {
@@ -59,12 +56,10 @@ public class SimulationUtils {
 
 	}
 
-	public static Map<AbstractBPMNElement, Long> getDurationsFromMap(
-			final Map<AbstractBPMNElement, String> tasksDurationString) {
+	public static Map<AbstractBPMNElement, Long> getDurationsFromMap(final Map<AbstractBPMNElement, String> tasksDurationString) {
 		final Map<AbstractBPMNElement, Long> bpmnElementsDuration = new HashMap<AbstractBPMNElement, Long>();
 		for (final AbstractBPMNElement bpmnElement : tasksDurationString.keySet()) {
-			bpmnElementsDuration.put(bpmnElement,
-					SimulationUtils.getDurationFromString(tasksDurationString.get(bpmnElement)));
+			bpmnElementsDuration.put(bpmnElement, SimulationUtils.getDurationFromString(tasksDurationString.get(bpmnElement)));
 		}
 		return bpmnElementsDuration;
 	}
@@ -85,8 +80,7 @@ public class SimulationUtils {
 		return duration;
 	}
 
-	public static Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>> getXORSplitsWithFollowingEventTypes(
-			final BPMNProcess model) {
+	public static Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>> getXORSplitsWithFollowingEventTypes(final BPMNProcess model) {
 		final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>> xorSplitsWithFolowingElementAndEventType = new HashMap<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>>();
 		for (final AbstractBPMNGateway gateway : model.getAllSplitGateways()) {
 			if (gateway instanceof BPMNXORGateway) {
@@ -100,11 +94,9 @@ public class SimulationUtils {
 						while (!(element instanceof BPMNTask)) {
 							element = element.getSuccessors().iterator().next();
 						}
-						final Tuple<AbstractBPMNElement, EapEventType> tuple = new Tuple(successor, element
-								.getMonitoringPoints().get(0).getEventType());
+						final Tuple<AbstractBPMNElement, EapEventType> tuple = new Tuple(successor, element.getMonitoringPoints().get(0).getEventType());
 						successorAndFollowingEventTypes.add(tuple);
-						xorSplitsWithFolowingElementAndEventType.put((BPMNXORGateway) gateway,
-								successorAndFollowingEventTypes);
+						xorSplitsWithFolowingElementAndEventType.put((BPMNXORGateway) gateway, successorAndFollowingEventTypes);
 					}
 				}
 			}
@@ -112,18 +104,15 @@ public class SimulationUtils {
 		return xorSplitsWithFolowingElementAndEventType;
 	}
 
-	public static Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> convertProbabilityStrings(
-			final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSplitsWithSuccessorProbabilityStrings) {
+	public static Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> convertProbabilityStrings(final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSplitsWithSuccessorProbabilityStrings) {
 		final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities = new HashMap<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>>();
 		Integer percent;
 		for (final BPMNXORGateway xorGateway : xorSplitsWithSuccessorProbabilityStrings.keySet()) {
 			percent = 0;
 			final List<Tuple<AbstractBPMNElement, Integer>> successorProbabilityList = new ArrayList<Tuple<AbstractBPMNElement, Integer>>();
-			for (final Tuple<AbstractBPMNElement, String> successorProbabilityString : xorSplitsWithSuccessorProbabilityStrings
-					.get(xorGateway)) {
+			for (final Tuple<AbstractBPMNElement, String> successorProbabilityString : xorSplitsWithSuccessorProbabilityStrings.get(xorGateway)) {
 				percent = percent + Integer.parseInt(successorProbabilityString.y);
-				successorProbabilityList.add(new Tuple<AbstractBPMNElement, Integer>(successorProbabilityString.x,
-						percent));
+				successorProbabilityList.add(new Tuple<AbstractBPMNElement, Integer>(successorProbabilityString.x, percent));
 			}
 			xorSplitsWithSuccessorProbabilities.put(xorGateway, successorProbabilityList);
 		}

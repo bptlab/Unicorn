@@ -20,7 +20,7 @@ public enum FilterExpressionConnectorEnum {
 	/**
 	 * Method to retrieve possible connectors for one filter expression (unary
 	 * connectors).
-	 * 
+	 *
 	 * @return list of unary connectors
 	 */
 	public static List<FilterExpressionConnectorEnum> getUnaryOperators() {
@@ -30,7 +30,7 @@ public enum FilterExpressionConnectorEnum {
 	/**
 	 * Method to retrieve possible connectors for two filter expressions (binary
 	 * connectors).
-	 * 
+	 *
 	 * @return list of binary connectors
 	 */
 	public static List<FilterExpressionConnectorEnum> getBinaryOperators() {

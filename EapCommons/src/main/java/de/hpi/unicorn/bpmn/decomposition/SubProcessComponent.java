@@ -15,18 +15,17 @@ public class SubProcessComponent extends Component {
 	private static final long serialVersionUID = 1L;
 	private BPMNSubProcess subProcess;
 
-	public SubProcessComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public SubProcessComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		super(entryPoint, sourceElement, exitPoint, sinkElement);
 		this.type = IPattern.SUBPROCESS;
 	}
 
-	public void setSubProcess(final BPMNSubProcess subProcess) {
-		this.subProcess = subProcess;
-	}
-
 	public BPMNSubProcess getSubProcess() {
 		return this.subProcess;
+	}
+
+	public void setSubProcess(final BPMNSubProcess subProcess) {
+		this.subProcess = subProcess;
 	}
 
 }

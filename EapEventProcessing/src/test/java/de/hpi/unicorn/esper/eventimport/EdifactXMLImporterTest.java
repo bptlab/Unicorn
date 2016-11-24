@@ -44,19 +44,13 @@ public class EdifactXMLImporterTest {
 
 	@Test
 	public void importEdifactXML() throws XMLParsingException, IOException, SAXException {
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(EdifactXMLImporterTest.xsdPath,
-				FileUtils.getFileNameWithoutExtension(EdifactXMLImporterTest.xsdPath));
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(EdifactXMLImporterTest.xsdPath, FileUtils.getFileNameWithoutExtension(EdifactXMLImporterTest.xsdPath));
 		Broker.getInstance().importEventType(eventType);
 		// System.out.println(eventType.getValueTypeTree());
-		Assert.assertTrue("not found eventType, but found " + EapEventType.findAll(),
-				EapEventType.findByID(eventType.getID()) == eventType);
+		Assert.assertTrue("not found eventType, but found " + EapEventType.findAll(), EapEventType.findByID(eventType.getID()) == eventType);
 		final List<EapEvent> events = XMLParser.generateEventsFromXML(EdifactXMLImporterTest.xmlPath);
-		final QueryWrapper query = new QueryWrapper("xmlEvent", "Select * from " + eventType.getTypeName(),
-				QueryTypeEnum.LIVE);
-		final QueryWrapper testAtts = new QueryWrapper(
-				"testAtts",
-				"Select env_syntaxIdentifier.env_id as SyntaxID, env_interchangeMessage.env_UNH.env_messageIdentifier.env_id as messageIdentifier "
-						+ "from " + eventType.getTypeName(), QueryTypeEnum.LIVE);
+		final QueryWrapper query = new QueryWrapper("xmlEvent", "Select * from " + eventType.getTypeName(), QueryTypeEnum.LIVE);
+		final QueryWrapper testAtts = new QueryWrapper("testAtts", "Select env_syntaxIdentifier.env_id as SyntaxID, env_interchangeMessage.env_UNH.env_messageIdentifier.env_id as messageIdentifier " + "from " + eventType.getTypeName(), QueryTypeEnum.LIVE);
 		// LiveQueryListener listener = query.addToEsper();
 		// LiveQueryListener listenerAtts = testAtts.addToEsper();
 		for (final EapEvent event : events) {
@@ -65,14 +59,12 @@ public class EdifactXMLImporterTest {
 		System.out.println(testAtts.getPrintableLog());
 		// System.out.println(event.fullEvent());
 
-		Assert.assertTrue("should have found 1 event in eventType, but found " + query.getNumberOfLogEntries(),
-				query.getNumberOfLogEntries() == 1);
+		Assert.assertTrue("should have found 1 event in eventType, but found " + query.getNumberOfLogEntries(), query.getNumberOfLogEntries() == 1);
 	}
 
 	@Test
 	public void testGenerateEventFromEdifact() throws XMLParsingException, Exception {
-		final List<EapEvent> events = EdifactImporter.getInstance().generateEventFromEdifact(
-				EdifactXMLImporterTest.edifactPath);
+		final List<EapEvent> events = EdifactImporter.getInstance().generateEventFromEdifact(EdifactXMLImporterTest.edifactPath);
 		Assert.assertTrue("not created event", events.get(0) != null);
 		final EapEvent event = events.get(0);
 		Broker.getInstance().importEventType(event.getEventType());
@@ -85,8 +77,7 @@ public class EdifactXMLImporterTest {
 
 	@Test
 	public void testCopinoEventUpload() throws XMLParsingException, Exception {
-		final List<EapEvent> events = EdifactImporter.getInstance().generateEventFromEdifact(
-				EdifactXMLImporterTest.copinoPath);
+		final List<EapEvent> events = EdifactImporter.getInstance().generateEventFromEdifact(EdifactXMLImporterTest.copinoPath);
 		Assert.assertTrue(events.size() == 1);
 		final EapEvent event = events.get(0);
 		Assert.assertTrue("not created event", event != null);

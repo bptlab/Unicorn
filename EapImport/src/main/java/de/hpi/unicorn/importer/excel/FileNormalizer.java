@@ -24,7 +24,7 @@ public abstract class FileNormalizer implements Serializable {
 
 	/**
 	 * Returns the titles as list for files with tabular content.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 */
@@ -33,7 +33,7 @@ public abstract class FileNormalizer implements Serializable {
 	/**
 	 * Imports events from a file for a preview to decide, which parts of the
 	 * data should be user for the event creation.
-	 * 
+	 *
 	 * @param filePath
 	 * @param selectedColumnTitles
 	 * @return
@@ -42,32 +42,30 @@ public abstract class FileNormalizer implements Serializable {
 
 	/**
 	 * Imports data from a file and creates events from this data.
-	 * 
+	 *
 	 * @param filePath
 	 * @param selectedAttributes
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes)
-			throws IllegalArgumentException {
+	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes) throws IllegalArgumentException {
 		final String timeStampColumn = this.getTimestampColumnFromAttribute(selectedAttributes);
 		return this.importEventsFromFile(filePath, selectedAttributes, timeStampColumn);
 	}
 
 	/**
 	 * Imports data from a file and creates events from this data.
-	 * 
+	 *
 	 * @param filePath
 	 * @param selectedAttributes
 	 * @param timestamp
 	 * @return
 	 */
-	public abstract List<EapEvent> importEventsFromFile(String filePath, List<TypeTreeNode> selectedAttributes,
-			String timestamp);
+	public abstract List<EapEvent> importEventsFromFile(String filePath, List<TypeTreeNode> selectedAttributes, String timestamp);
 
 	/**
 	 * Tries to identify a timestamp from the given attributes.
-	 * 
+	 *
 	 * @param attributes
 	 * @return
 	 */
@@ -85,7 +83,7 @@ public abstract class FileNormalizer implements Serializable {
 
 	/**
 	 * Tries to identify a timestamp column from the given attributes.
-	 * 
+	 *
 	 * @param columnTitles
 	 * @return
 	 */

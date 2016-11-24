@@ -14,7 +14,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
  * This model provides a tree of {@link BPMNTreeTableElement}s.
- * 
+ *
  * @author micha
  */
 public class BPMNTreeTableElementModel extends LoadableDetachableModel<BPMNTreeTableElement> {

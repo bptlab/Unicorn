@@ -33,7 +33,6 @@ import de.hpi.unicorn.transformation.TransformationRule;
  * also contains the type of the attribute and a default value. The default
  * value is used if no external knowledge expression can retrieve a value for
  * the specified attribute.
- * 
  */
 @Entity
 @Table(name = "ExternalKnowledgeExpressionSet")
@@ -73,12 +72,10 @@ public class ExternalKnowledgeExpressionSet extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param resultingType
-	 *            the event type for the transformed events
-	 * @param attributeExpression
-	 *            the attribute expression of the attribute of the event type
-	 *            for the transformed events
+	 *
+	 * @param resultingType       the event type for the transformed events
+	 * @param attributeExpression the attribute expression of the attribute of the event type
+	 *                            for the transformed events
 	 */
 	public ExternalKnowledgeExpressionSet(final AttributeTypeEnum resultingType, final String attributeExpression) {
 		this();

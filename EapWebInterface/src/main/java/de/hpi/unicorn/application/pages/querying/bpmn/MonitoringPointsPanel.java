@@ -16,7 +16,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPointStateTransition;
 /**
  * A panel on which monitoring points can be assigned to BPMN process elements
  * with {@link MonitoringPointField}s.
- * 
+ *
  * @author micha
  */
 public class MonitoringPointsPanel extends Panel {
@@ -27,7 +27,7 @@ public class MonitoringPointsPanel extends Panel {
 	/**
 	 * Constructor for a panel on which monitoring points can be assigned to
 	 * BPMN process elements with {@link MonitoringPointField}s.
-	 * 
+	 *
 	 * @param id
 	 * @param entryId
 	 * @param treeTableElement
@@ -41,18 +41,12 @@ public class MonitoringPointsPanel extends Panel {
 	private void buildLayout() {
 		final Form<Void> monitoringForm = new Form<Void>("monitoringForm");
 
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.initialize);
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.enable);
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.begin);
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.terminate);
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.skip);
-		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm,
-				MonitoringPointStateTransition.disrupt);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.initialize);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.enable);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.begin);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.terminate);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.skip);
+		new MonitoringPointField(this.treeTableElement).addMonitoringField(monitoringForm, MonitoringPointStateTransition.disrupt);
 
 		this.add(monitoringForm);
 

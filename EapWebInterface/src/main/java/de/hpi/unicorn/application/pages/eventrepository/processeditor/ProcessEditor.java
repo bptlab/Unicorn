@@ -25,15 +25,15 @@ import de.hpi.unicorn.process.CorrelationProcess;
 /**
  * This class is page to create and delete {@link CorrelationProcess}es from the
  * database.
- * 
+ *
  * @author micha
  */
 public class ProcessEditor extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
+	private static String selectedProcessName = new String();
 	private final ListChoice<String> existingProcessesList;
 	private final List<String> processNames = new ArrayList<String>();
-	private static String selectedProcessName = new String();
 
 	/**
 	 * Constructor for a page to create and delete {@link CorrelationProcess}es
@@ -71,8 +71,7 @@ public class ProcessEditor extends AbstractEapPage {
 		for (final CorrelationProcess process : CorrelationProcess.findAll()) {
 			this.processNames.add(process.getName());
 		}
-		this.existingProcessesList = new ListChoice<String>("existingProcessSelect", new Model(
-				ProcessEditor.selectedProcessName), this.processNames);
+		this.existingProcessesList = new ListChoice<String>("existingProcessSelect", new Model(ProcessEditor.selectedProcessName), this.processNames);
 		this.existingProcessesList.setOutputMarkupId(true);
 
 		this.existingProcessesList.add(new AjaxFormComponentUpdatingBehavior("onchange") {

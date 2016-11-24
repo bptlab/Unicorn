@@ -26,25 +26,31 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 /**
  * This class is the provider for {@link CorrelationProcessInstance}s. A filter
  * can be specified to return only some process instances.
- * 
+ *
  * @author micha
  */
-public class ProcessInstanceProvider extends AbstractDataProvider implements
-		ISortableDataProvider<CorrelationProcessInstance, String>, IFilterStateLocator {
+public class ProcessInstanceProvider extends AbstractDataProvider implements ISortableDataProvider<CorrelationProcessInstance, String>, IFilterStateLocator {
 
 	private static final long serialVersionUID = 1L;
 	private static List<CorrelationProcessInstance> processInstances;
 	private final ISortState sortState = new SingleSortState();
-	private ProcessInstanceFilter processInstanceFilter = new ProcessInstanceFilter();
 	private final List<CorrelationProcessInstance> selectedProcessInstances;
+	private ProcessInstanceFilter processInstanceFilter = new ProcessInstanceFilter();
 
 	/**
 	 * Constructor for providing {@link CorrelationProcessInstance}s.
 	 */
 	public ProcessInstanceProvider() {
-		ProcessInstanceProvider.processInstances = this.filterProcessInstances(CorrelationProcessInstance.findAll(),
-				this.processInstanceFilter);
+		ProcessInstanceProvider.processInstances = this.filterProcessInstances(CorrelationProcessInstance.findAll(), this.processInstanceFilter);
 		this.selectedProcessInstances = new ArrayList<CorrelationProcessInstance>();
+	}
+
+	public static List<CorrelationProcessInstance> getProcessInstances() {
+		return ProcessInstanceProvider.processInstances;
+	}
+
+	public static void setProcessInstances(final List<CorrelationProcessInstance> processInstances) {
+		ProcessInstanceProvider.processInstances = processInstances;
 	}
 
 	@Override
@@ -54,8 +60,7 @@ public class ProcessInstanceProvider extends AbstractDataProvider implements
 
 	@Override
 	public Iterator<? extends CorrelationProcessInstance> iterator(final long first, final long count) {
-		final List<CorrelationProcessInstance> data = new ArrayList<CorrelationProcessInstance>(
-				ProcessInstanceProvider.processInstances);
+		final List<CorrelationProcessInstance> data = new ArrayList<CorrelationProcessInstance>(ProcessInstanceProvider.processInstances);
 		Collections.sort(data, new Comparator<CorrelationProcessInstance>() {
 			@Override
 			public int compare(final CorrelationProcessInstance e1, final CorrelationProcessInstance e2) {
@@ -75,27 +80,16 @@ public class ProcessInstanceProvider extends AbstractDataProvider implements
 		return ProcessInstanceProvider.processInstances.size();
 	}
 
-	public static List<CorrelationProcessInstance> getProcessInstances() {
-		return ProcessInstanceProvider.processInstances;
-	}
-
-	public static void setProcessInstances(final List<CorrelationProcessInstance> processInstances) {
-		ProcessInstanceProvider.processInstances = processInstances;
-	}
-
 	public ProcessInstanceFilter getProcessInstanceFilter() {
 		return this.processInstanceFilter;
 	}
 
 	public void setProcessInstanceFilter(final ProcessInstanceFilter processInstanceFilter) {
 		this.processInstanceFilter = processInstanceFilter;
-		ProcessInstanceProvider.processInstances = this.filterProcessInstances(CorrelationProcessInstance.findAll(),
-				processInstanceFilter);
+		ProcessInstanceProvider.processInstances = this.filterProcessInstances(CorrelationProcessInstance.findAll(), processInstanceFilter);
 	}
 
-	private List<CorrelationProcessInstance> filterProcessInstances(
-			final List<CorrelationProcessInstance> processInstancesToFilter,
-			final ProcessInstanceFilter processInstanceFilter) {
+	private List<CorrelationProcessInstance> filterProcessInstances(final List<CorrelationProcessInstance> processInstancesToFilter, final ProcessInstanceFilter processInstanceFilter) {
 		final List<CorrelationProcessInstance> returnedProcessInstances = new ArrayList<CorrelationProcessInstance>();
 		for (final CorrelationProcessInstance processInstance : processInstancesToFilter) {
 			if (processInstanceFilter.match(processInstance)) {

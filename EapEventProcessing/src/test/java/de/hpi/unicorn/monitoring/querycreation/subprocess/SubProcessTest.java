@@ -32,10 +32,15 @@ import de.hpi.unicorn.utils.TestHelper;
  * This class tests the import of a BPMN process with a subprocess, the creation
  * of queries for this BPMN process and simulates the execution of the process
  * to monitor the execution.
- * 
+ *
  * @author micha
  */
 public class SubProcessTest extends AbstractQueryCreationTest {
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
 
 	@Before
 	public void setup() {
@@ -54,8 +59,7 @@ public class SubProcessTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "SubProcess",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "SubProcess", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -98,11 +102,6 @@ public class SubProcessTest extends AbstractQueryCreationTest {
 		eventTypes.add(ausliefern);
 
 		return eventTypes;
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 
 }

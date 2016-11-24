@@ -33,29 +33,29 @@ import de.hpi.unicorn.eventhandling.Broker;
 
 /**
  * This page allows the creation of new {@link EapEventType}s.
- * 
+ *
  * @author micha
  */
 public class NewEventTypeEditor extends Panel {
 
 	private static final long serialVersionUID = 1L;
+	private final List<AttributeTypeEnum> attributeTypes = Arrays.asList(AttributeTypeEnum.values());
+	private final Form<Void> layoutForm;
+	private final AbstractEapPage abstractEapPage;
 	private TextField<String> eventTypeNameInput;
 	private TextField<String> timestampNameInput;
 	private String eventTypeName = new String();
 	private String timestampName;
-	private final List<AttributeTypeEnum> attributeTypes = Arrays.asList(AttributeTypeEnum.values());
 	private DropDownChoice<AttributeTypeEnum> attributeTypeDropDownChoice;
 	private AttributeTypeEnum attributeType;
-	private final Form<Void> layoutForm;
 	private TextField<String> eventTypeAttributeNameInput;
 	private String attributeName;
 	private SelectTree<TypeTreeNode> eventTypeTree;
 	private AttributeTypeTree eventTypeAttributesTree = new AttributeTypeTree();
-	private final AbstractEapPage abstractEapPage;
 
 	/**
 	 * Constructor for a page to create new {@link EapEventType}s.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -97,8 +97,7 @@ public class NewEventTypeEditor extends Panel {
 
 		this.layoutForm.add(editEventTypeAttributeButton);
 
-		final AjaxButton deleteEventTypeAttributeButton = new AjaxButton("deleteEventTypeAttributeButton",
-				this.layoutForm) {
+		final AjaxButton deleteEventTypeAttributeButton = new AjaxButton("deleteEventTypeAttributeButton", this.layoutForm) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -129,8 +128,7 @@ public class NewEventTypeEditor extends Panel {
 
 				if (NewEventTypeEditor.this.attributeName != null) {
 					final TypeTreeNode selectedAttribute = NewEventTypeEditor.this.eventTypeTree.getSelectedElement();
-					final TypeTreeNode newAttribute = new TypeTreeNode(NewEventTypeEditor.this.attributeName,
-							NewEventTypeEditor.this.attributeType);
+					final TypeTreeNode newAttribute = new TypeTreeNode(NewEventTypeEditor.this.attributeName, NewEventTypeEditor.this.attributeType);
 					if (selectedAttribute == null) {
 						if (!NewEventTypeEditor.this.eventTypeAttributesTree.getRoots().contains(newAttribute)) {
 							NewEventTypeEditor.this.eventTypeAttributesTree.addRoot(newAttribute);
@@ -140,8 +138,7 @@ public class NewEventTypeEditor extends Panel {
 							newAttribute.setParent(selectedAttribute);
 							NewEventTypeEditor.this.attributeName = null;
 						} else {
-							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-									"Attribute with this name already exists in the selected node!");
+							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("Attribute with this name already exists in the selected node!");
 							target.add(NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel());
 						}
 					}
@@ -164,47 +161,38 @@ public class NewEventTypeEditor extends Panel {
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				// abfangen, dass Eventtyp nicht angegeben ist
 				if (NewEventTypeEditor.this.eventTypeName == null || NewEventTypeEditor.this.eventTypeName.equals("")) {
-					NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-							"Please provide a name for the event type");
+					NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("Please provide a name for the event type");
 				} else if (!EapEventType.getAllTypeNames().contains(NewEventTypeEditor.this.eventTypeName)) { // abfangen,
-																												// dass
-																												// Eventtyp
-																												// mit
-																												// dem
+					// dass
+					// Eventtyp
+					// mit
+					// dem
 					// Namen schon vorhanden ist
 					EapEventType eventType;
 					// try {
 					// abfangen, dass Timestamp nicht angegeben ist
-					if (!(NewEventTypeEditor.this.timestampName == null)
-							&& !NewEventTypeEditor.this.timestampName.equals("")) {
-						if (!NewEventTypeEditor.this.eventTypeAttributesTree.getAttributesAsExpression().contains(
-								NewEventTypeEditor.this.timestampName)) {
+					if (!(NewEventTypeEditor.this.timestampName == null) && !NewEventTypeEditor.this.timestampName.equals("")) {
+						if (!NewEventTypeEditor.this.eventTypeAttributesTree.getAttributesAsExpression().contains(NewEventTypeEditor.this.timestampName)) {
 							// System.out.println(eventTypeAttributesTree);
-							eventType = new EapEventType(NewEventTypeEditor.this.eventTypeName,
-									NewEventTypeEditor.this.eventTypeAttributesTree,
-									NewEventTypeEditor.this.timestampName);
+							eventType = new EapEventType(NewEventTypeEditor.this.eventTypeName, NewEventTypeEditor.this.eventTypeAttributesTree, NewEventTypeEditor.this.timestampName);
 							Broker.getEventAdministrator().importEventType(eventType);
 							NewEventTypeEditor.this.eventTypeAttributesTree = new AttributeTypeTree();
 							NewEventTypeEditor.this.attributeName = null;
 							NewEventTypeEditor.this.eventTypeName = null;
 							NewEventTypeEditor.this.timestampName = null;
 							NewEventTypeEditor.this.renderOrUpdateTree();
-							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().success(
-									"Event type " + eventType.getTypeName() + " created");
+							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().success("Event type " + eventType.getTypeName() + " created");
 						} else {
-							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-									"The timestamp should not be equal to one of the attributes in the tree below");
+							NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("The timestamp should not be equal to one of the attributes in the tree below");
 						}
 					} else {
-						NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-								"Please provide a name for the timestamp");
+						NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("Please provide a name for the timestamp");
 					}
 					// } catch (RuntimeException e) {
 					// abstractEapPage.getFeedbackPanel().error(e.getMessage());
 					// }
 				} else {
-					NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-							"Event type with this name already exists!");
+					NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("Event type with this name already exists!");
 				}
 				target.add(NewEventTypeEditor.this.abstractEapPage.getFeedbackPanel());
 				target.add(NewEventTypeEditor.this.eventTypeTree);
@@ -218,38 +206,33 @@ public class NewEventTypeEditor extends Panel {
 	}
 
 	private Component buildEventTypeAttributeTypeDropDownChoice() {
-		this.attributeTypeDropDownChoice = new DropDownChoice<AttributeTypeEnum>("attributeTypeDropDownChoice",
-				new PropertyModel<AttributeTypeEnum>(this, "attributeType"), this.attributeTypes);
+		this.attributeTypeDropDownChoice = new DropDownChoice<AttributeTypeEnum>("attributeTypeDropDownChoice", new PropertyModel<AttributeTypeEnum>(this, "attributeType"), this.attributeTypes);
 		this.attributeType = this.attributeTypes.get(0);
 		this.attributeTypeDropDownChoice.setOutputMarkupId(true);
 		return this.attributeTypeDropDownChoice;
 	}
 
 	private Component buildEventTypeNameInput() {
-		this.eventTypeNameInput = new TextField<String>("eventTypeNameInput", new PropertyModel<String>(this,
-				"eventTypeName"));
+		this.eventTypeNameInput = new TextField<String>("eventTypeNameInput", new PropertyModel<String>(this, "eventTypeName"));
 		this.eventTypeNameInput.setOutputMarkupId(true);
 		return this.eventTypeNameInput;
 	}
 
 	private Component buildTimestampNameInput() {
-		this.timestampNameInput = new TextField<String>("timestampNameInput", new PropertyModel<String>(this,
-				"timestampName"));
+		this.timestampNameInput = new TextField<String>("timestampNameInput", new PropertyModel<String>(this, "timestampName"));
 		this.timestampNameInput.setOutputMarkupId(true);
 		return this.timestampNameInput;
 	}
 
 	private Component buildEventTypeAttributeNameInput() {
-		this.eventTypeAttributeNameInput = new TextField<String>("eventTypeAttributeNameInput",
-				new PropertyModel<String>(this, "attributeName"));
+		this.eventTypeAttributeNameInput = new TextField<String>("eventTypeAttributeNameInput", new PropertyModel<String>(this, "attributeName"));
 		this.eventTypeAttributeNameInput.setOutputMarkupId(true);
 		return this.eventTypeAttributeNameInput;
 	}
 
 	private void renderOrUpdateTree() {
 
-		this.eventTypeTree = new SelectTree<TypeTreeNode>("eventTypeTree", new AttributeTreeProvider(
-				this.eventTypeAttributesTree.getRoots()), new AttributeTreeExpansionModel());
+		this.eventTypeTree = new SelectTree<TypeTreeNode>("eventTypeTree", new AttributeTreeProvider(this.eventTypeAttributesTree.getRoots()), new AttributeTreeExpansionModel());
 		AttributeTreeExpansion.get().expandAll();
 		this.eventTypeTree.setOutputMarkupId(true);
 		this.layoutForm.addOrReplace(this.eventTypeTree);

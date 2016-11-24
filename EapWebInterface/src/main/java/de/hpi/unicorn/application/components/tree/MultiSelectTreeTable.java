@@ -21,36 +21,28 @@ import org.apache.wicket.model.IModel;
 /**
  * tree table component for visualization of hierarchical elements nodes are
  * selectable
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
- * @param <S>
- *            the type of the sort property
+ *
+ * @param <T> the type of nodes to be stored in the tree
+ * @param <S> the type of the sort property
  */
 public class MultiSelectTreeTable<T, S> extends LabelTreeTable<T, S> {
 
 	private static final long serialVersionUID = 1L;
-	protected ProviderSubset<T> selectedElements;
 	private final MultiSelectTreeTable<T, S> multiSelectTree;
+	protected ProviderSubset<T> selectedElements;
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param columns
-	 *            list of IColumn objects
-	 * @param provider
-	 *            provider see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param rowsPerPage
-	 *            number of rows per page
-	 * @param state
-	 *            state see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id          wicket identifier used in the corresponding HTML file
+	 * @param columns     list of IColumn objects
+	 * @param provider    provider see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param rowsPerPage number of rows per page
+	 * @param state       state see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
-	public MultiSelectTreeTable(final String id, final List<? extends IColumn<T, S>> columns,
-			final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
+	public MultiSelectTreeTable(final String id, final List<? extends IColumn<T, S>> columns, final ITreeProvider<T> provider, final long rowsPerPage, final IModel<Set<T>> state) {
 		super(id, columns, provider, rowsPerPage, state);
 		this.multiSelectTree = this;
 		this.selectedElements = new ProviderSubset<T>(provider, false);
@@ -85,8 +77,7 @@ public class MultiSelectTreeTable<T, S> extends LabelTreeTable<T, S> {
 
 			@Override
 			protected void onClick(final AjaxRequestTarget target) {
-				MultiSelectTreeTable.this.multiSelectTree.toggle(this.getModelObject(),
-						MultiSelectTreeTable.this.multiSelectTree, target);
+				MultiSelectTreeTable.this.multiSelectTree.toggle(this.getModelObject(), MultiSelectTreeTable.this.multiSelectTree, target);
 			}
 
 			@Override

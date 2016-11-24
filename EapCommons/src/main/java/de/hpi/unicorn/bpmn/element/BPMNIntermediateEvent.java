@@ -19,7 +19,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents an intermediate event in a BPMN process.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -40,8 +40,7 @@ public class BPMNIntermediateEvent extends AbstractBPMNElement {
 		super();
 	}
 
-	public BPMNIntermediateEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints,
-			final BPMNEventType intermediateEventType) {
+	public BPMNIntermediateEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints, final BPMNEventType intermediateEventType) {
 		super(ID, name, monitoringPoints);
 		this.intermediateEventType = intermediateEventType;
 	}

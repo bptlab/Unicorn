@@ -48,8 +48,7 @@ public class ProgressPanel extends Panel {
 	}
 
 	private void addReplayerTable() {
-		final ProgressProvider provider = new ProgressProvider(new ArrayList<Date>(ReplayerContainer.getReplayers()
-				.keySet()));
+		final ProgressProvider provider = new ProgressProvider(new ArrayList<Date>(ReplayerContainer.getReplayers().keySet()));
 		ArrayList<IColumn<Date, String>> columns = new ArrayList<IColumn<Date, String>>();
 
 		columns.add(new AbstractColumn<Date, String>(Model.of("Start date")) {
@@ -66,8 +65,7 @@ public class ProgressPanel extends Panel {
 				final Date creationDate = (Date) rowModel.getObject();
 				EventReplayer er = ReplayerContainer.getReplayer(creationDate);
 				float percentage = (float) er.getReplayedNumberOfEvents() / er.getTotalNumberOfEvents() * 100;
-				item.add(new Label(componentId, percentage + " % (" + er.getReplayedNumberOfEvents() + " of "
-						+ er.getTotalNumberOfEvents() + " events)"));
+				item.add(new Label(componentId, percentage + " % (" + er.getReplayedNumberOfEvents() + " of " + er.getTotalNumberOfEvents() + " events)"));
 			}
 		});
 

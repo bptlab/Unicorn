@@ -29,8 +29,7 @@ public class EveryDistinctPatternOperatorPanel extends Panel {
 	private final WebMarkupContainer distinctAttributesMarkupContainer;
 	private final List<String> distinctAttributes;
 
-	public EveryDistinctPatternOperatorPanel(final String id, final PatternOperatorElement element,
-			final AdvancedTransformationRuleEditorPanel panel) {
+	public EveryDistinctPatternOperatorPanel(final String id, final PatternOperatorElement element, final AdvancedTransformationRuleEditorPanel panel) {
 		super(id);
 
 		this.layoutForm = new Form<Void>("layoutForm");
@@ -49,15 +48,13 @@ public class EveryDistinctPatternOperatorPanel extends Panel {
 		addDistinctAttributeButton.setOutputMarkupId(true);
 		this.layoutForm.add(addDistinctAttributeButton);
 
-		final ListView<String> distinctAttributesListView = new ListView<String>("distinctAttributesListView",
-				this.distinctAttributes) {
+		final ListView<String> distinctAttributesListView = new ListView<String>("distinctAttributesListView", this.distinctAttributes) {
 			private static final long serialVersionUID = 4168798264053898499L;
 
 			@Override
 			protected void populateItem(final ListItem<String> item) {
 
-				final AttributeExpressionTextField distinctAttributeInput = new AttributeExpressionTextField(
-						"distinctAttributeInput", new Model<String>(), panel.getPatternBuilderPanel().getPatternTree());
+				final AttributeExpressionTextField distinctAttributeInput = new AttributeExpressionTextField("distinctAttributeInput", new Model<String>(), panel.getPatternBuilderPanel().getPatternTree());
 				final OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
 
 					private static final long serialVersionUID = 2339672763583311932L;
@@ -72,8 +69,7 @@ public class EveryDistinctPatternOperatorPanel extends Panel {
 				distinctAttributeInput.setOutputMarkupId(true);
 				item.add(distinctAttributeInput);
 
-				final AjaxButton removeDistinctButton = new AjaxButton("removeDistinctAttributeButton",
-						EveryDistinctPatternOperatorPanel.this.layoutForm) {
+				final AjaxButton removeDistinctButton = new AjaxButton("removeDistinctAttributeButton", EveryDistinctPatternOperatorPanel.this.layoutForm) {
 					private static final long serialVersionUID = -4244320500409194238L;
 
 					@Override

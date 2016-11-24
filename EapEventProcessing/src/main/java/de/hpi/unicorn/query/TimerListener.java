@@ -17,7 +17,7 @@ import de.hpi.unicorn.eventhandling.Broker;
  * This thread is indicated to wait for the specified time duration and then to
  * send a timer event to Esper. It is used for monitoring of attached
  * intermediate timer events.
- * 
+ *
  * @author micha
  */
 public class TimerListener extends Thread {

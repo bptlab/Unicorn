@@ -31,10 +31,10 @@ public class ProcessInstanceMonitor implements Serializable {
 	private final CorrelationProcessInstance processInstance;
 	// TODO: Tree der QueryMonitors
 	private final List<QueryMonitor> queryMonitors;
+	private final ViolationMonitor violationMonitor;
 	private ProcessInstanceStatus status;
 	private Date startTime;
 	private Date endTime;
-	private final ViolationMonitor violationMonitor;
 
 	public ProcessInstanceMonitor(final CorrelationProcessInstance processInstance) {
 		this.processInstance = processInstance;
@@ -165,7 +165,7 @@ public class ProcessInstanceMonitor implements Serializable {
 	/**
 	 * Searches recursively for child queries with {@link QueryStatus} Started
 	 * and sets their {@link QueryStatus} to Skipped.
-	 * 
+	 *
 	 * @param parentQuery
 	 */
 	private void skipStartedSubQueries(final PatternQuery parentQuery) {
@@ -186,7 +186,7 @@ public class ProcessInstanceMonitor implements Serializable {
 	/**
 	 * Returns all {@link PatternQuery} from the contained {@link QueryMonitor}
 	 * s.
-	 * 
+	 *
 	 * @param queryStatus
 	 * @return
 	 */
@@ -201,7 +201,7 @@ public class ProcessInstanceMonitor implements Serializable {
 	/**
 	 * Returns all {@link PatternQuery} from the contained {@link QueryMonitor}
 	 * s, which have the specified {@link QueryStatus}.
-	 * 
+	 *
 	 * @param queryStatus
 	 * @return
 	 */
@@ -218,7 +218,7 @@ public class ProcessInstanceMonitor implements Serializable {
 	/**
 	 * Returns all {@link QueryMonitor}, which have the specified
 	 * {@link PatternQueryType}.
-	 * 
+	 *
 	 * @param queryStatus
 	 * @return
 	 */
@@ -235,17 +235,15 @@ public class ProcessInstanceMonitor implements Serializable {
 	/**
 	 * Returns all {@link QueryMonitor}, which have the specified monitored
 	 * {@link AbstractBPMNElement}.
-	 * 
+	 *
 	 * @param queryStatus
 	 * @return
 	 */
-	public Set<QueryMonitor> getQueryMonitorsWithMonitoredElements(
-			final Collection<AbstractBPMNElement> monitoredElements) {
+	public Set<QueryMonitor> getQueryMonitorsWithMonitoredElements(final Collection<AbstractBPMNElement> monitoredElements) {
 		final Set<QueryMonitor> queryMonitorsWithMonitoredElements = new HashSet<QueryMonitor>();
 		for (final QueryMonitor queryMonitor : this.queryMonitors) {
 			final List<AbstractBPMNElement> queryMonitoredElements = queryMonitor.getQuery().getMonitoredElements();
-			if (queryMonitoredElements.containsAll(monitoredElements)
-					&& monitoredElements.containsAll(queryMonitoredElements)) {
+			if (queryMonitoredElements.containsAll(monitoredElements) && monitoredElements.containsAll(queryMonitoredElements)) {
 				queryMonitorsWithMonitoredElements.add(queryMonitor);
 			}
 		}
@@ -340,13 +338,11 @@ public class ProcessInstanceMonitor implements Serializable {
 		return detailedQueryStatusTree;
 	}
 
-	private void addSubQueryMonitorsToTree(final QueryMonitor parentQueryMonitor,
-			final EventTree<DetailedQueryStatus> detailedQueryStatusTree) {
+	private void addSubQueryMonitorsToTree(final QueryMonitor parentQueryMonitor, final EventTree<DetailedQueryStatus> detailedQueryStatusTree) {
 		final List<QueryMonitor> subQueryMonitors = this.getSubQueryMonitors(parentQueryMonitor);
 		if (!subQueryMonitors.isEmpty()) {
 			for (final QueryMonitor queryMonitor : subQueryMonitors) {
-				detailedQueryStatusTree.addChild(parentQueryMonitor.getDetailedQueryStatus(),
-						queryMonitor.getDetailedQueryStatus());
+				detailedQueryStatusTree.addChild(parentQueryMonitor.getDetailedQueryStatus(), queryMonitor.getDetailedQueryStatus());
 				this.addSubQueryMonitorsToTree(queryMonitor, detailedQueryStatusTree);
 			}
 		}

@@ -47,26 +47,26 @@ import de.hpi.unicorn.notification.EventCondition;
 /**
  * This page allows the creation of new {@link EapEventType}s from existing
  * ones.
- * 
+ *
  * @author micha
  */
 public class ExistingEventTypeEditor extends Panel {
 
 	private static final long serialVersionUID = 1L;
+	private final AbstractEapPage abstractEapPage;
+	private final List<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
+	private final List<TypeTreeNode> commonCorrelationAttributes = new ArrayList<TypeTreeNode>();
+	private final List<EapEventType> eventTypes = EapEventType.findAll();
 	private ConditionInputPanel conditionInput;
 	private TextField<String> eventTypeInput;
 	private Palette<TypeTreeNode> relevantEventTypeColumnsPalette;
-	private final AbstractEapPage abstractEapPage;
 	private CheckBoxMultipleChoice<EapEventType> eventTypesCheckBoxMultipleChoice;
-	private final List<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
 	private List<TypeTreeNode> selectedEventTypeAttributes = new ArrayList<TypeTreeNode>();
-	private final List<TypeTreeNode> commonCorrelationAttributes = new ArrayList<TypeTreeNode>();
-	private final List<EapEventType> eventTypes = EapEventType.findAll();
 
 	/**
 	 * Constructor for a page to create new {@link EapEventType}s from existing
 	 * ones.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -103,9 +103,7 @@ public class ExistingEventTypeEditor extends Panel {
 
 	private Component addExistingEventTypeSelect() {
 
-		this.eventTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>(
-				"eventTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this,
-						"selectedEventTypes"), this.eventTypes) {
+		this.eventTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>("eventTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this, "selectedEventTypes"), this.eventTypes) {
 			@Override
 			protected boolean isDisabled(final EapEventType eventType, final int index, final String selected) {
 				// true for event types without matching attributes
@@ -128,15 +126,12 @@ public class ExistingEventTypeEditor extends Panel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				ExistingEventTypeEditor.this.commonCorrelationAttributes.clear();
 				if (!ExistingEventTypeEditor.this.selectedEventTypes.isEmpty()) {
-					ExistingEventTypeEditor.this.commonCorrelationAttributes
-							.addAll(ExistingEventTypeEditor.this.selectedEventTypes.get(0).getValueTypes());
+					ExistingEventTypeEditor.this.commonCorrelationAttributes.addAll(ExistingEventTypeEditor.this.selectedEventTypes.get(0).getValueTypes());
 					for (final EapEventType actualEventType : ExistingEventTypeEditor.this.selectedEventTypes) {
-						ExistingEventTypeEditor.this.commonCorrelationAttributes.retainAll(actualEventType
-								.getValueTypes());
+						ExistingEventTypeEditor.this.commonCorrelationAttributes.retainAll(actualEventType.getValueTypes());
 					}
 				}
-				ExistingEventTypeEditor.this.conditionInput
-						.setSelectedEventTypes(ExistingEventTypeEditor.this.selectedEventTypes);
+				ExistingEventTypeEditor.this.conditionInput.setSelectedEventTypes(ExistingEventTypeEditor.this.selectedEventTypes);
 				ExistingEventTypeEditor.this.conditionInput.updateAttributesValues();
 				target.add(ExistingEventTypeEditor.this.conditionInput.getConditionAttributeSelect());
 				target.add(ExistingEventTypeEditor.this.conditionInput.getConditionValueSelect());
@@ -170,9 +165,7 @@ public class ExistingEventTypeEditor extends Panel {
 			}
 		};
 
-		this.relevantEventTypeColumnsPalette = new Palette<TypeTreeNode>("relevantEventTypePalette",
-				new ListModel<TypeTreeNode>(new ArrayList<TypeTreeNode>()), eventTypeAttributeModel,
-				new ChoiceRenderer(), 5, false) {
+		this.relevantEventTypeColumnsPalette = new Palette<TypeTreeNode>("relevantEventTypePalette", new ListModel<TypeTreeNode>(new ArrayList<TypeTreeNode>()), eventTypeAttributeModel, new ChoiceRenderer(), 5, false) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -247,8 +240,7 @@ public class ExistingEventTypeEditor extends Panel {
 						usedEventTypes.add(selectedEventType);
 					}
 					final EventCondition condition = ExistingEventTypeEditor.this.conditionInput.getCondition();
-					final EventTypeRule newEventTypeRule = new EventTypeRule(
-							new ArrayList<EapEventType>(usedEventTypes), condition, newEventType);
+					final EventTypeRule newEventTypeRule = new EventTypeRule(new ArrayList<EapEventType>(usedEventTypes), condition, newEventType);
 					newEventTypeRule.save();
 
 					// execute on existing data
@@ -257,8 +249,7 @@ public class ExistingEventTypeEditor extends Panel {
 
 					target.add(ExistingEventTypeEditor.this.eventTypesCheckBoxMultipleChoice);
 					final PageParameters pageParameters = new PageParameters();
-					pageParameters.add("successFeedback", newEvents.size() + " events have been added to "
-							+ newEventTypeName);
+					pageParameters.add("successFeedback", newEvents.size() + " events have been added to " + newEventTypeName);
 					this.setResponsePage(MainPage.class, pageParameters);
 				} else if (EapEventType.getAllTypeNames().contains(newEventTypeName)) {
 					target.appendJavaScript("$.unblockUI();");
@@ -266,8 +257,7 @@ public class ExistingEventTypeEditor extends Panel {
 					target.add(ExistingEventTypeEditor.this.abstractEapPage.getFeedbackPanel());
 				} else {
 					target.appendJavaScript("$.unblockUI();");
-					ExistingEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error(
-							"You did not provide correct information.");
+					ExistingEventTypeEditor.this.abstractEapPage.getFeedbackPanel().error("You did not provide correct information.");
 					target.add(ExistingEventTypeEditor.this.abstractEapPage.getFeedbackPanel());
 				}
 			}

@@ -32,10 +32,15 @@ import de.hpi.unicorn.utils.TestHelper;
  * This class tests the import of a BPMN process with exclusive gateways, the
  * creation of queries for this BPMN process and simulates the execution of the
  * process to monitor the execution.
- * 
+ *
  * @author micha
  */
 public class XORTest extends AbstractQueryCreationTest {
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
 
 	@Before
 	public void setup() {
@@ -54,8 +59,7 @@ public class XORTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "XORProcess",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "XORProcess", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -105,8 +109,7 @@ public class XORTest extends AbstractQueryCreationTest {
 		for (final EapEventType eventType : eventTypes) {
 
 			if (choose == 0) { /* oberer Pfad */
-				if (eventType.getTypeName().equals("Branch1_FirstEvent")
-						|| eventType.getTypeName().equals("Branch1_SecondEvent")) {
+				if (eventType.getTypeName().equals("Branch1_FirstEvent") || eventType.getTypeName().equals("Branch1_SecondEvent")) {
 					continue;
 				}
 			} else { /* unterer Pfad */
@@ -117,11 +120,6 @@ public class XORTest extends AbstractQueryCreationTest {
 
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 
 }

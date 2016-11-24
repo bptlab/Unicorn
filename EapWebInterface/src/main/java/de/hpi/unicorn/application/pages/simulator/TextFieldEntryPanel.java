@@ -24,13 +24,11 @@ public class TextFieldEntryPanel extends Panel {
 	private final TextField<String> textField;
 	private LabelTreeTable<SimulationTreeTableElement<Object>, String> treeTable;
 
-	public TextFieldEntryPanel(final String id, final int entryId,
-			final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
+	public TextFieldEntryPanel(final String id, final int entryId, final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
 		super(id);
 		final Form<Void> form = new Form<Void>("form");
 
-		this.textField = new TextField<String>("textFieldID", Model.of(simulationTreeTableProvider
-				.getInputForEntry(entryId)));
+		this.textField = new TextField<String>("textFieldID", Model.of(simulationTreeTableProvider.getInputForEntry(entryId)));
 		this.textField.setOutputMarkupPlaceholderTag(true);
 		this.textField.setOutputMarkupId(true);
 		this.textField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -41,8 +39,7 @@ public class TextFieldEntryPanel extends Panel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 
 				simulationTreeTableProvider.setInputForEntry(TextFieldEntryPanel.this.textField.getValue(), entryId);
-				simulationTreeTableProvider.updateAllEqualInputFields(TextFieldEntryPanel.this.textField.getValue(),
-						entryId);
+				simulationTreeTableProvider.updateAllEqualInputFields(TextFieldEntryPanel.this.textField.getValue(), entryId);
 				if (TextFieldEntryPanel.this.treeTable != null) {
 					target.add(TextFieldEntryPanel.this.treeTable);
 				} else {

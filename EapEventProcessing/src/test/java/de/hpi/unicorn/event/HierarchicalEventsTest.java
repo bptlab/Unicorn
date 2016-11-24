@@ -43,10 +43,10 @@ import de.hpi.unicorn.utils.XMLUtils;
 
 public class HierarchicalEventsTest {
 
-	StreamProcessingAdapter esper;
 	private static String pathToEventTaxonomyXSD = "src/test/resources/EventTaxonomy.xsd";
 	private static String pathToEventXML = "src/test/resources/Event1.xml";
 	private static String pathToDoubleTagEventXML = "src/test/resources/EventDoubleTags.xml";
+	StreamProcessingAdapter esper;
 
 	@Before
 	public void setup() {
@@ -56,11 +56,8 @@ public class HierarchicalEventsTest {
 	}
 
 	@Test
-	public void testHierarchicalEventtypes() throws XMLParsingException, SAXException, IOException,
-			ParserConfigurationException {
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(
-				HierarchicalEventsTest.pathToEventTaxonomyXSD,
-				FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
+	public void testHierarchicalEventtypes() throws XMLParsingException, SAXException, IOException, ParserConfigurationException {
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(HierarchicalEventsTest.pathToEventTaxonomyXSD, FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
 		Broker.getInstance().importEventType(eventType);
 		// create direct esper event from xml
 		final Document doc = this.transformXMLFileToEventNode(HierarchicalEventsTest.pathToDoubleTagEventXML);
@@ -71,14 +68,11 @@ public class HierarchicalEventsTest {
 
 	@Test
 	public void testEventsWithDoubleTags() throws XMLParsingException, IOException, SAXException {
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(
-				HierarchicalEventsTest.pathToEventTaxonomyXSD,
-				FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(HierarchicalEventsTest.pathToEventTaxonomyXSD, FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
 		Broker.getInstance().importEventType(eventType);
 
 		// query
-		final String query = "Select ID, vehicle_information.goods[0], vehicle_information.goods[1], vehicle_information.goods[2] From "
-				+ eventType.getTypeName();
+		final String query = "Select ID, vehicle_information.goods[0], vehicle_information.goods[1], vehicle_information.goods[2] From " + eventType.getTypeName();
 		final QueryWrapper liveQuery = new QueryWrapper("All", query, QueryTypeEnum.LIVE);
 		liveQuery.save();
 		liveQuery.addToEsper();
@@ -89,22 +83,18 @@ public class HierarchicalEventsTest {
 		final EapEvent event = events.get(0);
 		Broker.getInstance().importEvent(event);
 
-		Assert.assertTrue("did not find an event, but" + liveQuery.getNumberOfLogEntries(),
-				liveQuery.getNumberOfLogEntries() == 1);
+		Assert.assertTrue("did not find an event, but" + liveQuery.getNumberOfLogEntries(), liveQuery.getNumberOfLogEntries() == 1);
 		// System.out.println(listener.getLog());
 	}
 
 	@Test
 	public void testHierarchicalEvents() throws XMLParsingException, SAXException, IOException {
 		// prepare EventType
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(
-				HierarchicalEventsTest.pathToEventTaxonomyXSD,
-				FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(HierarchicalEventsTest.pathToEventTaxonomyXSD, FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
 		Broker.getInstance().importEventType(eventType);
 
 		// query
-		final String query = "Select ID, vehicle_information.vehicle_identifier, count(vehicle_information.vehicle_identifier) From "
-				+ eventType.getTypeName();
+		final String query = "Select ID, vehicle_information.vehicle_identifier, count(vehicle_information.vehicle_identifier) From " + eventType.getTypeName();
 		final QueryWrapper liveQuery = new QueryWrapper("All", query, QueryTypeEnum.LIVE);
 		liveQuery.save();
 		liveQuery.addToEsper();
@@ -115,18 +105,14 @@ public class HierarchicalEventsTest {
 		final EapEvent event = events.get(0);
 		Broker.getInstance().importEvent(event);
 
-		Assert.assertTrue("did not find an event, but" + liveQuery.getNumberOfLogEntries(),
-				liveQuery.getNumberOfLogEntries() == 1);
+		Assert.assertTrue("did not find an event, but" + liveQuery.getNumberOfLogEntries(), liveQuery.getNumberOfLogEntries() == 1);
 		// System.out.println(listener.getLog());
 	}
 
 	@Test
-	public void testEventTransformation() throws ParserConfigurationException, XMLParsingException, IOException,
-			SAXException {
+	public void testEventTransformation() throws ParserConfigurationException, XMLParsingException, IOException, SAXException {
 		// prepare EventType
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(
-				HierarchicalEventsTest.pathToEventTaxonomyXSD,
-				FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(HierarchicalEventsTest.pathToEventTaxonomyXSD, FileUtils.getFileNameWithoutExtension(HierarchicalEventsTest.pathToEventTaxonomyXSD));
 		Broker.getInstance().importEventType(eventType);
 
 		final List<EapEvent> events = XMLParser.generateEventsFromXML(HierarchicalEventsTest.pathToEventXML);
@@ -139,8 +125,7 @@ public class HierarchicalEventsTest {
 
 	@Test
 	public void testAttributeWithSpaces() {
-		final ArrayList<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>(Arrays.asList(new TypeTreeNode(
-				"Attribute 1", AttributeTypeEnum.STRING)));
+		final ArrayList<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>(Arrays.asList(new TypeTreeNode("Attribute 1", AttributeTypeEnum.STRING)));
 		final EapEventType eventType = new EapEventType("newEventType", attributes);
 		Broker.getInstance().importEventType(eventType);
 

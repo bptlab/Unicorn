@@ -97,18 +97,14 @@ public class FilesPanel extends Panel {
 		return events;
 	}
 
-	public void replayEvents(List<EapEvent> events, int scaleFactor, String category,
-			List<ReplayFileBean> selectedFiles, TimeMode mode, Date simulationTime, Long fixedOffset) {
-		EventReplayer er = new EventReplayer(events, scaleFactor, category, selectedFiles, mode, simulationTime,
-				fixedOffset);
+	public void replayEvents(List<EapEvent> events, int scaleFactor, String category, List<ReplayFileBean> selectedFiles, TimeMode mode, Date simulationTime, Long fixedOffset) {
+		EventReplayer er = new EventReplayer(events, scaleFactor, category, selectedFiles, mode, simulationTime, fixedOffset);
 		er.replay();
 		ReplayerContainer.addReplayer(er);
 	}
 
-	public void replayEventsWithMultipleAlignment(TreeSet<ReplayEvent> replayEvents, int scaleFactor, String category,
-			List<ReplayFileBean> selectedFiles, TimeMode mode, Date simulationTime, Long fixedOffset) {
-		EventReplayer er = new EventReplayer(new ArrayList<EapEvent>(), scaleFactor, category, selectedFiles, mode,
-				simulationTime, fixedOffset);
+	public void replayEventsWithMultipleAlignment(TreeSet<ReplayEvent> replayEvents, int scaleFactor, String category, List<ReplayFileBean> selectedFiles, TimeMode mode, Date simulationTime, Long fixedOffset) {
+		EventReplayer er = new EventReplayer(new ArrayList<EapEvent>(), scaleFactor, category, selectedFiles, mode, simulationTime, fixedOffset);
 		er.setReplayList(replayEvents);
 		er.replay();
 		ReplayerContainer.addReplayer(er);

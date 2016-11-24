@@ -17,7 +17,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 /**
  * This class filters {@link CorrelationProcessInstance}es in the
  * {@link ProcessInstancePanel}.
- * 
+ *
  * @author micha
  */
 public class ProcessInstanceFilter extends AbstractFilter {
@@ -35,7 +35,7 @@ public class ProcessInstanceFilter extends AbstractFilter {
 	/**
 	 * Constructor for the class, which filters
 	 * {@link CorrelationProcessInstance}s in the {@link ProcessInstancePanel}.
-	 * 
+	 *
 	 * @param filterCriteria
 	 * @param filterCondition
 	 * @param filterValue

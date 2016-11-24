@@ -37,11 +37,9 @@ public class QueryMonitoringPointPersistenceTest {
 	@Test
 	public void testStoreAndRetrieve() {
 		this.storeExampleQueryMonitoringPoints();
-		Assert.assertTrue("Value should be 2, but was " + QueryMonitoringPoint.findAll().size(), QueryMonitoringPoint
-				.findAll().size() == 2);
+		Assert.assertTrue("Value should be 2, but was " + QueryMonitoringPoint.findAll().size(), QueryMonitoringPoint.findAll().size() == 2);
 		QueryMonitoringPoint.removeAll();
-		Assert.assertTrue("Value should be 0, but was " + QueryMonitoringPoint.findAll().size(), QueryMonitoringPoint
-				.findAll().size() == 0);
+		Assert.assertTrue("Value should be 0, but was " + QueryMonitoringPoint.findAll().size(), QueryMonitoringPoint.findAll().size() == 0);
 	}
 
 	@Test
@@ -50,8 +48,7 @@ public class QueryMonitoringPointPersistenceTest {
 		Assert.assertTrue(QueryMonitoringPoint.findAll().size() == 2);
 
 		Assert.assertTrue(QueryMonitoringPoint.findByQuery(this.query1).size() == 1);
-		Assert.assertTrue(QueryMonitoringPoint.findByQuery(this.query1).get(0).getProcess().getName()
-				.equals(this.process1.getName()));
+		Assert.assertTrue(QueryMonitoringPoint.findByQuery(this.query1).get(0).getProcess().getName().equals(this.process1.getName()));
 	}
 
 	@Test

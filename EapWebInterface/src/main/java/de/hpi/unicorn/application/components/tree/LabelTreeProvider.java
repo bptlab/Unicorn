@@ -20,8 +20,7 @@ import de.hpi.unicorn.application.components.table.model.AbstractDataProvider;
 /**
  * wraps the given tree nodes
  */
-public class LabelTreeProvider<T> extends AbstractDataProvider implements
-		ISortableTreeProvider<LabelTreeElement<T>, String> {
+public class LabelTreeProvider<T> extends AbstractDataProvider implements ISortableTreeProvider<LabelTreeElement<T>, String> {
 
 	private static final long serialVersionUID = 1L;
 	private List<LabelTreeElement<T>> treeNodes;
@@ -37,11 +36,10 @@ public class LabelTreeProvider<T> extends AbstractDataProvider implements
 
 	/**
 	 * constructor
-	 * 
-	 * @param listhttp
-	 *            ://marketplace.eclipse.org/marketplace-client-intro?
-	 *            mpc_install=150 root nodes of the tree, child nodes are
-	 *            accessed by this component automatically
+	 *
+	 * @param listhttp ://marketplace.eclipse.org/marketplace-client-intro?
+	 *                 mpc_install=150 root nodes of the tree, child nodes are
+	 *                 accessed by this component automatically
 	 */
 	public LabelTreeProvider(final List<LabelTreeElement<T>> list) {
 		this();

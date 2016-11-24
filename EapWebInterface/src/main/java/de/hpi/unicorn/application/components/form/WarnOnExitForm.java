@@ -20,14 +20,12 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 /**
  * This is a form, that raises an alert, if there are unsaved changes in the
  * form. The proper way is to call submit to avoid the raising of an alert.
- * 
+ *
  * @author micha
- * 
  */
 public class WarnOnExitForm extends BlockingForm {
 
-	static final JavaScriptResourceReference warnOnExit_JS = new JavaScriptResourceReference(WarnOnExitForm.class,
-			"WarnOnExit.js");
+	static final JavaScriptResourceReference warnOnExit_JS = new JavaScriptResourceReference(WarnOnExitForm.class, "WarnOnExit.js");
 
 	public WarnOnExitForm(final String id) {
 		super(id);

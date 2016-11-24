@@ -35,10 +35,15 @@ import de.hpi.unicorn.utils.TestHelper;
 /**
  * The test proofs the monitoring and detection of a violation of the order of
  * process elements.
- * 
+ *
  * @author micha
  */
 public class ExclusivenessViolation extends AbstractMonitoringTest {
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
 
 	@Before
 	public void setup() {
@@ -57,8 +62,7 @@ public class ExclusivenessViolation extends AbstractMonitoringTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "SimpleProcess",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "SimpleProcess", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -110,11 +114,6 @@ public class ExclusivenessViolation extends AbstractMonitoringTest {
 		}
 	}
 
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
-	}
-
 	@Override
 	protected void assertQueryStatus() {
 		// Auf Listener hören
@@ -122,8 +121,7 @@ public class ExclusivenessViolation extends AbstractMonitoringTest {
 		for (final CorrelationProcessInstance processInstance : CorrelationProcessInstance.findAll()) {
 			Assert.assertTrue(queryMonitor.getStatus(processInstance) == ProcessInstanceStatus.Finished);
 			boolean exclusivenessViolationStatusContained = false;
-			for (final DetailedQueryStatus detailedQueryStatus : queryMonitor.getDetailedStatus(processInstance)
-					.getElements()) {
+			for (final DetailedQueryStatus detailedQueryStatus : queryMonitor.getDetailedStatus(processInstance).getElements()) {
 				if (detailedQueryStatus.getViolationStatus().contains(ViolationStatus.Exclusiveness)) {
 					exclusivenessViolationStatusContained = true;
 				}

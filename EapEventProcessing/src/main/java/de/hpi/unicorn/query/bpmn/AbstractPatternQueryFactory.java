@@ -34,18 +34,18 @@ import de.hpi.unicorn.query.PatternQuery;
 /**
  * This class defines the abstract factory methods to generate the
  * {@link PatternQuery}s. The queries are created in the concrete subclasses.
- * 
+ *
  * @author micha
  */
 public abstract class AbstractPatternQueryFactory {
 
+	private static List<String> queryNames = new ArrayList<String>();
 	protected EventTree<AbstractBPMNElement> processDecompositionTree;
 	protected PatternQueryGenerator patternQueryGenerator;
-	private static List<String> queryNames = new ArrayList<String>();
 
 	/**
 	 * Constructor to create queries with a query factory.
-	 * 
+	 *
 	 * @param patternQueryGenerator
 	 */
 	public AbstractPatternQueryFactory(final PatternQueryGenerator patternQueryGenerator) {
@@ -61,19 +61,18 @@ public abstract class AbstractPatternQueryFactory {
 	 * this query. If the catchingMonitorableElement is monitored, the query
 	 * finishes immediately. The parentQuery is the query, that contains this
 	 * new created one.
-	 * 
+	 *
 	 * @param element
 	 * @param catchingMonitorableElement
 	 * @param parentQuery
 	 * @return
 	 * @throws QueryGenerationException
 	 */
-	protected abstract PatternQuery generateQuery(AbstractBPMNElement element,
-			AbstractBPMNElement catchingMonitorableElement, PatternQuery parentQuery) throws QueryGenerationException;
+	protected abstract PatternQuery generateQuery(AbstractBPMNElement element, AbstractBPMNElement catchingMonitorableElement, PatternQuery parentQuery) throws QueryGenerationException;
 
 	/**
 	 * Registers the query at Esper and for the {@link BPMNQueryMonitor}.
-	 * 
+	 *
 	 * @param query
 	 */
 	protected void registerQuery(final PatternQuery query) {
@@ -81,8 +80,7 @@ public abstract class AbstractPatternQueryFactory {
 		// queries
 		this.addPatternEventTypeToEsper(query.getTitle());
 
-		BPMNQueryMonitor.getInstance().addQueryForProcess(query,
-				CorrelationProcess.findByBPMNProcess(this.patternQueryGenerator.getRPSTTree().getProcess()));
+		BPMNQueryMonitor.getInstance().addQueryForProcess(query, CorrelationProcess.findByBPMNProcess(this.patternQueryGenerator.getRPSTTree().getProcess()));
 
 		query.setListener(query.addToEsper(StreamProcessingAdapter.getInstance()));
 	}
@@ -90,7 +88,7 @@ public abstract class AbstractPatternQueryFactory {
 	/**
 	 * This method is indicated to update a query that is already registered at
 	 * Esper.
-	 * 
+	 *
 	 * @param query
 	 */
 	protected void updateQuery(final PatternQuery query) {
@@ -114,7 +112,7 @@ public abstract class AbstractPatternQueryFactory {
 	 * be stored as the queryString in the {@link PatternQuery}. The concrete
 	 * generated string depends on the patternOperator, which is used as an
 	 * infix operator while query creation.
-	 * 
+	 *
 	 * @param component
 	 * @param patternOperator
 	 * @param catchingMonitorableElement
@@ -122,9 +120,7 @@ public abstract class AbstractPatternQueryFactory {
 	 * @return
 	 * @throws QueryGenerationException
 	 */
-	protected String generateQueryString(final Component component, final EsperPatternOperators patternOperator,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	protected String generateQueryString(final Component component, final EsperPatternOperators patternOperator, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		int elementsWithMonitoringPoints = 0;
 		final StringBuilder sequencePatternQueryString = new StringBuilder();
 		// TODO: Liefert auch noch Gateways am Rand, die nicht betrachtet werden
@@ -134,29 +130,22 @@ public abstract class AbstractPatternQueryFactory {
 		for (final AbstractBPMNElement element : orderedChildren) {
 			// Falls Element Component rekursiv tiefer aufrufen
 			final StringBuilder queryPart = new StringBuilder();
-			if (element instanceof Component && element.hasMonitoringPoints()
-					&& element.hasMonitoringPointsWithEventType()) {
-				final PatternQuery subQuery = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(
-						element, catchingMonitorableElement, parentQuery);
+			if (element instanceof Component && element.hasMonitoringPoints() && element.hasMonitoringPointsWithEventType()) {
+				final PatternQuery subQuery = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(element, catchingMonitorableElement, parentQuery);
 				this.addQueryRelationship(parentQuery, subQuery);
 
 				queryPart.append("EVERY S" + elementsWithMonitoringPoints + "=");
 				queryPart.append(subQuery.getTitle());
 			}
 			// Element hat Attached Timer
-			else if (element instanceof AttachableElement
-					&& element.hasMonitoringPointsWithEventType()
-					&& ((AttachableElement) element).hasAttachedIntermediateEvent()
-					&& ((AttachableElement) element).getAttachedIntermediateEvent().getIntermediateEventType() == BPMNEventType.Timer
-					&& orderedChildren.contains(((AttachableElement) element).getAttachedIntermediateEvent())) {
+			else if (element instanceof AttachableElement && element.hasMonitoringPointsWithEventType() && ((AttachableElement) element).hasAttachedIntermediateEvent() && ((AttachableElement) element).getAttachedIntermediateEvent().getIntermediateEventType() == BPMNEventType.Timer && orderedChildren.contains(((AttachableElement) element).getAttachedIntermediateEvent())) {
 				// Püfen, ob Boundary Event auch im Polygon ist, sonst wird der
 				// Timer hier nicht abgefragt
 				final AttachableElement attachableElement = (AttachableElement) element;
 				final BPMNBoundaryEvent boundaryEvent = attachableElement.getAttachedIntermediateEvent();
 				// Timer-Query bauen
 				System.err.println("Timer Query");
-				final PatternQuery subQuery = new TimerQueryFactory(this.patternQueryGenerator).generateQuery(element,
-						catchingMonitorableElement, parentQuery);
+				final PatternQuery subQuery = new TimerQueryFactory(this.patternQueryGenerator).generateQuery(element, catchingMonitorableElement, parentQuery);
 				this.addQueryRelationship(parentQuery, subQuery);
 
 				queryPart.append("EVERY S" + elementsWithMonitoringPoints + "=");
@@ -166,12 +155,10 @@ public abstract class AbstractPatternQueryFactory {
 				orderedChildren.removeAll(Arrays.asList(attachableElement, boundaryEvent));
 			}
 			// Element ist IntermediateTimer
-			else if (element instanceof BPMNIntermediateEvent
-					&& ((BPMNIntermediateEvent) element).getIntermediateEventType().equals(BPMNEventType.Timer)) {
+			else if (element instanceof BPMNIntermediateEvent && ((BPMNIntermediateEvent) element).getIntermediateEventType().equals(BPMNEventType.Timer)) {
 				// Timer-Query bauen
 				System.err.println("Timer Query");
-				final PatternQuery subQuery = new TimerQueryFactory(this.patternQueryGenerator).generateQuery(element,
-						catchingMonitorableElement, parentQuery);
+				final PatternQuery subQuery = new TimerQueryFactory(this.patternQueryGenerator).generateQuery(element, catchingMonitorableElement, parentQuery);
 				this.addQueryRelationship(parentQuery, subQuery);
 
 				queryPart.append("EVERY S" + elementsWithMonitoringPoints + "=");
@@ -179,8 +166,7 @@ public abstract class AbstractPatternQueryFactory {
 			}
 			// Normales Element: Activity Lifecycle Query
 			else if (element.hasMonitoringPointsWithEventType()) {
-				final PatternQuery subQuery = new StateTransitionQueryFactory(this.patternQueryGenerator)
-						.generateQuery(element, catchingMonitorableElement, parentQuery);
+				final PatternQuery subQuery = new StateTransitionQueryFactory(this.patternQueryGenerator).generateQuery(element, catchingMonitorableElement, parentQuery);
 
 				// System.out.println(subQuery.getTitle() + ": " +
 				// subQuery.getEsperQuery());
@@ -202,8 +188,7 @@ public abstract class AbstractPatternQueryFactory {
 			sequencePatternQueryString.append(")]");
 		} else {
 			sequencePatternQueryString.append(") " + EsperPatternOperators.XOR.operator + " EVERY C1=");
-			sequencePatternQueryString.append(catchingMonitorableElement.getMonitoringPoints().get(0).getEventType()
-					.getTypeName());
+			sequencePatternQueryString.append(catchingMonitorableElement.getMonitoringPoints().get(0).getEventType().getTypeName());
 			sequencePatternQueryString.append("]");
 		}
 
@@ -212,8 +197,8 @@ public abstract class AbstractPatternQueryFactory {
 			sequencePatternQueryString.append(" WHERE de.hpi.unicorn.esper.EapUtils.isIntersectionNotEmpty({");
 			for (int j = 0; j < elementsWithMonitoringPoints; j++) {
 				if (j == elementsWithMonitoringPoints - 1) { // letztes Element
-																// --> kein
-																// Komma
+					// --> kein
+					// Komma
 					sequencePatternQueryString.append("S" + j + ".ProcessInstances");
 				} else {
 					sequencePatternQueryString.append("S" + j + ".ProcessInstances,");
@@ -227,13 +212,12 @@ public abstract class AbstractPatternQueryFactory {
 	/**
 	 * Orders the elements in a list in their sequential order in a process.
 	 * Elements have to be consecutive.
-	 * 
+	 *
 	 * @param component
 	 * @return
 	 */
 	protected List<AbstractBPMNElement> orderElements(final Component component) {
-		final List<AbstractBPMNElement> componentChildren = new ArrayList<AbstractBPMNElement>(
-				this.processDecompositionTree.getChildren(component));
+		final List<AbstractBPMNElement> componentChildren = new ArrayList<AbstractBPMNElement>(this.processDecompositionTree.getChildren(component));
 		final List<AbstractBPMNElement> orderedElements = new ArrayList<AbstractBPMNElement>();
 
 		final int componentChildrenAmount = componentChildren.size();
@@ -255,10 +239,8 @@ public abstract class AbstractPatternQueryFactory {
 			final AbstractBPMNElement lastOrderedElement = orderedElements.get(orderedElements.size() - 1);
 			// Set<AbstractBPMNElement> successors =
 			// lastOrderedElement.getSuccessors();
-			final Set<AbstractBPMNElement> successors = this.getSuccessorsWithComponents(lastOrderedElement,
-					componentChildren);
-			final List<AbstractBPMNElement> componentChildrenCopy = new ArrayList<AbstractBPMNElement>(
-					componentChildren);
+			final Set<AbstractBPMNElement> successors = this.getSuccessorsWithComponents(lastOrderedElement, componentChildren);
+			final List<AbstractBPMNElement> componentChildrenCopy = new ArrayList<AbstractBPMNElement>(componentChildren);
 			componentChildrenCopy.retainAll(successors);
 			if (componentChildrenCopy.size() > 0) {
 				orderedElements.add(componentChildrenCopy.get(0));
@@ -271,8 +253,7 @@ public abstract class AbstractPatternQueryFactory {
 		return orderedElements;
 	}
 
-	private Set<AbstractBPMNElement> getSuccessorsWithComponents(final AbstractBPMNElement predecessor,
-			final List<AbstractBPMNElement> elements) {
+	private Set<AbstractBPMNElement> getSuccessorsWithComponents(final AbstractBPMNElement predecessor, final List<AbstractBPMNElement> elements) {
 		Set<AbstractBPMNElement> successors;
 		if (predecessor instanceof Component) {
 			final Component component = (Component) predecessor;
@@ -308,8 +289,7 @@ public abstract class AbstractPatternQueryFactory {
 	 * @param visitedElements
 	 * @param successingMonitorableElements
 	 */
-	protected void traverseSuccessingMonitorableElements(final AbstractBPMNElement element,
-			final Set<AbstractBPMNElement> visitedElements, final Set<AbstractBPMNElement> successingMonitorableElements) {
+	protected void traverseSuccessingMonitorableElements(final AbstractBPMNElement element, final Set<AbstractBPMNElement> visitedElements, final Set<AbstractBPMNElement> successingMonitorableElements) {
 		if (!visitedElements.contains(element)) {
 			visitedElements.add(element);
 			if (element.hasMonitoringPoints()) {
@@ -325,7 +305,7 @@ public abstract class AbstractPatternQueryFactory {
 
 	/**
 	 * Connects the two queries as parent and child.
-	 * 
+	 *
 	 * @param parent
 	 * @param child
 	 */
@@ -339,7 +319,7 @@ public abstract class AbstractPatternQueryFactory {
 	/**
 	 * This method generates a unique name for each query. So that query names
 	 * can be used as event types and do not intersect.
-	 * 
+	 *
 	 * @param prefix
 	 * @return
 	 */

@@ -17,18 +17,16 @@ import de.hpi.unicorn.simulation.DerivationType;
 
 /**
  * representation of a tree node
- * 
- * @param <T>
- *            type of content to be stored
+ *
+ * @param <T> type of content to be stored
  */
 public class SimulationTreeTableElement<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	private final ArrayList<SimulationTreeTableElement<T>> children = new ArrayList<SimulationTreeTableElement<T>>();
 	private int ID;
 	private T content;
 	private SimulationTreeTableElement<T> parent;
-	private final ArrayList<SimulationTreeTableElement<T>> children = new ArrayList<SimulationTreeTableElement<T>>();
 	private String probability;
 	private String input;
 
@@ -45,9 +43,8 @@ public class SimulationTreeTableElement<T> implements Serializable {
 
 	/**
 	 * creates a root node
-	 * 
-	 * @param content
-	 *            the content to be stored in the new node
+	 *
+	 * @param content the content to be stored in the new node
 	 */
 	public SimulationTreeTableElement(final int ID, final T content, final String probability) {
 		this.ID = ID;
@@ -60,13 +57,11 @@ public class SimulationTreeTableElement<T> implements Serializable {
 
 	/**
 	 * creates a node and adds it to its parent
-	 * 
+	 *
 	 * @param parent
-	 * @param content
-	 *            the content to be stored in the node
+	 * @param content the content to be stored in the node
 	 */
-	public SimulationTreeTableElement(final SimulationTreeTableElement<T> parent, final int ID, final T content,
-			final String probability) {
+	public SimulationTreeTableElement(final SimulationTreeTableElement<T> parent, final int ID, final T content, final String probability) {
 		this(ID, content, probability);
 		this.parent = parent;
 		this.parent.getChildren().add(this);
@@ -92,6 +87,10 @@ public class SimulationTreeTableElement<T> implements Serializable {
 		return this.parent;
 	}
 
+	public void setParent(final SimulationTreeTableElement<T> parent) {
+		this.parent = parent;
+	}
+
 	public ArrayList<SimulationTreeTableElement<T>> getChildren() {
 		return this.children;
 	}
@@ -108,10 +107,6 @@ public class SimulationTreeTableElement<T> implements Serializable {
 		if (this.parent != null) {
 			this.parent.getChildren().remove(this);
 		}
-	}
-
-	public void setParent(final SimulationTreeTableElement<T> parent) {
-		this.parent = parent;
 	}
 
 	public String getInput() {
@@ -141,12 +136,12 @@ public class SimulationTreeTableElement<T> implements Serializable {
 		}
 	}
 
-	public void setDerivation(final String derivation) {
-		this.derivation = derivation;
-	}
-
 	public String getDerivation() {
 		return this.derivation;
+	}
+
+	public void setDerivation(final String derivation) {
+		this.derivation = derivation;
 	}
 
 	public void setDurationEntryPanel(final DurationEntryPanel durationEntryPanel) {

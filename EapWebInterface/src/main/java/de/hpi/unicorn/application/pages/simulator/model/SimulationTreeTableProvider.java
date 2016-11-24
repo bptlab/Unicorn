@@ -37,18 +37,17 @@ import de.hpi.unicorn.utils.Tuple;
  *
  * @param <T>
  */
+
 /**
- * @author micha
- * 
  * @param <T>
+ * @author micha
  */
-public class SimulationTreeTableProvider<T> extends AbstractDataProvider implements
-		ISortableTreeProvider<SimulationTreeTableElement<T>, String> {
+public class SimulationTreeTableProvider<T> extends AbstractDataProvider implements ISortableTreeProvider<SimulationTreeTableElement<T>, String> {
 
 	private static final long serialVersionUID = 1L;
+	private final List<SimulationTreeTableElement<T>> selectedTreeTableElements = new ArrayList<SimulationTreeTableElement<T>>();
 	private List<SimulationTreeTableElement<T>> treeTableElements;
 	private List<SimulationTreeTableElement<T>> treeTableRootElements;
-	private final List<SimulationTreeTableElement<T>> selectedTreeTableElements = new ArrayList<SimulationTreeTableElement<T>>();
 
 	public SimulationTreeTableProvider() {
 		this.treeTableElements = new ArrayList<SimulationTreeTableElement<T>>();
@@ -56,10 +55,9 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 
 	/**
 	 * constructor
-	 * 
-	 * @param treeNodes
-	 *            root nodes of the tree, child nodes are accessed by this
-	 *            component automatically
+	 *
+	 * @param treeNodes root nodes of the tree, child nodes are accessed by this
+	 *                  component automatically
 	 */
 	public SimulationTreeTableProvider(final ArrayList<SimulationTreeTableElement<T>> treeNodes) {
 		this.treeTableElements = treeNodes;
@@ -136,7 +134,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
@@ -151,6 +149,10 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 		return this.treeTableElements;
 	}
 
+	public void setTreeTableElements(final List<SimulationTreeTableElement<T>> treeTableElements) {
+		this.treeTableElements = treeTableElements;
+	}
+
 	public void addTreeTableElement(final SimulationTreeTableElement<T> treeTableElement) {
 		this.treeTableElements.add(treeTableElement);
 		if (!this.selectedTreeTableElements.isEmpty()) {
@@ -160,15 +162,10 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 		}
 	}
 
-	public void addTreeTableElementWithParent(final SimulationTreeTableElement<T> treeTableElement,
-			final SimulationTreeTableElement<T> parent) {
+	public void addTreeTableElementWithParent(final SimulationTreeTableElement<T> treeTableElement, final SimulationTreeTableElement<T> parent) {
 		this.treeTableElements.add(treeTableElement);
 		parent.getChildren().add(treeTableElement);
 		treeTableElement.setParent(parent);
-	}
-
-	public void setTreeTableElements(final List<SimulationTreeTableElement<T>> treeTableElements) {
-		this.treeTableElements = treeTableElements;
 	}
 
 	public void deleteSelectedEntries() {
@@ -195,8 +192,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 		return tree;
 	}
 
-	private void addElementToTree(final SimulationTreeTableElement<T> parent,
-			final SimulationTreeTableElement<T> element, final EventTree<T> tree) {
+	private void addElementToTree(final SimulationTreeTableElement<T> parent, final SimulationTreeTableElement<T> element, final EventTree<T> tree) {
 		if (parent != null) {
 			tree.addChild(parent.getContent(), element.getContent());
 		} else {
@@ -273,8 +269,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 					}
 				}
 				if (!alreadyInserted) {
-					attributes.put((TypeTreeNode) treeTableElement.getContent(),
-							this.getValuesFromInput(treeTableElement));
+					attributes.put((TypeTreeNode) treeTableElement.getContent(), this.getValuesFromInput(treeTableElement));
 				}
 			}
 		}
@@ -287,8 +282,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 		final TypeTreeNode attribute = (TypeTreeNode) attributeElement.getContent();
 		if (attribute.getType().equals(AttributeTypeEnum.DATE)) {
 			// TODO: datum parsen
-		} else if (attribute.getType().equals(AttributeTypeEnum.INTEGER)
-				|| attribute.getType().equals(AttributeTypeEnum.FLOAT)) {
+		} else if (attribute.getType().equals(AttributeTypeEnum.INTEGER) || attribute.getType().equals(AttributeTypeEnum.FLOAT)) {
 			final String[] split = valueString.split(",");
 			for (final String element : split) {
 				if (element.contains("-")) {
@@ -302,8 +296,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 								values.add(j);
 							}
 						} else if (attribute.getType().equals(AttributeTypeEnum.FLOAT)) {
-							for (Double j = Double.parseDouble(subSplit[0].trim()); j <= Double.parseDouble(subSplit[1]
-									.trim()); j++) {
+							for (Double j = Double.parseDouble(subSplit[0].trim()); j <= Double.parseDouble(subSplit[1].trim()); j++) {
 								values.add(j);
 							}
 						}
@@ -351,7 +344,7 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 
 	/**
 	 * Checks if an element of the provider has empty input fields.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasEmptyFields() {
@@ -474,15 +467,11 @@ public class SimulationTreeTableProvider<T> extends AbstractDataProvider impleme
 	public Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> getXorSuccessorsWithProbability() {
 		final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSuccessorsProbability = new HashMap<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>>();
 		for (final SimulationTreeTableElement<T> element : this.treeTableElements) {
-			if (element.getContent() instanceof BPMNXORGateway
-					&& ((AbstractBPMNGateway) element.getContent()).isSplitGateway()) {
+			if (element.getContent() instanceof BPMNXORGateway && ((AbstractBPMNGateway) element.getContent()).isSplitGateway()) {
 				final List<Tuple<AbstractBPMNElement, String>> successorList = new ArrayList<Tuple<AbstractBPMNElement, String>>();
 				for (final SimulationTreeTableElement<T> xorSuccessorElement : this.treeTableElements) {
-					if (((BPMNXORGateway) element.getContent()).getSuccessors().contains(
-							xorSuccessorElement.getContent())) {
-						final Tuple<AbstractBPMNElement, String> tuple = new Tuple<AbstractBPMNElement, String>(
-								(AbstractBPMNElement) xorSuccessorElement.getContent(),
-								xorSuccessorElement.getProbability());
+					if (((BPMNXORGateway) element.getContent()).getSuccessors().contains(xorSuccessorElement.getContent())) {
+						final Tuple<AbstractBPMNElement, String> tuple = new Tuple<AbstractBPMNElement, String>((AbstractBPMNElement) xorSuccessorElement.getContent(), xorSuccessorElement.getProbability());
 						successorList.add(tuple);
 					}
 				}

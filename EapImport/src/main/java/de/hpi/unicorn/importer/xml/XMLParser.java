@@ -52,7 +52,7 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Parses a single event from a XML file from the given file path.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
@@ -64,23 +64,21 @@ public class XMLParser extends AbstractXMLParser {
 		try {
 			doc = AbstractXMLParser.readXMLDocument(filePath);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new XMLParsingException("could not read XSD named " + filePath
-					+ " with the following error message:\n" + e.getMessage());
+			throw new XMLParsingException("could not read XSD named " + filePath + " with the following error message:\n" + e.getMessage());
 		}
 		return XMLParser.generateEvents(doc, null);
 	}
 
 	/**
 	 * Parses a single event from a XML file from the given file path.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public static List<EapEvent> generateEventsFromXML(final File file) throws XMLParsingException, IOException,
-			SAXException {
+	public static List<EapEvent> generateEventsFromXML(final File file) throws XMLParsingException, IOException, SAXException {
 		final Document doc = AbstractXMLParser.readXMLDocument(file);
 		return XMLParser.generateEvents(doc, null);
 	}
@@ -89,26 +87,24 @@ public class XMLParser extends AbstractXMLParser {
 	 * Parses a single event from a XML file from the given file path under
 	 * consideration of the given XSD. The XSD defines the contained nodes and
 	 * attributes of the XML file.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
 	 */
-	public static List<EapEvent> generateEventsFromXML(final String filePath, final String pathToXSD)
-			throws XMLParsingException {
+	public static List<EapEvent> generateEventsFromXML(final String filePath, final String pathToXSD) throws XMLParsingException {
 		Document doc;
 		try {
 			doc = AbstractXMLParser.readXMLDocument(filePath);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
-			throw new XMLParsingException("could not read XSD named " + filePath
-					+ " with the following error message:\n" + e.getMessage());
+			throw new XMLParsingException("could not read XSD named " + filePath + " with the following error message:\n" + e.getMessage());
 		}
 		return XMLParser.generateEvents(doc, pathToXSD);
 	}
 
 	/**
 	 * Parses a single event from a {@link Document}.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
@@ -121,7 +117,7 @@ public class XMLParser extends AbstractXMLParser {
 	 * Parses a single event from a {@link Document} under consideration of the
 	 * given XSD. The XSD defines the contained nodes and attributes of the XML
 	 * file.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
@@ -161,8 +157,7 @@ public class XMLParser extends AbstractXMLParser {
 		} else {
 			eventType = EapEventType.findBySchemaName(FileUtils.getFileNameWithoutExtension(pathToXSD));
 			if (eventType == null) {
-				eventType = XSDParser.generateEventTypeFromXSD(pathToXSD,
-						FileUtils.getFileNameWithoutExtension(pathToXSD));
+				eventType = XSDParser.generateEventTypeFromXSD(pathToXSD, FileUtils.getFileNameWithoutExtension(pathToXSD));
 			}
 		}
 
@@ -174,8 +169,7 @@ public class XMLParser extends AbstractXMLParser {
 			final String timestampName = eventType.getTimestampName();
 
 			// retrieve event values
-			final List<Map<String, String>> eventValuesList = XMLParser.generateEventTreeFromElement(eventType,
-					actualRootElement);
+			final List<Map<String, String>> eventValuesList = XMLParser.generateEventTreeFromElement(eventType, actualRootElement);
 
 			// if (timestampName == null ||
 			// timestampName.equals(AbstractXMLParser.CURRENT_TIMESTAMP) ||
@@ -204,8 +198,7 @@ public class XMLParser extends AbstractXMLParser {
 			// return new EapEvent(eventType, eventTimestamp, eventValueTree);
 			final List<EapEvent> events = new ArrayList<>();
 			for (final Map<String, String> eventValues : eventValuesList) {
-				if (timestampName == null || timestampName.equals(AbstractXMLParser.CURRENT_TIMESTAMP)
-						|| timestampName.equals(AbstractXMLParser.GENERATED_TIMESTAMP_COLUMN_NAME)) {
+				if (timestampName == null || timestampName.equals(AbstractXMLParser.CURRENT_TIMESTAMP) || timestampName.equals(AbstractXMLParser.GENERATED_TIMESTAMP_COLUMN_NAME)) {
 					eventTimestamp = new Date();
 				} else {
 					final String time = eventValues.get(eventType.getTimestampName());
@@ -218,10 +211,7 @@ public class XMLParser extends AbstractXMLParser {
 				final EapEvent event = new EapEvent(eventType, eventTimestamp);
 				final String nameOfAttributeWithInvalidValue = ConversionUtils.validateEvent(eventType, eventValues);
 				if (nameOfAttributeWithInvalidValue != null) {
-					throw new XMLParsingException("Event in the XML files does not match to event type: "
-							+ "Value type of attribute '" + nameOfAttributeWithInvalidValue + "' in the event "
-							+ "does not match to the value type defined in the event type" + "or value for attribute '"
-							+ nameOfAttributeWithInvalidValue + "' is missing in the event.");
+					throw new XMLParsingException("Event in the XML files does not match to event type: " + "Value type of attribute '" + nameOfAttributeWithInvalidValue + "' in the event " + "does not match to the value type defined in the event type" + "or value for attribute '" + nameOfAttributeWithInvalidValue + "' is missing in the event.");
 				}
 				event.setValuesWithoutConversion(eventValues);
 				events.add(event);
@@ -233,11 +223,9 @@ public class XMLParser extends AbstractXMLParser {
 		}
 	}
 
-	private static List<Map<String, String>> generateEventTreeFromElement(final EapEventType eventType,
-			final Node actualRootElement) throws XMLParsingException {
+	private static List<Map<String, String>> generateEventTreeFromElement(final EapEventType eventType, final Node actualRootElement) throws XMLParsingException {
 		// getChildNodesFromEvent(actualRootElement, true);
-		return XMLParser.getChildNodesFromEvent(eventType, new ArrayList<Map<String, String>>(),
-				new HashMap<String, Integer>(), new String(), actualRootElement);
+		return XMLParser.getChildNodesFromEvent(eventType, new ArrayList<Map<String, String>>(), new HashMap<String, Integer>(), new String(), actualRootElement);
 	}
 
 	// /**
@@ -274,13 +262,11 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Parses the attributes of the event from the given {@link Node}.
-	 * 
+	 *
 	 * @param actualRootElement
 	 * @throws XMLParsingException
 	 */
-	private static List<Map<String, String>> getChildNodesFromEvent(final EapEventType eventType,
-			List<Map<String, String>> eventValuesList, final Map<String, Integer> duplicatedAttributes,
-			final String prefix, final Node actualRootElement) throws XMLParsingException {
+	private static List<Map<String, String>> getChildNodesFromEvent(final EapEventType eventType, List<Map<String, String>> eventValuesList, final Map<String, Integer> duplicatedAttributes, final String prefix, final Node actualRootElement) throws XMLParsingException {
 		if (eventValuesList.isEmpty()) {
 			eventValuesList.add(new HashMap<String, String>());
 		}
@@ -288,45 +274,36 @@ public class XMLParser extends AbstractXMLParser {
 		for (int i = 0; i < childNodeList.getLength(); i++) {
 			final Node childNode = childNodeList.item(i);
 			if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-				final String nodeName = childNode.getNodeName().trim().replaceAll(" +", "_")
-						.replaceAll("[^a-zA-Z0-9_]+", "");
+				final String nodeName = childNode.getNodeName().trim().replaceAll(" +", "_").replaceAll("[^a-zA-Z0-9_]+", "");
 				String nodeText = null;
 				if (!XMLParser.hasRealChildNodes(childNode)) {
 					nodeText = childNode.getTextContent();
-					final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(
-							prefix + nodeName);
+					final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(prefix + nodeName);
 					if (attribute != null) {
 						if (attribute.getType() == AttributeTypeEnum.DATE) {
 							nodeText = XMLParser.formatDateNode(nodeText);
 						}
 						if (EapConfiguration.eventValueHandling[0] == MultipleEventValueHandling.CONCAT) {
-							XMLParser.addToOrConcatAttributes(eventType, eventValuesList, duplicatedAttributes, prefix
-									+ nodeName, nodeText);
+							XMLParser.addToOrConcatAttributes(eventType, eventValuesList, duplicatedAttributes, prefix + nodeName, nodeText);
 						} else {
-							addEventValue(eventType, eventValuesList, duplicatedAttributes, prefix + nodeName,
-									nodeText, EapConfiguration.eventValueHandling[0]);
+							addEventValue(eventType, eventValuesList, duplicatedAttributes, prefix + nodeName, nodeText, EapConfiguration.eventValueHandling[0]);
 						}
 					} else {
 						if (eventType.getTimestampName() == null) {
-							throw new XMLParsingException(String.format("xml does not match schema %s",
-									eventType.getTypeName()));
+							throw new XMLParsingException(String.format("xml does not match schema %s", eventType.getTypeName()));
 						}
 						if (eventType.getTimestampName().equals(prefix + nodeName)) {
-							XMLParser.addToAttributes(eventValuesList, duplicatedAttributes, prefix + nodeName,
-									XMLParser.formatDateNode(nodeText));
+							XMLParser.addToAttributes(eventValuesList, duplicatedAttributes, prefix + nodeName, XMLParser.formatDateNode(nodeText));
 						}
 					}
 				}
-				XMLParser.getChildNodesFromEvent(eventType, eventValuesList, duplicatedAttributes, prefix + nodeName
-						+ ".", childNode);
+				XMLParser.getChildNodesFromEvent(eventType, eventValuesList, duplicatedAttributes, prefix + nodeName + ".", childNode);
 			}
 		}
 		return eventValuesList;
 	}
 
-	private static void addEventValue(EapEventType eventType, List<Map<String, String>> eventValuesList,
-			Map<String, Integer> duplicatedAttributes, String nodeName, String nodeText,
-			MultipleEventValueHandling handling) {
+	private static void addEventValue(EapEventType eventType, List<Map<String, String>> eventValuesList, Map<String, Integer> duplicatedAttributes, String nodeName, String nodeText, MultipleEventValueHandling handling) {
 		if (handling == MultipleEventValueHandling.CROSS) {
 			XMLParser.addToAttributes(eventValuesList, duplicatedAttributes, nodeName, nodeText);
 		} else if (handling == MultipleEventValueHandling.FIRST) {
@@ -338,8 +315,7 @@ public class XMLParser extends AbstractXMLParser {
 		}
 	}
 
-	private static void addToAttributes(final List<Map<String, String>> eventValuesList,
-			final Map<String, Integer> duplicatedAttributes, final String nodeName, final String nodeText) {
+	private static void addToAttributes(final List<Map<String, String>> eventValuesList, final Map<String, Integer> duplicatedAttributes, final String nodeName, final String nodeText) {
 		List<Map<String, String>> attributeMapsToChange = eventValuesList;
 		// event attribute occurs more than once
 		if (eventValuesList.get(0).containsKey(nodeName)) {
@@ -365,8 +341,7 @@ public class XMLParser extends AbstractXMLParser {
 		}
 	}
 
-	private static void addToOrConcatAttributes(EapEventType eventType, List<Map<String, String>> eventValuesList,
-			final Map<String, Integer> duplicatedAttributes, final String nodeName, final String nodeText) {
+	private static void addToOrConcatAttributes(EapEventType eventType, List<Map<String, String>> eventValuesList, final Map<String, Integer> duplicatedAttributes, final String nodeName, final String nodeText) {
 		List<Map<String, String>> attributeMapsToChange = eventValuesList;
 		// event attribute occurs more than once
 		if (eventValuesList.get(0).containsKey(nodeName)) {
@@ -392,8 +367,7 @@ public class XMLParser extends AbstractXMLParser {
 			}
 		}
 		for (final Map<String, String> eventValues : attributeMapsToChange) {
-			if (eventValues.containsKey(nodeName)
-					&& eventType.getValueTypeTree().getAttributeByExpression(nodeName).getType() == AttributeTypeEnum.STRING) {
+			if (eventValues.containsKey(nodeName) && eventType.getValueTypeTree().getAttributeByExpression(nodeName).getType() == AttributeTypeEnum.STRING) {
 				eventValues.put(nodeName, eventValues.get(nodeName) + "," + nodeText);
 			} else {
 				eventValues.put(nodeName, nodeText);
@@ -404,7 +378,7 @@ public class XMLParser extends AbstractXMLParser {
 	/**
 	 * Returns true, if this node has child nodes from the Node.ELEMENT_NODE
 	 * type.
-	 * 
+	 *
 	 * @param node
 	 * @return
 	 */
@@ -422,7 +396,7 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the XSD name for a given node.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -441,7 +415,7 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the first child with the given name from a given node.
-	 * 
+	 *
 	 * @param name
 	 * @param parentNode
 	 * @return
@@ -458,7 +432,7 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the last child with the given name from a given node.
-	 * 
+	 *
 	 * @param name
 	 * @param parentNode
 	 * @return
@@ -476,7 +450,7 @@ public class XMLParser extends AbstractXMLParser {
 
 	/**
 	 * Returns all childs with the given name from a given node.
-	 * 
+	 *
 	 * @param name
 	 * @param parentNode
 	 * @return
@@ -525,8 +499,7 @@ public class XMLParser extends AbstractXMLParser {
 	}
 
 	private static String formatDateNode(final String nodeText) {
-		final Date nodeTextAsDate = (DateUtils.parseDate(nodeText) != null) ? DateUtils.parseDate(nodeText)
-				: new Date();
+		final Date nodeTextAsDate = (DateUtils.parseDate(nodeText) != null) ? DateUtils.parseDate(nodeText) : new Date();
 		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		return formatter.format(nodeTextAsDate);
 	}

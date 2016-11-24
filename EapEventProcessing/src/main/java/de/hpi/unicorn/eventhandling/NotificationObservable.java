@@ -36,7 +36,7 @@ public class NotificationObservable {
 
 	/**
 	 * Singleton class. Use this method to get the instance.
-	 * 
+	 *
 	 * @return
 	 */
 	public static NotificationObservable getInstance() {
@@ -56,7 +56,7 @@ public class NotificationObservable {
 	/**
 	 * Triggers the notification rule with an event. A new notification will be
 	 * created.
-	 * 
+	 *
 	 * @param event
 	 */
 	public void trigger(final EapEvent event) {
@@ -75,8 +75,7 @@ public class NotificationObservable {
 	 * Registers the notifications from the database.
 	 */
 	private void initiateWithNotificationsFromDB() {
-		final List<NotificationRuleForEvent> notificationsFromDB = NotificationRuleForEvent
-				.findAllEventNotificationRules();
+		final List<NotificationRuleForEvent> notificationsFromDB = NotificationRuleForEvent.findAllEventNotificationRules();
 		for (final NotificationRuleForEvent notification : notificationsFromDB) {
 			this.addNotificationObserver(notification);
 		}
@@ -84,13 +83,12 @@ public class NotificationObservable {
 
 	/**
 	 * Adds a new notification rule.
-	 * 
+	 *
 	 * @param notification
 	 */
 	public void addNotificationObserver(final NotificationRuleForEvent notification) {
 		// get notifications already registered for this eventtype
-		HashSet<NotificationRuleForEvent> listOfNotifcationsForEventType = this.notifications.get(notification
-				.getEventType());
+		HashSet<NotificationRuleForEvent> listOfNotifcationsForEventType = this.notifications.get(notification.getEventType());
 		if (listOfNotifcationsForEventType == null) {
 			listOfNotifcationsForEventType = new HashSet<NotificationRuleForEvent>();
 		}
@@ -100,7 +98,7 @@ public class NotificationObservable {
 
 	/**
 	 * Removes all notification rules that subscribed for the event type
-	 * 
+	 *
 	 * @param eventType
 	 */
 	public void removeNotificationObserversForEventType(final EapEventType eventType) {
@@ -113,13 +111,12 @@ public class NotificationObservable {
 
 	/**
 	 * Removes a certain notification rule
-	 * 
+	 *
 	 * @param notification
 	 */
 	public void removeNotificationObserver(final NotificationRuleForEvent notification) {
 		// get notifications already registered for this eventtype
-		final HashSet<NotificationRuleForEvent> listOfNotifcationsForEventType = this.notifications.get(notification
-				.getEventType());
+		final HashSet<NotificationRuleForEvent> listOfNotifcationsForEventType = this.notifications.get(notification.getEventType());
 		if (listOfNotifcationsForEventType == null) {
 			return;
 		}
@@ -129,7 +126,7 @@ public class NotificationObservable {
 
 	/**
 	 * Removes several notification rules.
-	 * 
+	 *
 	 * @param notifications
 	 */
 	public void removeNotificationObservers(final List<NotificationRuleForEvent> notifications) {
@@ -141,7 +138,7 @@ public class NotificationObservable {
 	/**
 	 * Takes several events and forwards the triggering to the coressponding
 	 * notification rules.
-	 * 
+	 *
 	 * @param events
 	 */
 	public void trigger(final List<EapEvent> events) {

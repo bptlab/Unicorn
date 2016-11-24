@@ -26,11 +26,9 @@ import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
- * 
  * Container object for pairs of attributes. Used for event correlation.
  * Attributes must be from the same type, but may have different names and may
  * belong to different event types. Related to a process.
- * 
  */
 @Entity
 @Table(name = "CorrelationRule")
@@ -65,16 +63,14 @@ public class CorrelationRule extends Persistable {
 	}
 
 	/**
-	 * 
 	 * Constructor. Checks for validity of the rule and throws an exception if
 	 * required.
-	 * 
+	 *
 	 * @param firstAttribute
 	 * @param secondAttribute
 	 * @throws RuntimeException
 	 */
-	public CorrelationRule(final TypeTreeNode firstAttribute, final TypeTreeNode secondAttribute)
-			throws RuntimeException {
+	public CorrelationRule(final TypeTreeNode firstAttribute, final TypeTreeNode secondAttribute) throws RuntimeException {
 		this();
 		if (firstAttribute == null && secondAttribute == null) {
 			throw new RuntimeException("Correlation rule attributes must not be null.");
@@ -83,6 +79,11 @@ public class CorrelationRule extends Persistable {
 		}
 		this.firstAttribute = firstAttribute;
 		this.secondAttribute = secondAttribute;
+	}
+
+	public static List<CorrelationRule> findAll() {
+		final Query query = Persistor.getEntityManager().createQuery("select t from CorrelationRule t", CorrelationRule.class);
+		return query.getResultList();
 	}
 
 	public CorrelationProcess getProcess() {
@@ -123,12 +124,6 @@ public class CorrelationRule extends Persistable {
 
 	public void setEventTypeOfSecondAttribute(final EapEventType eventTypeOfSecondAttribute) {
 		this.eventTypeOfSecondAttribute = eventTypeOfSecondAttribute;
-	}
-
-	public static List<CorrelationRule> findAll() {
-		final Query query = Persistor.getEntityManager().createQuery("select t from CorrelationRule t",
-				CorrelationRule.class);
-		return query.getResultList();
 	}
 
 	@Override

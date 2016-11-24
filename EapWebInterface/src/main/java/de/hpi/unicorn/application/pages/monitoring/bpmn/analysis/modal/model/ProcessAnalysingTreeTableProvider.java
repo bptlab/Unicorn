@@ -26,13 +26,11 @@ import de.hpi.unicorn.query.PatternQuery;
 /**
  * Wraps the tree of BPMN components and their event types from the monitoring
  * points for a tree table visualization.
- * 
- * @author micha
- * 
+ *
  * @param
+ * @author micha
  */
-public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider implements
-		ISortableTreeProvider<ProcessAnalysingTreeTableElement, String> {
+public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider implements ISortableTreeProvider<ProcessAnalysingTreeTableElement, String> {
 
 	private static final long serialVersionUID = 1L;
 	private List<ProcessAnalysingTreeTableElement> treeTableElements = new ArrayList<ProcessAnalysingTreeTableElement>();
@@ -89,8 +87,7 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 
 	private PatternQuery findQueryWithElements(final Set<AbstractBPMNElement> bpmnElements) {
 		for (final PatternQuery query : this.processMonitor.getQueries()) {
-			if (query.getMonitoredElements().containsAll(bpmnElements)
-					&& bpmnElements.containsAll(query.getMonitoredElements())) {
+			if (query.getMonitoredElements().containsAll(bpmnElements) && bpmnElements.containsAll(query.getMonitoredElements())) {
 				return query;
 			}
 		}
@@ -168,7 +165,7 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
@@ -183,6 +180,10 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 		return this.treeTableElements;
 	}
 
+	public void setTreeTableElements(final List<ProcessAnalysingTreeTableElement> treeTableElements) {
+		this.treeTableElements = treeTableElements;
+	}
+
 	public void addTreeTableElement(final ProcessAnalysingTreeTableElement treeTableElement) {
 		this.treeTableElements.add(treeTableElement);
 		if (!this.selectedTreeTableElements.isEmpty()) {
@@ -192,15 +193,10 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 		}
 	}
 
-	public void addTreeTableElementWithParent(final ProcessAnalysingTreeTableElement treeTableElement,
-			final ProcessAnalysingTreeTableElement parent) {
+	public void addTreeTableElementWithParent(final ProcessAnalysingTreeTableElement treeTableElement, final ProcessAnalysingTreeTableElement parent) {
 		this.treeTableElements.add(treeTableElement);
 		parent.getChildren().add(treeTableElement);
 		treeTableElement.setParent(parent);
-	}
-
-	public void setTreeTableElements(final List<ProcessAnalysingTreeTableElement> treeTableElements) {
-		this.treeTableElements = treeTableElements;
 	}
 
 	public void deleteSelectedEntries() {
@@ -225,8 +221,7 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 		}
 	}
 
-	private void addElementToTree(final ProcessAnalysingTreeTableElement parent, final PatternQuery query,
-			final EventTree<PatternQuery> queryTree) {
+	private void addElementToTree(final ProcessAnalysingTreeTableElement parent, final PatternQuery query, final EventTree<PatternQuery> queryTree) {
 		final ProcessAnalysingTreeTableElement treeTableElement = this.createTreeTableElement(query);
 		treeTableElement.setParent(parent);
 		this.treeTableElements.add(treeTableElement);
@@ -241,8 +236,7 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 	}
 
 	private ProcessAnalysingTreeTableElement createTreeTableElement(final PatternQuery query) {
-		final ProcessAnalysingTreeTableElement element = new ProcessAnalysingTreeTableElement(this.getNextID(), query,
-				this.processMonitor);
+		final ProcessAnalysingTreeTableElement element = new ProcessAnalysingTreeTableElement(this.getNextID(), query, this.processMonitor);
 		return element;
 	}
 
@@ -258,16 +252,6 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 		return this.processMonitor;
 	}
 
-	@Override
-	public Object getEntry(final int entryId) {
-		for (final ProcessAnalysingTreeTableElement treeTableElement : this.treeTableElements) {
-			if (treeTableElement.getID() == entryId) {
-				return treeTableElement;
-			}
-		}
-		return null;
-	}
-
 	public void setProcessMonitor(final ProcessMonitor processMonitor) {
 		this.processMonitor = processMonitor;
 		// Alte Werte entfernen
@@ -276,6 +260,16 @@ public class ProcessAnalysingTreeTableProvider extends AbstractDataProvider impl
 		this.selectedTreeTableElements = new ArrayList<ProcessAnalysingTreeTableElement>();
 		this.refreshTreeTable();
 
+	}
+
+	@Override
+	public Object getEntry(final int entryId) {
+		for (final ProcessAnalysingTreeTableElement treeTableElement : this.treeTableElements) {
+			if (treeTableElement.getID() == entryId) {
+				return treeTableElement;
+			}
+		}
+		return null;
 	}
 
 }

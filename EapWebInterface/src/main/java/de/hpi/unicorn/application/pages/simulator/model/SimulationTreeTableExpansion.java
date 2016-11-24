@@ -29,6 +29,15 @@ public class SimulationTreeTableExpansion<T> implements Set<SimulationTreeTableE
 	private final Set<Integer> IDs = new HashSet<Integer>();
 	private boolean inverse;
 
+	public static SimulationTreeTableExpansion get() {
+		SimulationTreeTableExpansion expansion = Session.get().getMetaData(SimulationTreeTableExpansion.KEY);
+		if (expansion == null) {
+			expansion = new SimulationTreeTableExpansion();
+			Session.get().setMetaData(SimulationTreeTableExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
+
 	public void expandAll() {
 		this.IDs.clear();
 		this.inverse = true;
@@ -124,14 +133,5 @@ public class SimulationTreeTableExpansion<T> implements Set<SimulationTreeTableE
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static SimulationTreeTableExpansion get() {
-		SimulationTreeTableExpansion expansion = Session.get().getMetaData(SimulationTreeTableExpansion.KEY);
-		if (expansion == null) {
-			expansion = new SimulationTreeTableExpansion();
-			Session.get().setMetaData(SimulationTreeTableExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

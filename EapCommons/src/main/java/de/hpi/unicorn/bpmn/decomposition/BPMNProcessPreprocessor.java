@@ -21,7 +21,7 @@ public class BPMNProcessPreprocessor {
 
 	/**
 	 * Tries to adapt parts of the BPMN process for a processing with the RPST.
-	 * 
+	 *
 	 * @param process
 	 * @return
 	 */
@@ -33,7 +33,7 @@ public class BPMNProcessPreprocessor {
 
 	/**
 	 * Creates one start event for the process, if there is more than one.
-	 * 
+	 *
 	 * @param process
 	 */
 	private static void mergeStartEvents(final BPMNProcess process) {
@@ -56,7 +56,7 @@ public class BPMNProcessPreprocessor {
 	 * Creates one end event for the process, if there is more than one. The old
 	 * events are removed and all predecessors of old end events are joined in
 	 * one XOR-Gateway and a succeding new end event.
-	 * 
+	 *
 	 * @param process
 	 */
 	private static void mergeEndEvents(final BPMNProcess process) {
@@ -66,8 +66,7 @@ public class BPMNProcessPreprocessor {
 		// um nicht die Information über die MonitoringPoints zu verlieren
 		if (process.getEndEvents().size() > 1) {
 			final BPMNEndEvent newEndEvent = new BPMNEndEvent("End1", "MergedEndEvent", null);
-			final BPMNXORGateway mergingXOR = new BPMNXORGateway("MergingXOR" + new Date().getTime(),
-					"MergeXORBeforeEndEvent", null);
+			final BPMNXORGateway mergingXOR = new BPMNXORGateway("MergingXOR" + new Date().getTime(), "MergeXORBeforeEndEvent", null);
 			final List<BPMNEndEvent> endEvents = new ArrayList<BPMNEndEvent>(process.getEndEvents());
 			for (final BPMNEndEvent endEvent : endEvents) {
 				for (final AbstractBPMNElement predecessor : endEvent.getPredecessors()) {

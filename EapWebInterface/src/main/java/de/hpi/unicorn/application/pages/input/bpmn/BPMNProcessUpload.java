@@ -11,7 +11,7 @@ import de.hpi.unicorn.application.pages.AbstractEapPage;
 
 /**
  * This page displays the {@link BPMNProcessUploadPanel}.
- * 
+ *
  * @author micha
  */
 public class BPMNProcessUpload extends AbstractEapPage {

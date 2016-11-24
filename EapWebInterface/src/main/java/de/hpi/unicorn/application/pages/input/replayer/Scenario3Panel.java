@@ -85,19 +85,15 @@ public class Scenario3Panel extends Panel {
 
 				for (String s : selectedFiles) {
 					if (s.equals("shipToEnns")) {
-						events.addAll(panel.generateEventsFromCSV(this.getClass().getResource("/shipToEnns.csv")
-								.getPath(), et));
+						events.addAll(panel.generateEventsFromCSV(this.getClass().getResource("/shipToEnns.csv").getPath(), et));
 					}
 					if (s.equals("shipToEnns_additionalKremsToEnns")) {
-						events.addAll(panel.generateEventsFromCSV(
-								this.getClass().getResource("/shipToEnns_additionalKremsToEnns.txt").getPath(), et));
+						events.addAll(panel.generateEventsFromCSV(this.getClass().getResource("/shipToEnns_additionalKremsToEnns.txt").getPath(), et));
 					}
 				}
 
-				panel.replayEvents(events, Integer.parseInt(scaleFactor), "GET Scenario 3",
-						new ArrayList<ReplayFileBean>(), TimeMode.UNCHANGED, null, null);
-				panel.getParentPage().getFeedbackPanel()
-						.success("Replayer started for GET Scenario 3 - files: " + selectedFiles + ".");
+				panel.replayEvents(events, Integer.parseInt(scaleFactor), "GET Scenario 3", new ArrayList<ReplayFileBean>(), TimeMode.UNCHANGED, null, null);
+				panel.getParentPage().getFeedbackPanel().success("Replayer started for GET Scenario 3 - files: " + selectedFiles + ".");
 			}
 		};
 
@@ -105,8 +101,7 @@ public class Scenario3Panel extends Panel {
 	}
 
 	private void addScaleFactorTextField(Form<Void> form) {
-		this.scaleFactorInput = new TextField<String>("scaleFactorInput",
-				new PropertyModel<String>(this, "scaleFactor"));
+		this.scaleFactorInput = new TextField<String>("scaleFactorInput", new PropertyModel<String>(this, "scaleFactor"));
 		this.scaleFactorInput.setOutputMarkupId(true);
 		form.add(this.scaleFactorInput);
 	}
@@ -115,8 +110,7 @@ public class Scenario3Panel extends Panel {
 
 		final List<String> fileNames = Arrays.asList("shipToEnns", "shipToEnns_additionalKremsToEnns");
 
-		this.eventsCheckBoxMultipleChoice = new CheckBoxMultipleChoice<String>("eventsCheckBoxMultipleChoice",
-				new PropertyModel<List<String>>(this, "selectedFiles"), fileNames);
+		this.eventsCheckBoxMultipleChoice = new CheckBoxMultipleChoice<String>("eventsCheckBoxMultipleChoice", new PropertyModel<List<String>>(this, "selectedFiles"), fileNames);
 		this.eventsCheckBoxMultipleChoice.setOutputMarkupId(true);
 		layoutForm.add(this.eventsCheckBoxMultipleChoice);
 	}

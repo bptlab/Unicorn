@@ -22,13 +22,11 @@ public class AttributeTypeCheckBoxPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
 
-	public AttributeTypeCheckBoxPanel(final String id, final TypeTreeNode attribute, final boolean checkBoxEnabled,
-			final EventAttributeProvider dataProvider, final Component tableContainer) {
+	public AttributeTypeCheckBoxPanel(final String id, final TypeTreeNode attribute, final boolean checkBoxEnabled, final EventAttributeProvider dataProvider, final Component tableContainer) {
 		super(id);
 		final Form<Void> form = new Form<Void>("layoutForm");
 
-		final CheckBox checkBox = new CheckBox("attributeTypeCheckBox", Model.of(dataProvider
-				.isEntrySelected(attribute)));
+		final CheckBox checkBox = new CheckBox("attributeTypeCheckBox", Model.of(dataProvider.isEntrySelected(attribute)));
 		checkBox.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long serialVersionUID = 1L;

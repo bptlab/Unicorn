@@ -42,14 +42,12 @@ import de.hpi.unicorn.transformation.collection.TransformationPatternTree;
 import de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledgeExpressionSet;
 
 /**
- * 
  * Contains all objects that are required for event transformation.
  * Transformation rules are unique by the event type of the transformed events
  * and the user-defined title of the transformation rule.
- * 
  */
 @Entity
-@Table(name = "TransformationRule", uniqueConstraints = { @UniqueConstraint(columnNames = { "eventType", "title" }) })
+@Table(name = "TransformationRule", uniqueConstraints = {@UniqueConstraint(columnNames = {"eventType", "title"})})
 public class TransformationRule extends Persistable {
 
 	private static final long serialVersionUID = 6601905480228417174L;
@@ -64,7 +62,7 @@ public class TransformationRule extends Persistable {
 	private EapEventType eventType;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinTable(name = "TransformationRuleEventTypes", joinColumns = { @JoinColumn(name = "Id") })
+	@JoinTable(name = "TransformationRuleEventTypes", joinColumns = {@JoinColumn(name = "Id")})
 	@JoinColumn(name = "EventTypes")
 	private List<EapEventType> eventTypesOfIncomingEvents;
 
@@ -106,14 +104,11 @@ public class TransformationRule extends Persistable {
 	 * Constructor for transformation rules created in the basic rule editor.
 	 * DEPRECATED - use TransformationRule(EapEventType eventType,
 	 * List<EapEventType> incomingEventTypes, String title, String query)
-	 * 
-	 * @param eventType
-	 *            event type of the transformed events
-	 * @param title
-	 *            name of the transformation rule
-	 * @param query
-	 *            Esper query that is used to listen for incoming events and to
-	 *            create the transformed events
+	 *
+	 * @param eventType event type of the transformed events
+	 * @param title     name of the transformation rule
+	 * @param query     Esper query that is used to listen for incoming events and to
+	 *                  create the transformed events
 	 */
 	@Deprecated
 	public TransformationRule(final EapEventType eventType, final String title, final String query) {
@@ -125,19 +120,14 @@ public class TransformationRule extends Persistable {
 
 	/**
 	 * Constructor for transformation rules created in the basic rule editor.
-	 * 
-	 * @param eventType
-	 *            event type of the transformed events
-	 * @param eventTypesOfIncomingEvents
-	 *            event types of incoming normalized events
-	 * @param title
-	 *            name of the transformation rule
-	 * @param query
-	 *            Esper query that is used to listen for incoming events and to
-	 *            create the transformed events
+	 *
+	 * @param eventType                  event type of the transformed events
+	 * @param eventTypesOfIncomingEvents event types of incoming normalized events
+	 * @param title                      name of the transformation rule
+	 * @param query                      Esper query that is used to listen for incoming events and to
+	 *                                   create the transformed events
 	 */
-	public TransformationRule(final EapEventType eventType, final List<EapEventType> eventTypesOfIncomingEvents,
-			final String title, final String query) {
+	public TransformationRule(final EapEventType eventType, final List<EapEventType> eventTypesOfIncomingEvents, final String title, final String query) {
 		this();
 		this.eventType = eventType;
 		this.eventTypesOfIncomingEvents = eventTypesOfIncomingEvents;
@@ -147,24 +137,17 @@ public class TransformationRule extends Persistable {
 
 	/**
 	 * Constructor for transformation rules created in the advanced rule editor.
-	 * 
-	 * @param eventType
-	 *            event type of the transformed events
-	 * @param title
-	 *            name of the transformation rule
-	 * @param patternTree
-	 *            pattern that is used to listen for events, built up from the
-	 *            provided elements
-	 * @param attributeIdentifiersAndExpressions
-	 *            pairs of attribute identifiers and expressions - determines
-	 *            what values are stored in the transformed events
-	 * @param attributeIdentifiersAndExpressionSets
-	 *            pairs of attribute identifiers and sets of expressions
-	 *            determining the fetch of external knowledge
+	 *
+	 * @param eventType                             event type of the transformed events
+	 * @param title                                 name of the transformation rule
+	 * @param patternTree                           pattern that is used to listen for events, built up from the
+	 *                                              provided elements
+	 * @param attributeIdentifiersAndExpressions    pairs of attribute identifiers and expressions - determines
+	 *                                              what values are stored in the transformed events
+	 * @param attributeIdentifiersAndExpressionSets pairs of attribute identifiers and sets of expressions
+	 *                                              determining the fetch of external knowledge
 	 */
-	public TransformationRule(final EapEventType eventType, final String title,
-			final TransformationPatternTree patternTree, final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
+	public TransformationRule(final EapEventType eventType, final String title, final TransformationPatternTree patternTree, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
 		this(eventType, title, null);
 		for (final String key : attributeIdentifiersAndExpressionSets.keySet()) {
 			attributeIdentifiersAndExpressions.remove(key);
@@ -172,6 +155,63 @@ public class TransformationRule extends Persistable {
 		this.patternTree = patternTree;
 		this.attributeIdentifiersAndExpressions = attributeIdentifiersAndExpressions;
 		this.attributeIdentifiersAndExternalKnowledgeExpressionSets = attributeIdentifiersAndExpressionSets;
+	}
+
+	public static List<TransformationRule> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM TransformationRule t", TransformationRule.class);
+		return q.getResultList();
+	}
+
+	public static List<TransformationRule> findByEventType(final EapEventType eventType) {
+		final EntityManager em = Persistor.getEntityManager();
+		em.clear();
+		/*
+		 * the ID of the eventType is stored in the database, not the whole
+		 * EapEventType
+		 */
+		final Query query = em.createNativeQuery("SELECT * FROM TransformationRule WHERE EventType = " + eventType.getID(), TransformationRule.class);
+		try {
+			return query.getResultList();
+		} catch (final Exception e) {
+			return null;
+		}
+	}
+
+	public static TransformationRule findByEventTypeAndTitle(final String eventTypeName, final String title) {
+		final EntityManager em = Persistor.getEntityManager();
+		/*
+		 * the ID of the eventType is stored in the database, not the whole
+		 * EapEventType
+		 */
+		em.clear();
+		final Query query = em.createNativeQuery("SELECT * FROM TransformationRule WHERE EventType = (SELECT ID FROM EventType WHERE TypeName = '" + eventTypeName + "') AND Title = '" + title + "'", TransformationRule.class);
+		try {
+			return (TransformationRule) query.getResultList().get(0);
+		} catch (final Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Finds all transformation rules whose queries are evaluated against the
+	 * event.
+	 *
+	 * @param event event in question
+	 * @return transformation rules whose queries are evaluated against the
+	 * event
+	 */
+	public static List<TransformationRule> getTransformationRulesForEvent(final EapEvent event) {
+		final List<TransformationRule> transformationRules = TransformationRule.findAll();
+		final List<TransformationRule> relevantTransformationRules = new ArrayList<TransformationRule>();
+		for (final TransformationRule rule : transformationRules) {
+			for (final EapEventType eventType : rule.getEventTypesOfIncomingEvents()) {
+				if (eventType.equals(event.getEventType())) {
+					relevantTransformationRules.add(rule);
+					break;
+				}
+			}
+		}
+		return relevantTransformationRules;
 	}
 
 	@Override
@@ -232,9 +272,7 @@ public class TransformationRule extends Persistable {
 
 	public String getEsperQuery() {
 		if (this.esperQuery == null || this.esperQuery.isEmpty()) {
-			this.esperQuery = EsperTransformationRuleParser.getInstance().parseRule(this.patternTree,
-					this.attributeIdentifiersAndExpressions,
-					this.attributeIdentifiersAndExternalKnowledgeExpressionSets);
+			this.esperQuery = EsperTransformationRuleParser.getInstance().parseRule(this.patternTree, this.attributeIdentifiersAndExpressions, this.attributeIdentifiersAndExternalKnowledgeExpressionSets);
 		}
 		return this.esperQuery;
 	}
@@ -278,18 +316,15 @@ public class TransformationRule extends Persistable {
 		return this.attributeIdentifiersAndExternalKnowledgeExpressionSets;
 	}
 
-	public void setAttributeIdentifiersAndExpressionSets(
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
+	public void setAttributeIdentifiersAndExpressionSets(final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
 		this.attributeIdentifiersAndExternalKnowledgeExpressionSets = attributeIdentifiersAndExpressionSets;
 	}
 
 	@Override
 	public TransformationRule save() {
 		for (final String attributeIdentifer : this.attributeIdentifiersAndExternalKnowledgeExpressionSets.keySet()) {
-			if (this.attributeIdentifiersAndExternalKnowledgeExpressionSets.get(attributeIdentifer)
-					.getTransformationRule() == null) {
-				this.attributeIdentifiersAndExternalKnowledgeExpressionSets.get(attributeIdentifer)
-						.setTransformationRule(this);
+			if (this.attributeIdentifiersAndExternalKnowledgeExpressionSets.get(attributeIdentifer).getTransformationRule() == null) {
+				this.attributeIdentifiersAndExternalKnowledgeExpressionSets.get(attributeIdentifer).setTransformationRule(this);
 			}
 		}
 		return (TransformationRule) super.save();
@@ -298,67 +333,5 @@ public class TransformationRule extends Persistable {
 	@Override
 	public TransformationRule remove() {
 		return (TransformationRule) super.remove();
-	}
-
-	public static List<TransformationRule> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM TransformationRule t",
-				TransformationRule.class);
-		return q.getResultList();
-	}
-
-	public static List<TransformationRule> findByEventType(final EapEventType eventType) {
-		final EntityManager em = Persistor.getEntityManager();
-		em.clear();
-		/*
-		 * the ID of the eventType is stored in the database, not the whole
-		 * EapEventType
-		 */
-		final Query query = em.createNativeQuery(
-				"SELECT * FROM TransformationRule WHERE EventType = " + eventType.getID(), TransformationRule.class);
-		try {
-			return query.getResultList();
-		} catch (final Exception e) {
-			return null;
-		}
-	}
-
-	public static TransformationRule findByEventTypeAndTitle(final String eventTypeName, final String title) {
-		final EntityManager em = Persistor.getEntityManager();
-		/*
-		 * the ID of the eventType is stored in the database, not the whole
-		 * EapEventType
-		 */
-		em.clear();
-		final Query query = em.createNativeQuery(
-				"SELECT * FROM TransformationRule WHERE EventType = (SELECT ID FROM EventType WHERE TypeName = '"
-						+ eventTypeName + "') AND Title = '" + title + "'", TransformationRule.class);
-		try {
-			return (TransformationRule) query.getResultList().get(0);
-		} catch (final Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Finds all transformation rules whose queries are evaluated against the
-	 * event.
-	 * 
-	 * @param event
-	 *            event in question
-	 * @return transformation rules whose queries are evaluated against the
-	 *         event
-	 */
-	public static List<TransformationRule> getTransformationRulesForEvent(final EapEvent event) {
-		final List<TransformationRule> transformationRules = TransformationRule.findAll();
-		final List<TransformationRule> relevantTransformationRules = new ArrayList<TransformationRule>();
-		for (final TransformationRule rule : transformationRules) {
-			for (final EapEventType eventType : rule.getEventTypesOfIncomingEvents()) {
-				if (eventType.equals(event.getEventType())) {
-					relevantTransformationRules.add(rule);
-					break;
-				}
-			}
-		}
-		return relevantTransformationRules;
 	}
 }

@@ -59,8 +59,7 @@ public class EmailUtils {
 	}
 
 	public static void sendTestMail(final Session session) throws MessagingException {
-		EmailUtils.postMail(session, EmailUtils.user, "Test message",
-				"Mail delivery of Event Processing Platform has been successfully set up!");
+		EmailUtils.postMail(session, EmailUtils.user, "Test message", "Mail delivery of Event Processing Platform has been successfully set up!");
 	}
 
 	public static Session getGMailSession(final String user, final String pass) {
@@ -124,8 +123,7 @@ public class EmailUtils {
 	/**
 	 * sends email
 	 */
-	public static void postMail(final Session session, final String recipient, final String subject,
-			final String message) throws MessagingException {
+	public static void postMail(final Session session, final String recipient, final String subject, final String message) throws MessagingException {
 		final Message msg = new MimeMessage(session);
 
 		final InternetAddress addressTo = new InternetAddress(recipient);

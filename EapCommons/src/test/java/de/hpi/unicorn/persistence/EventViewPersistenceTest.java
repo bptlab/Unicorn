@@ -60,10 +60,8 @@ public class EventViewPersistenceTest implements PersistenceTest {
 	@Test
 	public void testFindByEventType() {
 		storeExampleView();
-		assertTrue("should have been 1, but was " + EventView.findByEventType(eventType).size(),
-				(EventView.findByEventType(eventType)).size() == 1);
-		assertTrue(EventView.findByEventType(eventType).toString(), (EventView.findByEventType(eventType)).get(0)
-				.getID() == view.getID());
+		assertTrue("should have been 1, but was " + EventView.findByEventType(eventType).size(), (EventView.findByEventType(eventType)).size() == 1);
+		assertTrue(EventView.findByEventType(eventType).toString(), (EventView.findByEventType(eventType)).get(0).getID() == view.getID());
 	}
 
 	@Override
@@ -78,8 +76,7 @@ public class EventViewPersistenceTest implements PersistenceTest {
 	public void testDeleteEventType() {
 		storeExampleView();
 		eventType.remove();
-		assertTrue(EapEventType.findByID(eventType.getID()) == null
-				|| !EapEventType.findByID(eventType.getID()).getTypeName().equals(eventType.getTypeName()));
+		assertTrue(EapEventType.findByID(eventType.getID()) == null || !EapEventType.findByID(eventType.getID()).getTypeName().equals(eventType.getTypeName()));
 	}
 
 }

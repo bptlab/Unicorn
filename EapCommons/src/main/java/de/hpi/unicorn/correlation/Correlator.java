@@ -27,9 +27,8 @@ public class Correlator {
 	 * attributes (attributes with the same attribute expression belonging to
 	 * all the given event types) and correlation rules (pairs of attributes
 	 * belonging to the same or different event type) are supported.
-	 * 
-	 * @param events
-	 *            events to be correlated
+	 *
+	 * @param events events to be correlated
 	 */
 	public static void correlate(final List<EapEvent> events) {
 		for (final EapEvent event : events) {
@@ -37,11 +36,9 @@ public class Correlator {
 			final List<CorrelationProcess> processes = CorrelationProcess.findByEventType(eventType);
 			for (final CorrelationProcess process : processes) {
 				if (process.isCorrelationWithCorrelationRules()) {
-					RuleCorrelator.correlateEventToProcessInstance(event, process.getCorrelationRules(), process,
-							process.getTimeCondition());
+					RuleCorrelator.correlateEventToProcessInstance(event, process.getCorrelationRules(), process, process.getTimeCondition());
 				} else {
-					AttributeCorrelator.correlateEventToProcessInstance(event, process.getCorrelationAttributes(),
-							process, process.getTimeCondition());
+					AttributeCorrelator.correlateEventToProcessInstance(event, process.getCorrelationAttributes(), process, process.getTimeCondition());
 				}
 			}
 		}
@@ -49,12 +46,11 @@ public class Correlator {
 
 	/**
 	 * Destroys all instances related to the given process.
-	 * 
+	 *
 	 * @param selectedProcess
 	 */
 	public static void removeExistingCorrelation(final CorrelationProcess selectedProcess) {
-		final List<CorrelationProcessInstance> existingProcessInstances = CorrelationProcessInstance
-				.findByProcess(selectedProcess);
+		final List<CorrelationProcessInstance> existingProcessInstances = CorrelationProcessInstance.findByProcess(selectedProcess);
 		for (final CorrelationProcessInstance processInstance : existingProcessInstances) {
 			processInstance.remove();
 		}

@@ -35,8 +35,7 @@ public class ChartOptionsPersistenceTest implements PersistenceTest {
 	private void storeExampleOptions() {
 		eventType = new EapEventType("Tsun");
 		eventType.save();
-		options = new ChartConfiguration(eventType, "attribute", AttributeTypeEnum.STRING, "chartTitle",
-				ChartTypeEnum.COLUMN, 1);
+		options = new ChartConfiguration(eventType, "attribute", AttributeTypeEnum.STRING, "chartTitle", ChartTypeEnum.COLUMN, 1);
 		options.save();
 	}
 
@@ -44,11 +43,9 @@ public class ChartOptionsPersistenceTest implements PersistenceTest {
 	@Test
 	public void testStoreAndRetrieve() {
 		storeExampleOptions();
-		assertTrue("Value should be 1, but was " + ChartConfiguration.findAll().size(), ChartConfiguration.findAll()
-				.size() == 1);
+		assertTrue("Value should be 1, but was " + ChartConfiguration.findAll().size(), ChartConfiguration.findAll().size() == 1);
 		ChartConfiguration.removeAll();
-		assertTrue("Value should be 0, but was " + ChartConfiguration.findAll().size(), ChartConfiguration.findAll()
-				.size() == 0);
+		assertTrue("Value should be 0, but was " + ChartConfiguration.findAll().size(), ChartConfiguration.findAll().size() == 0);
 	}
 
 	@Override
@@ -72,8 +69,7 @@ public class ChartOptionsPersistenceTest implements PersistenceTest {
 	public void testDeleteEventType() {
 		storeExampleOptions();
 		eventType.remove();
-		assertTrue(EapEventType.findByID(eventType.getID()) == null
-				|| !EapEventType.findByID(eventType.getID()).getTypeName().equals(eventType.getTypeName()));
+		assertTrue(EapEventType.findByID(eventType.getID()) == null || !EapEventType.findByID(eventType.getID()).getTypeName().equals(eventType.getTypeName()));
 	}
 
 }

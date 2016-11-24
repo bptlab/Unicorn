@@ -23,9 +23,7 @@ public class TempFolderUtil {
 		if (System.getProperty("os.name").contains("Windows")) {
 			TempFolderUtil.tempFolder = "C:\\temp\\";
 		} else if (System.getProperty("os.name").contains("Mac")) {
-			final File _uploadFolder = new File(System.getProperty("file.separator") + "Users"
-					+ System.getProperty("file.separator") + System.getProperty("user.name")
-					+ System.getProperty("file.separator") + "tmp"); // System.getProperty("user.dir"));
+			final File _uploadFolder = new File(System.getProperty("file.separator") + "Users" + System.getProperty("file.separator") + System.getProperty("user.name") + System.getProperty("file.separator") + "tmp"); // System.getProperty("user.dir"));
 			_uploadFolder.mkdirs();
 			try {
 				TempFolderUtil.tempFolder = _uploadFolder.getCanonicalPath();
@@ -33,8 +31,7 @@ public class TempFolderUtil {
 				e.printStackTrace();
 			}
 		} else {
-			final File _uploadFolder = new File(System.getProperty("file.separator") + "tmp"
-					+ System.getProperty("file.separator"));
+			final File _uploadFolder = new File(System.getProperty("file.separator") + "tmp" + System.getProperty("file.separator"));
 			_uploadFolder.mkdirs();
 
 			try {

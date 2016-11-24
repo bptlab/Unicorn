@@ -27,17 +27,14 @@ public class SubProcessQueryFactory extends AbstractPatternQueryFactory {
 	}
 
 	@Override
-	protected PatternQuery generateQuery(final AbstractBPMNElement element,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	protected PatternQuery generateQuery(final AbstractBPMNElement element, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		if (element instanceof Component) {
 			final Component component = (Component) element;
 			PatternQuery query = null;
 			if (component instanceof SubProcessComponent) {
 				final SubProcessComponent subProcessComponent = (SubProcessComponent) component;
 
-				final List<AbstractBPMNElement> catchingMonitorableElements = this
-						.getCatchingMonitorableElement(subProcessComponent);
+				final List<AbstractBPMNElement> catchingMonitorableElements = this.getCatchingMonitorableElement(subProcessComponent);
 
 				AbstractBPMNElement subProcessCatchingMonitorableElement = null;
 				if (!catchingMonitorableElements.isEmpty()) {
@@ -46,12 +43,10 @@ public class SubProcessQueryFactory extends AbstractPatternQueryFactory {
 
 				// Sollte nur ein Element (Polygon-Component) sein, wenn
 				// SubProcess wohlstrukturiert ist
-				final List<AbstractBPMNElement> subProcessChildren = this.processDecompositionTree
-						.getChildren(subProcessComponent);
+				final List<AbstractBPMNElement> subProcessChildren = this.processDecompositionTree.getChildren(subProcessComponent);
 
 				if (subProcessChildren.size() == 1 && subProcessChildren.get(0) instanceof Component) {
-					query = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(
-							subProcessChildren.get(0), subProcessCatchingMonitorableElement, parentQuery);
+					query = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(subProcessChildren.get(0), subProcessCatchingMonitorableElement, parentQuery);
 				} else {
 					throw new RuntimeException("SubProcess is not well structured.");
 				}
@@ -67,7 +62,7 @@ public class SubProcessQueryFactory extends AbstractPatternQueryFactory {
 	/**
 	 * Tries to find the first monitorable element on a path after a subprocess
 	 * starting with its catching intermediate event.
-	 * 
+	 *
 	 * @param component
 	 * @return
 	 */

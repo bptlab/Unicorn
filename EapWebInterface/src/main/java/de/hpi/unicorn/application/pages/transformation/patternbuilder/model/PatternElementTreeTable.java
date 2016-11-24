@@ -26,11 +26,9 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
 /**
  * tree table component for visualization of hierarchical elements nodes are
  * selectable
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
- * @param <S>
- *            the type of the sort property
+ *
+ * @param <T> the type of nodes to be stored in the tree
+ * @param <S> the type of the sort property
  */
 public class PatternElementTreeTable extends MultiSelectTreeTable<EventTreeElement<Serializable>, String> {
 
@@ -40,41 +38,30 @@ public class PatternElementTreeTable extends MultiSelectTreeTable<EventTreeEleme
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param columns
-	 *            list of IColumn objects
-	 * @param provider
-	 *            provider see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param rowsPerPage
-	 *            number of rows per page
-	 * @param state
-	 *            state see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id          wicket identifier used in the corresponding HTML file
+	 * @param columns     list of IColumn objects
+	 * @param provider    provider see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param rowsPerPage number of rows per page
+	 * @param state       state see
+	 *                    de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
-	public PatternElementTreeTable(final String id,
-			final List<? extends IColumn<EventTreeElement<Serializable>, String>> columns,
-			final ITreeProvider<EventTreeElement<Serializable>> provider, final long rowsPerPage,
-			final IModel<Set<EventTreeElement<Serializable>>> state, final PatternBuilderPanel patternBuilderPanel) {
+	public PatternElementTreeTable(final String id, final List<? extends IColumn<EventTreeElement<Serializable>, String>> columns, final ITreeProvider<EventTreeElement<Serializable>> provider, final long rowsPerPage, final IModel<Set<EventTreeElement<Serializable>>> state, final PatternBuilderPanel patternBuilderPanel) {
 		super(id, columns, provider, rowsPerPage, state);
 		this.patternElementTree = this;
 		this.patternBuilderPanel = patternBuilderPanel;
 	}
 
 	@Override
-	protected void toggle(final EventTreeElement<Serializable> element,
-			final AbstractTree<EventTreeElement<Serializable>> tree, final AjaxRequestTarget target) {
+	protected void toggle(final EventTreeElement<Serializable> element, final AbstractTree<EventTreeElement<Serializable>> tree, final AjaxRequestTarget target) {
 		if (this.isSelected(element)) {
 			this.selectedElements.remove(element);
 		} else if (this.selectedElements.size() <= 1) {
 			EventTreeElement<Serializable> selectedElement;
 			if (!this.selectedElements.isEmpty()) {
 				selectedElement = this.selectedElements.iterator().next();
-				if (selectedElement.getLevel() != element.getLevel()
-						|| ((selectedElement.hasParent() && element.hasParent()) && !selectedElement.getParent()
-								.equals(element.getParent()))) {
+				if (selectedElement.getLevel() != element.getLevel() || ((selectedElement.hasParent() && element.hasParent()) && !selectedElement.getParent().equals(element.getParent()))) {
 					this.selectedElements.remove(selectedElement);
 					tree.updateNode(selectedElement, target);
 				}
@@ -92,8 +79,7 @@ public class PatternElementTreeTable extends MultiSelectTreeTable<EventTreeEleme
 
 			@Override
 			protected void onClick(final AjaxRequestTarget target) {
-				PatternElementTreeTable.this.patternElementTree.toggle(this.getModelObject(),
-						PatternElementTreeTable.this.patternElementTree, target);
+				PatternElementTreeTable.this.patternElementTree.toggle(this.getModelObject(), PatternElementTreeTable.this.patternElementTree, target);
 				PatternElementTreeTable.this.patternBuilderPanel.updateOnTreeElementSelection(target);
 			}
 

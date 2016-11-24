@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<trace xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="traceGETService.xsd">
-	<type>13</type>
-	<source>7276</source>
-	<timestamp>2012-02-01T15:52:44.694</timestamp>
+<trace xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="" xsi:noNamespaceSchemaLocation="traceGETService.xsd">
+    <type>13</type>
+    <source>7276</source>
+    <timestamp>2012-02-01T15:52:44.694</timestamp>
 
-	<mileage>249496160</mileage>
-	<heading>74</heading>
-	<speed>38</speed>
-	<property>
-		<key>DTY</key>
-		<value>3</value>
-	</property>
-	<addressmatch>
-		<coordinate>
-			<latitude>49.02088</latitude>
-			<longitude>8.46256</longitude>
-		</coordinate>
-		<address>
-			<city>Karlsruhe</city>
-			<country>DE</country>
-		</address>
-		<quality>0.5214414596557617</quality>
-	</addressmatch>
+    <mileage>249496160</mileage>
+    <heading>74</heading>
+    <speed>38</speed>
+    <property>
+        <key>DTY</key>
+        <value>3</value>
+    </property>
+    <addressmatch>
+        <coordinate>
+            <latitude>49.02088</latitude>
+            <longitude>8.46256</longitude>
+        </coordinate>
+        <address>
+            <city>Karlsruhe</city>
+            <country>DE</country>
+        </address>
+        <quality>0.5214414596557617</quality>
+    </addressmatch>
 </trace>

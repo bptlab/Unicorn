@@ -47,27 +47,16 @@ public class EventTypeRule extends Persistable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private final int ID;
-
-	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	private ArrayList<EapEventType> usedEventTypes = new ArrayList<EapEventType>();;
-
-	public ArrayList<EapEventType> getUsedEventTypes() {
-		return this.usedEventTypes;
-	}
-
-	public void setUsedEventTypes(final ArrayList<EapEventType> usedEventTypes) {
-		this.usedEventTypes = usedEventTypes;
-	}
-
 	@OneToOne(optional = true, cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	private final EventCondition condition;
-
+	;
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	private ArrayList<EapEventType> usedEventTypes = new ArrayList<EapEventType>();
 	@OneToOne(optional = true)
 	@JoinColumn(name = "EventType_ID")
 	private EapEventType createdEventType;
-
 	// TODO: refactor to HashMap
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, targetEntity = TransformationTree.class)
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, targetEntity = TransformationTree.class)
 	@JoinColumn(name = "MapTreeID")
 	private TransformationTree<String, Serializable> eventAttributes;
 
@@ -82,16 +71,12 @@ public class EventTypeRule extends Persistable {
 	 * Events in the database. Events from certain eventTypes (usedEventTypes),
 	 * that fulfill a certain condition (conditionString) are trigger the
 	 * creation of a new event of the eventType createdEventType
-	 * 
-	 * @param usedEventTypes
-	 *            : eventType of events that can trigger a new event
-	 * @param conditionString
-	 *            : condition, that must be fulfilled to trigger a new event
-	 * @param createdEventType
-	 *            : eventtype of the event created
+	 *
+	 * @param usedEventTypes   : eventType of events that can trigger a new event
+	 * @param conditionString  : condition, that must be fulfilled to trigger a new event
+	 * @param createdEventType : eventtype of the event created
 	 */
-	public EventTypeRule(final ArrayList<EapEventType> usedEventTypes, final EventCondition condition,
-			final EapEventType createdEventType) {
+	public EventTypeRule(final ArrayList<EapEventType> usedEventTypes, final EventCondition condition, final EapEventType createdEventType) {
 		this.ID = 0;
 		this.usedEventTypes = usedEventTypes;
 		this.condition = condition;
@@ -100,9 +85,44 @@ public class EventTypeRule extends Persistable {
 	}
 
 	/**
+	 * Finds the event type rules that use a certain event type as a source.
+	 *
+	 * @param eventType
+	 * @return event type rules
+	 */
+	public static List<EventTypeRule> findEventTypeRuleForContainedEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM EventTypeRule " + "WHERE ID IN (" + "	SELECT A.EventTypeRule_ID " + "	FROM EventTypeRule_EventType AS A " + "	WHERE usedEventTypes_ID = " + eventType.getID() + ")", EventTypeRule.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds the event type rules that use a certain event type as output.
+	 *
+	 * @param eventType
+	 * @return event type rules
+	 */
+	public static EventTypeRule findEventTypeRuleForCreatedEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM EventTypeRule WHERE EventType_ID = " + eventType.getID(), EventTypeRule.class);
+		assert (query.getResultList().size() < 2);
+		if (query.getResultList().size() > 0) {
+			return (EventTypeRule) query.getResultList().get(0);
+		} else {
+			return null;
+		}
+	}
+
+	public ArrayList<EapEventType> getUsedEventTypes() {
+		return this.usedEventTypes;
+	}
+
+	public void setUsedEventTypes(final ArrayList<EapEventType> usedEventTypes) {
+		this.usedEventTypes = usedEventTypes;
+	}
+
+	/**
 	 * This method executes the event type rule on the existing events from the
 	 * database. It will create new events.
-	 * 
+	 *
 	 * @return created events
 	 */
 	public ArrayList<EapEvent> execute() {
@@ -118,12 +138,13 @@ public class EventTypeRule extends Persistable {
 		// create new Events
 		final ArrayList<EapEvent> newEvents = new ArrayList<EapEvent>();
 		for (final EapEvent event : chosenEvents) {
-			final EapEvent newEvent = new EapEvent(this.createdEventType, event.getTimestamp(), this.createValues(event
-					.getValues()));
+			final EapEvent newEvent = new EapEvent(this.createdEventType, event.getTimestamp(), this.createValues(event.getValues()));
 			newEvents.add(newEvent);
 		}
 		return newEvents;
 	}
+
+	// Getter and Setter
 
 	private TransformationTree<String, Serializable> createValues(final Map<String, Serializable> values) {
 		final TransformationTree<String, Serializable> newValues = new TransformationTree<String, Serializable>();
@@ -139,7 +160,7 @@ public class EventTypeRule extends Persistable {
 	/**
 	 * Removes the event type from the source event types of this rule. This is
 	 * needed for instance if the event type will be deleted.
-	 * 
+	 *
 	 * @param eventType
 	 * @return
 	 */
@@ -154,11 +175,11 @@ public class EventTypeRule extends Persistable {
 		return false;
 	}
 
-	// Getter and Setter
-
 	public EapEventType getCreatedEventType() {
 		return this.createdEventType;
 	}
+
+	// JPA-Methods
 
 	public void setCreatedEventType(final EapEventType createdEventType) {
 		this.createdEventType = createdEventType;
@@ -167,39 +188,6 @@ public class EventTypeRule extends Persistable {
 	@Override
 	public int getID() {
 		return this.ID;
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Finds the event type rules that use a certain event type as a source.
-	 * 
-	 * @param eventType
-	 * @return event type rules
-	 */
-	public static List<EventTypeRule> findEventTypeRuleForContainedEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM EventTypeRule " + "WHERE ID IN (" + "	SELECT A.EventTypeRule_ID "
-						+ "	FROM EventTypeRule_EventType AS A " + "	WHERE usedEventTypes_ID = " + eventType.getID()
-						+ ")", EventTypeRule.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds the event type rules that use a certain event type as output.
-	 * 
-	 * @param eventType
-	 * @return event type rules
-	 */
-	public static EventTypeRule findEventTypeRuleForCreatedEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM EventTypeRule WHERE EventType_ID = " + eventType.getID(), EventTypeRule.class);
-		assert (query.getResultList().size() < 2);
-		if (query.getResultList().size() > 0) {
-			return (EventTypeRule) query.getResultList().get(0);
-		} else {
-			return null;
-		}
 	}
 
 }

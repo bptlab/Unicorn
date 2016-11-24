@@ -18,7 +18,6 @@ public class AddNotificationModal extends BootstrapModal {
 	private final NotificationCreationPanel panel;
 
 	/**
-	 * 
 	 * @param notificationPage
 	 * @param window
 	 */

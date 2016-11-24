@@ -25,18 +25,16 @@ import de.hpi.unicorn.event.collection.EventTree;
 /**
  * Wraps the tree of BPMN components and their event types from the monitoring
  * points for a tree table visualization.
- * 
- * @author micha
- * 
+ *
  * @param
+ * @author micha
  */
-public class BPMNTreeTableProvider extends AbstractDataProvider implements
-		ISortableTreeProvider<BPMNTreeTableElement, String> {
+public class BPMNTreeTableProvider extends AbstractDataProvider implements ISortableTreeProvider<BPMNTreeTableElement, String> {
 
 	private static final long serialVersionUID = 1L;
+	private final List<BPMNTreeTableElement> selectedTreeTableElements = new ArrayList<BPMNTreeTableElement>();
 	private List<BPMNTreeTableElement> treeTableElements;
 	private List<BPMNTreeTableElement> treeTableRootElements;
-	private final List<BPMNTreeTableElement> selectedTreeTableElements = new ArrayList<BPMNTreeTableElement>();
 	private BPMNProcess process;
 	private EventTree<AbstractBPMNElement> bpmnComponentTree;
 
@@ -120,7 +118,7 @@ public class BPMNTreeTableProvider extends AbstractDataProvider implements
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
@@ -135,6 +133,10 @@ public class BPMNTreeTableProvider extends AbstractDataProvider implements
 		return this.treeTableElements;
 	}
 
+	public void setTreeTableElements(final List<BPMNTreeTableElement> treeTableElements) {
+		this.treeTableElements = treeTableElements;
+	}
+
 	public void addTreeTableElement(final BPMNTreeTableElement treeTableElement) {
 		this.treeTableElements.add(treeTableElement);
 		if (!this.selectedTreeTableElements.isEmpty()) {
@@ -144,15 +146,10 @@ public class BPMNTreeTableProvider extends AbstractDataProvider implements
 		}
 	}
 
-	public void addTreeTableElementWithParent(final BPMNTreeTableElement treeTableElement,
-			final BPMNTreeTableElement parent) {
+	public void addTreeTableElementWithParent(final BPMNTreeTableElement treeTableElement, final BPMNTreeTableElement parent) {
 		this.treeTableElements.add(treeTableElement);
 		parent.getChildren().add(treeTableElement);
 		treeTableElement.setParent(parent);
-	}
-
-	public void setTreeTableElements(final List<BPMNTreeTableElement> treeTableElements) {
-		this.treeTableElements = treeTableElements;
 	}
 
 	public void deleteSelectedEntries() {
@@ -177,8 +174,7 @@ public class BPMNTreeTableProvider extends AbstractDataProvider implements
 		}
 	}
 
-	private void addElementToTree(final BPMNTreeTableElement parent, final AbstractBPMNElement bpmnElement,
-			final EventTree<AbstractBPMNElement> bpmnComponentTree) {
+	private void addElementToTree(final BPMNTreeTableElement parent, final AbstractBPMNElement bpmnElement, final EventTree<AbstractBPMNElement> bpmnComponentTree) {
 		final BPMNTreeTableElement treeTableElement = this.createTreeTableElement(bpmnElement);
 		treeTableElement.setParent(parent);
 		this.treeTableElements.add(treeTableElement);

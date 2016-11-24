@@ -9,7 +9,7 @@ package de.hpi.unicorn.application.components.form;
 
 /**
  * The enum provides text emphasis classes for Bootstrap.
- * 
+ *
  * @author micha
  */
 public enum BootStrapTextEmphasisClass {

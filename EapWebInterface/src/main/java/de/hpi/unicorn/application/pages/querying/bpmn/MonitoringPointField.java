@@ -31,22 +31,22 @@ import de.hpi.unicorn.event.EapEventType;
 /**
  * A form with a dropdown to assign monitoring points to BPMN elements on the
  * base of {@link EapEventType}s.
- * 
+ *
  * @author micha
  */
 public class MonitoringPointField implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private AjaxButton deleteButton;
-	private Component addButton;
 	private final List<String> eventTypeNamesList;
 	private final BPMNTreeTableElement treeTableElement;
 	private final AbstractBPMNElement bpmnElement;
+	private AjaxButton deleteButton;
+	private Component addButton;
 
 	/**
 	 * Constructor for a form with a dropdown to assign monitoring points to
 	 * BPMN elements on the base of {@link EapEventType}s.
-	 * 
+	 *
 	 * @param treeTableElement
 	 */
 	public MonitoringPointField(final BPMNTreeTableElement treeTableElement) {
@@ -58,8 +58,7 @@ public class MonitoringPointField implements Serializable {
 		}
 	}
 
-	public void addMonitoringField(final Form<Void> monitoringForm,
-			final MonitoringPointStateTransition monitoringPointType) {
+	public void addMonitoringField(final Form<Void> monitoringForm, final MonitoringPointStateTransition monitoringPointType) {
 		final MonitoringPoint monitoringPoint = this.treeTableElement.getMonitoringPoint(monitoringPointType);
 		EapEventType monitoringPointEventType = null;
 		if (monitoringPoint != null) {
@@ -67,8 +66,7 @@ public class MonitoringPointField implements Serializable {
 			this.updateEventTypeNames(monitoringPointType, monitoringPointEventType);
 		}
 		// Div-Container für Label und Select
-		final WebMarkupContainer selectContainer = new WebMarkupContainer(monitoringPointType.getName()
-				+ "SelectContainer");
+		final WebMarkupContainer selectContainer = new WebMarkupContainer(monitoringPointType.getName() + "SelectContainer");
 		selectContainer.setOutputMarkupPlaceholderTag(true);
 		monitoringForm.add(selectContainer);
 
@@ -93,12 +91,9 @@ public class MonitoringPointField implements Serializable {
 		// Select
 		final DropDownChoice<String> eventTypeSelect;
 		if (monitoringPointEventType != null) {
-			eventTypeSelect = new DropDownChoice<String>(monitoringPointType.getName() + "Select",
-					new PropertyModel<String>(this, monitoringPointType.getName() + "EventTypeName"),
-					this.eventTypeNamesList);
+			eventTypeSelect = new DropDownChoice<String>(monitoringPointType.getName() + "Select", new PropertyModel<String>(this, monitoringPointType.getName() + "EventTypeName"), this.eventTypeNamesList);
 		} else {
-			eventTypeSelect = new DropDownChoice<String>(monitoringPointType.getName() + "Select", new Model<String>(),
-					this.eventTypeNamesList);
+			eventTypeSelect = new DropDownChoice<String>(monitoringPointType.getName() + "Select", new Model<String>(), this.eventTypeNamesList);
 		}
 
 		eventTypeSelect.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -107,8 +102,7 @@ public class MonitoringPointField implements Serializable {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				final String eventTypeName = eventTypeSelect.getChoices().get(
-						Integer.parseInt(eventTypeSelect.getValue()));
+				final String eventTypeName = eventTypeSelect.getChoices().get(Integer.parseInt(eventTypeSelect.getValue()));
 				if (eventTypeName != null && !eventTypeName.isEmpty()) {
 					final EapEventType selectedEventType = EapEventType.findByTypeName(eventTypeName);
 					if (selectedEventType != null) {
@@ -116,16 +110,12 @@ public class MonitoringPointField implements Serializable {
 						// originalen BPMN-Process aus der Datenbank gearbeitet
 						// wird,
 						// muss der noch geholt werden
-						final BPMNProcess originalProcess = BPMNProcess
-								.findByContainedElement(MonitoringPointField.this.bpmnElement);
-						final AbstractBPMNElement originalBPMNElement = originalProcess
-								.getBPMNElementById(MonitoringPointField.this.bpmnElement.getId());
+						final BPMNProcess originalProcess = BPMNProcess.findByContainedElement(MonitoringPointField.this.bpmnElement);
+						final AbstractBPMNElement originalBPMNElement = originalProcess.getBPMNElementById(MonitoringPointField.this.bpmnElement.getId());
 						if (originalBPMNElement != null) {
-							MonitoringPoint originalMonitoringPoint = originalBPMNElement
-									.getMonitoringPointByStateTransitionType(monitoringPointType);
+							MonitoringPoint originalMonitoringPoint = originalBPMNElement.getMonitoringPointByStateTransitionType(monitoringPointType);
 							if (originalMonitoringPoint == null) {
-								originalMonitoringPoint = new MonitoringPoint(selectedEventType, monitoringPointType,
-										null);
+								originalMonitoringPoint = new MonitoringPoint(selectedEventType, monitoringPointType, null);
 								originalMonitoringPoint.save();
 							}
 							originalBPMNElement.addMonitoringPoint(originalMonitoringPoint);
@@ -150,13 +140,10 @@ public class MonitoringPointField implements Serializable {
 				// Da wegen dem ComponentBuilder nicht auf dem originalen
 				// BPMN-Process aus der Datenbank gearbeitet wird,
 				// muss der noch geholt werden
-				final BPMNProcess originalProcess = BPMNProcess
-						.findByContainedElement(MonitoringPointField.this.bpmnElement);
-				final AbstractBPMNElement originalBPMNElement = originalProcess
-						.getBPMNElementById(MonitoringPointField.this.bpmnElement.getId());
+				final BPMNProcess originalProcess = BPMNProcess.findByContainedElement(MonitoringPointField.this.bpmnElement);
+				final AbstractBPMNElement originalBPMNElement = originalProcess.getBPMNElementById(MonitoringPointField.this.bpmnElement.getId());
 				if (originalBPMNElement != null) {
-					final MonitoringPoint originalMonitoringPoint = originalBPMNElement
-							.getMonitoringPointByStateTransitionType(monitoringPointType);
+					final MonitoringPoint originalMonitoringPoint = originalBPMNElement.getMonitoringPointByStateTransitionType(monitoringPointType);
 					originalBPMNElement.removeMonitoringPoint(originalMonitoringPoint);
 					originalBPMNElement.merge();
 					MonitoringPointField.this.updateEventTypeNames(monitoringPointType, null);
@@ -180,21 +167,20 @@ public class MonitoringPointField implements Serializable {
 		}
 	}
 
-	private void updateEventTypeNames(final MonitoringPointStateTransition monitoringPointType,
-			final EapEventType monitoringPointEventType) {
+	private void updateEventTypeNames(final MonitoringPointStateTransition monitoringPointType, final EapEventType monitoringPointEventType) {
 		switch (monitoringPointType) {
-		case initialize:
-			break;
-		case begin:
-			break;
-		case enable:
-			break;
-		case skip:
-			break;
-		case terminate:
-			break;
-		default:
-			break;
+			case initialize:
+				break;
+			case begin:
+				break;
+			case enable:
+				break;
+			case skip:
+				break;
+			case terminate:
+				break;
+			default:
+				break;
 		}
 	}
 

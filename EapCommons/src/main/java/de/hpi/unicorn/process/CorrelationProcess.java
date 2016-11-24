@@ -47,7 +47,7 @@ import de.hpi.unicorn.persistence.Persistor;
  * and eventually a associated {@link BPMNProcess}. The process knows the
  * correlation rules under which events are assigned to concrete
  * {@link CorrelationProcessInstance}s of this process.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -64,7 +64,7 @@ public class CorrelationProcess extends Persistable implements Serializable {
 	private String name;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
-	@JoinTable(name = "ProcessEventTypes", joinColumns = { @JoinColumn(name = "Id") })
+	@JoinTable(name = "ProcessEventTypes", joinColumns = {@JoinColumn(name = "Id")})
 	@JoinColumn(name = "EventTypes")
 	private Set<EapEventType> eventTypes = new HashSet<EapEventType>();
 
@@ -103,6 +103,193 @@ public class CorrelationProcess extends Persistable implements Serializable {
 		this.eventTypes.addAll(eventTypes);
 	}
 
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM CorrelationProcess t");
+		return q.getResultList();
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have
+	 * the given {@link EapEventType}.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findByEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select Id " + "FROM ProcessEventTypes " + "WHERE eventTypes_ID = '" + eventType.getID() + "')", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have
+	 * the given attribute and associated value.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findByAttribute(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Process WHERE " + columnName + " = '" + value + "'", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have
+	 * the given ID.
+	 *
+	 * @return
+	 */
+	public static CorrelationProcess findByID(final int ID) {
+		final List<CorrelationProcess> processes = CorrelationProcess.findByAttribute("ID", Integer.toString(ID));
+		if (!processes.isEmpty()) {
+			return processes.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have an
+	 * ID greater than the given.
+	 *
+	 * @return
+	 */
+	public static List<CorrelationProcess> findByIDGreaterThan(final int ID) {
+		return CorrelationProcess.findByAttributeGreaterThan("ID", Integer.toString(ID));
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have an
+	 * ID less than the given.
+	 *
+	 * @return
+	 */
+	public static List<CorrelationProcess> findByIDLessThan(final int ID) {
+		return CorrelationProcess.findByAttributeLessThan("ID", Integer.toString(ID));
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<CorrelationProcess> findByAttributeGreaterThan(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM Process " + "WHERE " + columnName + " > '" + value + "'", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static List<CorrelationProcess> findByAttributeLessThan(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM Process " + "WHERE " + columnName + " < '" + value + "'", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	public static List<CorrelationProcess> findByName(final String name) {
+		return CorrelationProcess.findByAttribute("NAME", name);
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have
+	 * the given {@link CorrelationProcessInstance}.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findByProcessInstance(final CorrelationProcessInstance processInstance) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select CorrelationProcess_ID " + "FROM Process_ProcessInstance " + "WHERE processInstances_ID = '" + processInstance.getID() + "')", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Returns all {@link CorrelationProcess}es from the database, which have a
+	 * {@link CorrelationProcessInstance} with the given ID.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findByProcessInstanceID(final int ID) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select CorrelationProcess_ID " + "FROM Process_ProcessInstance " + "WHERE processInstances_ID = '" + ID + "')", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findByTimeCondition(final TimeCondition timeCondition) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE TIMECONDITION_ID = '" + timeCondition.getID() + "'", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static CorrelationProcess findByBPMNProcess(final BPMNProcess bpmnProcess) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE BPMNPROCESS_ID = '" + bpmnProcess.getID() + "'", CorrelationProcess.class);
+		final List<CorrelationProcess> processes = query.getResultList();
+		if (!processes.isEmpty()) {
+			return processes.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<CorrelationProcess> findProcessesByBPMNProcess(final BPMNProcess bpmnProcess) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Process " + "WHERE BPMNPROCESS_ID = '" + bpmnProcess.getID() + "'", CorrelationProcess.class);
+		return query.getResultList();
+	}
+
+	public static boolean save(final ArrayList<CorrelationProcess> processes) {
+		try {
+			final EntityManager entityManager = Persistor.getEntityManager();
+			entityManager.getTransaction().begin();
+			for (final CorrelationProcess process : processes) {
+				entityManager.persist(process);
+			}
+			entityManager.getTransaction().commit();
+			return true;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Deletes the specified processes from the database.
+	 *
+	 * @return
+	 */
+	public static boolean remove(final ArrayList<CorrelationProcess> processes) {
+		boolean removed = true;
+		for (final CorrelationProcess process : processes) {
+			removed = (process.remove() != null);
+		}
+		return removed;
+	}
+
+	/**
+	 * Deletes all processes from the database.
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM Process");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Searches for the specified process and returns true if it exists.
+	 *
+	 * @param name
+	 * @return
+	 */
+	public static boolean exists(final String name) {
+		return !CorrelationProcess.findByName(name).isEmpty();
+	}
+
 	public String getName() {
 		return this.name;
 	}
@@ -122,6 +309,10 @@ public class CorrelationProcess extends Persistable implements Serializable {
 
 	public ArrayList<EapEventType> getEventTypes() {
 		return new ArrayList<EapEventType>(this.eventTypes);
+	}
+
+	public void setEventTypes(final Set<EapEventType> eventTypes) {
+		this.eventTypes = eventTypes;
 	}
 
 	public List<CorrelationProcessInstance> getProcessInstances() {
@@ -203,10 +394,6 @@ public class CorrelationProcess extends Persistable implements Serializable {
 		return false;
 	}
 
-	public void setEventTypes(final Set<EapEventType> eventTypes) {
-		this.eventTypes = eventTypes;
-	}
-
 	public boolean addEventType(final EapEventType eventType) {
 		if (!this.eventTypes.contains(eventType)) {
 			eventType.save();
@@ -223,8 +410,7 @@ public class CorrelationProcess extends Persistable implements Serializable {
 			// da durch JPA teilweise unterschiedliche ObjektIDs entstehen
 			// können
 			for (final EapEventType containedEventType : this.eventTypes) {
-				if (containedEventType.getID() == eventType.getID()
-						&& containedEventType.getTypeName().equals(eventType.getTypeName())) {
+				if (containedEventType.getID() == eventType.getID() && containedEventType.getTypeName().equals(eventType.getTypeName())) {
 					return this.eventTypes.remove(containedEventType);
 				}
 			}
@@ -239,158 +425,8 @@ public class CorrelationProcess extends Persistable implements Serializable {
 	}
 
 	/**
-	 * Returns all {@link CorrelationProcess}es from the database.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM CorrelationProcess t");
-		return q.getResultList();
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have
-	 * the given {@link EapEventType}.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select Id " + "FROM ProcessEventTypes "
-						+ "WHERE eventTypes_ID = '" + eventType.getID() + "')", CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have
-	 * the given attribute and associated value.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Process WHERE " + columnName + " = '" + value + "'", CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have
-	 * the given ID.
-	 * 
-	 * @return
-	 */
-	public static CorrelationProcess findByID(final int ID) {
-		final List<CorrelationProcess> processes = CorrelationProcess.findByAttribute("ID", Integer.toString(ID));
-		if (!processes.isEmpty()) {
-			return processes.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have an
-	 * ID greater than the given.
-	 * 
-	 * @return
-	 */
-	public static List<CorrelationProcess> findByIDGreaterThan(final int ID) {
-		return CorrelationProcess.findByAttributeGreaterThan("ID", Integer.toString(ID));
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have an
-	 * ID less than the given.
-	 * 
-	 * @return
-	 */
-	public static List<CorrelationProcess> findByIDLessThan(final int ID) {
-		return CorrelationProcess.findByAttributeLessThan("ID", Integer.toString(ID));
-	}
-
-	@SuppressWarnings("unchecked")
-	private static List<CorrelationProcess> findByAttributeGreaterThan(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM Process " + "WHERE " + columnName + " > '" + value + "'", CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static List<CorrelationProcess> findByAttributeLessThan(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM Process " + "WHERE " + columnName + " < '" + value + "'", CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	public static List<CorrelationProcess> findByName(final String name) {
-		return CorrelationProcess.findByAttribute("NAME", name);
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have
-	 * the given {@link CorrelationProcessInstance}.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findByProcessInstance(final CorrelationProcessInstance processInstance) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select CorrelationProcess_ID "
-						+ "FROM Process_ProcessInstance " + "WHERE processInstances_ID = '" + processInstance.getID()
-						+ "')", CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Returns all {@link CorrelationProcess}es from the database, which have a
-	 * {@link CorrelationProcessInstance} with the given ID.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findByProcessInstanceID(final int ID) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE ID IN (" + "Select CorrelationProcess_ID "
-						+ "FROM Process_ProcessInstance " + "WHERE processInstances_ID = '" + ID + "')",
-				CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findByTimeCondition(final TimeCondition timeCondition) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE TIMECONDITION_ID = '" + timeCondition.getID() + "'",
-				CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static CorrelationProcess findByBPMNProcess(final BPMNProcess bpmnProcess) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE BPMNPROCESS_ID = '" + bpmnProcess.getID() + "'",
-				CorrelationProcess.class);
-		final List<CorrelationProcess> processes = query.getResultList();
-		if (!processes.isEmpty()) {
-			return processes.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<CorrelationProcess> findProcessesByBPMNProcess(final BPMNProcess bpmnProcess) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Process " + "WHERE BPMNPROCESS_ID = '" + bpmnProcess.getID() + "'",
-				CorrelationProcess.class);
-		return query.getResultList();
-	}
-
-	/**
 	 * Saves this process to the database.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -400,7 +436,7 @@ public class CorrelationProcess extends Persistable implements Serializable {
 
 	/**
 	 * Merges this process to the database.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -408,24 +444,9 @@ public class CorrelationProcess extends Persistable implements Serializable {
 		return (CorrelationProcess) super.merge();
 	}
 
-	public static boolean save(final ArrayList<CorrelationProcess> processes) {
-		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
-			entityManager.getTransaction().begin();
-			for (final CorrelationProcess process : processes) {
-				entityManager.persist(process);
-			}
-			entityManager.getTransaction().commit();
-			return true;
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	/**
 	 * Deletes this process from the database.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
@@ -449,35 +470,6 @@ public class CorrelationProcess extends Persistable implements Serializable {
 		return (CorrelationProcess) super.remove();
 	}
 
-	/**
-	 * Deletes the specified processes from the database.
-	 * 
-	 * @return
-	 */
-	public static boolean remove(final ArrayList<CorrelationProcess> processes) {
-		boolean removed = true;
-		for (final CorrelationProcess process : processes) {
-			removed = (process.remove() != null);
-		}
-		return removed;
-	}
-
-	/**
-	 * Deletes all processes from the database.
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM Process");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-
 	public TimeCondition getTimeCondition() {
 		return this.timeCondition;
 	}
@@ -498,18 +490,8 @@ public class CorrelationProcess extends Persistable implements Serializable {
 	}
 
 	/**
-	 * Searches for the specified process and returns true if it exists.
-	 * 
-	 * @param name
-	 * @return
-	 */
-	public static boolean exists(final String name) {
-		return !CorrelationProcess.findByName(name).isEmpty();
-	}
-
-	/**
 	 * Returns true, if the process has a correlation rule.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasCorrelation() {
@@ -518,7 +500,7 @@ public class CorrelationProcess extends Persistable implements Serializable {
 
 	/**
 	 * Returns a decompositional tree of the contained BPMN process, if any.
-	 * 
+	 *
 	 * @return
 	 */
 	public EventTree<AbstractBPMNElement> getProcessDecompositionTree() {

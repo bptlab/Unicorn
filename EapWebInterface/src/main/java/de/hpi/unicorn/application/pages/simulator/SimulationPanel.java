@@ -56,8 +56,7 @@ public abstract class SimulationPanel extends Panel {
 
 			@Override
 			public Panel getPanel(final String panelId) {
-				SimulationPanel.this.advancedValuesPanel = new AdvancedValuesPanel(panelId,
-						SimulationPanel.this.simulationPanel);
+				SimulationPanel.this.advancedValuesPanel = new AdvancedValuesPanel(panelId, SimulationPanel.this.simulationPanel);
 				return SimulationPanel.this.advancedValuesPanel;
 			}
 		});

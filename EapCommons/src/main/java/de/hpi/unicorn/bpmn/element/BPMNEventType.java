@@ -12,7 +12,7 @@ import javax.persistence.Enumerated;
 
 /**
  * This enum contains the event types of an BPMN event.
- * 
+ *
  * @author micha
  */
 public enum BPMNEventType {

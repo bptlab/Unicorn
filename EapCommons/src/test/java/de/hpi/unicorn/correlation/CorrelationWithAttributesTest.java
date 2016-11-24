@@ -30,7 +30,6 @@ import de.hpi.unicorn.utils.TestHelper;
 
 /**
  * @author micha
- * 
  */
 public class CorrelationWithAttributesTest {
 
@@ -113,8 +112,7 @@ public class CorrelationWithAttributesTest {
 
 		// Korrelieren
 		TypeTreeNode correlationAttribute = new TypeTreeNode("Location", AttributeTypeEnum.INTEGER);
-		AttributeCorrelator.correlate(correlationEventTypes, Arrays.asList(correlationAttribute), processFromDataBase,
-				null);
+		AttributeCorrelator.correlate(correlationEventTypes, Arrays.asList(correlationAttribute), processFromDataBase, null);
 
 		// Prüfen, gleiche Anzahl Events, EventTypen, Prozesse und richtige
 		// Anzahl Prozessinstanzen
@@ -122,15 +120,10 @@ public class CorrelationWithAttributesTest {
 	}
 
 	private void assertNumberOfDataSets(int events, int eventTypes, int processes, int processInstances) {
-		assertTrue("Number of events must be " + events + " but was " + EapEvent.findAll().size(), EapEvent.findAll()
-				.size() == events);
-		assertTrue("Number of event types must be " + eventTypes + " but was " + EapEventType.findAll().size(),
-				EapEventType.findAll().size() == eventTypes);
-		assertTrue("Number of processes must be " + processes + " but was " + CorrelationProcess.findAll().size(),
-				CorrelationProcess.findAll().size() == processes);
-		assertTrue("Number of process instances must be " + processInstances + " but was "
-				+ CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == processInstances);
+		assertTrue("Number of events must be " + events + " but was " + EapEvent.findAll().size(), EapEvent.findAll().size() == events);
+		assertTrue("Number of event types must be " + eventTypes + " but was " + EapEventType.findAll().size(), EapEventType.findAll().size() == eventTypes);
+		assertTrue("Number of processes must be " + processes + " but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll().size() == processes);
+		assertTrue("Number of process instances must be " + processInstances + " but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == processInstances);
 	}
 
 }

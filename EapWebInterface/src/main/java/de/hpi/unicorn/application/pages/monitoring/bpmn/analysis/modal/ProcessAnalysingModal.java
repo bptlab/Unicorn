@@ -36,37 +36,35 @@ import de.hpi.unicorn.process.CorrelationProcess;
 /**
  * This is a modal for displaying the analysis status for a
  * {@link CorrelationProcess}.
- * 
+ *
  * @author micha
  */
 public class ProcessAnalysingModal extends BootstrapModal {
 
 	private static final long serialVersionUID = 1L;
-	private static final ResourceReference MODAL_SIZE_CSS = new PackageResourceReference(BootstrapModal.class,
-			"modal_size.css");
+	private static final ResourceReference MODAL_SIZE_CSS = new PackageResourceReference(BootstrapModal.class, "modal_size.css");
 	private ProcessMonitor processMonitor;
+	private final ProcessAnalysingTreeTableProvider treeTableProvider = new ProcessAnalysingTreeTableProvider(this.processMonitor);
 	private LabelTreeTable<ProcessAnalysingTreeTableElement, String> treeTable;
 	private Form<Void> layoutForm;
-	private final ProcessAnalysingTreeTableProvider treeTableProvider = new ProcessAnalysingTreeTableProvider(
-			this.processMonitor);
 	private Label processNameLabel;
 	private String processName;
-
-	@Override
-	public void renderHead(final IHeaderResponse response) {
-		super.renderHead(response);
-		response.render(CssHeaderItem.forReference(ProcessAnalysingModal.MODAL_SIZE_CSS));
-	}
 
 	/**
 	 * Constructor for a modal, which displays the analysis status for a
 	 * {@link CorrelationProcess}.
-	 * 
+	 *
 	 * @param id
 	 */
 	public ProcessAnalysingModal(final String id) {
 		super(id, "Process Analysis");
 		this.buildMainLayout();
+	}
+
+	@Override
+	public void renderHead(final IHeaderResponse response) {
+		super.renderHead(response);
+		response.render(CssHeaderItem.forReference(ProcessAnalysingModal.MODAL_SIZE_CSS));
 	}
 
 	private void buildMainLayout() {
@@ -83,13 +81,11 @@ public class ProcessAnalysingModal extends BootstrapModal {
 	private void createTreeTable() {
 		final List<IColumn<ProcessAnalysingTreeTableElement, String>> columns = this.createColumns();
 
-		this.treeTable = new LabelTreeTable<ProcessAnalysingTreeTableElement, String>("processAnalysisTreeTable",
-				columns, this.treeTableProvider, Integer.MAX_VALUE, new ProcessAnalysingTreeTableExpansionModel());
+		this.treeTable = new LabelTreeTable<ProcessAnalysingTreeTableElement, String>("processAnalysisTreeTable", columns, this.treeTableProvider, Integer.MAX_VALUE, new ProcessAnalysingTreeTableExpansionModel());
 
 		this.treeTable.setOutputMarkupId(true);
 
-		this.treeTable.getTable().addTopToolbar(
-				new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
+		this.treeTable.getTable().addTopToolbar(new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
 
 		ProcessInstanceMonitoringTreeTableExpansionModel.get().expandAll();
 
@@ -100,13 +96,10 @@ public class ProcessAnalysingModal extends BootstrapModal {
 		final List<IColumn<ProcessAnalysingTreeTableElement, String>> columns = new ArrayList<IColumn<ProcessAnalysingTreeTableElement, String>>();
 
 		columns.add(new TreeColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Query"), "query"));
-		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Monitored Elements"),
-				"monitoredElements"));
+		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Monitored Elements"), "monitoredElements"));
 
-		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Average Runtime"),
-				"averageRuntime"));
-		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Path frequency"),
-				"pathFrequency"));
+		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Average Runtime"), "averageRuntime"));
+		columns.add(new PropertyColumn<ProcessAnalysingTreeTableElement, String>(Model.of("Path frequency"), "pathFrequency"));
 
 		return columns;
 	}

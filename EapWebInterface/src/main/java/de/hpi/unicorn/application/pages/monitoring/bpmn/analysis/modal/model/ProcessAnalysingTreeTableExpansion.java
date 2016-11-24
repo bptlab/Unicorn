@@ -29,6 +29,15 @@ public class ProcessAnalysingTreeTableExpansion implements Set<ProcessAnalysingT
 	private final Set<Integer> IDs = new HashSet<Integer>();
 	private boolean inverse;
 
+	public static ProcessAnalysingTreeTableExpansion get() {
+		ProcessAnalysingTreeTableExpansion expansion = Session.get().getMetaData(ProcessAnalysingTreeTableExpansion.KEY);
+		if (expansion == null) {
+			expansion = new ProcessAnalysingTreeTableExpansion();
+			Session.get().setMetaData(ProcessAnalysingTreeTableExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
+
 	public void expandAll() {
 		this.IDs.clear();
 		this.inverse = true;
@@ -124,15 +133,5 @@ public class ProcessAnalysingTreeTableExpansion implements Set<ProcessAnalysingT
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static ProcessAnalysingTreeTableExpansion get() {
-		ProcessAnalysingTreeTableExpansion expansion = Session.get()
-				.getMetaData(ProcessAnalysingTreeTableExpansion.KEY);
-		if (expansion == null) {
-			expansion = new ProcessAnalysingTreeTableExpansion();
-			Session.get().setMetaData(ProcessAnalysingTreeTableExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

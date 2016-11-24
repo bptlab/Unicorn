@@ -37,85 +37,56 @@ import static org.junit.Assert.assertTrue;
  */
 public class AutomaticNotifcationTest extends JerseyTest {
 
-    String eventSchemaString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-            "                <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"TestEvent.xsd\"\n" +
-            "        targetNamespace=\"TestEvent.xsd\" elementFormDefault=\"qualified\">\n" +
-            "        <xs:element name=\"TestEvent\">\n" +
-            "        <xs:complexType>\n" +
-            "        <xs:sequence>\n" +
-            "        <xs:element name=\"TestValue\" type=\"xs:float\"\n" +
-            "        minOccurs=\"1\" maxOccurs=\"1\" />\n" +
-            "        <xs:element name=\"Timestamp\" type=\"xs:dateTime\" minOccurs=\"1\"\n" +
-            "        maxOccurs=\"1\" />\n" +
-            "        </xs:sequence>\n" +
-            "        </xs:complexType>\n" +
-            "        </xs:element>\n" +
-            "        </xs:schema>";
+	@Rule
+	public WireMockRule wireMockRule = new WireMockRule(9000);
+	String eventSchemaString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "                <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"TestEvent.xsd\"\n" + "        targetNamespace=\"TestEvent.xsd\" elementFormDefault=\"qualified\">\n" + "        <xs:element name=\"TestEvent\">\n" + "        <xs:complexType>\n" + "        <xs:sequence>\n" + "        <xs:element name=\"TestValue\" type=\"xs:float\"\n" + "        minOccurs=\"1\" maxOccurs=\"1\" />\n" + "        <xs:element name=\"Timestamp\" type=\"xs:dateTime\" minOccurs=\"1\"\n" + "        maxOccurs=\"1\" />\n" + "        </xs:sequence>\n" + "        </xs:complexType>\n" + "        </xs:element>\n" + "        </xs:schema>";
+	String eventString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> " + "<cpoi xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " + "xsi:noNamespaceSchemaLocation=\"TestEvent.xsd\"> " + "<TestValue>1.0</TestValue> " + "<Timestamp>2015-09-05T20:05:32.799</Timestamp> " + "</cpoi>";
 
-    String eventString = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?> " +
-            "<cpoi xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-            "xsi:noNamespaceSchemaLocation=\"TestEvent.xsd\"> " +
-            "<TestValue>1.0</TestValue> " +
-            "<Timestamp>2015-09-05T20:05:32.799</Timestamp> " +
-            "</cpoi>";
+	@Override
+	protected Application configure() {
+		return new ResourceConfig();
+	}
 
+	@Test
+	public void testNotificationRule() {
+		stubFor(post(urlEqualTo("/my/resource")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("Some content")));
 
-    @Override
-    protected Application configure() {
-        return new ResourceConfig();
-    }
+		QueryWrapper wrapper = new QueryWrapper("MyTitle", "", QueryTypeEnum.LIVE);
+		String notificationPath = "http://localhost:9000/my/resource";
+		RestNotificationRule rule = new RestNotificationRule(wrapper, notificationPath);
+		boolean succesfulRule = rule.trigger(new HashMap<Object, Serializable>());
+		assertTrue(succesfulRule);
+		System.out.println(succesfulRule);
+	}
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(9000);
+	@Test
+	public void testRestNotification() throws UnparsableException, XMLParsingException, DuplicatedSchemaException {
+		EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
+		stubFor(post(urlEqualTo("/my/resource")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json").withBody("Some content")));
 
-    @Test
-    public void testNotificationRule() {
-        stubFor(post(urlEqualTo("/my/resource"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("Some content")));
+		// Register Test Event Type
+		if (EapEventType.findBySchemaName("TestEvent") != null) {
+			service.unregisterEventType("TestEvent");
+		}
+		service.registerEventType(eventSchemaString, "TestEvent", "Timestamp");
 
-        QueryWrapper wrapper = new QueryWrapper("MyTitle", "", QueryTypeEnum.LIVE);
-        String notificationPath = "http://localhost:9000/my/resource";
-        RestNotificationRule rule = new RestNotificationRule(wrapper, notificationPath);
-        boolean succesfulRule = rule.trigger(new HashMap<Object, Serializable>());
-        assertTrue(succesfulRule);
-        System.out.println(succesfulRule);
-    }
+		// Register event query with REST notification Rule
+		String uuid = service.registerQueryForRest("SELECT * FROM TestEvent", "http://localhost:9000/my/resource");
 
-    @Test
-    public void testRestNotification() throws UnparsableException, XMLParsingException, DuplicatedSchemaException {
-        EventProcessingPlatformWebservice service = new EventProcessingPlatformWebservice();
-        stubFor(post(urlEqualTo("/my/resource"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody("Some content")));
+		// Try to trigger the Rule by receiving an Event
+		final Document doc = XMLParser.XMLStringToDoc(eventString);
+		if (doc == null) {
+			throw new UnparsableException(UnparsableException.ParseType.EVENT);
+		}
 
-        // Register Test Event Type
-        if (EapEventType.findBySchemaName("TestEvent") != null) {
-            service.unregisterEventType("TestEvent");
-        }
-        service.registerEventType(eventSchemaString, "TestEvent", "Timestamp");
+		assertNotNull(RestNotificationRule.findByUUID(uuid));
 
-        // Register event query with REST notification Rule
-        String uuid = service.registerQueryForRest("SELECT * FROM TestEvent", "http://localhost:9000/my/resource");
+		List<EapEvent> events = XMLParser.generateEventsFromDoc(doc);
+		EapEvent newEvent = events.get(0);
+		Broker.getEventImporter().importEvent(newEvent);
 
-        // Try to trigger the Rule by receiving an Event
-        final Document doc = XMLParser.XMLStringToDoc(eventString);
-        if (doc == null) {
-            throw new UnparsableException(UnparsableException.ParseType.EVENT);
-        }
-
-        assertNotNull(RestNotificationRule.findByUUID(uuid));
-
-        List<EapEvent> events = XMLParser.generateEventsFromDoc(doc);
-        EapEvent newEvent = events.get(0);
-        Broker.getEventImporter().importEvent(newEvent);
-
-        assertTrue(service.unregisterQuery(uuid));
-    }
+		assertTrue(service.unregisterQuery(uuid));
+	}
 
 
 }

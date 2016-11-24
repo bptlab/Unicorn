@@ -27,17 +27,16 @@ import de.hpi.unicorn.eventhandling.Broker;
 /**
  * This class is the provider for {@link EapEventType}s. A filter can be
  * specified to return only some event types.
- * 
+ *
  * @author micha
  */
-public class EventTypeProvider extends AbstractDataProvider implements ISortableDataProvider<EapEventType, String>,
-		IFilterStateLocator {
+public class EventTypeProvider extends AbstractDataProvider implements ISortableDataProvider<EapEventType, String>, IFilterStateLocator {
 
 	private static final long serialVersionUID = 1L;
 	private static List<EapEventType> eventTypes;
 	private final ISortState sortState = new SingleSortState();
-	private EventTypeFilter eventTypeFilter = new EventTypeFilter();
 	private final List<EapEventType> selectedEventTypes;
+	private EventTypeFilter eventTypeFilter = new EventTypeFilter();
 
 	/**
 	 * Constructor for providing {@link EapEventType}s.
@@ -45,6 +44,14 @@ public class EventTypeProvider extends AbstractDataProvider implements ISortable
 	public EventTypeProvider() {
 		EventTypeProvider.eventTypes = this.filterEventTypes(EapEventType.findAll(), this.eventTypeFilter);
 		this.selectedEventTypes = new ArrayList<EapEventType>();
+	}
+
+	public static List<EapEventType> getEventTypes() {
+		return EventTypeProvider.eventTypes;
+	}
+
+	public static void setEventTypes(final List<EapEventType> eventTypeList) {
+		EventTypeProvider.eventTypes = eventTypeList;
 	}
 
 	@Override
@@ -64,8 +71,7 @@ public class EventTypeProvider extends AbstractDataProvider implements ISortable
 		return data.subList((int) first, (int) Math.min(first + count, data.size())).iterator();
 	}
 
-	private List<EapEventType> filterEventTypes(final List<EapEventType> eventTypesToFilter,
-			final EventTypeFilter eventTypeFilter) {
+	private List<EapEventType> filterEventTypes(final List<EapEventType> eventTypesToFilter, final EventTypeFilter eventTypeFilter) {
 		final List<EapEventType> returnedEventTypes = new ArrayList<EapEventType>();
 		for (final EapEventType eventType : eventTypesToFilter) {
 			if (eventTypeFilter.match(eventType)) {
@@ -83,14 +89,6 @@ public class EventTypeProvider extends AbstractDataProvider implements ISortable
 	@Override
 	public long size() {
 		return EventTypeProvider.eventTypes.size();
-	}
-
-	public static List<EapEventType> getEventTypes() {
-		return EventTypeProvider.eventTypes;
-	}
-
-	public static void setEventTypes(final List<EapEventType> eventTypeList) {
-		EventTypeProvider.eventTypes = eventTypeList;
 	}
 
 	@Override

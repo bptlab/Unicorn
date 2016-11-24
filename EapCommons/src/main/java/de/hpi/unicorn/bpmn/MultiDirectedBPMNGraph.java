@@ -16,7 +16,7 @@ import de.hpi.unicorn.bpmn.element.BPMNProcess;
  * This class is intented as a edge-oriented representation of a
  * {@link BPMNProcess}. It produces a directed multi-graph for the RPST
  * computation.
- * 
+ *
  * @author micha
  */
 public class MultiDirectedBPMNGraph extends AbstractMultiDirectedGraph<DirectedBPMNEdge, AbstractBPMNElement> {

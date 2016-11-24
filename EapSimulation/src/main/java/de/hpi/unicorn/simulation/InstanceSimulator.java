@@ -27,15 +27,13 @@ import de.hpi.unicorn.eventhandling.Broker;
  */
 public class InstanceSimulator {
 
-	public List<PathSimulator> pathSimulators;
-	private Simulator simulator;
 	private final Map<BPMNAndGateway, List<AbstractBPMNElement>> andJoinsVisitedPredecessors;
 	private final Map<TypeTreeNode, List<Serializable>> attributesAndValues;
 	private final List<TypeTreeNode> differingAttributes;
+	public List<PathSimulator> pathSimulators;
+	private Simulator simulator;
 
-	public InstanceSimulator(final AbstractBPMNElement startElement, final Simulator simulator,
-			final Map<TypeTreeNode, List<Serializable>> attributesAndValues, final Date currentSimulationDate,
-			final List<TypeTreeNode> differingAttributes) {
+	public InstanceSimulator(final AbstractBPMNElement startElement, final Simulator simulator, final Map<TypeTreeNode, List<Serializable>> attributesAndValues, final Date currentSimulationDate, final List<TypeTreeNode> differingAttributes) {
 		this.setSimulator(simulator);
 		this.attributesAndValues = attributesAndValues;
 		this.differingAttributes = differingAttributes;
@@ -117,8 +115,7 @@ public class InstanceSimulator {
 	}
 
 	public Boolean allPredecessorsOfGatewayVisited(final BPMNAndGateway gateway) {
-		return this.andJoinsVisitedPredecessors.containsKey(gateway)
-				&& this.andJoinsVisitedPredecessors.get(gateway).containsAll(gateway.getPredecessors());
+		return this.andJoinsVisitedPredecessors.containsKey(gateway) && this.andJoinsVisitedPredecessors.get(gateway).containsAll(gateway.getPredecessors());
 	}
 
 	public void resetGateway(final BPMNAndGateway gateway) {

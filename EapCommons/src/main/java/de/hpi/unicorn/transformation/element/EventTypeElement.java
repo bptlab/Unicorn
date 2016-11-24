@@ -36,11 +36,9 @@ public class EventTypeElement extends EventTreeElement<Serializable> implements 
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id
-	 *            the identifier
-	 * @param contentevent
-	 *            type
+	 *
+	 * @param id           the identifier
+	 * @param contentevent type
 	 */
 	public EventTypeElement(final int id, final EapEventType content) {
 		super(id, content);
@@ -49,12 +47,10 @@ public class EventTypeElement extends EventTreeElement<Serializable> implements 
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            event type
+	 * @param id      the identifier
+	 * @param content event type
 	 */
 	public EventTypeElement(final EventTreeElement<Serializable> parent, final int id, final EapEventType content) {
 		super(parent, id, content);

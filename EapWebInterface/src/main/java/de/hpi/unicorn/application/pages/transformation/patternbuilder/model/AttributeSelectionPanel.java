@@ -42,29 +42,26 @@ public class AttributeSelectionPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	private final Form<Void> layoutForm;
 	private final TransformationPatternTree tree;
+	private final Map<String, String> attributeIdentifiersAndExpressions;
+	private final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge;
+	private final TypeTreeNode attributeToFill;
+	private final PatternBuilderPanel patternBuilderPanel;
+	private final Boolean currentDateUsed;
+	private final AttributeSelectionPanel panel;
+	protected String expressionFromDropDownChoices;
 	private DropDownChoice<EventTypeElement> eventTypeElementDropDownChoice;
 	private DropDownChoice<TypeTreeNode> attributeDropDownChoice;
 	private AttributeExpressionTextField expressionInput;
 	private String userDefinedExpression;
-	private final Map<String, String> attributeIdentifiersAndExpressions;
-	private final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge;
-	private final TypeTreeNode attributeToFill;
-	protected String expressionFromDropDownChoices;
 	private String attributeIdentifier;
-	private final PatternBuilderPanel patternBuilderPanel;
 	private AjaxCheckBox currentDateUsedCheckbox;
-	private final Boolean currentDateUsed;
 	private Boolean allComponentsEnabled;
 	private TextField<Integer> arrayElementIndexInput;
 	private Label arrayElementIndexLabel;
 	private Integer arrayElementIndex;
-	private final AttributeSelectionPanel panel;
 	private Label currentDateUsedLabel;
 
-	public AttributeSelectionPanel(final String id, final TypeTreeNode attributeToFill,
-			final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge,
-			final PatternBuilderPanel patternBuilderPanel) {
+	public AttributeSelectionPanel(final String id, final TypeTreeNode attributeToFill, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge, final PatternBuilderPanel patternBuilderPanel) {
 		super(id);
 
 		this.panel = this;
@@ -81,8 +78,7 @@ public class AttributeSelectionPanel extends Panel {
 		} else {
 			this.attributeIdentifier = attributeToFill.getAttributeExpression();
 		}
-		if (attributeToFill.getType() == null
-				|| attributeIdentifiersWithExternalKnowledge.get(this.attributeIdentifier) != null) {
+		if (attributeToFill.getType() == null || attributeIdentifiersWithExternalKnowledge.get(this.attributeIdentifier) != null) {
 			this.allComponentsEnabled = false;
 		} else {
 			this.allComponentsEnabled = true;
@@ -107,12 +103,9 @@ public class AttributeSelectionPanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				final ExternalKnowledgeModal modal = AttributeSelectionPanel.this.patternBuilderPanel
-						.getAdvancedRuleEditorPanel().getTransformationPage().getExternalKnowledgeModal();
-				modal.getPanel().setAttributeIdentifiersAndExpressions(
-						AttributeSelectionPanel.this.attributeIdentifiersAndExpressions);
-				modal.getPanel().setAttributeIdentifiersWithExternalKnowledge(
-						AttributeSelectionPanel.this.attributeIdentifiersWithExternalKnowledge);
+				final ExternalKnowledgeModal modal = AttributeSelectionPanel.this.patternBuilderPanel.getAdvancedRuleEditorPanel().getTransformationPage().getExternalKnowledgeModal();
+				modal.getPanel().setAttributeIdentifiersAndExpressions(AttributeSelectionPanel.this.attributeIdentifiersAndExpressions);
+				modal.getPanel().setAttributeIdentifiersWithExternalKnowledge(AttributeSelectionPanel.this.attributeIdentifiersWithExternalKnowledge);
 				modal.getPanel().setPatternTree(AttributeSelectionPanel.this.patternBuilderPanel.getPatternTree());
 				modal.getPanel().setAttributeToFill(AttributeSelectionPanel.this.attributeToFill);
 				modal.getPanel().setParentPanel(AttributeSelectionPanel.this.panel);
@@ -141,8 +134,7 @@ public class AttributeSelectionPanel extends Panel {
 		};
 		this.layoutForm.add(this.currentDateUsedLabel);
 
-		this.currentDateUsedCheckbox = new AjaxCheckBox("currentDateUsedCheckbox", new PropertyModel<Boolean>(this,
-				"currentDateUsed")) {
+		this.currentDateUsedCheckbox = new AjaxCheckBox("currentDateUsedCheckbox", new PropertyModel<Boolean>(this, "currentDateUsed")) {
 			private static final long serialVersionUID = -8207035371422899809L;
 
 			@Override
@@ -158,17 +150,12 @@ public class AttributeSelectionPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (AttributeSelectionPanel.this.currentDateUsed) {
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier, "currentDate()");
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, "currentDate()");
 				} else {
 					if (AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null) {
-						AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-								AttributeSelectionPanel.this.attributeIdentifier,
-								AttributeSelectionPanel.this.expressionFromDropDownChoices);
+						AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.expressionFromDropDownChoices);
 					} else {
-						AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-								AttributeSelectionPanel.this.attributeIdentifier,
-								AttributeSelectionPanel.this.userDefinedExpression);
+						AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.userDefinedExpression);
 					}
 				}
 				target.add(AttributeSelectionPanel.this.eventTypeElementDropDownChoice);
@@ -188,28 +175,26 @@ public class AttributeSelectionPanel extends Panel {
 				eventTypeElements.add(eventTypeElement);
 			}
 		}
-		this.eventTypeElementDropDownChoice = new DropDownChoice<EventTypeElement>("eventTypeElementDropDownChoice",
-				new Model<EventTypeElement>(), eventTypeElements, new ChoiceRenderer<EventTypeElement>() {
-					private static final long serialVersionUID = 1L;
+		this.eventTypeElementDropDownChoice = new DropDownChoice<EventTypeElement>("eventTypeElementDropDownChoice", new Model<EventTypeElement>(), eventTypeElements, new ChoiceRenderer<EventTypeElement>() {
+			private static final long serialVersionUID = 1L;
 
-					@Override
-					public Object getDisplayValue(final EventTypeElement element) {
-						final StringBuffer sb = new StringBuffer();
-						if (element.getAlias() == null || element.getAlias().isEmpty()) {
-							sb.append("No alias");
-						} else {
-							sb.append(element.getAlias());
-						}
-						sb.append(" (" + ((EapEventType) element.getValue()).getTypeName() + ")");
-						return sb.toString();
-					}
-				}) {
+			@Override
+			public Object getDisplayValue(final EventTypeElement element) {
+				final StringBuffer sb = new StringBuffer();
+				if (element.getAlias() == null || element.getAlias().isEmpty()) {
+					sb.append("No alias");
+				} else {
+					sb.append(element.getAlias());
+				}
+				sb.append(" (" + ((EapEventType) element.getValue()).getTypeName() + ")");
+				return sb.toString();
+			}
+		}) {
 			private static final long serialVersionUID = -6808132238575181809L;
 
 			@Override
 			public boolean isEnabled() {
-				return AttributeSelectionPanel.this.allComponentsEnabled
-						&& !AttributeSelectionPanel.this.currentDateUsed;
+				return AttributeSelectionPanel.this.allComponentsEnabled && !AttributeSelectionPanel.this.currentDateUsed;
 			}
 
 			@Override
@@ -226,8 +211,7 @@ public class AttributeSelectionPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null) {
-					final EapEventType eventType = (EapEventType) AttributeSelectionPanel.this.eventTypeElementDropDownChoice
-							.getModelObject().getValue();
+					final EapEventType eventType = (EapEventType) AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().getValue();
 					final ArrayList<TypeTreeNode> potentialAttributes = new ArrayList<TypeTreeNode>();
 					if (AttributeSelectionPanel.this.attributeToFill.getType() == AttributeTypeEnum.DATE) {
 						potentialAttributes.add(new TypeTreeNode("Timestamp", AttributeTypeEnum.DATE));
@@ -240,15 +224,11 @@ public class AttributeSelectionPanel extends Panel {
 							potentialAttributes.add(currentAttribute);
 						}
 					}
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier,
-							AttributeSelectionPanel.this.expressionFromDropDownChoices);
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.expressionFromDropDownChoices);
 					AttributeSelectionPanel.this.attributeDropDownChoice.setChoices(potentialAttributes);
 					AttributeSelectionPanel.this.updateExpressionFromDropDownChoice();
 				} else {
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier,
-							AttributeSelectionPanel.this.userDefinedExpression);
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.userDefinedExpression);
 					AttributeSelectionPanel.this.attributeDropDownChoice.setChoices(new ArrayList<TypeTreeNode>());
 				}
 				target.add(AttributeSelectionPanel.this.arrayElementIndexInput);
@@ -264,16 +244,12 @@ public class AttributeSelectionPanel extends Panel {
 	 * for event types with pattern operator REPEAT as parent
 	 */
 	private void buildArrayElementIndexComponents() {
-		this.arrayElementIndexInput = new TextField<Integer>("arrayElementIndexInput", new PropertyModel<Integer>(this,
-				"arrayElementIndex")) {
+		this.arrayElementIndexInput = new TextField<Integer>("arrayElementIndexInput", new PropertyModel<Integer>(this, "arrayElementIndex")) {
 			private static final long serialVersionUID = 7106359506546529349L;
 
 			@Override
 			public boolean isVisible() {
-				return AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().hasParent()
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().getParent()
-								.getValue() == PatternOperatorEnum.REPEAT;
+				return AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().hasParent() && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().getParent().getValue() == PatternOperatorEnum.REPEAT;
 			}
 		};
 		final OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
@@ -282,9 +258,7 @@ public class AttributeSelectionPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				AttributeSelectionPanel.this.updateExpressionFromDropDownChoice();
-				AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-						AttributeSelectionPanel.this.attributeIdentifier,
-						AttributeSelectionPanel.this.expressionFromDropDownChoices);
+				AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.expressionFromDropDownChoices);
 			}
 		};
 		this.arrayElementIndexInput.add(onChangeAjaxBehavior);
@@ -307,10 +281,7 @@ public class AttributeSelectionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().hasParent()
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().getParent()
-								.getValue() == PatternOperatorEnum.REPEAT;
+				return AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().hasParent() && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject().getParent().getValue() == PatternOperatorEnum.REPEAT;
 			}
 		};
 		this.arrayElementIndexLabel.setOutputMarkupPlaceholderTag(true);
@@ -319,22 +290,19 @@ public class AttributeSelectionPanel extends Panel {
 	}
 
 	private void buildAttributeDropDownChoice() {
-		this.attributeDropDownChoice = new DropDownChoice<TypeTreeNode>("attributeDropDownChoice",
-				new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>(), new ChoiceRenderer<TypeTreeNode>() {
-					private static final long serialVersionUID = 1L;
+		this.attributeDropDownChoice = new DropDownChoice<TypeTreeNode>("attributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>(), new ChoiceRenderer<TypeTreeNode>() {
+			private static final long serialVersionUID = 1L;
 
-					@Override
-					public Object getDisplayValue(final TypeTreeNode attribute) {
-						return attribute.getAttributeExpression();
-					}
-				}) {
+			@Override
+			public Object getDisplayValue(final TypeTreeNode attribute) {
+				return attribute.getAttributeExpression();
+			}
+		}) {
 			private static final long serialVersionUID = 474559809405809953L;
 
 			@Override
 			public boolean isEnabled() {
-				return AttributeSelectionPanel.this.allComponentsEnabled
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null
-						&& !AttributeSelectionPanel.this.currentDateUsed;
+				return AttributeSelectionPanel.this.allComponentsEnabled && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() != null && !AttributeSelectionPanel.this.currentDateUsed;
 			}
 		};
 		this.attributeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -344,9 +312,7 @@ public class AttributeSelectionPanel extends Panel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (AttributeSelectionPanel.this.attributeDropDownChoice.getModelObject() != null) {
 					AttributeSelectionPanel.this.updateExpressionFromDropDownChoice();
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier,
-							AttributeSelectionPanel.this.expressionFromDropDownChoices);
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.expressionFromDropDownChoices);
 				}
 			}
 		});
@@ -356,15 +322,12 @@ public class AttributeSelectionPanel extends Panel {
 	}
 
 	private void buildExpressionInput() {
-		this.expressionInput = new AttributeExpressionTextField("expressionInput", new PropertyModel<String>(this,
-				"userDefinedExpression"), this.patternBuilderPanel.getPatternTree()) {
+		this.expressionInput = new AttributeExpressionTextField("expressionInput", new PropertyModel<String>(this, "userDefinedExpression"), this.patternBuilderPanel.getPatternTree()) {
 			private static final long serialVersionUID = -5212591175918436633L;
 
 			@Override
 			public boolean isEnabled() {
-				return AttributeSelectionPanel.this.allComponentsEnabled
-						&& AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() == null
-						&& !AttributeSelectionPanel.this.currentDateUsed;
+				return AttributeSelectionPanel.this.allComponentsEnabled && AttributeSelectionPanel.this.eventTypeElementDropDownChoice.getModelObject() == null && !AttributeSelectionPanel.this.currentDateUsed;
 			}
 		};
 		this.expressionInput.setOutputMarkupId(true);
@@ -375,12 +338,9 @@ public class AttributeSelectionPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (AttributeSelectionPanel.this.userDefinedExpression == null) {
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier, "");
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, "");
 				} else {
-					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(
-							AttributeSelectionPanel.this.attributeIdentifier,
-							AttributeSelectionPanel.this.userDefinedExpression);
+					AttributeSelectionPanel.this.attributeIdentifiersAndExpressions.put(AttributeSelectionPanel.this.attributeIdentifier, AttributeSelectionPanel.this.userDefinedExpression);
 				}
 			}
 		};

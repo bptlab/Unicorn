@@ -47,8 +47,7 @@ public abstract class AJAXDownload extends AbstractAjaxBehavior {
 
 	@Override
 	public void onRequest() {
-		final ResourceStreamRequestHandler handler = new ResourceStreamRequestHandler(this.getResourceStream(),
-				this.getFileName());
+		final ResourceStreamRequestHandler handler = new ResourceStreamRequestHandler(this.getResourceStream(), this.getFileName());
 		handler.setContentDisposition(ContentDisposition.ATTACHMENT);
 		this.getComponent().getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
 	}
@@ -56,7 +55,7 @@ public abstract class AJAXDownload extends AbstractAjaxBehavior {
 	/**
 	 * Override this method for a file name which will let the browser prompt
 	 * with a save/open dialog.
-	 * 
+	 *
 	 * @see ResourceStreamRequestTarget#getFileName()
 	 */
 	protected String getFileName() {

@@ -31,9 +31,8 @@ class ExistingCorrelationAlert extends Alert {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id
-	 *            the wicket component id.
+	 *
+	 * @param id              the wicket component id.
 	 * @param correlationPage
 	 */
 	public ExistingCorrelationAlert(final String id, final String message, final CorrelationPage correlationPage) {
@@ -45,25 +44,21 @@ class ExistingCorrelationAlert extends Alert {
 
 	/**
 	 * creates a new message component.
-	 * 
-	 * @param markupId
-	 *            The component id
-	 * @param message
-	 *            The message as {@link IModel}
+	 *
+	 * @param markupId The component id
+	 * @param message  The message as {@link IModel}
 	 * @return new message component
 	 */
 	@Override
 	protected Component createMessage(final String markupId, final IModel<String> message) {
 		final Form container = new Form(markupId);
 
-		container.add(new Label("messageText", new Model<Serializable>(
-				"Correlation exists! Do you want to override it?")));
+		container.add(new Label("messageText", new Model<Serializable>("Correlation exists! Do you want to override it?")));
 		final BlockingAjaxButton correlateButton = new BlockingAjaxButton("correlateButton", new Model("Correlate")) {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				Correlator.removeExistingCorrelation(ExistingCorrelationAlert.this.selectedProcess);
-				ExistingCorrelationAlert.this.correlationPage
-						.correlateEvents(ExistingCorrelationAlert.this.selectedProcess);
+				ExistingCorrelationAlert.this.correlationPage.correlateEvents(ExistingCorrelationAlert.this.selectedProcess);
 
 				ExistingCorrelationAlert.this.alert.setVisible(false);
 

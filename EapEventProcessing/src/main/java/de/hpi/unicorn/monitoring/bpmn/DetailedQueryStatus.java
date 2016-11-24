@@ -20,8 +20,7 @@ public class DetailedQueryStatus implements Serializable {
 	private Set<ViolationStatus> violationStatus;
 	private Date endTime;
 
-	public DetailedQueryStatus(final PatternQuery query, final QueryStatus queryStatus,
-			final Set<ViolationStatus> violationStatus) {
+	public DetailedQueryStatus(final PatternQuery query, final QueryStatus queryStatus, final Set<ViolationStatus> violationStatus) {
 		this.query = query;
 		this.setQueryStatus(queryStatus);
 		this.violationStatus = violationStatus;

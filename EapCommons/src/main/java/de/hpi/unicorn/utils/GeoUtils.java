@@ -15,82 +15,66 @@ import org.geotools.referencing.GeodeticCalculator;
 
 /**
  * This class provides helper methods for geo calculations.
- * 
+ *
  * @author abaumgrass, mhewelt
- * 
  */
 public class GeoUtils {
 
 	private static double earthRadius = 6371; // in km
 
 	/**
-	 * 
 	 * Returns the distance between two coordinates given as longitude and
 	 * latitude
-	 * 
+	 *
 	 * @param firstLongitude
 	 * @param firstLatitude
 	 * @param secondLongitude
 	 * @param secondLatitude
-	 * 
 	 * @return distance (round to long) in meters
 	 */
-	public static Long getDistance(final String firstLongitude, final String firstLatitude,
-			final String secondLongitude, final String secondLatitude) {
-		return GeoUtils.getDistance(Double.valueOf(firstLongitude), Double.valueOf(firstLatitude),
-				Double.valueOf(secondLongitude), Double.valueOf(secondLatitude));
+	public static Long getDistance(final String firstLongitude, final String firstLatitude, final String secondLongitude, final String secondLatitude) {
+		return GeoUtils.getDistance(Double.valueOf(firstLongitude), Double.valueOf(firstLatitude), Double.valueOf(secondLongitude), Double.valueOf(secondLatitude));
 	}
 
 	/**
-	 * 
 	 * Returns the distance between two coordinates given as longitude and
 	 * latitude
-	 * 
+	 *
 	 * @param firstLongitude
 	 * @param firstLatitude
 	 * @param secondLongitude
 	 * @param secondLatitude
-	 * 
 	 * @return distance (round to long)
 	 */
-	public static Long getDistance(final Double firstLongitude, final Double firstLatitude,
-			final String secondLongitude, final String secondLatitude) {
-		return GeoUtils.getDistance(firstLongitude, firstLatitude, Double.valueOf(secondLongitude),
-				Double.valueOf(secondLatitude));
+	public static Long getDistance(final Double firstLongitude, final Double firstLatitude, final String secondLongitude, final String secondLatitude) {
+		return GeoUtils.getDistance(firstLongitude, firstLatitude, Double.valueOf(secondLongitude), Double.valueOf(secondLatitude));
 	}
 
 	/**
-	 * 
 	 * Returns the distance between two coordinates given as longitude and
 	 * latitude
-	 * 
+	 *
 	 * @param firstLongitude
 	 * @param firstLatitude
 	 * @param secondLongitude
 	 * @param secondLatitude
-	 * 
 	 * @return distance (round to long)
 	 */
-	public static Long getDistance(final String firstLongitude, final String firstLatitude,
-			final Double secondLongitude, final Double secondLatitude) {
-		return GeoUtils.getDistance(Double.valueOf(firstLongitude), Double.valueOf(firstLatitude), secondLongitude,
-				secondLatitude);
+	public static Long getDistance(final String firstLongitude, final String firstLatitude, final Double secondLongitude, final Double secondLatitude) {
+		return GeoUtils.getDistance(Double.valueOf(firstLongitude), Double.valueOf(firstLatitude), secondLongitude, secondLatitude);
 	}
 
 	/**
-	 * 
 	 * Returns the distance between two coordinates given as longitude and
 	 * latitude
-	 * 
+	 *
 	 * @param firstLongitude
 	 * @param firstLatitude
 	 * @param secondLongitude
 	 * @param secondLatitude
-	 * 
 	 * @return distance (round to long)
 	 */
-	public static Long getDistance(final Double firstLongitude, final Double firstLatitude,
-			final Double secondLongitude, final Double secondLatitude) {
+	public static Long getDistance(final Double firstLongitude, final Double firstLatitude, final Double secondLongitude, final Double secondLatitude) {
 		Double distance = 0.0;
 		final GeodeticCalculator cal = new GeodeticCalculator();
 		cal.setStartingGeographicPoint(firstLongitude, firstLatitude);
@@ -108,29 +92,10 @@ public class GeoUtils {
 		return distance.longValue();
 	}
 
-	public static class Coord {
-		public double lat, lng;
-		public String name;
-
-		public Coord(double lat, double lng) {
-			this.lat = lat;
-			this.lng = lng;
-		}
-
-		public Coord(double lat, double lng, String name) {
-			this(lat, lng);
-			this.name = name;
-		}
-
-		public String toString() {
-			return String.format(Locale.ENGLISH, "%s at <%f,%f>", name, lat, lng);
-		}
-	}
-
 	/**
 	 * Calculates the distance in meters between two coordinates using Haversine
 	 * formula.
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @return distance in meters
@@ -141,8 +106,7 @@ public class GeoUtils {
 		double deltaPhi = Math.toRadians(p1.lat - p2.lat);
 		double deltaLambda = Math.toRadians(p1.lng - p2.lng);
 
-		double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) + Math.cos(phi1) * Math.cos(phi2)
-				* Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+		double a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) + Math.cos(phi1) * Math.cos(phi2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
 		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 		double distance = earthRadius * c;
 
@@ -152,20 +116,15 @@ public class GeoUtils {
 	/**
 	 * Calculates the distance in km between two coordinates given as String
 	 * pairs of latitude / longitude.
-	 * 
-	 * @param lat1
-	 *            - latitude of first coordinate
-	 * @param lng1
-	 *            - longitude of first coordinate
-	 * @param lat2
-	 *            - latitude of second coordinate
-	 * @param lng2
-	 *            - longitude of second coordinate
+	 *
+	 * @param lat1 - latitude of first coordinate
+	 * @param lng1 - longitude of first coordinate
+	 * @param lat2 - latitude of second coordinate
+	 * @param lng2 - longitude of second coordinate
 	 * @return distance in km
 	 */
 	public static double distance(String lat1, String lng1, String lat2, String lng2) {
-		return distance(new Coord(Double.parseDouble(lat1), Double.parseDouble(lng1)),
-				new Coord(Double.parseDouble(lat2), Double.parseDouble(lng2)));
+		return distance(new Coord(Double.parseDouble(lat1), Double.parseDouble(lng1)), new Coord(Double.parseDouble(lat2), Double.parseDouble(lng2)));
 	}
 
 	public static double distance(String lat1, String lng1, Double lat2, Double lng2) {
@@ -182,15 +141,14 @@ public class GeoUtils {
 	 * longitude. Unfortunately, this fails in the case that {@literal p1} and
 	 * {@literal p2} lie in the same quadrant, e.g. top-left, considering
 	 * {@literal between} as the origin of a coordinate system.
-	 * 
+	 *
 	 * @param p1
 	 * @param p2
 	 * @param between
 	 * @return
 	 */
 	public static boolean inBetween(Coord p1, Coord p2, Coord between) {
-		return (p1.lat < between.lat && between.lat < p2.lat) || (p1.lat > between.lat && between.lat > p2.lat)
-				|| (p1.lng < between.lng && between.lng < p2.lng) || (p1.lng > between.lng && between.lng > p2.lng);
+		return (p1.lat < between.lat && between.lat < p2.lat) || (p1.lat > between.lat && between.lat > p2.lat) || (p1.lng < between.lng && between.lng < p2.lng) || (p1.lng > between.lng && between.lng > p2.lng);
 	}
 
 	public static boolean inBetween(Double p1Lat, Double p1Lon, Double p2Lat, Double p2Lon, Double bLat, Double bLon) {
@@ -198,8 +156,7 @@ public class GeoUtils {
 	}
 
 	public static boolean inBetween(String p1Lat, String p1Lon, String p2Lat, String p2Lon, String bLat, String bLon) {
-		return inBetween(Double.parseDouble(p1Lat), Double.parseDouble(p1Lon), Double.parseDouble(p2Lat),
-				Double.parseDouble(p2Lon), Double.parseDouble(bLat), Double.parseDouble(bLon));
+		return inBetween(Double.parseDouble(p1Lat), Double.parseDouble(p1Lon), Double.parseDouble(p2Lat), Double.parseDouble(p2Lon), Double.parseDouble(bLat), Double.parseDouble(bLon));
 	}
 
 	public static double sumOfDistances(Coord[] coords, int step) {
@@ -223,7 +180,7 @@ public class GeoUtils {
 	/**
 	 * Select a subset of coordinates from an array with minimal error.
 	 * Iterative implementation.
-	 * 
+	 *
 	 * @param coords
 	 * @return
 	 */
@@ -233,7 +190,7 @@ public class GeoUtils {
 		List<Coord> result = new ArrayList<GeoUtils.Coord>();
 		result.add(coords[0]);
 
-		for (int i = 0; i < coords.length;) {
+		for (int i = 0; i < coords.length; ) {
 			Coord selected = coords[i];
 			double summedDistance = 0;
 			double directDistance = 0;
@@ -256,5 +213,24 @@ public class GeoUtils {
 			}
 		}
 		return result.toArray(new Coord[0]);
+	}
+
+	public static class Coord {
+		public double lat, lng;
+		public String name;
+
+		public Coord(double lat, double lng) {
+			this.lat = lat;
+			this.lng = lng;
+		}
+
+		public Coord(double lat, double lng, String name) {
+			this(lat, lng);
+			this.name = name;
+		}
+
+		public String toString() {
+			return String.format(Locale.ENGLISH, "%s at <%f,%f>", name, lat, lng);
+		}
 	}
 }

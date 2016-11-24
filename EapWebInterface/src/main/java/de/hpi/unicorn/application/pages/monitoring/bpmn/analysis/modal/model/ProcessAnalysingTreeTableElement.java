@@ -24,31 +24,27 @@ import de.hpi.unicorn.query.PatternQuery;
  * Representation of a tree node of the process analysing treetable. Each
  * element contains a {@link PatternQuery} and associated informations for these
  * query.
- * 
- * @param <T>
- *            type of content to be stored
+ *
+ * @param <T> type of content to be stored
  */
 public class ProcessAnalysingTreeTableElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private int ID;
-	private PatternQuery query;
-	private ProcessAnalysingTreeTableElement parent;
 	private final Set<ProcessAnalysingTreeTableElement> children = new HashSet<ProcessAnalysingTreeTableElement>();
 	private final List<MonitoringPoint> monitoringPoints = new ArrayList<MonitoringPoint>();
-	private Set<AbstractBPMNElement> monitoredElements;
 	private final ProcessMonitor processMonitor;
 	private final float averageRuntime;
 	private final String pathFrequency;
+	private int ID;
+	private PatternQuery query;
+	private ProcessAnalysingTreeTableElement parent;
+	private Set<AbstractBPMNElement> monitoredElements;
 
 	/**
 	 * creates a root node
-	 * 
+	 *
 	 * @param processMonitor
-	 * 
-	 * @param content
-	 *            the content to be stored in the new node
+	 * @param content        the content to be stored in the new node
 	 */
 	public ProcessAnalysingTreeTableElement(final int ID, final PatternQuery query, final ProcessMonitor processMonitor) {
 		this.ID = ID;
@@ -61,13 +57,11 @@ public class ProcessAnalysingTreeTableElement implements Serializable {
 
 	/**
 	 * creates a node and adds it to its parent
-	 * 
+	 *
 	 * @param parent
-	 * @param content
-	 *            the content to be stored in the node
+	 * @param content the content to be stored in the node
 	 */
-	public ProcessAnalysingTreeTableElement(final ProcessAnalysingTreeTableElement parent, final int ID,
-			final PatternQuery query, final ProcessMonitor processMonitor) {
+	public ProcessAnalysingTreeTableElement(final ProcessAnalysingTreeTableElement parent, final int ID, final PatternQuery query, final ProcessMonitor processMonitor) {
 		this(ID, query, processMonitor);
 		this.parent = parent;
 		this.parent.getChildren().add(this);
@@ -93,6 +87,13 @@ public class ProcessAnalysingTreeTableElement implements Serializable {
 		return this.parent;
 	}
 
+	public void setParent(final ProcessAnalysingTreeTableElement parent) {
+		this.parent = parent;
+		if (parent != null) {
+			this.parent.getChildren().add(this);
+		}
+	}
+
 	public Set<ProcessAnalysingTreeTableElement> getChildren() {
 		return this.children;
 	}
@@ -110,13 +111,6 @@ public class ProcessAnalysingTreeTableElement implements Serializable {
 			this.parent.getChildren().remove(this);
 		}
 		// Müssen Kinder noch explizit entfernt werden?
-	}
-
-	public void setParent(final ProcessAnalysingTreeTableElement parent) {
-		this.parent = parent;
-		if (parent != null) {
-			this.parent.getChildren().add(this);
-		}
 	}
 
 	public boolean hasMonitoringPoints() {

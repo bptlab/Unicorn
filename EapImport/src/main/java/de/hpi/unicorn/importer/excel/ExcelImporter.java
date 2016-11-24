@@ -65,8 +65,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 		if (firstRow != null) {
 			final ArrayList<String> columnTitles = new ArrayList<String>();
 			for (final Cell currentCell : firstRow) {
-				columnTitles.add(currentCell.getStringCellValue().trim().replaceAll(" +", "_")
-						.replaceAll("[^a-zA-Z0-9_]+", ""));
+				columnTitles.add(currentCell.getStringCellValue().trim().replaceAll(" +", "_").replaceAll("[^a-zA-Z0-9_]+", ""));
 			}
 			return columnTitles;
 		} else {
@@ -76,8 +75,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 	}
 
 	@Override
-	public List<ImportEvent> importEventsForPreviewFromFile(final String filePath,
-			final List<String> selectedColumnTitles) throws IllegalArgumentException {
+	public List<ImportEvent> importEventsForPreviewFromFile(final String filePath, final List<String> selectedColumnTitles) throws IllegalArgumentException {
 
 		final List<ImportEvent> eventList = new ArrayList<ImportEvent>();
 		final List<String> columnTitles = this.getColumnTitlesFromFile(filePath);
@@ -91,8 +89,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 			while (rowIterator.hasNext()) {
 				final HSSFRow actualRow = (HSSFRow) rowIterator.next();
 				if (!this.isRowEmpty(actualRow)) {
-					eventList.add(this.generateImportEventFromRow(actualRow, selectedColumnTitles, columnTitles,
-							timestampName));
+					eventList.add(this.generateImportEventFromRow(actualRow, selectedColumnTitles, columnTitles, timestampName));
 				}
 			}
 		}
@@ -100,8 +97,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 	}
 
 	@Override
-	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes,
-			final String timestamp) {
+	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes, final String timestamp) {
 		final List<EapEvent> eventList = new ArrayList<EapEvent>();
 		final List<String> columnTitles = this.getColumnTitlesFromFile(filePath);
 		final List<String> selectedColumnTitles = new ArrayList<String>();
@@ -120,8 +116,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 			while (rowIterator.hasNext()) {
 				final HSSFRow actualRow = (HSSFRow) rowIterator.next();
 				if (!this.isRowEmpty(actualRow)) {
-					eventList.add(this.generateEventFromRow(actualRow, selectedColumnTitles, selectedAttributes,
-							columnTitles, timeStampColumnIndex));
+					eventList.add(this.generateEventFromRow(actualRow, selectedColumnTitles, selectedAttributes, columnTitles, timeStampColumnIndex));
 				}
 			}
 		}
@@ -131,14 +126,13 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 	/**
 	 * Generates an import event for preview from the given row. The difference
 	 * to the normal creation is the treatment of the date.
-	 * 
+	 *
 	 * @param actualRow
 	 * @param selectedColumnTitles
 	 * @param columnTitles
 	 * @param timestampName
 	 */
-	private ImportEvent generateImportEventFromRow(final HSSFRow actualRow, final List<String> selectedColumnTitles,
-			final List<String> columnTitles, final String timestampName) {
+	private ImportEvent generateImportEventFromRow(final HSSFRow actualRow, final List<String> selectedColumnTitles, final List<String> columnTitles, final String timestampName) {
 		Date timestamp;
 		final int timestampColumnIndex = columnTitles.indexOf(timestampName);
 		if (timestampColumnIndex > -1) {
@@ -146,23 +140,21 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 		} else {
 			timestamp = null;
 		}
-		final Map<String, Serializable> values = this.generateValueTree(actualRow, selectedColumnTitles, columnTitles,
-				timestampColumnIndex);
+		final Map<String, Serializable> values = this.generateValueTree(actualRow, selectedColumnTitles, columnTitles, timestampColumnIndex);
 		final ImportEvent event = new ImportEvent(timestamp, values, timestampName, new Date());
 		return event;
 	}
 
 	/**
 	 * Imports an event from the given row.
-	 * 
+	 *
 	 * @param actualRow
 	 * @param selectedColumnTitles
 	 * @param selectedAttributes
 	 * @param columnTitles
 	 * @param timeStampColumnIndex
 	 */
-	private EapEvent generateEventFromRow(final HSSFRow actualRow, final List<String> selectedColumnTitles,
-			final List<TypeTreeNode> selectedAttributes, final List<String> columnTitles, final int timeStampColumnIndex) {
+	private EapEvent generateEventFromRow(final HSSFRow actualRow, final List<String> selectedColumnTitles, final List<TypeTreeNode> selectedAttributes, final List<String> columnTitles, final int timeStampColumnIndex) {
 		Date timestamp;
 		// Falls kein TimeStamp gefunden wurde, wird die aktuelle Einlesezeit
 		// verwendet
@@ -175,8 +167,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 		} else {
 			timestamp = new Date();
 		}
-		final Map<String, Serializable> values = this.generateValueTree(actualRow, selectedColumnTitles,
-				selectedAttributes, columnTitles, timeStampColumnIndex);
+		final Map<String, Serializable> values = this.generateValueTree(actualRow, selectedColumnTitles, selectedAttributes, columnTitles, timeStampColumnIndex);
 		final EapEvent event = new EapEvent(timestamp, values);
 		return event;
 	}
@@ -190,7 +181,7 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 
 	/**
 	 * Returns true, if a {@link HSSFRow} has no values.
-	 * 
+	 *
 	 * @param actualRow
 	 */
 	private boolean isRowEmpty(final HSSFRow actualRow) {
@@ -206,15 +197,14 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 	/**
 	 * Returns a new {@link Map} from the given row with the values for the
 	 * selected columns.
-	 * 
+	 *
 	 * @param actualRow
 	 * @param selectedColumnTitles
 	 * @param columnTitles
 	 * @param timeStampColumnIndex
 	 * @return
 	 */
-	private Map<String, Serializable> generateValueTree(final HSSFRow actualRow,
-			final List<String> selectedColumnTitles, final List<String> columnTitles, final int timeStampColumnIndex) {
+	private Map<String, Serializable> generateValueTree(final HSSFRow actualRow, final List<String> selectedColumnTitles, final List<String> columnTitles, final int timeStampColumnIndex) {
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();
 		final Iterator<Cell> cellIterator = actualRow.cellIterator();
 		while (cellIterator.hasNext()) {
@@ -233,16 +223,14 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 	 * Returns a new {@link Map} from the given row with the values for the
 	 * selected columns. It is possible to specify the selected
 	 * {@link TypeTreeNode}s.
-	 * 
+	 *
 	 * @param actualRow
 	 * @param selectedColumnTitles
 	 * @param columnTitles
 	 * @param timeStampColumnIndex
 	 * @return
 	 */
-	private Map<String, Serializable> generateValueTree(final HSSFRow actualRow,
-			final List<String> selectedColumnTitles, final List<TypeTreeNode> selectedAttributes,
-			final List<String> columnTitles, final int timeStampColumnIndex) {
+	private Map<String, Serializable> generateValueTree(final HSSFRow actualRow, final List<String> selectedColumnTitles, final List<TypeTreeNode> selectedAttributes, final List<String> columnTitles, final int timeStampColumnIndex) {
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();
 		final Iterator<Cell> cellIterator = actualRow.cellIterator();
 		AttributeTypeEnum attributeType = null;
@@ -267,35 +255,33 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 
 		if (attributeType == null) {
 			switch (actualCell.getCellType()) {
-			case Cell.CELL_TYPE_STRING:
-				if (actualCell.toString().contains("0-0-0000 00:00")) {
-					attributeValue = new Date(0);
-				} else if (actualCell.toString().matches(".*[0-9]{2}:[0-9]{2}")) {
-					attributeValue = DateUtils.parseDurationAsDate(actualCell.toString());
-				} else {
-					attributeValue = actualCell.getStringCellValue();
-				}
-				break;
-			case Cell.CELL_TYPE_NUMERIC:
-				double value = 0.0;
-				try {
-					value = actualCell.getNumericCellValue();
-				} catch (final NumberFormatException e) {
-					// e.printStackTrace();
-				} catch (final IllegalStateException e2) {
-					// e2.printStackTrace();
-				}
-				if (actualCell.toString().matches(".*E[0-9]{2}")) {
-					attributeValue = Double.valueOf(value).longValue();
-				} else if (!actualCell.getCellStyle().getDataFormatString().equals("General")
-						&& this.isDateFormatted(actualCell)) {
-					attributeValue = DateUtil.getJavaDate(Double.valueOf(value));
-				} else if (actualCell.getCellStyle().getDataFormatString().equals("General")
-						&& !this.isDateFormatted(actualCell)) {
-					attributeValue = Double.valueOf(value);
-				} else {
-					attributeValue = Double.valueOf(value);
-				}
+				case Cell.CELL_TYPE_STRING:
+					if (actualCell.toString().contains("0-0-0000 00:00")) {
+						attributeValue = new Date(0);
+					} else if (actualCell.toString().matches(".*[0-9]{2}:[0-9]{2}")) {
+						attributeValue = DateUtils.parseDurationAsDate(actualCell.toString());
+					} else {
+						attributeValue = actualCell.getStringCellValue();
+					}
+					break;
+				case Cell.CELL_TYPE_NUMERIC:
+					double value = 0.0;
+					try {
+						value = actualCell.getNumericCellValue();
+					} catch (final NumberFormatException e) {
+						// e.printStackTrace();
+					} catch (final IllegalStateException e2) {
+						// e2.printStackTrace();
+					}
+					if (actualCell.toString().matches(".*E[0-9]{2}")) {
+						attributeValue = Double.valueOf(value).longValue();
+					} else if (!actualCell.getCellStyle().getDataFormatString().equals("General") && this.isDateFormatted(actualCell)) {
+						attributeValue = DateUtil.getJavaDate(Double.valueOf(value));
+					} else if (actualCell.getCellStyle().getDataFormatString().equals("General") && !this.isDateFormatted(actualCell)) {
+						attributeValue = Double.valueOf(value);
+					} else {
+						attributeValue = Double.valueOf(value);
+					}
 
 			}
 		} else {
@@ -311,37 +297,35 @@ public class ExcelImporter extends FileNormalizer implements Serializable {
 				}
 			} else if (attributeType.equals(AttributeTypeEnum.FLOAT)) {
 				switch (actualCell.getCellType()) {
-				case Cell.CELL_TYPE_STRING:
-					if (actualCell.toString().contains("0-0-0000 00:00")) {
-						attributeValue = new Date(0);
-					} else {
-						attributeValue = Double.valueOf(actualCell.getStringCellValue());
-					}
-					break;
-				case Cell.CELL_TYPE_NUMERIC:
-					if (!actualCell.getCellStyle().getDataFormatString().equals("General")
-							&& this.isDateFormatted(actualCell)) {
-						final Double cellValue = new Double(actualCell.getNumericCellValue());
-						attributeValue = DateUtil.getJavaDate(cellValue);
-					} else if (actualCell.getCellStyle().getDataFormatString().equals("General")
-							&& !this.isDateFormatted(actualCell)) {
-						attributeValue = Double.valueOf(actualCell.getNumericCellValue());
-					} else {
-						attributeValue = new Date(0);
-					}
+					case Cell.CELL_TYPE_STRING:
+						if (actualCell.toString().contains("0-0-0000 00:00")) {
+							attributeValue = new Date(0);
+						} else {
+							attributeValue = Double.valueOf(actualCell.getStringCellValue());
+						}
+						break;
+					case Cell.CELL_TYPE_NUMERIC:
+						if (!actualCell.getCellStyle().getDataFormatString().equals("General") && this.isDateFormatted(actualCell)) {
+							final Double cellValue = new Double(actualCell.getNumericCellValue());
+							attributeValue = DateUtil.getJavaDate(cellValue);
+						} else if (actualCell.getCellStyle().getDataFormatString().equals("General") && !this.isDateFormatted(actualCell)) {
+							attributeValue = Double.valueOf(actualCell.getNumericCellValue());
+						} else {
+							attributeValue = new Date(0);
+						}
 				}
 			} else if (attributeType.equals(AttributeTypeEnum.INTEGER)) {
 				switch (actualCell.getCellType()) {
-				case Cell.CELL_TYPE_STRING:
-					try {
-						attributeValue = Double.valueOf(actualCell.getStringCellValue()).longValue();
-					} catch (final NumberFormatException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					break;
-				case Cell.CELL_TYPE_NUMERIC:
-					attributeValue = Double.valueOf(actualCell.getNumericCellValue()).longValue();
+					case Cell.CELL_TYPE_STRING:
+						try {
+							attributeValue = Double.valueOf(actualCell.getStringCellValue()).longValue();
+						} catch (final NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					case Cell.CELL_TYPE_NUMERIC:
+						attributeValue = Double.valueOf(actualCell.getNumericCellValue()).longValue();
 				}
 			} else if (attributeType.equals(AttributeTypeEnum.STRING)) {
 				attributeValue = actualCell.toString();

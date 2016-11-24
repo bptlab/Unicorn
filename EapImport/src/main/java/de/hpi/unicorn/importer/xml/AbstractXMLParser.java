@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 /**
  * This class centralizes methods for the parsing of XML files.
- * 
+ *
  * @author micha
  */
 public class AbstractXMLParser {
@@ -29,7 +29,7 @@ public class AbstractXMLParser {
 
 	/**
 	 * Returns a {@link Document} for a XML file from the given file path.
-	 * 
+	 *
 	 * @param file
 	 * @throws IOException
 	 * @throws SAXException
@@ -50,14 +50,13 @@ public class AbstractXMLParser {
 
 	/**
 	 * Returns a {@link Document} for a XML file from the given file path.
-	 * 
+	 *
 	 * @param filePath
 	 * @throws ParserConfigurationException
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	protected static Document readXMLDocument(final String filePath) throws ParserConfigurationException, SAXException,
-			IOException {
+	protected static Document readXMLDocument(final String filePath) throws ParserConfigurationException, SAXException, IOException {
 		final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setNamespaceAware(true);
 		DocumentBuilder builder = null;

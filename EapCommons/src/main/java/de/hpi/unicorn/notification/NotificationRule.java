@@ -57,35 +57,6 @@ public abstract class NotificationRule extends Persistable {
 
 	// Getter and Setter
 
-	@Override
-	public int getID() {
-		return this.ID;
-	}
-
-	public void setID(final int iD) {
-		this.ID = iD;
-	}
-
-	public Date getTimestamp() {
-		return this.timestamp;
-	}
-
-	public void setTimestamp(final Date timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public EapUser getUser() {
-		return this.user;
-	}
-
-	public void setUser(final EapUser user) {
-		this.user = user;
-	}
-
-	public abstract Persistable getTriggeringEntity();
-
-	// JPA-Methods
-
 	/**
 	 * Deletes all notification rules from the database.
 	 */
@@ -104,7 +75,7 @@ public abstract class NotificationRule extends Persistable {
 
 	/**
 	 * Finds all notification rules from the database.
-	 * 
+	 *
 	 * @return all notification rules
 	 */
 	public static List<NotificationRule> findAll() {
@@ -114,20 +85,48 @@ public abstract class NotificationRule extends Persistable {
 
 	/**
 	 * Find all notification rules for a user from the database.
-	 * 
+	 *
 	 * @param user
 	 * @return all notification rules for a user
 	 */
 	public static List<NotificationRule> findByUser(final EapUser user) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE USER_ID = '" + user.getID() + "'", NotificationRule.class);
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE USER_ID = '" + user.getID() + "'", NotificationRule.class);
 		return q.getResultList();
 	}
+
+	@Override
+	public int getID() {
+		return this.ID;
+	}
+
+	public void setID(final int iD) {
+		this.ID = iD;
+	}
+
+	public Date getTimestamp() {
+		return this.timestamp;
+	}
+
+	public void setTimestamp(final Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	// JPA-Methods
+
+	public EapUser getUser() {
+		return this.user;
+	}
+
+	public void setUser(final EapUser user) {
+		this.user = user;
+	}
+
+	public abstract Persistable getTriggeringEntity();
 
 	/**
 	 * Deletes this notification rule from the database. All connected
 	 * notifications are deleted as well.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

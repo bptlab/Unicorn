@@ -16,7 +16,7 @@ import de.hpi.unicorn.event.EapEventType;
 /**
  * This class is a {@link IModel} and provides the names of the event types in
  * the database.
- * 
+ *
  * @author micha
  */
 public class EventTypeNamesProvider implements IModel<List<String>> {

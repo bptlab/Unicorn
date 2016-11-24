@@ -20,25 +20,22 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPointStateTransition;
 /**
  * Representation of a tree node of the BPMN treetable. Each element contains a
  * {@link AbstractBPMNElement} and associated informations for these element.
- * 
- * @param <T>
- *            type of content to be stored
+ *
+ * @param <T> type of content to be stored
  */
 public class BPMNTreeTableElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	private int ID;
 	private final AbstractBPMNElement content;
-	private BPMNTreeTableElement parent;
 	private final Set<BPMNTreeTableElement> children = new HashSet<BPMNTreeTableElement>();
 	private final List<MonitoringPoint> monitoringPoints = new ArrayList<MonitoringPoint>();
+	private int ID;
+	private BPMNTreeTableElement parent;
 
 	/**
 	 * creates a root node
-	 * 
-	 * @param content
-	 *            the content to be stored in the new node
+	 *
+	 * @param content the content to be stored in the new node
 	 */
 	public BPMNTreeTableElement(final int ID, final AbstractBPMNElement content) {
 		this.ID = ID;
@@ -47,10 +44,9 @@ public class BPMNTreeTableElement implements Serializable {
 
 	/**
 	 * creates a node and adds it to its parent
-	 * 
+	 *
 	 * @param parent
-	 * @param content
-	 *            the content to be stored in the node
+	 * @param content the content to be stored in the node
 	 */
 	public BPMNTreeTableElement(final BPMNTreeTableElement parent, final int ID, final AbstractBPMNElement content) {
 		this(ID, content);
@@ -78,6 +74,13 @@ public class BPMNTreeTableElement implements Serializable {
 		return this.parent;
 	}
 
+	public void setParent(final BPMNTreeTableElement parent) {
+		this.parent = parent;
+		if (parent != null) {
+			this.parent.getChildren().add(this);
+		}
+	}
+
 	public Set<BPMNTreeTableElement> getChildren() {
 		return this.children;
 	}
@@ -95,13 +98,6 @@ public class BPMNTreeTableElement implements Serializable {
 			this.parent.getChildren().remove(this);
 		}
 		// Müssen Kinder noch explizit entfernt werden?
-	}
-
-	public void setParent(final BPMNTreeTableElement parent) {
-		this.parent = parent;
-		if (parent != null) {
-			this.parent.getChildren().add(this);
-		}
 	}
 
 	public boolean hasMonitoringPoints() {

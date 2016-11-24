@@ -48,7 +48,7 @@ public class BPMNProcessPanel extends Panel {
 	/**
 	 * Constructor for the BPMN process panel. The page is initialized in this
 	 * method and the data is loaded from the database.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -61,19 +61,16 @@ public class BPMNProcessPanel extends Panel {
 
 		final Form<Void> buttonForm = new WarnOnExitForm("buttonForm");
 
-		final List<String> processFilterCriteriaList = new ArrayList<String>(
-				Arrays.asList(new String[] { "ID", "Name" }));
+		final List<String> processFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Name"}));
 		final String selectedEventCriteria = "ID";
 
-		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>(
-				"processFilterCriteria", new Model<String>(selectedEventCriteria), processFilterCriteriaList);
+		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>("processFilterCriteria", new Model<String>(selectedEventCriteria), processFilterCriteriaList);
 		buttonForm.add(eventTypeFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("processFilterCondition",
-				new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("processFilterCondition", new Model<String>(selectedCondition), conditions);
 		buttonForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -86,13 +83,10 @@ public class BPMNProcessPanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
-				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
-				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
+				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				BPMNProcessPanel.this.bpmnProcessProvider.setBPMNProcessFilter(new BPMNProcessFilter(
-						eventFilterCriteria, eventFilterCondition, filterValue));
+				BPMNProcessPanel.this.bpmnProcessProvider.setBPMNProcessFilter(new BPMNProcessFilter(eventFilterCriteria, eventFilterCondition, filterValue));
 				target.add(BPMNProcessPanel.this.dataTable);
 			}
 		};
@@ -163,8 +157,7 @@ public class BPMNProcessPanel extends Panel {
 			}
 		});
 
-		this.dataTable = new DefaultDataTable<BPMNProcess, String>("processes", this.columns,
-				new BPMNProcessProvider(), 20);
+		this.dataTable = new DefaultDataTable<BPMNProcess, String>("processes", this.columns, new BPMNProcessProvider(), 20);
 		this.dataTable.setOutputMarkupId(true);
 
 		this.add(this.dataTable);

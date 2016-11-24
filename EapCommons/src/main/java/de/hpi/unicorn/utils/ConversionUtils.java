@@ -38,8 +38,7 @@ public class ConversionUtils {
 		return convertedValues;
 	}
 
-	public static Map<String, Serializable> getValuesConvertedToSerializable(final EapEventType eventType,
-			final Map<String, String> valuesToBeConverted) {
+	public static Map<String, Serializable> getValuesConvertedToSerializable(final EapEventType eventType, final Map<String, String> valuesToBeConverted) {
 		final Map<String, Serializable> convertedValues = new HashMap<String, Serializable>();
 		if (eventType != null) {
 			for (String key : valuesToBeConverted.keySet()) {
@@ -58,8 +57,7 @@ public class ConversionUtils {
 		return convertedValues;
 	}
 
-	public static Map<String, Serializable> getValuesConvertedToSerializable(final List<TypeTreeNode> attributes,
-			final Map<String, String> valuesToBeConverted) {
+	public static Map<String, Serializable> getValuesConvertedToSerializable(final List<TypeTreeNode> attributes, final Map<String, String> valuesToBeConverted) {
 		final Map<String, Serializable> convertedValues = new HashMap<String, Serializable>();
 		if (attributes != null) {
 			for (String key : valuesToBeConverted.keySet()) {
@@ -84,46 +82,44 @@ public class ConversionUtils {
 		return convertedValues;
 	}
 
-	private static void addConvertedValueToEvent(final String key, String value, final AttributeTypeEnum type,
-			final Map<String, Serializable> values) {
+	private static void addConvertedValueToEvent(final String key, String value, final AttributeTypeEnum type, final Map<String, Serializable> values) {
 		if (type != null) {
 			switch (type) {
-			case DATE:
-				values.put(key, DateUtils.parseDate(value));
-				break;
-			case INTEGER:
-				// replace non-numeric symbols in value String
-				value = value.replaceAll("[^\\d-]", "");
-				long longValue = 0;
-				try {
-					longValue = Long.parseLong(value);
-				} catch (final NumberFormatException e) {
-					e.printStackTrace();
-					System.out.println("[ConversionUtils: parsing of attribute value failed (long), use 0");
-				}
-				values.put(key, longValue);
-				break;
-			case FLOAT:
-				// replace non-numeric symbols in value String
-				value = value.replaceAll("[^\\d.-]", "");
-				double doubleValue = 0;
-				try {
-					doubleValue = Double.parseDouble(value);
-				} catch (final NumberFormatException e) {
-					e.printStackTrace();
-					System.out.println("[ConversionUtils: parsing of attribute value failed (double), use 0");
-				}
-				values.put(key, doubleValue);
-				break;
-			default:
-				values.put(key, value);
-				break;
+				case DATE:
+					values.put(key, DateUtils.parseDate(value));
+					break;
+				case INTEGER:
+					// replace non-numeric symbols in value String
+					value = value.replaceAll("[^\\d-]", "");
+					long longValue = 0;
+					try {
+						longValue = Long.parseLong(value);
+					} catch (final NumberFormatException e) {
+						e.printStackTrace();
+						System.out.println("[ConversionUtils: parsing of attribute value failed (long), use 0");
+					}
+					values.put(key, longValue);
+					break;
+				case FLOAT:
+					// replace non-numeric symbols in value String
+					value = value.replaceAll("[^\\d.-]", "");
+					double doubleValue = 0;
+					try {
+						doubleValue = Double.parseDouble(value);
+					} catch (final NumberFormatException e) {
+						e.printStackTrace();
+						System.out.println("[ConversionUtils: parsing of attribute value failed (double), use 0");
+					}
+					values.put(key, doubleValue);
+					break;
+				default:
+					values.put(key, value);
+					break;
 			}
 		}
 	}
 
 	/**
-	 * 
 	 * @param eventType
 	 * @param eventValues
 	 * @return name of attribute with invalid value
@@ -142,20 +138,20 @@ public class ConversionUtils {
 						if (type != null) {
 							final String value = eventValues.get(key);
 							switch (type) {
-							case DATE:
-								final Date date = DateUtils.parseDate(value);
-								if (date == null) {
-									return key;
-								}
-								break;
-							case INTEGER:
-								Long.parseLong(value);
-								break;
-							case FLOAT:
-								Double.parseDouble(value);
-								break;
-							default:
-								break;
+								case DATE:
+									final Date date = DateUtils.parseDate(value);
+									if (date == null) {
+										return key;
+									}
+									break;
+								case INTEGER:
+									Long.parseLong(value);
+									break;
+								case FLOAT:
+									Double.parseDouble(value);
+									break;
+								default:
+									break;
 							}
 						}
 					} catch (final Exception e) {

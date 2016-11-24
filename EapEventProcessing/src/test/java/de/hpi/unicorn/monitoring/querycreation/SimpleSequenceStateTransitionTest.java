@@ -31,16 +31,20 @@ import de.hpi.unicorn.utils.TestHelper;
  * This test tests the creation of queries for a simple sequence A->B->C, but
  * also under consideration of multiple monitoring points for one task, so that
  * the life cycle of a task is monitorable.
- * 
+ *
  * @author micha
  */
 public class SimpleSequenceStateTransitionTest extends AbstractQueryCreationTest {
 
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
+
 	@Before
 	public void setup() {
 		Persistor.useTestEnviroment();
-		this.filePath = System.getProperty("user.dir")
-				+ "/src/test/resources/bpmn/SimpleSequenceStateTransition.bpmn20.xml";
+		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/SimpleSequenceStateTransition.bpmn20.xml";
 	}
 
 	@Test
@@ -54,8 +58,7 @@ public class SimpleSequenceStateTransitionTest extends AbstractQueryCreationTest
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "SimpleProcess",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "SimpleProcess", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -89,11 +92,6 @@ public class SimpleSequenceStateTransitionTest extends AbstractQueryCreationTest
 		for (final EapEventType eventType : eventTypes) {
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 2));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 
 }

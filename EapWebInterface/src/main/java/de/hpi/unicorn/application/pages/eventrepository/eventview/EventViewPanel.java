@@ -31,11 +31,11 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
 public class EventViewPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
+	private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 	private EapEvent event;
 	private LabelTree<EventTreeElement> tree;
 	private Label label;
 	private Label timestamp;
-	private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 
 	public EventViewPanel(final String id, final EapEvent event) {
 		super(id);
@@ -56,8 +56,7 @@ public class EventViewPanel extends Panel {
 		this.add(this.timestamp);
 
 		// hierarchical display of attributes
-		this.tree = new LabelTree<EventTreeElement>("treeTable", new TreeProvider(
-				new ArrayList<EventTreeElement<String>>(this.generateNodesOfEventTypeTree())), new TreeExpansionModel());
+		this.tree = new LabelTree<EventTreeElement>("treeTable", new TreeProvider(new ArrayList<EventTreeElement<String>>(this.generateNodesOfEventTypeTree())), new TreeExpansionModel());
 		TreeExpansion.get().expandAll();
 		this.tree.setOutputMarkupId(true);
 		this.add(this.tree);
@@ -77,8 +76,7 @@ public class EventViewPanel extends Panel {
 		this.addOrReplace(this.timestamp);
 
 		// hierarchical display of attributes
-		this.tree = new LabelTree<EventTreeElement>("treeTable", new TreeProvider(this.generateNodesOfEventTypeTree()),
-				new TreeExpansionModel());
+		this.tree = new LabelTree<EventTreeElement>("treeTable", new TreeProvider(this.generateNodesOfEventTypeTree()), new TreeExpansionModel());
 		TreeExpansion.get().expandAll();
 		this.tree.setOutputMarkupId(true);
 		this.addOrReplace(this.tree);
@@ -89,8 +87,7 @@ public class EventViewPanel extends Panel {
 		if (this.event != null) {
 			// List<EventTransformationElement<String, Serializable>>
 			// firstLevelValues = event.getValues().getTreeRootElements();
-			final List<EventTransformationElement<String, Serializable>> firstLevelValues = this.event.getValueTree()
-					.getTreeRootElements();
+			final List<EventTransformationElement<String, Serializable>> firstLevelValues = this.event.getValueTree().getTreeRootElements();
 			for (final EventTransformationElement<String, Serializable> firstLevelValue : firstLevelValues) {
 				EventTreeElement<String> rootElement;
 				if (!firstLevelValue.hasChildren()) {
@@ -112,8 +109,7 @@ public class EventViewPanel extends Panel {
 		return treeElements;
 	}
 
-	private void fillTreeLevel(final EventTreeElement<String> parent,
-			final List<EventTransformationElement<String, Serializable>> children) {
+	private void fillTreeLevel(final EventTreeElement<String> parent, final List<EventTransformationElement<String, Serializable>> children) {
 		for (final EventTransformationElement<String, Serializable> newValue : children) {
 			EventTreeElement<String> newElement;
 			if (!newValue.hasChildren()) {

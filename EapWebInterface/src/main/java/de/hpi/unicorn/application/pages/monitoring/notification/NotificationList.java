@@ -48,10 +48,10 @@ public class NotificationList extends Panel {
 
 	private final EventViewModal eventViewModal;
 	private final Form<Void> notificationForm;
-	private ArrayList<IColumn<Notification, String>> columns;
-	public DefaultDataTable<Notification, String> notificationTable;
-	private NotificationProvider notificationProvider;
 	private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public DefaultDataTable<Notification, String> notificationTable;
+	private ArrayList<IColumn<Notification, String>> columns;
+	private NotificationProvider notificationProvider;
 
 	public NotificationList(final String id, final AbstractEapPage abstractEapPage) {
 		super(id);
@@ -72,20 +72,16 @@ public class NotificationList extends Panel {
 	private Component addFilterComponents() {
 		final Form<Void> buttonForm = new WarnOnExitForm("buttonForm");
 
-		final List<String> notificationFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[] { "ID",
-				"Timestamp", "NotificationRule (ID)" }));
+		final List<String> notificationFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Timestamp", "NotificationRule (ID)"}));
 		final String selectedNotificationCriteria = "ID";
 
-		final DropDownChoice<String> notificationFilterCriteriaSelect = new DropDownChoice<String>(
-				"notificationFilterCriteria", new Model<String>(selectedNotificationCriteria),
-				notificationFilterCriteriaList);
+		final DropDownChoice<String> notificationFilterCriteriaSelect = new DropDownChoice<String>("notificationFilterCriteria", new Model<String>(selectedNotificationCriteria), notificationFilterCriteriaList);
 		buttonForm.add(notificationFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>(
-				"notificationFilterCondition", new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("notificationFilterCondition", new Model<String>(selectedCondition), conditions);
 		buttonForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -96,13 +92,10 @@ public class NotificationList extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
-				final String notificationFilterCriteria = notificationFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(notificationFilterCriteriaSelect.getValue()));
-				final String notificationFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String notificationFilterCriteria = notificationFilterCriteriaSelect.getChoices().get(Integer.parseInt(notificationFilterCriteriaSelect.getValue()));
+				final String notificationFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				NotificationList.this.notificationProvider.setNotificationFilter(new NotificationFilter(
-						notificationFilterCriteria, notificationFilterCondition, filterValue));
+				NotificationList.this.notificationProvider.setNotificationFilter(new NotificationFilter(notificationFilterCriteria, notificationFilterCondition, filterValue));
 				target.add(NotificationList.this.notificationTable);
 			}
 		};
@@ -155,10 +148,10 @@ public class NotificationList extends Panel {
 
 	/**
 	 * prepares list of notifications
-	 * 
+	 *
 	 * @return list of notifications
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private Component addNotifications() {
 
 		// collect all notifications for logged in user
@@ -168,10 +161,8 @@ public class NotificationList extends Panel {
 		this.columns.add(new PropertyColumn<Notification, String>(Model.of("ID"), "ID"));
 		this.columns.add(new PropertyColumn<Notification, String>(Model.of("Timestamp"), "timestamp") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<Notification>> item, final String componentId,
-					final IModel<Notification> rowModel) {
-				final String shortenedValues = NotificationList.this.formatter.format(rowModel.getObject()
-						.getTimestamp());
+			public void populateItem(final Item<ICellPopulator<Notification>> item, final String componentId, final IModel<Notification> rowModel) {
+				final String shortenedValues = NotificationList.this.formatter.format(rowModel.getObject().getTimestamp());
 				final Label label = new Label(componentId, shortenedValues);
 				item.add(label);
 			}
@@ -179,8 +170,7 @@ public class NotificationList extends Panel {
 		this.columns.add(new PropertyColumn<Notification, String>(Model.of("Notification Rule"), "notificationRule"));
 		this.columns.add(new AbstractColumn<Notification, String>(Model.of("Trigger"), "trigger") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<Notification>> item, final String componentId,
-					final IModel<Notification> rowModel) {
+			public void populateItem(final Item<ICellPopulator<Notification>> item, final String componentId, final IModel<Notification> rowModel) {
 				String shortenedValues = rowModel.getObject().getTriggeringText();
 				if (shortenedValues.length() > 200) {
 					shortenedValues = shortenedValues.substring(0, 200) + "...";
@@ -209,11 +199,12 @@ public class NotificationList extends Panel {
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((Notification) rowModel.getObject()).getID();
 				cellItem.add(new SelectEntryPanel(componentId, entryId, NotificationList.this.notificationProvider));
-			};
+			}
+
+			;
 		});
 
-		this.notificationTable = new DefaultDataTable<Notification, String>("notifications", this.columns,
-				this.notificationProvider, 20);
+		this.notificationTable = new DefaultDataTable<Notification, String>("notifications", this.columns, this.notificationProvider, 20);
 		this.notificationTable.setOutputMarkupId(true);
 
 		return this.notificationTable;

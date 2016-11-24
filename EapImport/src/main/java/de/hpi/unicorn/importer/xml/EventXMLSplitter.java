@@ -37,8 +37,7 @@ public class EventXMLSplitter {
 	public static List<String> simpleTransform(final String xmlString, final boolean isFilePath) {
 		if (isFilePath) {
 			try {
-				return EventXMLSplitter.simpleTransform(FileUtils.getFileContentAsString(xmlString),
-						EventXMLSplitter.DEFAULT_XSL_SPLITTER_FILE_PATH);
+				return EventXMLSplitter.simpleTransform(FileUtils.getFileContentAsString(xmlString), EventXMLSplitter.DEFAULT_XSL_SPLITTER_FILE_PATH);
 			} catch (final IOException e) {
 				e.printStackTrace();
 				return null;
@@ -57,17 +56,14 @@ public class EventXMLSplitter {
 		for (int i = 2; i <= levels; i++) {
 			final List<String> currentLevelXMLEvents = new ArrayList<>();
 			for (final String xmlEvent : resultingXMLEvents) {
-				final String[] multiplyDefinedAttributes = EventXMLSplitter.identifyMultiplyDefinedAttributes(xmlEvent,
-						i);
+				final String[] multiplyDefinedAttributes = EventXMLSplitter.identifyMultiplyDefinedAttributes(xmlEvent, i);
 				List<String> currentXMLEvents = new ArrayList<>();
 				currentXMLEvents.add(xmlEvent);
 				for (final String attributeTag : multiplyDefinedAttributes) {
 					final List<String> newXMLEvents = new ArrayList<>();
 					for (final String currentXMLEvent : currentXMLEvents) {
-						final InputStream xsltFile = EventXMLSplitter
-								.adjustXSLToAttributeTag(xslFilePath, attributeTag);
-						final String transformationResult = EventXMLSplitter.performTransformation(xsltFile,
-								currentXMLEvent);
+						final InputStream xsltFile = EventXMLSplitter.adjustXSLToAttributeTag(xslFilePath, attributeTag);
+						final String transformationResult = EventXMLSplitter.performTransformation(xsltFile, currentXMLEvent);
 						newXMLEvents.addAll(EventXMLSplitter.processTransformationResults(transformationResult));
 					}
 					currentXMLEvents = new ArrayList<>(newXMLEvents);
@@ -100,8 +96,7 @@ public class EventXMLSplitter {
 	private static int getMaxDepthOf(final String xmlString) {
 		String depth = "0";
 		try {
-			depth = EventXMLSplitter.performTransformation(new FileInputStream(
-					EventXMLSplitter.DEFAULT_XSL_MAX_DEPTH_FILE_PATH), xmlString);
+			depth = EventXMLSplitter.performTransformation(new FileInputStream(EventXMLSplitter.DEFAULT_XSL_MAX_DEPTH_FILE_PATH), xmlString);
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -125,8 +120,7 @@ public class EventXMLSplitter {
 	}
 
 	private static String[] identifyMultiplyDefinedAttributes(final String xmlString, final int level) {
-		final String attributesString = EventXMLSplitter.performTransformation(
-				EventXMLSplitter.adjustSiblingFinderXSLToLevel(level), xmlString);
+		final String attributesString = EventXMLSplitter.performTransformation(EventXMLSplitter.adjustSiblingFinderXSLToLevel(level), xmlString);
 		final String[] attributes = attributesString.equals("") ? new String[0] : attributesString.split(",");
 		return attributes;
 	}
@@ -136,8 +130,7 @@ public class EventXMLSplitter {
 		final String parentChoser = "<xsl:value-of select='name(ancestor::*[%d])' />/";
 		String xslFileContent = null;
 		try {
-			xslFileContent = FileUtils
-					.getFileContentAsString(EventXMLSplitter.DEFAULT_XSL_DUPLICATED_SIBLINGS_FILE_PATH);
+			xslFileContent = FileUtils.getFileContentAsString(EventXMLSplitter.DEFAULT_XSL_DUPLICATED_SIBLINGS_FILE_PATH);
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}

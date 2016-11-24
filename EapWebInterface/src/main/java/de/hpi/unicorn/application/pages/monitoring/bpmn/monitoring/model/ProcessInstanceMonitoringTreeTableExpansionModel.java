@@ -16,26 +16,24 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 /**
  * Model that wraps the expansion state handler of a tree component.
  */
-public class ProcessInstanceMonitoringTreeTableExpansionModel extends
-		AbstractReadOnlyModel<Set<ProcessInstanceMonitoringTreeTableElement>> {
+public class ProcessInstanceMonitoringTreeTableExpansionModel extends AbstractReadOnlyModel<Set<ProcessInstanceMonitoringTreeTableElement>> {
 
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("serial")
 	private static MetaDataKey<ProcessInstanceMonitoringTreeTableExpansion> KEY = new MetaDataKey<ProcessInstanceMonitoringTreeTableExpansion>() {
 	};
 
-	@Override
-	public Set<ProcessInstanceMonitoringTreeTableElement> getObject() {
-		return ProcessInstanceMonitoringTreeTableExpansion.get();
-	}
-
 	public static ProcessInstanceMonitoringTreeTableExpansion get() {
-		ProcessInstanceMonitoringTreeTableExpansion expansion = Session.get().getMetaData(
-				ProcessInstanceMonitoringTreeTableExpansionModel.KEY);
+		ProcessInstanceMonitoringTreeTableExpansion expansion = Session.get().getMetaData(ProcessInstanceMonitoringTreeTableExpansionModel.KEY);
 		if (expansion == null) {
 			expansion = new ProcessInstanceMonitoringTreeTableExpansion();
 			Session.get().setMetaData(ProcessInstanceMonitoringTreeTableExpansionModel.KEY, expansion);
 		}
 		return expansion;
+	}
+
+	@Override
+	public Set<ProcessInstanceMonitoringTreeTableElement> getObject() {
+		return ProcessInstanceMonitoringTreeTableExpansion.get();
 	}
 }

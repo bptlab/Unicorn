@@ -12,7 +12,7 @@ import de.hpi.unicorn.monitoring.bpmn.ProcessInstanceMonitor;
 
 /**
  * This class filters {@link ProcessInstanceMonitor}s.
- * 
+ *
  * @author micha
  */
 public class ProcessInstanceMonitoringFilter extends AbstractFilter {
@@ -26,8 +26,7 @@ public class ProcessInstanceMonitoringFilter extends AbstractFilter {
 		super();
 	}
 
-	public ProcessInstanceMonitoringFilter(final String processInstanceMonitorFilterCriteria,
-			final String processInstanceMonitorFilterCondition, final String filterValue) {
+	public ProcessInstanceMonitoringFilter(final String processInstanceMonitorFilterCriteria, final String processInstanceMonitorFilterCondition, final String filterValue) {
 		super(processInstanceMonitorFilterCriteria, processInstanceMonitorFilterCondition, filterValue);
 	}
 

@@ -34,10 +34,32 @@ import de.hpi.unicorn.user.EapUser;
 public class NotificationPage extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
-	private AjaxButton addButton, deleteAllButton;
 	private final Form<Void> form;
 	public AddNotificationModal addNotificationModal;
 	public NotificationRuleList notificationRulesListView;
+	IModel<List<NotificationRule>> notificationRules = new LoadableDetachableModel<List<NotificationRule>>() {
+		@Override
+		protected List<NotificationRule> load() {
+			return NotificationRule.findAll();
+		}
+	};
+	IModel<List<Notification>> notifications = new LoadableDetachableModel<List<Notification>>() {
+		@Override
+		protected List<Notification> load() {
+			// get User
+			final EapUser user = ((AuthenticatedSession) Session.get()).getUser();
+			if (user == null) {
+				return new ArrayList<Notification>();
+			}
+			// get Notifications
+			final List<Notification> notifications = Notification.findUnseenForUser(user);
+			if (notifications == null) {
+				return new ArrayList<Notification>();
+			}
+			return notifications;
+		}
+	};
+	private AjaxButton addButton, deleteAllButton;
 
 	public NotificationPage() {
 		super();
@@ -66,30 +88,6 @@ public class NotificationPage extends AbstractEapPage {
 		this.addNotificationRules();
 	}
 
-	IModel<List<NotificationRule>> notificationRules = new LoadableDetachableModel<List<NotificationRule>>() {
-		@Override
-		protected List<NotificationRule> load() {
-			return NotificationRule.findAll();
-		}
-	};
-
-	IModel<List<Notification>> notifications = new LoadableDetachableModel<List<Notification>>() {
-		@Override
-		protected List<Notification> load() {
-			// get User
-			final EapUser user = ((AuthenticatedSession) Session.get()).getUser();
-			if (user == null) {
-				return new ArrayList<Notification>();
-			}
-			// get Notifications
-			final List<Notification> notifications = Notification.findUnseenForUser(user);
-			if (notifications == null) {
-				return new ArrayList<Notification>();
-			}
-			return notifications;
-		}
-	};
-
 	private Component addAddButton() {
 		this.addButton = new AjaxButton("addNotificationButton") {
 			private static final long serialVersionUID = 1L;
@@ -109,8 +107,7 @@ public class NotificationPage extends AbstractEapPage {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
-				final List<NotificationRule> rules = new ArrayList<NotificationRule>(
-						NotificationPage.this.notificationRulesListView.notificationRuleProvider.getEntities());
+				final List<NotificationRule> rules = new ArrayList<NotificationRule>(NotificationPage.this.notificationRulesListView.notificationRuleProvider.getEntities());
 				for (final NotificationRule rule : rules) {
 					rule.remove();
 					NotificationPage.this.notificationRulesListView.notificationRuleProvider.removeItem(rule);
@@ -123,7 +120,7 @@ public class NotificationPage extends AbstractEapPage {
 		return this.deleteAllButton;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private void addNotificationRules() {
 		this.notificationRulesListView = new NotificationRuleList("notificationRuleList", this);
 		this.notificationRulesListView.setOutputMarkupId(true);

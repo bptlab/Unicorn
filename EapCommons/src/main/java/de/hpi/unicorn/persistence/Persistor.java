@@ -18,8 +18,7 @@ import javax.persistence.Persistence;
 public class Persistor {
 
 	private static String PERSISTENCE_UNIT_NAME = PersistenceUnit.DEVELOPMENT.getName();
-	private static EntityManagerFactory entityManagerFactory = Persistence
-			.createEntityManagerFactory(Persistor.PERSISTENCE_UNIT_NAME);
+	private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(Persistor.PERSISTENCE_UNIT_NAME);
 
 	public static EntityManagerFactory getEntityManagerFactory() {
 		return Persistor.entityManagerFactory;
@@ -37,16 +36,16 @@ public class Persistor {
 		return Persistor.PERSISTENCE_UNIT_NAME;
 	}
 
+	public static void setPERSISTENCE_UNIT_NAME(final String persistenceUnitName) {
+		Persistor.entityManagerFactory.close();
+		Persistor.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+	}
+
 	public static void useDevelopmentEnviroment() {
 		Persistor.setPERSISTENCE_UNIT_NAME(PersistenceUnit.DEVELOPMENT.getName());
 	}
 
 	public static void useTestEnviroment() {
 		Persistor.setPERSISTENCE_UNIT_NAME(PersistenceUnit.TEST.getName());
-	}
-
-	public static void setPERSISTENCE_UNIT_NAME(final String persistenceUnitName) {
-		Persistor.entityManagerFactory.close();
-		Persistor.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
 	}
 }

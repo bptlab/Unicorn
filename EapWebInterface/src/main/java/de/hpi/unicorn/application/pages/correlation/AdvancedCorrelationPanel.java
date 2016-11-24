@@ -40,25 +40,18 @@ import de.hpi.unicorn.event.EapEventType;
 public class AdvancedCorrelationPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
+	private static final ResourceReference Label_CSS = new PackageResourceReference(AdvancedCorrelationPanel.class, "label.css");
 	private final List<String> timeCorrelationRadioValues = new ArrayList<String>(Arrays.asList("after", "before"));
-	private String selectedTimeRadioOption = this.timeCorrelationRadioValues.get(0);
 	private final AjaxCheckBox timeCorrelationCheckBox;
-	private boolean timeCorrelationSelected = false;
-	private String timeCorrelationMinutes = new String();
-	private EapEventType selectedEventType;
 	private final TextField<String> timeCorrelationMinutesInput;
 	private final DropDownChoice<EapEventType> timeCorrelationEventTypeSelect;
 	private final RadioChoice<String> timeCorrelationAfterOrBeforeType;
+	private String selectedTimeRadioOption = this.timeCorrelationRadioValues.get(0);
+	private boolean timeCorrelationSelected = false;
+	private String timeCorrelationMinutes = new String();
+	private EapEventType selectedEventType;
 	private ConditionInputPanel conditionPanel;
 	private TextField<String> multipleConditionsTextField;
-	private static final ResourceReference Label_CSS = new PackageResourceReference(AdvancedCorrelationPanel.class,
-			"label.css");
-
-	@Override
-	public void renderHead(final IHeaderResponse response) {
-		super.renderHead(response);
-		response.render(CssHeaderItem.forReference(AdvancedCorrelationPanel.Label_CSS));
-	}
 
 	public AdvancedCorrelationPanel(final String id) {
 		super(id);
@@ -70,29 +63,24 @@ public class AdvancedCorrelationPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				AdvancedCorrelationPanel.this.timeCorrelationSelected = AdvancedCorrelationPanel.this.timeCorrelationSelected ? false
-						: true;
+				AdvancedCorrelationPanel.this.timeCorrelationSelected = AdvancedCorrelationPanel.this.timeCorrelationSelected ? false : true;
 			}
 		};
 		this.timeCorrelationCheckBox.setOutputMarkupId(true);
 		advancedCorrelationForm.add(this.timeCorrelationCheckBox);
 
-		this.timeCorrelationEventTypeSelect = new DropDownChoice<EapEventType>("timeEventTypeSelect",
-				new PropertyModel<EapEventType>(this, "selectedEventType"), new ArrayList<EapEventType>());
+		this.timeCorrelationEventTypeSelect = new DropDownChoice<EapEventType>("timeEventTypeSelect", new PropertyModel<EapEventType>(this, "selectedEventType"), new ArrayList<EapEventType>());
 		this.timeCorrelationEventTypeSelect.setOutputMarkupId(true);
 		this.timeCorrelationEventTypeSelect.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				if (AdvancedCorrelationPanel.this.selectedEventType != null) {
-					AdvancedCorrelationPanel.this.conditionPanel.setSelectedEventTypes(Arrays
-							.asList((AdvancedCorrelationPanel.this.selectedEventType)));
+					AdvancedCorrelationPanel.this.conditionPanel.setSelectedEventTypes(Arrays.asList((AdvancedCorrelationPanel.this.selectedEventType)));
 					AdvancedCorrelationPanel.this.conditionPanel.updateAttributesValues();
 				} else {
-					AdvancedCorrelationPanel.this.conditionPanel.getConditionAttributeSelect().setChoices(
-							new ArrayList<String>());
-					AdvancedCorrelationPanel.this.conditionPanel.getConditionValueSelect().setChoices(
-							new ArrayList<Serializable>());
+					AdvancedCorrelationPanel.this.conditionPanel.getConditionAttributeSelect().setChoices(new ArrayList<String>());
+					AdvancedCorrelationPanel.this.conditionPanel.getConditionValueSelect().setChoices(new ArrayList<Serializable>());
 				}
 				target.add(AdvancedCorrelationPanel.this.conditionPanel.getConditionAttributeSelect());
 				target.add(AdvancedCorrelationPanel.this.conditionPanel.getConditionValueSelect());
@@ -106,14 +94,12 @@ public class AdvancedCorrelationPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				AdvancedCorrelationPanel.this.timeCorrelationMinutes = AdvancedCorrelationPanel.this.timeCorrelationMinutesInput
-						.getValue();
+				AdvancedCorrelationPanel.this.timeCorrelationMinutes = AdvancedCorrelationPanel.this.timeCorrelationMinutesInput.getValue();
 			}
 		});
 		advancedCorrelationForm.add(this.timeCorrelationMinutesInput);
 
-		this.timeCorrelationAfterOrBeforeType = new RadioChoice<String>("afterOrBeforeRadioGroup",
-				new PropertyModel<String>(this, "selectedTimeRadioOption"), this.timeCorrelationRadioValues) {
+		this.timeCorrelationAfterOrBeforeType = new RadioChoice<String>("afterOrBeforeRadioGroup", new PropertyModel<String>(this, "selectedTimeRadioOption"), this.timeCorrelationRadioValues) {
 			@Override
 			public String getSuffix() {
 				return "&nbsp;&nbsp;&nbsp;";
@@ -142,9 +128,14 @@ public class AdvancedCorrelationPanel extends Panel {
 		advancedCorrelationForm.add(this.multipleConditionsTextField);
 	}
 
+	@Override
+	public void renderHead(final IHeaderResponse response) {
+		super.renderHead(response);
+		response.render(CssHeaderItem.forReference(AdvancedCorrelationPanel.Label_CSS));
+	}
+
 	private boolean isMultipleConditionsTextFieldFilled() {
-		return this.multipleConditionsTextField.getModelObject() != null
-				&& !this.multipleConditionsTextField.getModelObject().isEmpty();
+		return this.multipleConditionsTextField.getModelObject() != null && !this.multipleConditionsTextField.getModelObject().isEmpty();
 	}
 
 	public String getSelectedTimeRadioOption() {

@@ -36,13 +36,13 @@ import de.hpi.unicorn.notification.EventCondition;
 
 public class ConditionInputPanel extends Panel {
 
+	private final TextField<String> conditionValueTextField;
+	private final Label conditionValueLabel;
 	private DropDownChoice<String> conditionAttributeSelect;
 	private DropDownChoice<Serializable> conditionValueSelect;
 	private String selectedConditionAttribute;
 	private List<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
 	private String selectedConditionValue;
-	private final TextField<String> conditionValueTextField;
-	private final Label conditionValueLabel;
 
 	public ConditionInputPanel(final String id, final boolean isConditionValueTextFieldVisible) {
 		super(id);
@@ -50,8 +50,7 @@ public class ConditionInputPanel extends Panel {
 		final Form<Void> layoutForm = new Form<Void>("layoutForm");
 		this.add(layoutForm);
 
-		this.conditionAttributeSelect = new DropDownChoice<String>("conditionAttributeSelect",
-				new PropertyModel<String>(this, "selectedConditionAttribute"), new ArrayList<String>());
+		this.conditionAttributeSelect = new DropDownChoice<String>("conditionAttributeSelect", new PropertyModel<String>(this, "selectedConditionAttribute"), new ArrayList<String>());
 		this.conditionAttributeSelect.setOutputMarkupId(true);
 		this.conditionAttributeSelect.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -60,8 +59,7 @@ public class ConditionInputPanel extends Panel {
 				// collect all attributes
 				final Set<Serializable> attributes = new HashSet<Serializable>();
 				for (final EapEventType eventType : ConditionInputPanel.this.selectedEventTypes) {
-					attributes.addAll(eventType
-							.findAttributeValues(ConditionInputPanel.this.selectedConditionAttribute));
+					attributes.addAll(eventType.findAttributeValues(ConditionInputPanel.this.selectedConditionAttribute));
 				}
 				final ArrayList<Serializable> choices = new ArrayList<Serializable>();
 				// choices.add(null);
@@ -72,16 +70,14 @@ public class ConditionInputPanel extends Panel {
 		});
 		layoutForm.add(this.conditionAttributeSelect);
 
-		this.conditionValueSelect = new DropDownChoice<Serializable>("conditionValueSelect",
-				new PropertyModel<Serializable>(this, "selectedConditionValue"), new ArrayList<Serializable>());
+		this.conditionValueSelect = new DropDownChoice<Serializable>("conditionValueSelect", new PropertyModel<Serializable>(this, "selectedConditionValue"), new ArrayList<Serializable>());
 		this.conditionValueSelect.setOutputMarkupId(true);
 		this.conditionValueSelect.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 				target.add(ConditionInputPanel.this.conditionValueSelect);
-				if (ConditionInputPanel.this.selectedConditionValue != null
-						&& !ConditionInputPanel.this.selectedConditionValue.isEmpty()) {
+				if (ConditionInputPanel.this.selectedConditionValue != null && !ConditionInputPanel.this.selectedConditionValue.isEmpty()) {
 					ConditionInputPanel.this.conditionValueTextField.setEnabled(false);
 				} else {
 					ConditionInputPanel.this.conditionValueTextField.setEnabled(true);
@@ -104,8 +100,7 @@ public class ConditionInputPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				if (ConditionInputPanel.this.conditionValueTextField.getModelObject() != null
-						&& !ConditionInputPanel.this.conditionValueTextField.getModelObject().isEmpty()) {
+				if (ConditionInputPanel.this.conditionValueTextField.getModelObject() != null && !ConditionInputPanel.this.conditionValueTextField.getModelObject().isEmpty()) {
 					ConditionInputPanel.this.conditionValueSelect.setEnabled(false);
 				} else {
 					ConditionInputPanel.this.conditionValueSelect.setEnabled(true);

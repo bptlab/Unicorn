@@ -12,25 +12,22 @@ import java.util.ArrayList;
 
 /**
  * representation of a tree node
- * 
- * @param <T>
- *            type of content to be stored
+ *
+ * @param <T> type of content to be stored
  */
 public class TransformationTreeTableElement<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	private final ArrayList<TransformationTreeTableElement<T>> children = new ArrayList<TransformationTreeTableElement<T>>();
 	private int ID;
 	private T content;
 	private TransformationTreeTableElement<T> parent;
-	private final ArrayList<TransformationTreeTableElement<T>> children = new ArrayList<TransformationTreeTableElement<T>>();
 	private int probability;
 
 	/**
 	 * creates a root node
-	 * 
-	 * @param content
-	 *            the content to be stored in the new node
+	 *
+	 * @param content the content to be stored in the new node
 	 */
 	public TransformationTreeTableElement(final int ID, final T content, final int probability) {
 		this.ID = ID;
@@ -40,13 +37,11 @@ public class TransformationTreeTableElement<T> implements Serializable {
 
 	/**
 	 * creates a node and adds it to its parent
-	 * 
+	 *
 	 * @param parent
-	 * @param content
-	 *            the content to be stored in the node
+	 * @param content the content to be stored in the node
 	 */
-	public TransformationTreeTableElement(final TransformationTreeTableElement<T> parent, final int ID,
-			final T content, final int probability) {
+	public TransformationTreeTableElement(final TransformationTreeTableElement<T> parent, final int ID, final T content, final int probability) {
 		this(ID, content, probability);
 		this.parent = parent;
 		this.parent.getChildren().add(this);
@@ -70,6 +65,10 @@ public class TransformationTreeTableElement<T> implements Serializable {
 
 	public TransformationTreeTableElement<T> getParent() {
 		return this.parent;
+	}
+
+	public void setParent(final TransformationTreeTableElement<T> parent) {
+		this.parent = parent;
 	}
 
 	public ArrayList<TransformationTreeTableElement<T>> getChildren() {
@@ -97,9 +96,5 @@ public class TransformationTreeTableElement<T> implements Serializable {
 			this.parent.getChildren().remove(this);
 		}
 		// Müssen Kinder noch explizit entfernt werden?
-	}
-
-	public void setParent(final TransformationTreeTableElement<T> parent) {
-		this.parent = parent;
 	}
 }

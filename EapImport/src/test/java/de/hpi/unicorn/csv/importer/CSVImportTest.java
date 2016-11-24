@@ -22,7 +22,7 @@ import de.hpi.unicorn.utils.TestHelper;
 
 /**
  * This class tests import of CSV files.
- * 
+ *
  * @author micha
  */
 public class CSVImportTest {
@@ -51,8 +51,7 @@ public class CSVImportTest {
 		final List<String> columnTitles = csvNormalizer.getColumnTitlesFromFile(CSVImportTest.filePath);
 		final List<TypeTreeNode> attributes = TestHelper.createAttributes(columnTitles);
 		final List<EapEvent> events = csvNormalizer.importEventsFromFile(CSVImportTest.filePath, attributes);
-		Assert.assertTrue("Not the right number of events imported. Number should be 999 but was " + events.size(),
-				events.size() == 999);
+		Assert.assertTrue("Not the right number of events imported. Number should be 999 but was " + events.size(), events.size() == 999);
 
 		// ArrayList<String> columnTitles2 =
 		// csvNormalizer.getColumnTitlesFromFile(filePath2);
@@ -90,13 +89,11 @@ public class CSVImportTest {
 		columnTitles.remove("Timestamp");
 		final List<TypeTreeNode> attributes = TestHelper.createAttributes(columnTitles);
 		final EapEventType eventType = new EapEventType("Kino", attributes, "Timestamp");
-		final List<EapEvent> events = csvNormalizer.importEventsFromFile(CSVImportTest.filePathSmallKino, attributes,
-				"Timestamp");
+		final List<EapEvent> events = csvNormalizer.importEventsFromFile(CSVImportTest.filePathSmallKino, attributes, "Timestamp");
 		for (final EapEvent event : events) {
 			event.setEventType(eventType);
 		}
-		Assert.assertTrue("Not the right number of events imported. Number should be 3 but was " + events.size(),
-				events.size() == 3);
+		Assert.assertTrue("Not the right number of events imported. Number should be 3 but was " + events.size(), events.size() == 3);
 
 		final EapEvent event1 = events.get(0);
 		Assert.assertEquals("re;d;", event1.getValues().get("Rating"));

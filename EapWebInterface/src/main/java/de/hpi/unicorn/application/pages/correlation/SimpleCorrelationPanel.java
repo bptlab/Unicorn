@@ -32,12 +32,12 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 public class SimpleCorrelationPanel extends Panel {
 
 	private static final long serialVersionUID = 573672364803879784L;
-	private ListMultipleChoice<TypeTreeNode> correlationAttributesSelect;
-	private ArrayList<TypeTreeNode> correlationAttributes = new ArrayList<TypeTreeNode>();
 	private final ArrayList<TypeTreeNode> selectedCorrelationAttributes = new ArrayList<TypeTreeNode>();
-	private CheckBoxMultipleChoice<EapEventType> eventTypesCheckBoxMultipleChoice;
 	private final ArrayList<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
 	private final ArrayList<TypeTreeNode> commonCorrelationAttributes = new ArrayList<TypeTreeNode>();
+	private ListMultipleChoice<TypeTreeNode> correlationAttributesSelect;
+	private ArrayList<TypeTreeNode> correlationAttributes = new ArrayList<TypeTreeNode>();
+	private CheckBoxMultipleChoice<EapEventType> eventTypesCheckBoxMultipleChoice;
 	private CorrelationPage correlationPage;
 
 	public SimpleCorrelationPanel(final String id, final CorrelationPage correlationPage) {
@@ -50,8 +50,7 @@ public class SimpleCorrelationPanel extends Panel {
 
 		this.addEventTypeCheckBoxMultipleChoice(form);
 
-		this.correlationAttributesSelect = new ListMultipleChoice<TypeTreeNode>("correlationEventTypesSelect",
-				new Model<ArrayList<TypeTreeNode>>(this.selectedCorrelationAttributes), this.correlationAttributes) {
+		this.correlationAttributesSelect = new ListMultipleChoice<TypeTreeNode>("correlationEventTypesSelect", new Model<ArrayList<TypeTreeNode>>(this.selectedCorrelationAttributes), this.correlationAttributes) {
 			private static final long serialVersionUID = 1353243674818396947L;
 
 			@Override
@@ -77,9 +76,7 @@ public class SimpleCorrelationPanel extends Panel {
 
 		final List<EapEventType> eventTypes = EapEventType.findAll();
 
-		this.eventTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>(
-				"eventTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this,
-						"selectedEventTypes"), eventTypes) {
+		this.eventTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>("eventTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this, "selectedEventTypes"), eventTypes) {
 			private static final long serialVersionUID = 5379816935206577577L;
 
 			@Override
@@ -96,8 +93,7 @@ public class SimpleCorrelationPanel extends Panel {
 							 * consider attribute type
 							 */
 							for (final TypeTreeNode attributeOfEventType : eventType.getValueTypes()) {
-								if (attributeOfEventType.getName().equals(commonAttribute.getName())
-										&& (attributeOfEventType.getType() == commonAttribute.getType())) {
+								if (attributeOfEventType.getName().equals(commonAttribute.getName()) && (attributeOfEventType.getType() == commonAttribute.getType())) {
 									return false;
 								}
 							}
@@ -116,21 +112,16 @@ public class SimpleCorrelationPanel extends Panel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				SimpleCorrelationPanel.this.commonCorrelationAttributes.clear();
 				SimpleCorrelationPanel.this.correlationPage.clearAdvancedCorrelationPanelComponents();
-				SimpleCorrelationPanel.this.correlationPage.getSimpleCorrelationPanel()
-						.getCorrelationAttributesSelect().setChoices(new ArrayList<TypeTreeNode>());
+				SimpleCorrelationPanel.this.correlationPage.getSimpleCorrelationPanel().getCorrelationAttributesSelect().setChoices(new ArrayList<TypeTreeNode>());
 				if (!SimpleCorrelationPanel.this.selectedEventTypes.isEmpty()) {
 					// simple correlation
-					SimpleCorrelationPanel.this.commonCorrelationAttributes
-							.addAll(SimpleCorrelationPanel.this.selectedEventTypes.get(0).getValueTypes());
+					SimpleCorrelationPanel.this.commonCorrelationAttributes.addAll(SimpleCorrelationPanel.this.selectedEventTypes.get(0).getValueTypes());
 					for (final EapEventType actualEventType : SimpleCorrelationPanel.this.selectedEventTypes) {
-						SimpleCorrelationPanel.this.commonCorrelationAttributes.retainAll(actualEventType
-								.getValueTypes());
+						SimpleCorrelationPanel.this.commonCorrelationAttributes.retainAll(actualEventType.getValueTypes());
 					}
-					SimpleCorrelationPanel.this.correlationAttributesSelect
-							.setChoices(SimpleCorrelationPanel.this.commonCorrelationAttributes);
+					SimpleCorrelationPanel.this.correlationAttributesSelect.setChoices(SimpleCorrelationPanel.this.commonCorrelationAttributes);
 					// advanced correlation - time
-					SimpleCorrelationPanel.this.correlationPage
-							.setValuesOfAdvancedCorrelationPanelComponents(SimpleCorrelationPanel.this.selectedEventTypes);
+					SimpleCorrelationPanel.this.correlationPage.setValuesOfAdvancedCorrelationPanelComponents(SimpleCorrelationPanel.this.selectedEventTypes);
 				}
 				SimpleCorrelationPanel.this.correlationPage.updateAdvancedCorrelationPanelComponents(target);
 				target.add(SimpleCorrelationPanel.this.correlationAttributesSelect);
@@ -153,8 +144,7 @@ public class SimpleCorrelationPanel extends Panel {
 		return this.eventTypesCheckBoxMultipleChoice;
 	}
 
-	public void setEventTypesCheckBoxMultipleChoice(
-			final CheckBoxMultipleChoice<EapEventType> eventTypesCheckBoxMultipleChoice) {
+	public void setEventTypesCheckBoxMultipleChoice(final CheckBoxMultipleChoice<EapEventType> eventTypesCheckBoxMultipleChoice) {
 		this.eventTypesCheckBoxMultipleChoice = eventTypesCheckBoxMultipleChoice;
 	}
 

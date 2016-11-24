@@ -32,11 +32,10 @@ import de.hpi.unicorn.visualisation.ChartConfiguration;
 public class AttributeChartPage extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
-	private AjaxButton addButton;
 	private final Form<Void> form;
 	public ListView listview;
 	public AddChartModal addChartModal;
-
+	private AjaxButton addButton;
 	// loads all ChartConfiguration-Objects from the database
 	@SuppressWarnings("serial")
 	private IModel<List<ChartConfiguration>> options = new LoadableDetachableModel<List<ChartConfiguration>>() {
@@ -67,7 +66,7 @@ public class AttributeChartPage extends AbstractEapPage {
 
 	/**
 	 * creates the button that opens the addChartModal
-	 * 
+	 *
 	 * @return AjaxButton, that opens the addChartModal
 	 */
 	private Component addAddChartButton() {
@@ -86,7 +85,7 @@ public class AttributeChartPage extends AbstractEapPage {
 	/**
 	 * adds all attribute charts from database to page
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private void addCharts() {
 		this.listview = new ListView("listview", this.getOptions()) {
 			@Override
@@ -119,19 +118,19 @@ public class AttributeChartPage extends AbstractEapPage {
 	/**
 	 * Forms the chartConfiguration into a chart-Component, that can be
 	 * displayed
-	 * 
+	 *
 	 * @param chartConfiguration
 	 * @return chart-component
 	 */
 	private Component addChart(final ChartConfiguration currentOptions) {
 		try {
 			switch (currentOptions.getType()) {
-			case SPLATTER: {
-				return new Chart("chart", new SplatterChartOptions(currentOptions));
-			}
-			case COLUMN: {
-				return new Chart("chart", new ColumnChartOptions(currentOptions));
-			}
+				case SPLATTER: {
+					return new Chart("chart", new SplatterChartOptions(currentOptions));
+				}
+				case COLUMN: {
+					return new Chart("chart", new ColumnChartOptions(currentOptions));
+				}
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();

@@ -85,8 +85,7 @@ public class EventTypeRuleTest implements PersistenceTest {
 		List<TypeTreeNode> attributes2 = Arrays.asList(rootAttribute3, rootAttribute4);
 		createdEventType = new EapEventType("testEventType2", attributes2);
 		createdEventType.save();
-		eventTypeRule = new EventTypeRule(new ArrayList<EapEventType>(Arrays.asList(eventType)), new EventCondition(),
-				createdEventType);
+		eventTypeRule = new EventTypeRule(new ArrayList<EapEventType>(Arrays.asList(eventType)), new EventCondition(), createdEventType);
 		return eventTypeRule;
 	}
 
@@ -115,10 +114,7 @@ public class EventTypeRuleTest implements PersistenceTest {
 		assertTrue("rule not saved", EventTypeRule.findEventTypeRuleForCreatedEventType(createdEventType) != null);
 		EapEventType deleteEventType = EapEventType.findByTypeName("Kino");
 		deleteEventType.remove();
-		assertTrue(
-				"should not find eventtyperule, but found "
-						+ EventTypeRule.findEventTypeRuleForCreatedEventType(deleteEventType),
-				EventTypeRule.findEventTypeRuleForCreatedEventType(deleteEventType) == null);
+		assertTrue("should not find eventtyperule, but found " + EventTypeRule.findEventTypeRuleForCreatedEventType(deleteEventType), EventTypeRule.findEventTypeRuleForCreatedEventType(deleteEventType) == null);
 
 		List<EapEventType> eventTypes;
 		eventTypes = EapEventType.findAll();
@@ -142,8 +138,7 @@ public class EventTypeRuleTest implements PersistenceTest {
 		EapEventType deleteEventType = EapEventType.findByTypeName("GET-Transport");
 		deleteEventType.remove();
 
-		assertTrue("eventtyperule was deleted, but should not have been ",
-				EventTypeRule.findEventTypeRuleForCreatedEventType(createdEventType) != null);
+		assertTrue("eventtyperule was deleted, but should not have been ", EventTypeRule.findEventTypeRuleForCreatedEventType(createdEventType) != null);
 
 		eventTypes = EapEventType.findAll();
 		assertTrue("there were " + eventTypes.size() + "eventtypes instead of 1", eventTypes.size() == 1);
@@ -166,8 +161,7 @@ public class EventTypeRuleTest implements PersistenceTest {
 		EapEventType deleteEventType = EapEventType.findByTypeName("GET-Transport");
 		deleteEventType.remove();
 
-		assertTrue("eventtyperule was not deleted ",
-				EventTypeRule.findEventTypeRuleForCreatedEventType(createdEventType) == null);
+		assertTrue("eventtyperule was not deleted ", EventTypeRule.findEventTypeRuleForCreatedEventType(createdEventType) == null);
 
 		eventTypes = EapEventType.findAll();
 		assertTrue(eventTypes.size() == 1);

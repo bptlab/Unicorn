@@ -32,20 +32,17 @@ import de.hpi.unicorn.importer.xml.XMLParsingException;
 
 /**
  * This class tests the import of BPMN processes and subprocesses from XML.
- * 
+ *
  * @author micha
  */
 public class BPMNParserTest {
 
 	private static String filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/Kinomodell.bpmn20.xml";
-	private static String complexfilePath = System.getProperty("user.dir")
-			+ "/src/test/resources/bpmn/complexProcess.bpmn20.xml";
-	private static String subProcessfilePath = System.getProperty("user.dir")
-			+ "/src/test/resources/bpmn/Automontage_TwoTerminal.bpmn20.xml";
+	private static String complexfilePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/complexProcess.bpmn20.xml";
+	private static String subProcessfilePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/Automontage_TwoTerminal.bpmn20.xml";
 
 	@Test
-	public void testXPathParsing() throws ParserConfigurationException, SAXException, IOException,
-			XPathExpressionException {
+	public void testXPathParsing() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 		final DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setNamespaceAware(false);
 		final DocumentBuilder builder = domFactory.newDocumentBuilder();
@@ -72,8 +69,7 @@ public class BPMNParserTest {
 	}
 
 	@Test
-	public void testComplexProcess() throws XPathExpressionException, ParserConfigurationException, SAXException,
-			IOException, XMLParsingException {
+	public void testComplexProcess() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException, XMLParsingException {
 		final BPMNProcess BPMNProcess = BPMNParser.generateProcessFromXML(BPMNParserTest.complexfilePath);
 		Assert.assertNotNull(BPMNProcess);
 		Assert.assertTrue(BPMNProcess.getBPMNElementsWithOutSequenceFlows().size() == 21);

@@ -19,7 +19,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents a event-based gateway in a BPMN process.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -36,8 +36,7 @@ public class BPMNEventBasedGateway extends AbstractBPMNGateway {
 		super();
 	}
 
-	public BPMNEventBasedGateway(final String ID, final String name, final List<MonitoringPoint> monitoringPoints,
-			final BPMNEventBasedGatewayType type) {
+	public BPMNEventBasedGateway(final String ID, final String name, final List<MonitoringPoint> monitoringPoints, final BPMNEventBasedGatewayType type) {
 		super(ID, name, monitoringPoints);
 		this.type = type;
 	}

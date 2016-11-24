@@ -21,10 +21,10 @@ import de.hpi.unicorn.query.PatternQuery;
 public class ProcessMonitor implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private CorrelationProcess process;
 	private final Set<PatternQuery> queries;
 	private final Set<ProcessInstanceMonitor> processInstanceMonitors;
 	private final int ID;
+	private CorrelationProcess process;
 	private int numberOfProcessInstances;
 	private float averageRuntimeMillis;
 
@@ -54,15 +54,12 @@ public class ProcessMonitor implements Serializable {
 		this.process = process;
 	}
 
-	public void setQueryFinishedForProcessInstance(final PatternQuery query,
-			final CorrelationProcessInstance processInstance) {
-		final ProcessInstanceMonitor processInstanceMonitor = this
-				.getProcessInstanceMonitorForProcessInstance(processInstance);
+	public void setQueryFinishedForProcessInstance(final PatternQuery query, final CorrelationProcessInstance processInstance) {
+		final ProcessInstanceMonitor processInstanceMonitor = this.getProcessInstanceMonitorForProcessInstance(processInstance);
 		processInstanceMonitor.setQueryFinished(query);
 	}
 
-	private ProcessInstanceMonitor getProcessInstanceMonitorForProcessInstance(
-			final CorrelationProcessInstance processInstance) {
+	private ProcessInstanceMonitor getProcessInstanceMonitorForProcessInstance(final CorrelationProcessInstance processInstance) {
 		for (final ProcessInstanceMonitor processInstanceMonitor : this.processInstanceMonitors) {
 			// if(processInstanceMonitor.getProcessInstance().equals(processInstance)){
 			/*
@@ -70,8 +67,7 @@ public class ProcessMonitor implements Serializable {
 			 * Prozesse mit verschiedenen IDs als Parameter kommen können:
 			 * CorrelationProcess.equals überschreiben? Erstmal mit ID prüfen
 			 */
-			if (processInstanceMonitor.getProcessInstance() != null
-					&& processInstanceMonitor.getProcessInstance().getID() == processInstance.getID()) {
+			if (processInstanceMonitor.getProcessInstance() != null && processInstanceMonitor.getProcessInstance().getID() == processInstance.getID()) {
 				return processInstanceMonitor;
 			}
 		}
@@ -83,8 +79,7 @@ public class ProcessMonitor implements Serializable {
 	}
 
 	public ProcessInstanceStatus getProcessInstanceStatus(final CorrelationProcessInstance processInstance) {
-		final ProcessInstanceMonitor processInstanceMonitor = this
-				.getProcessInstanceMonitorForProcessInstance(processInstance);
+		final ProcessInstanceMonitor processInstanceMonitor = this.getProcessInstanceMonitorForProcessInstance(processInstance);
 		return processInstanceMonitor.getStatus();
 	}
 
@@ -94,7 +89,7 @@ public class ProcessMonitor implements Serializable {
 
 	/**
 	 * Returns all monitored process instances with the requested status.
-	 * 
+	 *
 	 * @param processInstanceStatus
 	 * @return
 	 */

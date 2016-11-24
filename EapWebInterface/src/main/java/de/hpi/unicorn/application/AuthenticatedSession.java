@@ -16,7 +16,7 @@ import de.hpi.unicorn.user.UserProvider;
 
 /**
  * The session class for an authenticated session for the web application.
- * 
+ *
  * @author micha
  */
 public class AuthenticatedSession extends AuthenticatedWebSession {
@@ -27,7 +27,7 @@ public class AuthenticatedSession extends AuthenticatedWebSession {
 
 	/**
 	 * Constructor for an authenticated session for the web application.
-	 * 
+	 *
 	 * @param request
 	 */
 	protected AuthenticatedSession(final Request request) {
@@ -37,11 +37,9 @@ public class AuthenticatedSession extends AuthenticatedWebSession {
 	/**
 	 * Checks the given username and password and returns a user object if an
 	 * user is be identified by email and password.
-	 * 
-	 * @param email
-	 *            email address
-	 * @param password
-	 *            password
+	 *
+	 * @param email    email address
+	 * @param password password
 	 * @return true if the user is authenticated successfully
 	 */
 	@Override
@@ -56,9 +54,8 @@ public class AuthenticatedSession extends AuthenticatedWebSession {
 
 	/**
 	 * Sets a new user.
-	 * 
+	 *
 	 * @param user
-	 * 
 	 */
 	public void setUser(final EapUser user) {
 		this.user = user;

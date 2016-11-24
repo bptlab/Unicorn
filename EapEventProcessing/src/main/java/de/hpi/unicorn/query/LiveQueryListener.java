@@ -34,23 +34,25 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 import de.hpi.unicorn.utils.SetUtil;
 
 /**
- * This class implements a listener for live queries (see {@link QueryWrapper}). 
- * 
+ * This class implements a listener for live queries (see {@link QueryWrapper}).
+ * <p>
  * Instances of this class are created by the {@link StreamProcessingAdapter} when adding
- * live queries via the {@code addLiveQuery(query)} method. The listener is then registered 
- * in Esper as listener for the EPL statement that represents the query. The listener will 
+ * live queries via the {@code addLiveQuery(query)} method. The listener is then registered
+ * in Esper as listener for the EPL statement that represents the query. The listener will
  * be triggered by Esper when the query matches.
+ *
  * @author the Unicorn team
  */
 public class LiveQueryListener implements UpdateListener {
 
-    	/**
-    	 * The live query this listener belongs to.
-    	 */
+	/**
+	 * The live query this listener belongs to.
+	 */
 	protected QueryWrapper query;
 
 	/**
 	 * Creates a new listener for a given {@link QueryWrapper} (live query).
+	 *
 	 * @param liveQuery
 	 */
 	public LiveQueryListener(final QueryWrapper liveQuery) {
@@ -59,10 +61,10 @@ public class LiveQueryListener implements UpdateListener {
 
 	/**
 	 * This method is called by Esper when the live query, this listener belongs to
-	 * is matched by one or several events. The events that matched the query are 
+	 * is matched by one or several events. The events that matched the query are
 	 * passed as arrays of {@link EventBean}'s.
 	 * TODO: explain how newData and oldData differ
-	 * 
+	 * <p>
 	 * Unicorn only uses the first event that matches the query!
 	 * The match is logged, then notifications are produced and monitoring points are
 	 * triggerd.
@@ -93,7 +95,7 @@ public class LiveQueryListener implements UpdateListener {
 		for (final NotificationRuleForQuery notificationRule : this.query.getNotificationRulesForQuery()) {
 			notificationRule.trigger(map);
 		}
-		for(final RestNotificationRule restNotificationRule : this.query.getRestNotificationRules()) {
+		for (final RestNotificationRule restNotificationRule : this.query.getRestNotificationRules()) {
 			restNotificationRule.trigger(map);
 		}
 
@@ -137,14 +139,14 @@ public class LiveQueryListener implements UpdateListener {
 				Serializable value = tempValue;
 				if (dataType != null) {
 					switch (dataType) {
-					case FLOAT:
-						value = Double.parseDouble(tempValue);
-						break;
-					case INTEGER:
-						value = Long.parseLong(tempValue);
-						break;
-					default:
-						value = tempValue;
+						case FLOAT:
+							value = Double.parseDouble(tempValue);
+							break;
+						case INTEGER:
+							value = Long.parseLong(tempValue);
+							break;
+						default:
+							value = tempValue;
 					}
 				}
 				map.put(node.getNodeName(), value);

@@ -25,11 +25,10 @@ import de.hpi.unicorn.bpmn.element.BPMNProcess;
 
 /**
  * This class is the provider for {@link BPMNProcess}es.
- * 
+ *
  * @author micha
  */
-public class ProcessModelProvider extends AbstractDataProvider implements IDataProvider<AbstractBPMNElement>,
-		ISortableDataProvider<AbstractBPMNElement, String> {
+public class ProcessModelProvider extends AbstractDataProvider implements IDataProvider<AbstractBPMNElement>, ISortableDataProvider<AbstractBPMNElement, String> {
 
 	private static final long serialVersionUID = 1L;
 	private BPMNProcess process;
@@ -81,12 +80,12 @@ public class ProcessModelProvider extends AbstractDataProvider implements IDataP
 		return this.elements;
 	}
 
-	public List<AbstractBPMNElement> getSelectedElements() {
-		return this.selectedElements;
-	}
-
 	public void setElements(final List<AbstractBPMNElement> elementList) {
 		this.elements = elementList;
+	}
+
+	public List<AbstractBPMNElement> getSelectedElements() {
+		return this.selectedElements;
 	}
 
 	@Override

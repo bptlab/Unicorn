@@ -26,35 +26,32 @@ public class AttributeTypeDropDownChoicePanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	protected AttributeTypeEnum attributeType;
 
-	public AttributeTypeDropDownChoicePanel(final String id, final TypeTreeNode attribute,
-			final boolean dropDownChoiceEnabled, final EventAttributeProvider dataProvider) {
+	public AttributeTypeDropDownChoicePanel(final String id, final TypeTreeNode attribute, final boolean dropDownChoiceEnabled, final EventAttributeProvider dataProvider) {
 		super(id);
 		final Form<Void> layoutForm = new Form<Void>("layoutForm");
 
 		final List<AttributeTypeEnum> attributeTypes = new ArrayList<AttributeTypeEnum>();
 		if (attribute.getType() != null) {
 			switch (attribute.getType()) {
-			case DATE:
-				attributeTypes.add(AttributeTypeEnum.DATE);
-				attributeTypes.add(AttributeTypeEnum.STRING);
-				break;
-			case FLOAT:
-				attributeTypes.add(AttributeTypeEnum.FLOAT);
-				attributeTypes.add(AttributeTypeEnum.STRING);
-				break;
-			case INTEGER:
-				attributeTypes.add(AttributeTypeEnum.INTEGER);
-				attributeTypes.add(AttributeTypeEnum.FLOAT);
-				attributeTypes.add(AttributeTypeEnum.STRING);
-				break;
-			default:
-				attributeTypes.add(AttributeTypeEnum.STRING);
+				case DATE:
+					attributeTypes.add(AttributeTypeEnum.DATE);
+					attributeTypes.add(AttributeTypeEnum.STRING);
+					break;
+				case FLOAT:
+					attributeTypes.add(AttributeTypeEnum.FLOAT);
+					attributeTypes.add(AttributeTypeEnum.STRING);
+					break;
+				case INTEGER:
+					attributeTypes.add(AttributeTypeEnum.INTEGER);
+					attributeTypes.add(AttributeTypeEnum.FLOAT);
+					attributeTypes.add(AttributeTypeEnum.STRING);
+					break;
+				default:
+					attributeTypes.add(AttributeTypeEnum.STRING);
 			}
 		}
 
-		final DropDownChoice<AttributeTypeEnum> attributeTypeDropDownChoice = new DropDownChoice<AttributeTypeEnum>(
-				"attributeTypeDropDownChoice", new PropertyModel<AttributeTypeEnum>(this, "attributeType"),
-				attributeTypes);
+		final DropDownChoice<AttributeTypeEnum> attributeTypeDropDownChoice = new DropDownChoice<AttributeTypeEnum>("attributeTypeDropDownChoice", new PropertyModel<AttributeTypeEnum>(this, "attributeType"), attributeTypes);
 		attributeTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long serialVersionUID = 1L;

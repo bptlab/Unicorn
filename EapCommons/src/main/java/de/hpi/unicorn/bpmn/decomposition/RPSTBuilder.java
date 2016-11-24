@@ -27,24 +27,20 @@ import de.hpi.unicorn.event.collection.EventTree;
 /**
  * This class constructs a RPST and a {@link EventTree} with the
  * {@link AbstractBPMNElement}s of the process derived from the RPST.
- * 
+ *
  * @author micha
- * 
  */
 public class RPSTBuilder {
-
-	private BPMNProcess process;
 
 	/**
 	 * Graph derived from the BPMNProcess.
 	 */
 	private final MultiDirectedBPMNGraph graph;
-
 	/**
 	 * The RPST tree.
 	 */
 	private final RPST<DirectedBPMNEdge, AbstractBPMNElement> rpst;
-
+	private BPMNProcess process;
 	/**
 	 * Tree of the RPST nodes. RPST nodes are edges of the original process.
 	 */
@@ -83,18 +79,16 @@ public class RPSTBuilder {
 
 	/**
 	 * Determines if a node in the RPST has children.
-	 * 
+	 *
 	 * @param node
 	 * @param rpst
 	 * @return
 	 */
-	private boolean hasChildren(final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> node,
-			final RPST<DirectedBPMNEdge, AbstractBPMNElement> rpst) {
+	private boolean hasChildren(final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> node, final RPST<DirectedBPMNEdge, AbstractBPMNElement> rpst) {
 		return !rpst.getChildren(node).isEmpty();
 	}
 
-	private void addElementToRPSTNodesTree(final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> element,
-			final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> parent) {
+	private void addElementToRPSTNodesTree(final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> element, final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> parent) {
 		this.rpstNodesTree.addChild(parent, element);
 		if (this.hasChildren(element, this.rpst)) {
 			for (final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> child : this.rpst.getChildren(element)) {
@@ -106,7 +100,7 @@ public class RPSTBuilder {
 	/**
 	 * This method converts an node-oriented {@link BPMNProcess} to an
 	 * edge-oriented {@link MultiDirectedBPMNGraph}.
-	 * 
+	 *
 	 * @param process
 	 * @return
 	 */
@@ -165,16 +159,13 @@ public class RPSTBuilder {
 		AbstractBPMNElement entryPoint = null;
 		if (!sourceElement.getPredecessors().isEmpty()) {
 			// Direkte Vorgänger des SourceElement
-			final Set<AbstractBPMNElement> predecessors = new HashSet<AbstractBPMNElement>(
-					sourceElement.getPredecessors());
+			final Set<AbstractBPMNElement> predecessors = new HashSet<AbstractBPMNElement>(sourceElement.getPredecessors());
 
 			// Alle Childs des aktuellen Parent
-			final Set<AbstractBPMNElement> parentIndirectChildElements = this.processDecompositionTree
-					.getIndirectChildren(this.processDecompositionTree.getParent(component));
+			final Set<AbstractBPMNElement> parentIndirectChildElements = this.processDecompositionTree.getIndirectChildren(this.processDecompositionTree.getParent(component));
 
 			// Alle Childs der aktuellen Component
-			final Set<AbstractBPMNElement> componentChildren = this.processDecompositionTree
-					.getIndirectChildren(component);
+			final Set<AbstractBPMNElement> componentChildren = this.processDecompositionTree.getIndirectChildren(component);
 
 			// Sinnvolle Entrypoints sind Vorgänger der Component, die nicht
 			// Kinder der Component sind
@@ -198,12 +189,10 @@ public class RPSTBuilder {
 			final Set<AbstractBPMNElement> successors = new HashSet<AbstractBPMNElement>(sinkElement.getSuccessors());
 
 			// Alle Childs des aktuellen Parent
-			final Set<AbstractBPMNElement> parentIndirectChildElements = this.processDecompositionTree
-					.getIndirectChildren(this.processDecompositionTree.getParent(component));
+			final Set<AbstractBPMNElement> parentIndirectChildElements = this.processDecompositionTree.getIndirectChildren(this.processDecompositionTree.getParent(component));
 
 			// Alle Childs der aktuellen Component
-			final Set<AbstractBPMNElement> componentChildren = this.processDecompositionTree
-					.getIndirectChildren(component);
+			final Set<AbstractBPMNElement> componentChildren = this.processDecompositionTree.getIndirectChildren(component);
 
 			// Sinnvolle Exitpoints sind Nachfolger der Component, die nicht
 			// Kinder der Component sind
@@ -220,17 +209,13 @@ public class RPSTBuilder {
 	/**
 	 * Adds the elements of the RPSTNodesTree to the ProcessDecompositionTree
 	 * with the specified parent elements.
-	 * 
+	 *
 	 * @param rpstNodesTree
 	 * @param rpstNodesTreeElements
 	 * @param rpstNodesTreeParentElement
 	 * @param processDecompositionTreeParent
 	 */
-	private void addElementsToProcessDecompositionTree(
-			final EventTree<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> rpstNodesTree,
-			final Collection<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> rpstNodesTreeElements,
-			final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeParentElement,
-			final AbstractBPMNElement processDecompositionTreeParent) {
+	private void addElementsToProcessDecompositionTree(final EventTree<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> rpstNodesTree, final Collection<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> rpstNodesTreeElements, final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeParentElement, final AbstractBPMNElement processDecompositionTreeParent) {
 		final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements = new HashSet<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>>();
 
 		for (final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeElement : rpstNodesTreeElements) {
@@ -261,21 +246,16 @@ public class RPSTBuilder {
 			this.processDecompositionTree.addChild(processDecompositionTreeParent, createdElement);
 
 			if (rpstNodesTree.hasChildren(rpstNodesTreeElement)) {
-				this.addElementsToProcessDecompositionTree(rpstNodesTree,
-						rpstNodesTree.getChildren(rpstNodesTreeElement), rpstNodesTreeElement, createdElement);
+				this.addElementsToProcessDecompositionTree(rpstNodesTree, rpstNodesTree.getChildren(rpstNodesTreeElement), rpstNodesTreeElement, createdElement);
 			}
 		}
 
 		if (!trivialElements.isEmpty()) {
-			this.addTrivialElementsToProcessDecompositionTree(trivialElements, rpstNodesTreeParentElement,
-					processDecompositionTreeParent);
+			this.addTrivialElementsToProcessDecompositionTree(trivialElements, rpstNodesTreeParentElement, processDecompositionTreeParent);
 		}
 	}
 
-	private void addTrivialElementsToProcessDecompositionTree(
-			final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements,
-			final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeParentElement,
-			final AbstractBPMNElement processDecompositionTreeParent) {
+	private void addTrivialElementsToProcessDecompositionTree(final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements, final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeParentElement, final AbstractBPMNElement processDecompositionTreeParent) {
 		final Map<AbstractBPMNElement, Integer> elementsMap = new HashMap<AbstractBPMNElement, Integer>();
 		elementsMap.put(rpstNodesTreeParentElement.getEntry(), 1);
 		elementsMap.put(rpstNodesTreeParentElement.getExit(), 1);
@@ -314,8 +294,7 @@ public class RPSTBuilder {
 						if (subProcess.getPredecessors().size() > 1) {
 							throw new RuntimeException("Fehler in der Logik!");
 						} else {
-							entryPoint = (!subProcess.getPredecessors().isEmpty()) ? subProcess.getPredecessors()
-									.iterator().next() : null;
+							entryPoint = (!subProcess.getPredecessors().isEmpty()) ? subProcess.getPredecessors().iterator().next() : null;
 						}
 					}
 					AbstractBPMNElement exitPoint = this.getSuccessorFromEdges(subProcess, trivialElements);
@@ -327,14 +306,12 @@ public class RPSTBuilder {
 						if (subProcess.getSuccessors().size() > 1) {
 							throw new RuntimeException("Fehler in der Logik!");
 						} else {
-							exitPoint = (!subProcess.getSuccessors().isEmpty()) ? subProcess.getSuccessors().iterator()
-									.next() : null;
+							exitPoint = (!subProcess.getSuccessors().isEmpty()) ? subProcess.getSuccessors().iterator().next() : null;
 						}
 					}
 					// TODO: Vielleicht keine eigene SubProcess-Component,
 					// sondern eher Component-Eigenschaft SubProcess hinzufügen?
-					final SubProcessComponent subProcessComponent = new SubProcessComponent(entryPoint, sourceElement,
-							exitPoint, sinkElement);
+					final SubProcessComponent subProcessComponent = new SubProcessComponent(entryPoint, sourceElement, exitPoint, sinkElement);
 					subProcessComponent.setSubProcess(subProcess);
 					// RPST des SubProcess unter der SubProcessComponent
 					// einhängen
@@ -347,16 +324,14 @@ public class RPSTBuilder {
 						}
 					}
 					this.processDecompositionTree.addChild(processDecompositionTreeParent, subProcessComponent);
-					this.addElementsToProcessDecompositionTree(subProcessRPST.getRPSTNodesTree(), subProcessRPST
-							.getRPSTNodesTree().getRootElements(), null, subProcessComponent);
+					this.addElementsToProcessDecompositionTree(subProcessRPST.getRPSTNodesTree(), subProcessRPST.getRPSTNodesTree().getRootElements(), null, subProcessComponent);
 				}
 
 			}
 		}
 	}
 
-	private AbstractBPMNElement getPredecessorFromEdges(final AbstractBPMNElement element,
-			final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements) {
+	private AbstractBPMNElement getPredecessorFromEdges(final AbstractBPMNElement element, final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements) {
 		for (final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeElement : trivialElements) {
 			for (final DirectedBPMNEdge directedBPMNEdge : rpstNodesTreeElement.getFragment()) {
 				if (directedBPMNEdge.getTarget().equals(element)) {
@@ -367,8 +342,7 @@ public class RPSTBuilder {
 		return null;
 	}
 
-	private AbstractBPMNElement getSuccessorFromEdges(final AbstractBPMNElement element,
-			final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements) {
+	private AbstractBPMNElement getSuccessorFromEdges(final AbstractBPMNElement element, final Set<IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement>> trivialElements) {
 		for (final IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rpstNodesTreeElement : trivialElements) {
 			for (final DirectedBPMNEdge directedBPMNEdge : rpstNodesTreeElement.getFragment()) {
 				if (directedBPMNEdge.getSource().equals(element)) {

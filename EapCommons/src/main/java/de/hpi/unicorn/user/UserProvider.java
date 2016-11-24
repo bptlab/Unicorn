@@ -11,14 +11,14 @@ import de.hpi.unicorn.utils.HashUtil;
 
 /**
  * This class manages the creation of new users.
- * 
+ *
  * @author micha
  */
 public class UserProvider {
 
 	/**
 	 * Checks, if the given name is already used for another user.
-	 * 
+	 *
 	 * @param name
 	 * @return
 	 */
@@ -33,7 +33,7 @@ public class UserProvider {
 	/**
 	 * Creates a new user with the given name, password and mail, if the user
 	 * name is not already in use.
-	 * 
+	 *
 	 * @param name
 	 * @param password
 	 * @param email

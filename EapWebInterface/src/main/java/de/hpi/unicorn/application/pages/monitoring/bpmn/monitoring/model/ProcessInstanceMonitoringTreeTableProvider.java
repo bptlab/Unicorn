@@ -26,13 +26,11 @@ import de.hpi.unicorn.query.PatternQuery;
 /**
  * Wraps the tree of BPMN components and their event types from the monitoring
  * points for a tree table visualization.
- * 
- * @author micha
- * 
+ *
  * @param
+ * @author micha
  */
-public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProvider implements
-		ISortableTreeProvider<ProcessInstanceMonitoringTreeTableElement, String> {
+public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProvider implements ISortableTreeProvider<ProcessInstanceMonitoringTreeTableElement, String> {
 
 	private static final long serialVersionUID = 1L;
 	private List<ProcessInstanceMonitoringTreeTableElement> treeTableElements = new ArrayList<ProcessInstanceMonitoringTreeTableElement>();
@@ -55,8 +53,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 	}
 
 	private void createQueryTree() {
-		this.bpmnProcessDecompositionTree = this.processInstanceMonitor.getProcessInstance().getProcess()
-				.getProcessDecompositionTree();
+		this.bpmnProcessDecompositionTree = this.processInstanceMonitor.getProcessInstance().getProcess().getProcessDecompositionTree();
 		this.queryTree = new EventTree<PatternQuery>();
 		// Query enthält ihre BPMN-Elemente --> And-Component, enthält Childs
 		for (final AbstractBPMNElement rootElement : this.bpmnProcessDecompositionTree.getRootElements()) {
@@ -90,8 +87,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 
 	private PatternQuery findQueryWithElements(final Set<AbstractBPMNElement> bpmnElements) {
 		for (final PatternQuery query : this.processInstanceMonitor.getQueries()) {
-			if (query.getMonitoredElements().containsAll(bpmnElements)
-					&& bpmnElements.containsAll(query.getMonitoredElements())) {
+			if (query.getMonitoredElements().containsAll(bpmnElements) && bpmnElements.containsAll(query.getMonitoredElements())) {
 				return query;
 			}
 		}
@@ -123,8 +119,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 	}
 
 	@Override
-	public Iterator<? extends ProcessInstanceMonitoringTreeTableElement> getChildren(
-			final ProcessInstanceMonitoringTreeTableElement node) {
+	public Iterator<? extends ProcessInstanceMonitoringTreeTableElement> getChildren(final ProcessInstanceMonitoringTreeTableElement node) {
 		return node.getChildren().iterator();
 	}
 
@@ -170,7 +165,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
@@ -185,6 +180,10 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 		return this.treeTableElements;
 	}
 
+	public void setTreeTableElements(final List<ProcessInstanceMonitoringTreeTableElement> treeTableElements) {
+		this.treeTableElements = treeTableElements;
+	}
+
 	public void addTreeTableElement(final ProcessInstanceMonitoringTreeTableElement treeTableElement) {
 		this.treeTableElements.add(treeTableElement);
 		if (!this.selectedTreeTableElements.isEmpty()) {
@@ -194,15 +193,10 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 		}
 	}
 
-	public void addTreeTableElementWithParent(final ProcessInstanceMonitoringTreeTableElement treeTableElement,
-			final ProcessInstanceMonitoringTreeTableElement parent) {
+	public void addTreeTableElementWithParent(final ProcessInstanceMonitoringTreeTableElement treeTableElement, final ProcessInstanceMonitoringTreeTableElement parent) {
 		this.treeTableElements.add(treeTableElement);
 		parent.getChildren().add(treeTableElement);
 		treeTableElement.setParent(parent);
-	}
-
-	public void setTreeTableElements(final List<ProcessInstanceMonitoringTreeTableElement> treeTableElements) {
-		this.treeTableElements = treeTableElements;
 	}
 
 	public void deleteSelectedEntries() {
@@ -227,8 +221,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 		}
 	}
 
-	private void addElementToTree(final ProcessInstanceMonitoringTreeTableElement parent, final PatternQuery query,
-			final EventTree<PatternQuery> queryTree) {
+	private void addElementToTree(final ProcessInstanceMonitoringTreeTableElement parent, final PatternQuery query, final EventTree<PatternQuery> queryTree) {
 		final ProcessInstanceMonitoringTreeTableElement treeTableElement = this.createTreeTableElement(query);
 		treeTableElement.setParent(parent);
 		this.treeTableElements.add(treeTableElement);
@@ -243,8 +236,7 @@ public class ProcessInstanceMonitoringTreeTableProvider extends AbstractDataProv
 	}
 
 	private ProcessInstanceMonitoringTreeTableElement createTreeTableElement(final PatternQuery query) {
-		final ProcessInstanceMonitoringTreeTableElement element = new ProcessInstanceMonitoringTreeTableElement(
-				this.getNextID(), query, this.processInstanceMonitor);
+		final ProcessInstanceMonitoringTreeTableElement element = new ProcessInstanceMonitoringTreeTableElement(this.getNextID(), query, this.processInstanceMonitor);
 		return element;
 	}
 

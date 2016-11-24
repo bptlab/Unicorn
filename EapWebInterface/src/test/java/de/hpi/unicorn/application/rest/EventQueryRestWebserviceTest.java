@@ -40,20 +40,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		title = "TestQuery";
 		email = "test@test.de";
 		notificationPath = "/some/path/for/testing";
-		eventSchemaString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
-				"                <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"TestEvent.xsd\"\n" +
-				"        targetNamespace=\"TestEvent.xsd\" elementFormDefault=\"qualified\">\n" +
-				"        <xs:element name=\"TestEvent\">\n" +
-				"        <xs:complexType>\n" +
-				"        <xs:sequence>\n" +
-				"        <xs:element name=\"TestValue\" type=\"xs:float\"\n" +
-				"        minOccurs=\"1\" maxOccurs=\"1\" />\n" +
-				"        <xs:element name=\"Timestamp\" type=\"xs:dateTime\" minOccurs=\"1\"\n" +
-				"        maxOccurs=\"1\" />\n" +
-				"        </xs:sequence>\n" +
-				"        </xs:complexType>\n" +
-				"        </xs:element>\n" +
-				"        </xs:schema>";
+		eventSchemaString = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "                <xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns=\"TestEvent.xsd\"\n" + "        targetNamespace=\"TestEvent.xsd\" elementFormDefault=\"qualified\">\n" + "        <xs:element name=\"TestEvent\">\n" + "        <xs:complexType>\n" + "        <xs:sequence>\n" + "        <xs:element name=\"TestValue\" type=\"xs:float\"\n" + "        minOccurs=\"1\" maxOccurs=\"1\" />\n" + "        <xs:element name=\"Timestamp\" type=\"xs:dateTime\" minOccurs=\"1\"\n" + "        maxOccurs=\"1\" />\n" + "        </xs:sequence>\n" + "        </xs:complexType>\n" + "        </xs:element>\n" + "        </xs:schema>";
 		try {
 			service.registerEventType(eventSchemaString, "TestEvent", "Timestamp");
 		} catch (DuplicatedSchemaException | UnparsableException e) {
@@ -65,7 +52,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 	public void unregisterTestEvent() {
 		try {
 			service.unregisterEventType("TestEvent");
-		} catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
 	}
@@ -108,7 +95,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		final NotificationRuleForQuery notificationRule = NotificationRuleForQuery.findByUUID(uuid);
 		assertEquals(notificationRule, null);
 
-		if(notificationRule != null) {
+		if (notificationRule != null) {
 			service.unregisterQuery(uuid);
 		}
 	}
@@ -125,7 +112,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		final NotificationRuleForQuery notificationRule = NotificationRuleForQuery.findByUUID(uuid);
 		assertEquals(notificationRule, null);
 
-		if(notificationRule != null) {
+		if (notificationRule != null) {
 			service.unregisterQuery(uuid);
 		}
 	}
@@ -150,7 +137,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		String restQueryString;
 		try {
 			restQueryString = notificationRule.getQuery().getQueryString();
-		} catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 			restQueryString = "";
 		}
 		assertEquals(restQueryString, queryString);
@@ -177,7 +164,7 @@ public class EventQueryRestWebserviceTest extends JerseyTest {
 		String restQueryString;
 		try {
 			restQueryString = notificationRule.getQuery().getQueryString();
-		} catch(NullPointerException e) {
+		} catch (NullPointerException e) {
 			restQueryString = "";
 		}
 		assertEquals(restQueryString, queryString);

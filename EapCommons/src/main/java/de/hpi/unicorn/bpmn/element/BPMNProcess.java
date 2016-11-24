@@ -29,11 +29,12 @@ import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
  * This class is a logical representation of a BPMN process.
+ *
  * @author micha
  */
+
 /**
  * @author micha
- * 
  */
 @Entity
 @Table(name = "BPMNProcess")
@@ -51,6 +52,94 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	public BPMNProcess(final String ID, final String name, final List<MonitoringPoint> monitoringPoints) {
 		super(ID, name, monitoringPoints);
+	}
+
+	/**
+	 * Returns all {@link BPMNProcess}es from the database, which have the
+	 * specified ID.
+	 *
+	 * @return
+	 */
+	public static BPMNProcess findByID(final int ID) {
+		final List<BPMNProcess> list = BPMNProcess.findByAttribute("ID", new Integer(ID).toString());
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all {@link BPMNProcess}es from the database, which have the
+	 * specified name.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<BPMNProcess> findByName(final String name) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM BPMNElement " + "WHERE ID IN (" + "	SELECT RESULT.ID " + "	FROM (" + "		SELECT * " + "		FROM BPMNElement AS SELECTEDBPMNELEMENT " + "		WHERE ID IN (" + "			SELECT ID " + "			FROM BPMNProcess AS SELECTEDBPMNPROCESS)) AS RESULT" + "			WHERE RESULT.NAME ='" + name + "')", BPMNProcess.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Returns all {@link BPMNProcess}es from the database, which have the
+	 * specified attribute and value.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<BPMNProcess> findByAttribute(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM BPMNProcess WHERE " + columnName + " = '" + value + "'", BPMNProcess.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Returns all {@link BPMNProcess}es from the database.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<BPMNProcess> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("select t from BPMNProcess t");
+		return q.getResultList();
+	}
+
+	/**
+	 * Removes all {@link BPMNProcess}es from the database.
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM BPMNProcess");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
+	public static boolean exists(final String name) {
+		return !BPMNProcess.findByName(name).isEmpty();
+	}
+
+	/**
+	 * Searches in all saved {@link BPMNProcess}es for one, which contains the
+	 * given {@link AbstractBPMNElement}.
+	 *
+	 * @param bpmnElement
+	 * @return
+	 */
+	public static BPMNProcess findByContainedElement(final AbstractBPMNElement bpmnElement) {
+		for (final BPMNProcess process : BPMNProcess.findAll()) {
+			for (final AbstractBPMNElement element : process.getBPMNElementsWithOutSequenceFlows()) {
+				if (element.getID() == bpmnElement.getID()) {
+					return process;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -93,7 +182,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 	/**
 	 * Return all activities({@link BPMNTask}), which are contained in this
 	 * process.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<BPMNTask> getAllTasks() {
@@ -108,7 +197,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns all {@link Component}s, which are contained in this process.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Component> getAllComponents() {
@@ -123,7 +212,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns a list of all BPMN-IDs of the contained elements.
-	 * 
+	 *
 	 * @return
 	 */
 	public ArrayList<String> getBPMNElementIDs() {
@@ -154,7 +243,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns the start event for a process.
-	 * 
+	 *
 	 * @return
 	 */
 	public BPMNStartEvent getStartEvent() {
@@ -168,7 +257,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns all start events for a process.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<BPMNStartEvent> getStartEvents() {
@@ -183,7 +272,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns the end event for a process.
-	 * 
+	 *
 	 * @return
 	 */
 	public BPMNEndEvent getEndEvent() {
@@ -197,7 +286,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns all end events for a process.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<BPMNEndEvent> getEndEvents() {
@@ -244,7 +333,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 	/**
 	 * This method returns a textual representation of all process elements and
 	 * their monitoring points.
-	 * 
+	 *
 	 * @param process
 	 * @return
 	 */
@@ -272,79 +361,8 @@ public class BPMNProcess extends AbstractBPMNElement {
 	}
 
 	/**
-	 * Returns all {@link BPMNProcess}es from the database, which have the
-	 * specified ID.
-	 * 
-	 * @return
-	 */
-	public static BPMNProcess findByID(final int ID) {
-		final List<BPMNProcess> list = BPMNProcess.findByAttribute("ID", new Integer(ID).toString());
-		if (list.size() > 0) {
-			return list.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all {@link BPMNProcess}es from the database, which have the
-	 * specified name.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<BPMNProcess> findByName(final String name) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM BPMNElement " + "WHERE ID IN (" + "	SELECT RESULT.ID " + "	FROM ("
-						+ "		SELECT * " + "		FROM BPMNElement AS SELECTEDBPMNELEMENT " + "		WHERE ID IN ("
-						+ "			SELECT ID " + "			FROM BPMNProcess AS SELECTEDBPMNPROCESS)) AS RESULT"
-						+ "			WHERE RESULT.NAME ='" + name + "')", BPMNProcess.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Returns all {@link BPMNProcess}es from the database, which have the
-	 * specified attribute and value.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<BPMNProcess> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM BPMNProcess WHERE " + columnName + " = '" + value + "'", BPMNProcess.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Returns all {@link BPMNProcess}es from the database.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<BPMNProcess> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("select t from BPMNProcess t");
-		return q.getResultList();
-	}
-
-	/**
-	 * Removes all {@link BPMNProcess}es from the database.
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM BPMNProcess");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-
-	/**
 	 * Returns all split gateways, contained in this {@link BPMNProcess}.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<AbstractBPMNGateway> getAllSplitGateways() {
@@ -359,7 +377,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns all joining gateways, contained in this {@link BPMNProcess}.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<AbstractBPMNGateway> getAllJoinGateways() {
@@ -393,7 +411,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 
 	/**
 	 * Returns the contained {@link BPMNSubProcess}es, if any.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<BPMNSubProcess> getSubProcesses() {
@@ -414,28 +432,6 @@ public class BPMNProcess extends AbstractBPMNElement {
 			}
 		}
 		return subElementsWithMonitoringpoints;
-	}
-
-	public static boolean exists(final String name) {
-		return !BPMNProcess.findByName(name).isEmpty();
-	}
-
-	/**
-	 * Searches in all saved {@link BPMNProcess}es for one, which contains the
-	 * given {@link AbstractBPMNElement}.
-	 * 
-	 * @param bpmnElement
-	 * @return
-	 */
-	public static BPMNProcess findByContainedElement(final AbstractBPMNElement bpmnElement) {
-		for (final BPMNProcess process : BPMNProcess.findAll()) {
-			for (final AbstractBPMNElement element : process.getBPMNElementsWithOutSequenceFlows()) {
-				if (element.getID() == bpmnElement.getID()) {
-					return process;
-				}
-			}
-		}
-		return null;
 	}
 
 }

@@ -30,7 +30,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
  * This panel facilitates the analysis of finished
  * {@link CorrelationProcessInstance}s. The details for a single process
  * instance are visualized with a {@link ProcessAnalysingModal}.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")
@@ -44,7 +44,7 @@ public class BPMNAnalysisPanel extends Panel {
 	/**
 	 * Constructor for a panel, which facilitates the analysis of finished
 	 * {@link CorrelationProcessInstance}s.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -62,8 +62,7 @@ public class BPMNAnalysisPanel extends Panel {
 	}
 
 	private void addProcessTable() {
-		this.dataTable = new DefaultDataTable<ProcessMonitor, String>("processAnalysisTable", this.createColumns(),
-				this.processMonitoringProvider, 20);
+		this.dataTable = new DefaultDataTable<ProcessMonitor, String>("processAnalysisTable", this.createColumns(), this.processMonitoringProvider, 20);
 		this.dataTable.setOutputMarkupId(true);
 
 		this.add(this.dataTable);
@@ -79,8 +78,7 @@ public class BPMNAnalysisPanel extends Panel {
 		final ArrayList<IColumn<ProcessMonitor, String>> columns = new ArrayList<IColumn<ProcessMonitor, String>>();
 		columns.add(new PropertyColumn<ProcessMonitor, String>(Model.of("ID"), "ID"));
 		columns.add(new PropertyColumn<ProcessMonitor, String>(Model.of("Process"), "process"));
-		columns.add(new PropertyColumn<ProcessMonitor, String>(Model.of("# of Process Instances"),
-				"numberOfProcessInstances"));
+		columns.add(new PropertyColumn<ProcessMonitor, String>(Model.of("# of Process Instances"), "numberOfProcessInstances"));
 		columns.add(new PropertyColumn<ProcessMonitor, String>(Model.of("Average runtime"), "averageRuntimeMillis"));
 
 		// columns.add(new AbstractColumn(new Model("Status")) {
@@ -98,8 +96,7 @@ public class BPMNAnalysisPanel extends Panel {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((ProcessMonitor) rowModel.getObject()).getID();
-				cellItem.add(new ProcessMonitorEntryDetailsPanel(componentId, entryId,
-						BPMNAnalysisPanel.this.processMonitoringProvider, BPMNAnalysisPanel.this.processMonitorModal));
+				cellItem.add(new ProcessMonitorEntryDetailsPanel(componentId, entryId, BPMNAnalysisPanel.this.processMonitoringProvider, BPMNAnalysisPanel.this.processMonitorModal));
 			}
 		});
 

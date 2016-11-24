@@ -34,12 +34,12 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 public class SimpleCorrelationWithRulesPanel extends Panel {
 
 	private static final long serialVersionUID = -4523105587173220532L;
+	private final Set<EapEventType> correlationEventTypes = new HashSet<EapEventType>();
 	private List<CorrelationRule> correlationRules = new ArrayList<CorrelationRule>();
 	private ListView<CorrelationRule> correlationRuleListView;
 	private WebMarkupContainer correlationRuleMarkupContainer;
 	private CorrelationPage correlationPage;
 	private AjaxButton addCorrelationRuleButton;
-	private final Set<EapEventType> correlationEventTypes = new HashSet<EapEventType>();
 
 	public SimpleCorrelationWithRulesPanel(final String id, final CorrelationPage correlationPage) {
 		super(id);
@@ -81,8 +81,7 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 
 				final CorrelationRule correlationRule = item.getModelObject();
 
-				final DropDownChoice<TypeTreeNode> firstAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>(
-						"firstAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>());
+				final DropDownChoice<TypeTreeNode> firstAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>("firstAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>());
 				firstAttributeDropDownChoice.setOutputMarkupId(true);
 				firstAttributeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -95,14 +94,12 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 					}
 				});
 				if (correlationRule.getEventTypeOfFirstAttribute() != null) {
-					firstAttributeDropDownChoice.setChoices(correlationRule.getEventTypeOfFirstAttribute()
-							.getValueTypes());
+					firstAttributeDropDownChoice.setChoices(correlationRule.getEventTypeOfFirstAttribute().getValueTypes());
 				}
 				firstAttributeDropDownChoice.setModelObject(correlationRule.getFirstAttribute());
 				item.add(firstAttributeDropDownChoice);
 
-				final DropDownChoice<EapEventType> eventTypeOfFirstAttributeDropDownChoice = new DropDownChoice<EapEventType>(
-						"eventTypeOfFirstAttributeDropDownChoice", new Model<EapEventType>(), eventTypes);
+				final DropDownChoice<EapEventType> eventTypeOfFirstAttributeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeOfFirstAttributeDropDownChoice", new Model<EapEventType>(), eventTypes);
 				eventTypeOfFirstAttributeDropDownChoice.setOutputMarkupId(true);
 				eventTypeOfFirstAttributeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -121,8 +118,7 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 
 				item.add(eventTypeOfFirstAttributeDropDownChoice);
 
-				final DropDownChoice<TypeTreeNode> secondAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>(
-						"secondAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>()) {
+				final DropDownChoice<TypeTreeNode> secondAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>("secondAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>()) {
 					private static final long serialVersionUID = 7107102900826509015L;
 
 					@Override
@@ -152,8 +148,7 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 				secondAttributeDropDownChoice.setModelObject(correlationRule.getSecondAttribute());
 				item.add(secondAttributeDropDownChoice);
 
-				final DropDownChoice<EapEventType> eventTypeOfSecondAttributeDropDownChoice = new DropDownChoice<EapEventType>(
-						"eventTypeOfSecondAttributeDropDownChoice", new Model<EapEventType>(), eventTypes) {
+				final DropDownChoice<EapEventType> eventTypeOfSecondAttributeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeOfSecondAttributeDropDownChoice", new Model<EapEventType>(), eventTypes) {
 					private static final long serialVersionUID = 3720572018390164569L;
 
 					@Override
@@ -168,8 +163,7 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 
 					@Override
 					protected void onUpdate(final AjaxRequestTarget target) {
-						final EapEventType selectedEventType = eventTypeOfSecondAttributeDropDownChoice
-								.getModelObject();
+						final EapEventType selectedEventType = eventTypeOfSecondAttributeDropDownChoice.getModelObject();
 						correlationRule.setEventTypeOfSecondAttribute(selectedEventType);
 						target.add(SimpleCorrelationWithRulesPanel.this.correlationRuleMarkupContainer);
 						SimpleCorrelationWithRulesPanel.this.updateAdvancedCorrelationPanel(target);
@@ -178,10 +172,8 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 				// if (correlationRule.getSecondAttribute() != null) {
 				// eventTypeOfSecondAttributeDropDownChoice.setModelObject(correlationRule.getSecondAttribute().getEventType());
 				// }
-				eventTypeOfSecondAttributeDropDownChoice
-						.setModelObject(correlationRule.getEventTypeOfSecondAttribute());
-				correlationRule
-						.setEventTypeOfSecondAttribute(eventTypeOfSecondAttributeDropDownChoice.getModelObject());
+				eventTypeOfSecondAttributeDropDownChoice.setModelObject(correlationRule.getEventTypeOfSecondAttribute());
+				correlationRule.setEventTypeOfSecondAttribute(eventTypeOfSecondAttributeDropDownChoice.getModelObject());
 				item.add(eventTypeOfSecondAttributeDropDownChoice);
 
 				final AjaxButton removeCorrelationRuleButton = new AjaxButton("removeCorrelationRuleButton", layoutForm) {
@@ -244,8 +236,7 @@ public class SimpleCorrelationWithRulesPanel extends Panel {
 				this.correlationEventTypes.add(correlationRule.getEventTypeOfSecondAttribute());
 			}
 		}
-		this.correlationPage.setValuesOfAdvancedCorrelationPanelComponents(new ArrayList<EapEventType>(
-				this.correlationEventTypes));
+		this.correlationPage.setValuesOfAdvancedCorrelationPanelComponents(new ArrayList<EapEventType>(this.correlationEventTypes));
 		this.correlationPage.updateAdvancedCorrelationPanelComponents(target);
 	}
 

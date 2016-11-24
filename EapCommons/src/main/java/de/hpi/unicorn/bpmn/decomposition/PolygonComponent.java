@@ -15,18 +15,13 @@ public class PolygonComponent extends Component {
 
 	/**
 	 * Creates a new polygon component as a container.
-	 * 
-	 * @param entryPoint
-	 *            - not included
-	 * @param sourceElement
-	 *            - included
-	 * @param exitPoint
-	 *            - not included
-	 * @param sinkElement
-	 *            - included
+	 *
+	 * @param entryPoint    - not included
+	 * @param sourceElement - included
+	 * @param exitPoint     - not included
+	 * @param sinkElement   - included
 	 */
-	public PolygonComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public PolygonComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		super(entryPoint, sourceElement, exitPoint, sinkElement);
 	}
 

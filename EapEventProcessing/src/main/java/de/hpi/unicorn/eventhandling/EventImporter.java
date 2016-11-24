@@ -14,15 +14,14 @@ import de.hpi.unicorn.event.EapEvent;
 /**
  * Declares methods for importing events into the platform. All implementations
  * have to be threadsafe.
- * 
+ *
  * @author Robert Breske
- * 
  */
 public interface EventImporter {
 
 	/**
 	 * Import a list of events into the platform
-	 * 
+	 *
 	 * @param events
 	 * @return the imported events
 	 */
@@ -35,21 +34,20 @@ public interface EventImporter {
 
 	/**
 	 * Import an event to the platform.
-	 * 
+	 *
 	 * @param event
-	 * @param rawSending
-	 *            send without triggering any further actions
+	 * @param rawSending send without triggering any further actions
 	 * @return the imported event
 	 */
 	public EapEvent importEvent(EapEvent event, boolean rawSending);
 
 	/**
 	 * Import events through an adapter, which is scheduled by event importer.
-	 * 
+	 *
 	 * @param eventAdapter
 	 */
 	public void importEventsWithSchedule(Runnable eventAdapter); // TODO check
-																	// with
-																	// EventAdapter
+	// with
+	// EventAdapter
 
 }

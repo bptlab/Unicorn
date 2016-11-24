@@ -24,17 +24,16 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
  *
  * @param <T>
  */
+
 /**
- * @author micha
- * 
  * @param <T>
+ * @author micha
  */
-public class TreeTableProvider<T> extends AbstractDataProvider implements
-		ISortableTreeProvider<EventTreeElement<T>, String> {
+public class TreeTableProvider<T> extends AbstractDataProvider implements ISortableTreeProvider<EventTreeElement<T>, String> {
 
 	private static final long serialVersionUID = 1L;
-	private List<EventTreeElement<T>> rootElements;
 	private final List<EventTreeElement<T>> selectedElements = new ArrayList<EventTreeElement<T>>();
+	private List<EventTreeElement<T>> rootElements;
 
 	public TreeTableProvider() {
 		this.rootElements = new ArrayList<EventTreeElement<T>>();
@@ -42,10 +41,9 @@ public class TreeTableProvider<T> extends AbstractDataProvider implements
 
 	/**
 	 * constructor
-	 * 
-	 * @param treeNodes
-	 *            root nodes of the tree, child nodes are accessed by this
-	 *            component automatically
+	 *
+	 * @param treeNodes root nodes of the tree, child nodes are accessed by this
+	 *                  component automatically
 	 */
 	public TreeTableProvider(final List<EventTreeElement<T>> treeNodes) {
 		this.rootElements = treeNodes;
@@ -64,6 +62,10 @@ public class TreeTableProvider<T> extends AbstractDataProvider implements
 		return this.rootElements;
 	}
 
+	public void setRootElements(final List<EventTreeElement<T>> rootElements) {
+		this.rootElements = rootElements;
+	}
+
 	private List<EventTreeElement<T>> getElements() {
 		final List<EventTreeElement<T>> elements = new ArrayList<EventTreeElement<T>>();
 		for (final EventTreeElement<T> root : this.rootElements) {
@@ -73,10 +75,6 @@ public class TreeTableProvider<T> extends AbstractDataProvider implements
 			elements.add(root);
 		}
 		return elements;
-	}
-
-	public void setRootElements(final List<EventTreeElement<T>> rootElements) {
-		this.rootElements = rootElements;
 	}
 
 	private void addElementToSet(final EventTreeElement<T> element, final List<EventTreeElement<T>> elements) {
@@ -150,7 +148,7 @@ public class TreeTableProvider<T> extends AbstractDataProvider implements
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
@@ -181,8 +179,7 @@ public class TreeTableProvider<T> extends AbstractDataProvider implements
 		return tree;
 	}
 
-	private void addElementToTree(final EventTreeElement<T> parent, final EventTreeElement<T> element,
-			final EventTree<T> tree) {
+	private void addElementToTree(final EventTreeElement<T> parent, final EventTreeElement<T> element, final EventTree<T> tree) {
 		if (parent != null) {
 			tree.addChild(parent.getValue(), element.getValue());
 		} else {

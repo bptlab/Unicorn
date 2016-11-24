@@ -27,34 +27,32 @@ public class QueryMonitoringStatusPanel extends Panel {
 	/**
 	 * Constructor for a panel, which contains a label for displaying the
 	 * {@link QueryStatus} of a {@link PatternQuery}.
-	 * 
+	 *
 	 * @param id
 	 * @param entryId
 	 * @param dataprovider
 	 */
 	public QueryMonitoringStatusPanel(final String id, final int entryId, final AbstractDataProvider dataprovider) {
 		super(id);
-		final ProcessInstanceMonitoringTreeTableElement treeTableElement = (ProcessInstanceMonitoringTreeTableElement) dataprovider
-				.getEntry(entryId);
+		final ProcessInstanceMonitoringTreeTableElement treeTableElement = (ProcessInstanceMonitoringTreeTableElement) dataprovider.getEntry(entryId);
 		BootStrapTextEmphasisClass textEmphasisClass = BootStrapTextEmphasisClass.Muted;
-		final QueryStatus queryStatus = treeTableElement.getProcessInstanceMonitor().getStatusForQuery(
-				treeTableElement.getQuery());
+		final QueryStatus queryStatus = treeTableElement.getProcessInstanceMonitor().getStatusForQuery(treeTableElement.getQuery());
 
 		switch (queryStatus) {
-		case Finished:
-			textEmphasisClass = BootStrapTextEmphasisClass.Success;
-			break;
-		case NotExisting:
-			textEmphasisClass = BootStrapTextEmphasisClass.Muted;
-			break;
-		case Skipped:
-			textEmphasisClass = BootStrapTextEmphasisClass.Error;
-			break;
-		case Started:
-			textEmphasisClass = BootStrapTextEmphasisClass.Info;
-			break;
-		default:
-			break;
+			case Finished:
+				textEmphasisClass = BootStrapTextEmphasisClass.Success;
+				break;
+			case NotExisting:
+				textEmphasisClass = BootStrapTextEmphasisClass.Muted;
+				break;
+			case Skipped:
+				textEmphasisClass = BootStrapTextEmphasisClass.Error;
+				break;
+			case Started:
+				textEmphasisClass = BootStrapTextEmphasisClass.Info;
+				break;
+			default:
+				break;
 		}
 		this.add(new BootStrapLabel("label", queryStatus.getTextValue(), textEmphasisClass));
 	}

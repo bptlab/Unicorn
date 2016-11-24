@@ -21,11 +21,11 @@ import de.hpi.unicorn.user.EapUser;
 
 public class NotificationRuleQueryPersistenceTest {
 
+	private final String michaMail = "micha@mail.de";
 	private EapEventType type1;
 	private EapUser user1;
 	private EapUser user2;
 	private EapEventType type2;
-	private final String michaMail = "micha@mail.de";
 	private QueryWrapper query1;
 	private QueryWrapper query2;
 
@@ -37,11 +37,9 @@ public class NotificationRuleQueryPersistenceTest {
 	@Test
 	public void testStoreAndRetrieve() {
 		this.storeExampleNotificationRules();
-		Assert.assertTrue("Value should be 2, but was " + NotificationRule.findAll().size(), NotificationRule.findAll()
-				.size() == 2);
+		Assert.assertTrue("Value should be 2, but was " + NotificationRule.findAll().size(), NotificationRule.findAll().size() == 2);
 		NotificationRule.removeAll();
-		Assert.assertTrue("Value should be 0, but was " + NotificationRule.findAll().size(), NotificationRule.findAll()
-				.size() == 0);
+		Assert.assertTrue("Value should be 0, but was " + NotificationRule.findAll().size(), NotificationRule.findAll().size() == 0);
 	}
 
 	@Test
@@ -50,13 +48,11 @@ public class NotificationRuleQueryPersistenceTest {
 		Assert.assertTrue(NotificationRule.findAll().size() == 2);
 
 		Assert.assertTrue(NotificationRuleForQuery.findByQuery(this.query1).size() == 1);
-		Assert.assertTrue(NotificationRuleForQuery.findByQuery(this.query1).get(0).getUser().getMail()
-				.equals(this.michaMail));
+		Assert.assertTrue(NotificationRuleForQuery.findByQuery(this.query1).get(0).getUser().getMail().equals(this.michaMail));
 
 		Assert.assertTrue(NotificationRule.findByUser(this.user1).size() == 1);
 		Assert.assertTrue(NotificationRule.findByUser(this.user1).get(0).getTriggeringEntity() instanceof QueryWrapper);
-		Assert.assertTrue(NotificationRule.findByUser(this.user1).get(0).getTriggeringEntity().getID() == this.query1
-				.getID());
+		Assert.assertTrue(NotificationRule.findByUser(this.user1).get(0).getTriggeringEntity().getID() == this.query1.getID());
 
 	}
 
@@ -123,8 +119,7 @@ public class NotificationRuleQueryPersistenceTest {
 		this.type1.save();
 		this.query1 = new QueryWrapper("allToNotify1", "Select * from ToNotify", QueryTypeEnum.LIVE);
 		this.query1.save();
-		final NotificationRuleForQuery notification1 = new NotificationRuleForQuery(this.query1, this.user1,
-				NotificationMethod.GUI);
+		final NotificationRuleForQuery notification1 = new NotificationRuleForQuery(this.query1, this.user1, NotificationMethod.GUI);
 		notification1.save();
 
 		this.user2 = new EapUser("Tsun", "Tsun1234", "tsun@mail.de");
@@ -133,8 +128,7 @@ public class NotificationRuleQueryPersistenceTest {
 		this.type2.save();
 		this.query2 = new QueryWrapper("allToNotify2", "Select * from ToNotify2", QueryTypeEnum.LIVE);
 		this.query2.save();
-		final NotificationRuleForQuery notification2 = new NotificationRuleForQuery(this.query2, this.user2,
-				NotificationMethod.GUI);
+		final NotificationRuleForQuery notification2 = new NotificationRuleForQuery(this.query2, this.user2, NotificationMethod.GUI);
 		notification2.save();
 
 	}

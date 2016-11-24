@@ -38,17 +38,17 @@ public class FilterExpressionPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
 	private final Form<Void> layoutForm;
+	private final FilterExpressionElement element;
+	private final PatternElementTreeTable table;
+	private final PatternBuilderPanel panel;
 	private String leftHandSideExpression;
 	private String rightHandSideExpression;
 	private AttributeExpressionTextField rightHandSideExpressionInput;
-	private final FilterExpressionElement element;
-	private final PatternElementTreeTable table;
 	private int leftEndpoint;
 	private int rightEndpoint;
 	private FilterExpressionOperatorEnum filterExpressionOperator;
 	private RadioChoice<String> typeOfValuesRadioChoice;
 	private String typeOfValues;
-	private final PatternBuilderPanel panel;
 
 	public FilterExpressionPanel(final String id, final FilterExpressionElement element, final PatternBuilderPanel panel) {
 		super(id);
@@ -164,17 +164,14 @@ public class FilterExpressionPanel extends Panel {
 
 		this.leftHandSideExpression = this.element.getLeftHandSideExpression();
 
-		final AttributeExpressionTextField leftHandSideExpressionInput = new AttributeExpressionTextField(
-				"leftHandSideExpressionInput", new PropertyModel<String>(this, "leftHandSideExpression"),
-				this.panel.getPatternTree());
+		final AttributeExpressionTextField leftHandSideExpressionInput = new AttributeExpressionTextField("leftHandSideExpressionInput", new PropertyModel<String>(this, "leftHandSideExpression"), this.panel.getPatternTree());
 		final OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
 
 			private static final long serialVersionUID = 2339672763583311932L;
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				FilterExpressionPanel.this.element
-						.setLeftHandSideExpression(FilterExpressionPanel.this.leftHandSideExpression);
+				FilterExpressionPanel.this.element.setLeftHandSideExpression(FilterExpressionPanel.this.leftHandSideExpression);
 			}
 		};
 		leftHandSideExpressionInput.add(onChangeAjaxBehavior);
@@ -186,17 +183,14 @@ public class FilterExpressionPanel extends Panel {
 
 		this.filterExpressionOperator = (FilterExpressionOperatorEnum) this.element.getValue();
 
-		final DropDownChoice<FilterExpressionOperatorEnum> filterExpressionOperatorDropDownChoice = new DropDownChoice<FilterExpressionOperatorEnum>(
-				"filterExpressionOperatorDropDownChoice", new PropertyModel<FilterExpressionOperatorEnum>(this,
-						"filterExpressionOperator"), Arrays.asList(FilterExpressionOperatorEnum.values()),
-				new ChoiceRenderer<FilterExpressionOperatorEnum>() {
-					private static final long serialVersionUID = 1L;
+		final DropDownChoice<FilterExpressionOperatorEnum> filterExpressionOperatorDropDownChoice = new DropDownChoice<FilterExpressionOperatorEnum>("filterExpressionOperatorDropDownChoice", new PropertyModel<FilterExpressionOperatorEnum>(this, "filterExpressionOperator"), Arrays.asList(FilterExpressionOperatorEnum.values()), new ChoiceRenderer<FilterExpressionOperatorEnum>() {
+			private static final long serialVersionUID = 1L;
 
-					@Override
-					public Object getDisplayValue(final FilterExpressionOperatorEnum element) {
-						return element.getValue();
-					}
-				});
+			@Override
+			public Object getDisplayValue(final FilterExpressionOperatorEnum element) {
+				return element.getValue();
+			}
+		});
 		filterExpressionOperatorDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = -5452061293278720695L;
 
@@ -215,8 +209,7 @@ public class FilterExpressionPanel extends Panel {
 
 		this.rightHandSideExpression = this.element.getRightHandSideExpression();
 
-		this.rightHandSideExpressionInput = new AttributeExpressionTextField("rightHandSideExpressionInput",
-				new PropertyModel<String>(this, "rightHandSideExpression"), this.panel.getPatternTree()) {
+		this.rightHandSideExpressionInput = new AttributeExpressionTextField("rightHandSideExpressionInput", new PropertyModel<String>(this, "rightHandSideExpression"), this.panel.getPatternTree()) {
 			private static final long serialVersionUID = 5931500662562159353L;
 
 			@Override
@@ -229,8 +222,7 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				FilterExpressionPanel.this.element
-						.setRightHandSideExpression(FilterExpressionPanel.this.rightHandSideExpression);
+				FilterExpressionPanel.this.element.setRightHandSideExpression(FilterExpressionPanel.this.rightHandSideExpression);
 			}
 		};
 		this.rightHandSideExpressionInput.add(onChangeAjaxBehavior);
@@ -245,8 +237,7 @@ public class FilterExpressionPanel extends Panel {
 			this.typeOfValues = "list based";
 		}
 
-		this.typeOfValuesRadioChoice = new RadioChoice<String>("typeOfValuesRadioChoice", new PropertyModel<String>(
-				this, "typeOfValues"), new ArrayList<String>(Arrays.asList("range based", "list based"))) {
+		this.typeOfValuesRadioChoice = new RadioChoice<String>("typeOfValuesRadioChoice", new PropertyModel<String>(this, "typeOfValues"), new ArrayList<String>(Arrays.asList("range based", "list based"))) {
 			private static final long serialVersionUID = 2134778179415091830L;
 
 			@Override
@@ -285,20 +276,17 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		this.layoutForm.add(leftEndpointInputLabel);
 
-		final TextField<Integer> leftEndpointInput = new TextField<Integer>("leftEndpointInput",
-				new PropertyModel<Integer>(this, "leftEndpoint")) {
+		final TextField<Integer> leftEndpointInput = new TextField<Integer>("leftEndpointInput", new PropertyModel<Integer>(this, "leftEndpoint")) {
 			private static final long serialVersionUID = -8395573703349094639L;
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
@@ -313,14 +301,12 @@ public class FilterExpressionPanel extends Panel {
 		leftEndpointInput.setOutputMarkupId(true);
 		this.layoutForm.add(leftEndpointInput);
 
-		final CheckBox leftEndpointOpenCheckBox = new CheckBox("leftEndpointOpenCheckbox", Model.of(rangeElement
-				.isLeftEndpointOpen())) {
+		final CheckBox leftEndpointOpenCheckBox = new CheckBox("leftEndpointOpenCheckbox", Model.of(rangeElement.isLeftEndpointOpen())) {
 			private static final long serialVersionUID = 7637316203250432004L;
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		leftEndpointOpenCheckBox.setOutputMarkupId(true);
@@ -331,8 +317,7 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		this.layoutForm.add(leftEndpointOpenLabel);
@@ -342,22 +327,19 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		this.layoutForm.add(rightEndpointInputLabel);
 
 		this.rightEndpoint = rangeElement.getRightEndpoint();
 
-		final TextField<Integer> rightEndpointInput = new TextField<Integer>("rightEndpointInput",
-				new PropertyModel<Integer>(this, "rightEndpoint")) {
+		final TextField<Integer> rightEndpointInput = new TextField<Integer>("rightEndpointInput", new PropertyModel<Integer>(this, "rightEndpoint")) {
 			private static final long serialVersionUID = -1841846175664472901L;
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		onChangeAjaxBehavior = new OnChangeAjaxBehavior() {
@@ -372,14 +354,12 @@ public class FilterExpressionPanel extends Panel {
 		rightEndpointInput.setOutputMarkupId(true);
 		this.layoutForm.add(rightEndpointInput);
 
-		final CheckBox rightEndpointOpenCheckBox = new CheckBox("rightEndpointOpenCheckbox", Model.of(rangeElement
-				.isRightEndpointOpen())) {
+		final CheckBox rightEndpointOpenCheckBox = new CheckBox("rightEndpointOpenCheckbox", Model.of(rangeElement.isRightEndpointOpen())) {
 			private static final long serialVersionUID = -8677379162792099253L;
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		rightEndpointOpenCheckBox.setOutputMarkupId(true);
@@ -390,8 +370,7 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 		};
 		this.layoutForm.add(rightEndpointOpenLabel);
@@ -410,8 +389,7 @@ public class FilterExpressionPanel extends Panel {
 
 			@Override
 			public boolean isVisible() {
-				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues()
-						&& !FilterExpressionPanel.this.element.isRightHandSideRangeBased();
+				return FilterExpressionPanel.this.isFilterExpressionOperatorWithValues() && !FilterExpressionPanel.this.element.isRightHandSideRangeBased();
 			}
 
 			@Override
@@ -422,8 +400,7 @@ public class FilterExpressionPanel extends Panel {
 
 			private void buildComponents(final ListItem<String> item, final String expression) {
 
-				final TextField<String> filterExpressionInput = new TextField<String>("filterExpressionInput",
-						new Model<String>()) {
+				final TextField<String> filterExpressionInput = new TextField<String>("filterExpressionInput", new Model<String>()) {
 					private static final long serialVersionUID = 5931500662562159353L;
 
 					@Override
@@ -445,8 +422,7 @@ public class FilterExpressionPanel extends Panel {
 
 					@Override
 					public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-						FilterExpressionPanel.this.element.getRightHandSideListOfValues().remove(
-								filterExpressionInput.getModelObject());
+						FilterExpressionPanel.this.element.getRightHandSideListOfValues().remove(filterExpressionInput.getModelObject());
 						target.add(FilterExpressionPanel.this.table);
 					}
 				};
@@ -478,8 +454,7 @@ public class FilterExpressionPanel extends Panel {
 						final String rawInput = filterExpressionInput.getModelObject();
 						if (rawInput != null) {
 							final String newExpression = rawInput.trim().replaceAll(" +", " ");
-							if (FilterExpressionPanel.this.element.getRightHandSideListOfValues().contains(
-									newExpression)) {
+							if (FilterExpressionPanel.this.element.getRightHandSideListOfValues().contains(newExpression)) {
 								// TODO: show error that it exists already
 							} else {
 								FilterExpressionPanel.this.element.getRightHandSideListOfValues().add(newExpression);
@@ -498,7 +473,6 @@ public class FilterExpressionPanel extends Panel {
 	}
 
 	private boolean isFilterExpressionOperatorWithValues() {
-		return ((FilterExpressionOperatorEnum) this.element.getValue() == FilterExpressionOperatorEnum.IN)
-				|| ((FilterExpressionOperatorEnum) this.element.getValue() == FilterExpressionOperatorEnum.NOT_IN);
+		return ((FilterExpressionOperatorEnum) this.element.getValue() == FilterExpressionOperatorEnum.IN) || ((FilterExpressionOperatorEnum) this.element.getValue() == FilterExpressionOperatorEnum.NOT_IN);
 	}
 }

@@ -23,14 +23,11 @@ import de.hpi.unicorn.monitoring.querycreation.timer.MessageAndTimerWithZeroTime
 /**
  * Testsuite with all tests for query creation and monitoring of the execution
  * of BPMN processes.
- * 
+ *
  * @author micha
  */
 @RunWith(Suite.class)
-@SuiteClasses({ SimpleSequenceTest.class, SimpleSequenceStateTransitionTest.class, AndTest.class, XORTest.class,
-		LoopTest.class, ComplexProcessTest.class, ComplexProcessWithSomeMonitoringPointsTest.class,
-		ProcessWithTwoEndEventsTest.class, SubProcessTest.class, SubProcessWithCancelEventTest.class,
-		MessageAndTimerTest.class, MessageAndTimerWithTimerTest.class, MessageAndTimerWithZeroTimeTest.class })
+@SuiteClasses({SimpleSequenceTest.class, SimpleSequenceStateTransitionTest.class, AndTest.class, XORTest.class, LoopTest.class, ComplexProcessTest.class, ComplexProcessWithSomeMonitoringPointsTest.class, ProcessWithTwoEndEventsTest.class, SubProcessTest.class, SubProcessWithCancelEventTest.class, MessageAndTimerTest.class, MessageAndTimerWithTimerTest.class, MessageAndTimerWithZeroTimeTest.class})
 public class QueryCreationTestSuite {
 
 }

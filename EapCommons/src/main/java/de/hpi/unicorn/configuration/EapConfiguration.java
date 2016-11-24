@@ -20,9 +20,8 @@ import java.util.regex.Pattern;
 
 /**
  * Enables access to unicorn.properties file
- * 
+ *
  * @author tw
- * 
  */
 public class EapConfiguration {
 
@@ -37,10 +36,9 @@ public class EapConfiguration {
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
 	public static boolean triplestoreClean = false;
-	public static MultipleEventValueHandling[] eventValueHandling = { MultipleEventValueHandling.CROSS };
+	public static MultipleEventValueHandling[] eventValueHandling = {MultipleEventValueHandling.CROSS};
 
 	/**
-	 * 
 	 * Initializes configuration options. Must be called once before properties
 	 * are accessed.
 	 */
@@ -49,12 +47,10 @@ public class EapConfiguration {
 		if (!Boolean.valueOf(props.getProperty("de.hpi.unicorn.eventhandling.persistEvents", "true"))) {
 			persistEvents = false;
 		}
-		if (Boolean.valueOf(props.getProperty(
-				"de.hpi.unicorn.esper.StreamProcessingAdapter.registerPredefinedEventTypes", "true"))) {
+		if (Boolean.valueOf(props.getProperty("de.hpi.unicorn.esper.StreamProcessingAdapter.registerPredefinedEventTypes", "true"))) {
 			registerPredefinedEventTypes = true;
 		}
-		if (Boolean.valueOf(props.getProperty(
-				"de.hpi.unicorn.esper.StreamProcessingAdapter.registerTransformationRules", "true"))) {
+		if (Boolean.valueOf(props.getProperty("de.hpi.unicorn.esper.StreamProcessingAdapter.registerTransformationRules", "true"))) {
 			registerTransformationRules = true;
 		}
 		if (Boolean.valueOf(props.getProperty("de.hpi.unicorn.esper.supportingOnDemandQueries", "false"))) {
@@ -84,9 +80,8 @@ public class EapConfiguration {
 	}
 
 	/**
-	 * 
 	 * Returns properties loaded from unicorn.properties file.
-	 * 
+	 *
 	 * @return Properties map with properties
 	 */
 	public static Properties getProperties() {
@@ -106,21 +101,18 @@ public class EapConfiguration {
 				return props;
 			} catch (IOException f) {
 				System.err.println("ERROR: unicorn.properties not found");
-				System.err
-						.println("Please store it in parent folder of <working directory> (..) or in folder <working directory>/conf");
+				System.err.println("Please store it in parent folder of <working directory> (..) or in folder <working directory>/conf");
 				return new Properties();
 			}
 		}
 	}
 
 	/**
-	 * 
 	 * The main method configures the persistence.xml of the database and the
 	 * pom.xml of EapWebInterface.
-	 * 
+	 *
 	 * @param args
-	 * @throws IOException
-	 *             void
+	 * @throws IOException void
 	 */
 	public static void main(String[] args) throws IOException {
 		Properties props = getProperties();
@@ -129,16 +121,12 @@ public class EapConfiguration {
 		String folder = null;
 		Scanner template = null;
 
-		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapCommons" + File.separator
-				+ "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF";
+		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapCommons" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF";
 		template = new Scanner(new File(folder + File.separator + "persistence_template.xml"));
 		content = template.useDelimiter("\\Z").next();
 		template.close();
-		content = content.replace("${db.dev.url}", props.getProperty("javax.persistence.jdbc.devUrl"))
-				.replace("${db.test.url}", props.getProperty("javax.persistence.jdbc.testUrl"))
-				.replaceAll(Pattern.quote("${db.user}"), props.getProperty("javax.persistence.jdbc.user"))
-				.replaceAll(Pattern.quote("${db.passw}"), props.getProperty("javax.persistence.jdbc.password"));
-				//	TODO: "eclipselink.ddl-generation" with drop-and-create-tables and create-tables;
+		content = content.replace("${db.dev.url}", props.getProperty("javax.persistence.jdbc.devUrl")).replace("${db.test.url}", props.getProperty("javax.persistence.jdbc.testUrl")).replaceAll(Pattern.quote("${db.user}"), props.getProperty("javax.persistence.jdbc.user")).replaceAll(Pattern.quote("${db.passw}"), props.getProperty("javax.persistence.jdbc.password"));
+		//	TODO: "eclipselink.ddl-generation" with drop-and-create-tables and create-tables;
 
 		writer = new PrintWriter(folder + File.separator + "persistence.xml");
 		writer.print(content);
@@ -148,9 +136,7 @@ public class EapConfiguration {
 		template = new Scanner(new File(folder + File.separator + "pom-default.xml"));
 		content = template.useDelimiter("\\Z").next();
 		template.close();
-		content = content.replace("${tomcat.server}", props.getProperty("org.apache.tomcat.maven.server"))
-				.replace("${tomcat.url}", props.getProperty("org.apache.tomcat.maven.url"))
-				.replace("${tomcat.path}", props.getProperty("org.apache.tomcat.maven.path"));
+		content = content.replace("${tomcat.server}", props.getProperty("org.apache.tomcat.maven.server")).replace("${tomcat.url}", props.getProperty("org.apache.tomcat.maven.url")).replace("${tomcat.path}", props.getProperty("org.apache.tomcat.maven.path"));
 
 		writer = new PrintWriter(folder + File.separator + "pom.xml");
 		writer.print(content);

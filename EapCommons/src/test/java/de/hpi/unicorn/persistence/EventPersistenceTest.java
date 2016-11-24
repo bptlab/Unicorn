@@ -33,7 +33,7 @@ import de.hpi.unicorn.persistence.Persistor;
 
 /**
  * This class tests the saving, finding and removing of {@link EapEvent}.
- * 
+ *
  * @author micha
  */
 @FixMethodOrder(MethodSorters.JVM)
@@ -210,8 +210,7 @@ public class EventPersistenceTest implements PersistenceTest {
 		assertTrue(values2.size() == 2);
 
 		long appearancesOfKaese = EapEvent.findNumberOfAppearancesByAttributeValue("kuchen", "kaese", tsun);
-		long appearancesOfKirschkirsch = EapEvent.findNumberOfAppearancesByAttributeValue("kuchen2", "kirschkirsch",
-				tsun);
+		long appearancesOfKirschkirsch = EapEvent.findNumberOfAppearancesByAttributeValue("kuchen2", "kirschkirsch", tsun);
 		assertTrue("should be 2, but was " + appearancesOfKaese, appearancesOfKaese == 2);
 		assertTrue("should be 1, but was " + appearancesOfKirschkirsch, appearancesOfKirschkirsch == 1);
 	}

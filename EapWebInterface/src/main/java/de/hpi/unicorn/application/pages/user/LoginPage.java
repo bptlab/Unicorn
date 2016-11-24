@@ -25,7 +25,7 @@ import de.hpi.unicorn.user.EapUser;
 
 /**
  * A page to render a login form for authenticate users.
- * 
+ *
  * @author micha
  */
 public class LoginPage extends AbstractEapPage {
@@ -78,7 +78,9 @@ public class LoginPage extends AbstractEapPage {
 			@Override
 			public void onClick() {
 				this.setResponsePage(RegisterPage.class);
-			};
+			}
+
+			;
 		});
 
 	}

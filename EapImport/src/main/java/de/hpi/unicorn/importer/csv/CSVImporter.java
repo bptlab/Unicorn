@@ -58,8 +58,7 @@ public class CSVImporter extends FileNormalizer {
 	}
 
 	@Override
-	public List<ImportEvent> importEventsForPreviewFromFile(final String filePath,
-			final List<String> selectedColumnTitles) {
+	public List<ImportEvent> importEventsForPreviewFromFile(final String filePath, final List<String> selectedColumnTitles) {
 		String line;
 		String[] split;
 		List<String> lineElements;
@@ -88,8 +87,7 @@ public class CSVImporter extends FileNormalizer {
 			}
 			while ((line = data.readLine()) != null) {
 				lineElements = this.getElementsFromLine(line);
-				eventList.add(this.generateImportEventFromRow(lineElements, columnTitles, selectedColumnIndexes,
-						timestampName));
+				eventList.add(this.generateImportEventFromRow(lineElements, columnTitles, selectedColumnIndexes, timestampName));
 			}
 		} catch (final IOException e) {
 			// TODO Auto-generated catch block
@@ -99,8 +97,7 @@ public class CSVImporter extends FileNormalizer {
 	}
 
 	@Override
-	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes,
-			final String timestamp) {
+	public List<EapEvent> importEventsFromFile(final String filePath, final List<TypeTreeNode> selectedAttributes, final String timestamp) {
 		String line;
 		String[] split;
 		List<String> lineElements;
@@ -112,8 +109,9 @@ public class CSVImporter extends FileNormalizer {
 
 		for (final TypeTreeNode attribute : selectedAttributes) {
 			if (attribute.getEventType() != null) {
-				if (!attribute.isTimestamp())
+				if (!attribute.isTimestamp()) {
 					selectedColumnTitles.add(attribute.getAttributeExpression());
+				}
 			} else {
 				selectedColumnTitles.add(attribute.getName());
 			}
@@ -141,8 +139,7 @@ public class CSVImporter extends FileNormalizer {
 			while ((line = data.readLine()) != null) {
 				// split = line.split(Character.toString(separator));
 				lineElements = this.getElementsFromLine(line);
-				eventList.add(this.generateEventFromRow(lineElements, columnTitles, selectedAttributes,
-						selectedColumnIndexes, timeStampColumnIndex));
+				eventList.add(this.generateEventFromRow(lineElements, columnTitles, selectedAttributes, selectedColumnIndexes, timeStampColumnIndex));
 			}
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -150,8 +147,7 @@ public class CSVImporter extends FileNormalizer {
 		return eventList;
 	}
 
-	private ImportEvent generateImportEventFromRow(final List<String> rowSplit, final List<String> columnTitles,
-			final List<Integer> selectedColumnIndexes, final String timestampName) {
+	private ImportEvent generateImportEventFromRow(final List<String> rowSplit, final List<String> columnTitles, final List<Integer> selectedColumnIndexes, final String timestampName) {
 		Date timestamp = null;
 		final int timestampColumnIndex = columnTitles.indexOf(timestampName);
 		if (timestampColumnIndex > -1) {
@@ -161,16 +157,13 @@ public class CSVImporter extends FileNormalizer {
 			// e.printStackTrace();
 			// }
 		}
-		final Map<String, Serializable> values = this.generateValues(rowSplit, columnTitles, selectedColumnIndexes,
-				timestampColumnIndex);
+		final Map<String, Serializable> values = this.generateValues(rowSplit, columnTitles, selectedColumnIndexes, timestampColumnIndex);
 		final ImportEvent event = new ImportEvent(timestamp, values, timestampName, new Date());
 		return event;
 
 	}
 
-	private EapEvent generateEventFromRow(final List<String> rowSplit, final List<String> columnTitles,
-			final List<TypeTreeNode> selectedAttributes, final List<Integer> selectedColumnIndexes,
-			final int timestampColumnIndex) {
+	private EapEvent generateEventFromRow(final List<String> rowSplit, final List<String> columnTitles, final List<TypeTreeNode> selectedAttributes, final List<Integer> selectedColumnIndexes, final int timestampColumnIndex) {
 		// Default value
 		Date timestamp = new Date();
 		if (timestampColumnIndex > -1) {
@@ -181,14 +174,12 @@ public class CSVImporter extends FileNormalizer {
 			// }
 		}
 
-		final Map<String, Serializable> values = this.generateValues(rowSplit, columnTitles, selectedAttributes,
-				selectedColumnIndexes, timestampColumnIndex);
+		final Map<String, Serializable> values = this.generateValues(rowSplit, columnTitles, selectedAttributes, selectedColumnIndexes, timestampColumnIndex);
 		final EapEvent event = new EapEvent(timestamp, values);
 		return event;
 	}
 
-	private Map<String, Serializable> generateValues(final List<String> rowSplit, final List<String> columnTitles,
-			final List<Integer> selectedColumnIndexes, final int timeStampColumnIndex) {
+	private Map<String, Serializable> generateValues(final List<String> rowSplit, final List<String> columnTitles, final List<Integer> selectedColumnIndexes, final int timeStampColumnIndex) {
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();
 		for (final int i : selectedColumnIndexes) {
 			if (i != timeStampColumnIndex) {
@@ -198,9 +189,7 @@ public class CSVImporter extends FileNormalizer {
 		return values;
 	}
 
-	private Map<String, Serializable> generateValues(final List<String> rowSplit, final List<String> columnTitles,
-			final List<TypeTreeNode> selectedAttributes, final List<Integer> selectedColumnIndexes,
-			final int timeStampColumnIndex) {
+	private Map<String, Serializable> generateValues(final List<String> rowSplit, final List<String> columnTitles, final List<TypeTreeNode> selectedAttributes, final List<Integer> selectedColumnIndexes, final int timeStampColumnIndex) {
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();
 		AttributeTypeEnum attributeType = null;
 		for (final int i : selectedColumnIndexes) {
@@ -219,7 +208,7 @@ public class CSVImporter extends FileNormalizer {
 						attributeValue = Long.parseLong(rowSplit.get(i));
 					} else if (attributeType.equals(AttributeTypeEnum.FLOAT)) {
 						attributeValue = Double.parseDouble(rowSplit.get(i));
-					}else {
+					} else {
 						attributeValue = rowSplit.get(i);
 					}
 				}

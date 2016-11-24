@@ -31,6 +31,15 @@ public class TreeExpansion<T> implements Set<EventTreeElement<T>>, Serializable 
 	private final Set<Integer> IDs = new HashSet<Integer>();
 	private boolean inverse;
 
+	public static TreeExpansion get() {
+		TreeExpansion expansion = Session.get().getMetaData(TreeExpansion.KEY);
+		if (expansion == null) {
+			expansion = new TreeExpansion();
+			Session.get().setMetaData(TreeExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
+
 	public void expandAll() {
 		this.IDs.clear();
 		this.inverse = true;
@@ -126,14 +135,5 @@ public class TreeExpansion<T> implements Set<EventTreeElement<T>>, Serializable 
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static TreeExpansion get() {
-		TreeExpansion expansion = Session.get().getMetaData(TreeExpansion.KEY);
-		if (expansion == null) {
-			expansion = new TreeExpansion();
-			Session.get().setMetaData(TreeExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

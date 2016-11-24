@@ -32,8 +32,7 @@ public abstract class EventAdapter {
 			final JobDetail jd = new JobDetail(this.name, Scheduler.DEFAULT_GROUP, AdapterJob.class);
 
 			// triggers all 120 seconds the execution of execution, never ends
-			final SimpleTrigger simpleTrigger = new SimpleTrigger(this.name, Scheduler.DEFAULT_GROUP, new Date(), null,
-					SimpleTrigger.REPEAT_INDEFINITELY, interval * 1000);
+			final SimpleTrigger simpleTrigger = new SimpleTrigger(this.name, Scheduler.DEFAULT_GROUP, new Date(), null, SimpleTrigger.REPEAT_INDEFINITELY, interval * 1000);
 
 			// Tell quartz to schedule the job using our trigger
 			scheduler.scheduleJob(jd, simpleTrigger);
@@ -41,7 +40,9 @@ public abstract class EventAdapter {
 		} catch (final SchedulerException se) {
 			se.printStackTrace();
 		}
-	};
+	}
+
+	;
 
 	public boolean stop() {
 		try {

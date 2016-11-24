@@ -60,21 +60,16 @@ public class UnexpectedEventPanel extends Panel {
 			@Override
 			protected void populateItem(final ListItem<Object> item) {
 
-				final TextField<String> probabilityInput = new TextField<String>("probabilityInput",
-						new Model<String>());
+				final TextField<String> probabilityInput = new TextField<String>("probabilityInput", new Model<String>());
 				item.add(probabilityInput);
 
-				final DropDownChoice<EapEventType> previousEventTypeSelect = new DropDownChoice<EapEventType>(
-						"previousEventTypeSelect", new Model<EapEventType>(), UnexpectedEventPanel.this.usedEventTypes);
+				final DropDownChoice<EapEventType> previousEventTypeSelect = new DropDownChoice<EapEventType>("previousEventTypeSelect", new Model<EapEventType>(), UnexpectedEventPanel.this.usedEventTypes);
 				item.add(previousEventTypeSelect);
 
-				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect",
-						new Model<String>(), UnexpectedEventPanel.this.effectList);
+				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect", new Model<String>(), UnexpectedEventPanel.this.effectList);
 				item.add(effectSelect);
 
-				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>(
-						"additionalEventTypeSelect", new Model<EapEventType>(),
-						UnexpectedEventPanel.this.listOfAllEventTypes);
+				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>("additionalEventTypeSelect", new Model<EapEventType>(), UnexpectedEventPanel.this.listOfAllEventTypes);
 				item.add(additionalEventTypeSelect);
 			}
 

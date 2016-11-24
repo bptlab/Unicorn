@@ -30,7 +30,7 @@ import de.hpi.unicorn.event.collection.EventTree;
 /**
  * This class tests the decomposition of graphs with the RPST implementation and
  * serves as a first example.
- * 
+ *
  * @author micha
  */
 public class RPSTTest extends AbstractDecompositionTest {
@@ -77,8 +77,7 @@ public class RPSTTest extends AbstractDecompositionTest {
 
 	@Test
 	public void testComplexRPST() {
-		RPST<DirectedBPMNEdge, AbstractBPMNElement> rpst = new RPST<DirectedBPMNEdge, AbstractBPMNElement>(
-				new RPSTBuilder(process).getGraph());
+		RPST<DirectedBPMNEdge, AbstractBPMNElement> rpst = new RPST<DirectedBPMNEdge, AbstractBPMNElement>(new RPSTBuilder(process).getGraph());
 
 		IRPSTNode<DirectedBPMNEdge, AbstractBPMNElement> rootNode = rpst.getRoot();
 		assertNotNull(rootNode);
@@ -103,8 +102,7 @@ public class RPSTTest extends AbstractDecompositionTest {
 
 	@Test
 	public void testComplexSPQR() {
-		TCTree<DirectedBPMNEdge, AbstractBPMNElement> tcTree = new TCTree<DirectedBPMNEdge, AbstractBPMNElement>(
-				new RPSTBuilder(process).getGraph());
+		TCTree<DirectedBPMNEdge, AbstractBPMNElement> tcTree = new TCTree<DirectedBPMNEdge, AbstractBPMNElement>(new RPSTBuilder(process).getGraph());
 
 		for (TCTreeNode<DirectedBPMNEdge, AbstractBPMNElement> node : tcTree.getTCTreeNodes()) {
 			if (node.getType() != TCType.TRIVIAL) {

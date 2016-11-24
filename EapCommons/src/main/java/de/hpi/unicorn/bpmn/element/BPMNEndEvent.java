@@ -18,9 +18,8 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class represents the end events in a BPMN process.
- * 
+ *
  * @author micha
- * 
  */
 @Entity
 @Table(name = "BPMNEndEvent")

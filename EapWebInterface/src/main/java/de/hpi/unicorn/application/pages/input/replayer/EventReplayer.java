@@ -14,16 +14,16 @@ import de.hpi.unicorn.eventhandling.Broker;
 
 public class EventReplayer {
 
-	public enum TimeMode {
-		UNCHANGED, ALIGNED, ALIGNED_MULTIPLE, NOW
-	}
-
 	private static final String FORMAT_STRING = "[%s] Sending event %d of type %s - simulated time: %s";
 	private static final SimpleDateFormat outputFormat = new SimpleDateFormat("HH:mm:ss.SSS");
 	private static final SimpleDateFormat simTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-	private int scaleFactor;
+	public Date simulationStartPoint;
+	public TimeMode mode = TimeMode.UNCHANGED;
 	// private final List<EapEvent> events = new ArrayList<EapEvent>();
+	public List<ReplayFileBean> beans;
+	public String category;
+	public Long fixedOffset;
+	private int scaleFactor;
 	/**
 	 * Represents the events to be replayed, sorted by the timestamp. Because
 	 * the compare-method of the Comparator is used instead of equals when
@@ -31,13 +31,7 @@ public class EventReplayer {
 	 * arbitrarily to not lose one of them.
 	 */
 	private TreeSet<ReplayEvent> replayList = new TreeSet<ReplayEvent>(new ReplayEventComparator());
-	public Date simulationStartPoint;
-	public TimeMode mode = TimeMode.UNCHANGED;
 	private int replayed = -1, total = -1;
-	public List<ReplayFileBean> beans;
-	public String category;
-	public Long fixedOffset;
-
 	/**
 	 * Empty constructor. Scale factor defaults to 1.
 	 */
@@ -47,7 +41,7 @@ public class EventReplayer {
 
 	/**
 	 * Sets the scale factor.
-	 * 
+	 *
 	 * @param scaleFactor
 	 */
 	public EventReplayer(int scaleFactor) {
@@ -58,7 +52,7 @@ public class EventReplayer {
 	 * Sets a list of initial traces that might be unsorted. Each String is
 	 * converted to a ReplayEvent and puts into the replay list. Scale factor
 	 * defaults to 1.
-	 * 
+	 *
 	 * @param events
 	 */
 	public EventReplayer(List<EapEvent> events) {
@@ -82,17 +76,14 @@ public class EventReplayer {
 	/**
 	 * This constructor takes the additional parameter simulationTimeInit that
 	 * is used to set the timestamp of the replayed events.
-	 * 
-	 * @param events
-	 *            - a list of EapEvent objects
-	 * @param simulationTimeInit
-	 *            - a Date
+	 *
+	 * @param events             - a list of EapEvent objects
+	 * @param simulationTimeInit - a Date
 	 * @param scaleFactor
 	 * @param useCurrentTime
 	 * @param useCurrentTime
 	 */
-	public EventReplayer(List<EapEvent> events, int scaleFactor, String category, List<ReplayFileBean> selectedFiles,
-			TimeMode mode, Date simulationTimeInit, Long fixedOffset) {
+	public EventReplayer(List<EapEvent> events, int scaleFactor, String category, List<ReplayFileBean> selectedFiles, TimeMode mode, Date simulationTimeInit, Long fixedOffset) {
 		this(events, scaleFactor);
 		this.simulationStartPoint = simulationTimeInit;
 		this.mode = mode;
@@ -104,7 +95,7 @@ public class EventReplayer {
 	/**
 	 * Creates a ReplayEvent from the given XML String and adds it to the replay
 	 * list, setting the offset.
-	 * 
+	 *
 	 * @param e
 	 */
 	public void addEvent(EapEvent e) {
@@ -112,8 +103,9 @@ public class EventReplayer {
 		ReplayEvent ceiling = replayList.ceiling(re);
 		ReplayEvent floor = replayList.floor(re);
 		// update the offsets
-		if (ceiling != null)
+		if (ceiling != null) {
 			ceiling.setOffset(ceiling.getTime() - re.getTime());
+		}
 		if (floor != null) {
 			re.setOffset(re.getTime() - floor.getTime());
 		} else {
@@ -133,7 +125,7 @@ public class EventReplayer {
 	/**
 	 * Starts the replay in another thread. This thread sends events to the EAP
 	 * and prints info to System.out.
-	 * 
+	 *
 	 * @param stub
 	 */
 	public void replay() {
@@ -160,10 +152,22 @@ public class EventReplayer {
 		return replayed;
 	}
 
+	public List<ReplayFileBean> getBeans() {
+		return beans;
+	}
+
+	public void setReplayList(TreeSet<ReplayEvent> replayEvents) {
+		this.replayList = replayEvents;
+	}
+
+	public enum TimeMode {
+		UNCHANGED, ALIGNED, ALIGNED_MULTIPLE, NOW
+	}
+
 	/**
 	 * A ReplayThread encapsulates the replay logic and uses the instance
 	 * variables of the enclosing class EventReplayer.
-	 * 
+	 *
 	 * @author marcin.hewelt, tsunyin.wong
 	 */
 	private class ReplayThread extends Thread {
@@ -204,22 +208,12 @@ public class EventReplayer {
 				long timePoint = System.currentTimeMillis();
 
 				// TODO creating new EapEvent is not sooo elegant
-				Broker.getEventImporter().importEvent(
-						new EapEvent(event.getEventType(), event.getTimestamp(), event.getValues()));
+				Broker.getEventImporter().importEvent(new EapEvent(event.getEventType(), event.getTimestamp(), event.getValues()));
 
-				System.out.println(String.format(FORMAT_STRING, outputFormat.format(new Date(timePoint)), replayed++,
-						event.getEventType(), simTimeFormat.format(new Date(event.getTime()))));
+				System.out.println(String.format(FORMAT_STRING, outputFormat.format(new Date(timePoint)), replayed++, event.getEventType(), simTimeFormat.format(new Date(event.getTime()))));
 
 			}
 		}
-	}
-
-	public List<ReplayFileBean> getBeans() {
-		return beans;
-	}
-
-	public void setReplayList(TreeSet<ReplayEvent> replayEvents) {
-		this.replayList = replayEvents;
 	}
 
 	class ReplayEventComparator implements Comparator<ReplayEvent>, Serializable {

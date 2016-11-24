@@ -31,15 +31,15 @@ import de.hpi.unicorn.utils.SetUtil;
 
 /**
  * A listener for {@link PatternQuery}.
- * 
+ *
  * @author micha
  */
 public class PatternQueryListener extends LiveQueryListener implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private final List<Integer> alreadyTriggeredProcessInstances = new ArrayList<Integer>();
 	private List<EapEventType> loopBreakEventTypes;
 	private boolean isLoopQueryListener = false;
-	private final List<Integer> alreadyTriggeredProcessInstances = new ArrayList<Integer>();
 	private AbstractBPMNElement catchingElement = null;
 	private String timerTriggerEventTypeName = new String();
 	private float timeDuration = 0;
@@ -78,8 +78,7 @@ public class PatternQueryListener extends LiveQueryListener implements Serializa
 				 * berücksichtigt werden, auch wenn das Event zu mehreren
 				 * ProcessInstanzen gehört
 				 */
-				BPMNQueryMonitor.getInstance().setQueryFinishedForProcessInstance((PatternQuery) this.query,
-						CorrelationProcessInstance.findByID(processInstances.iterator().next()));
+				BPMNQueryMonitor.getInstance().setQueryFinishedForProcessInstance((PatternQuery) this.query, CorrelationProcessInstance.findByID(processInstances.iterator().next()));
 				// Neues Event erzeugen und an Esper schicken
 				final EapEvent event = new EapEvent(EapEventType.findByTypeName(this.query.getTitle()), new Date());
 				for (final int processInstanceID : processInstances) {
@@ -90,8 +89,7 @@ public class PatternQueryListener extends LiveQueryListener implements Serializa
 				}
 				// Gefangene Events nochmal abschicken, die in anderer Query
 				// wieder gebraucht werden
-				if (!EapUtils.isIntersectionNotEmpty(this.alreadyTriggeredProcessInstances, new ArrayList<Integer>(
-						processInstances))) { /*
+				if (!EapUtils.isIntersectionNotEmpty(this.alreadyTriggeredProcessInstances, new ArrayList<Integer>(processInstances))) { /*
 											 * Wurde Event schon zum zweiten Mal
 											 * abgeschickt ?
 											 */
@@ -102,15 +100,12 @@ public class PatternQueryListener extends LiveQueryListener implements Serializa
 							this.resendLastEvent(lastEvent);
 						}
 						// Catching-Event wurde getriggert
-						if (this.catchingElement != null
-								&& lastEvent.getEventType().getTypeName().equals(this.catchingElement.getName())) {
+						if (this.catchingElement != null && lastEvent.getEventType().getTypeName().equals(this.catchingElement.getName())) {
 							this.resendLastEvent(lastEvent);
 						}
 						// Timer-Event wurde getriggert
-						if (!this.timerTriggerEventTypeName.isEmpty()
-								&& lastEvent.getEventType().getTypeName().equals(this.timerTriggerEventTypeName)) {
-							final TimerListener timerListener = new TimerListener(lastEvent, this.timerEventType,
-									this.timeDuration);
+						if (!this.timerTriggerEventTypeName.isEmpty() && lastEvent.getEventType().getTypeName().equals(this.timerTriggerEventTypeName)) {
+							final TimerListener timerListener = new TimerListener(lastEvent, this.timerEventType, this.timeDuration);
 							timerListener.start();
 						}
 					}
@@ -182,13 +177,12 @@ public class PatternQueryListener extends LiveQueryListener implements Serializa
 	 * triggers the timer, to this query. If the listener gets such a
 	 * timerTrigger, it starts a timer thread, that fires the timerEventType
 	 * after the specified timeDuration to Esper.
-	 * 
+	 *
 	 * @param timerTrigger
 	 * @param timerEventType
 	 * @param timeDuration
 	 */
-	public void setTimer(final String timerTriggerEventTypeName, final EapEventType timerEventType,
-			final float timeDuration) {
+	public void setTimer(final String timerTriggerEventTypeName, final EapEventType timerEventType, final float timeDuration) {
 		this.timerTriggerEventTypeName = timerTriggerEventTypeName;
 		this.timerEventType = timerEventType;
 		this.timeDuration = timeDuration;

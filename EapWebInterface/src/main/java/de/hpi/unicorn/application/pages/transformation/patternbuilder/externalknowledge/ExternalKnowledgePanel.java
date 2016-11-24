@@ -80,19 +80,16 @@ public class ExternalKnowledgePanel extends Panel {
 
 	private void buildHeader() {
 
-		final Label attributeToFillLabel = new Label("attributeToFillLabel", "Attribute: "
-				+ this.attributeToFill.getAttributeExpression() + " (" + this.attributeToFill.getType() + ")");
+		final Label attributeToFillLabel = new Label("attributeToFillLabel", "Attribute: " + this.attributeToFill.getAttributeExpression() + " (" + this.attributeToFill.getType() + ")");
 		this.layoutForm.addOrReplace(attributeToFillLabel);
 
-		final AjaxButton addCriteriaAttributesAndValuesButton = new AjaxButton("addCriteriaAttributesAndValuesButton",
-				this.layoutForm) {
+		final AjaxButton addCriteriaAttributesAndValuesButton = new AjaxButton("addCriteriaAttributesAndValuesButton", this.layoutForm) {
 			private static final long serialVersionUID = 6456362459418575615L;
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 				ExternalKnowledgePanel.this.coalesceExpressions.add(new ExternalKnowledgeExpression());
-				ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView
-						.setList(ExternalKnowledgePanel.this.coalesceExpressions);
+				ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView.setList(ExternalKnowledgePanel.this.coalesceExpressions);
 				target.add(ExternalKnowledgePanel.this.container);
 			}
 		};
@@ -100,8 +97,7 @@ public class ExternalKnowledgePanel extends Panel {
 	}
 
 	private void buildCriteriaAttributesAndValuesListView() {
-		this.criteriaAttributesAndValuesListView = new ListView<ExternalKnowledgeExpression>(
-				"criteriaAttributesAndValuesListView", this.coalesceExpressions) {
+		this.criteriaAttributesAndValuesListView = new ListView<ExternalKnowledgeExpression>("criteriaAttributesAndValuesListView", this.coalesceExpressions) {
 
 			private static final long serialVersionUID = -553434279906525757L;
 			private DropDownChoice<EapEventType> eventTypeDropDownChoice;
@@ -115,20 +111,17 @@ public class ExternalKnowledgePanel extends Panel {
 				this.buildComponents(item, expression);
 			}
 
-			private void buildComponents(final ListItem<ExternalKnowledgeExpression> item,
-					final ExternalKnowledgeExpression expression) {
+			private void buildComponents(final ListItem<ExternalKnowledgeExpression> item, final ExternalKnowledgeExpression expression) {
 				final List<EapEventType> eventTypes = EapEventType.findAll();
 				final EventAttributeProvider eventAttributeProvider;
 				final Map<String, String> criteriaAttributesAndValues;
-				if (expression.getCriteriaAttributesAndValues() == null
-						|| expression.getCriteriaAttributesAndValues().isEmpty()) {
+				if (expression.getCriteriaAttributesAndValues() == null || expression.getCriteriaAttributesAndValues().isEmpty()) {
 					criteriaAttributesAndValues = new HashMap<String, String>();
 				} else {
 					criteriaAttributesAndValues = expression.getCriteriaAttributesAndValues();
 				}
 
-				this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice",
-						new Model<EapEventType>(), eventTypes);
+				this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice", new Model<EapEventType>(), eventTypes);
 				this.eventTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 					private static final long serialVersionUID = 1L;
 
@@ -137,8 +130,7 @@ public class ExternalKnowledgePanel extends Panel {
 
 						if (eventTypeDropDownChoice.getModelObject() != null) {
 							final List<TypeTreeNode> relevantAttributes = new ArrayList<TypeTreeNode>();
-							for (final TypeTreeNode attribute : eventTypeDropDownChoice.getModelObject()
-									.getValueTypes()) {
+							for (final TypeTreeNode attribute : eventTypeDropDownChoice.getModelObject().getValueTypes()) {
 								if (ExternalKnowledgePanel.this.attributeToFill.getType() == attribute.getType()) {
 									relevantAttributes.add(attribute);
 								}
@@ -149,8 +141,7 @@ public class ExternalKnowledgePanel extends Panel {
 						}
 						target.add(desiredAttributeDropDownChoice);
 
-						final EventAttributeProvider eventAttributeProvider = new EventAttributeProvider(
-								new ArrayList<TypeTreeNode>());
+						final EventAttributeProvider eventAttributeProvider = new EventAttributeProvider(new ArrayList<TypeTreeNode>());
 						renderOrUpdateTable(item, eventAttributeProvider);
 						target.add(criteriaAttributesAndValuesTable);
 					}
@@ -158,16 +149,14 @@ public class ExternalKnowledgePanel extends Panel {
 				this.eventTypeDropDownChoice.setModelObject(expression.getEventType());
 				item.add(this.eventTypeDropDownChoice);
 
-				this.desiredAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>(
-						"desiredAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>(),
-						new ChoiceRenderer<TypeTreeNode>() {
-							private static final long serialVersionUID = -1940950340293620814L;
+				this.desiredAttributeDropDownChoice = new DropDownChoice<TypeTreeNode>("desiredAttributeDropDownChoice", new Model<TypeTreeNode>(), new ArrayList<TypeTreeNode>(), new ChoiceRenderer<TypeTreeNode>() {
+					private static final long serialVersionUID = -1940950340293620814L;
 
-							@Override
-							public Object getDisplayValue(final TypeTreeNode element) {
-								return element.getAttributeExpression();
-							}
-						});
+					@Override
+					public Object getDisplayValue(final TypeTreeNode element) {
+						return element.getAttributeExpression();
+					}
+				});
 				this.desiredAttributeDropDownChoice.setOutputMarkupId(true);
 				this.desiredAttributeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 
@@ -186,8 +175,7 @@ public class ExternalKnowledgePanel extends Panel {
 					}
 				});
 				if (this.eventTypeDropDownChoice.getModelObject() != null) {
-					this.desiredAttributeDropDownChoice.setChoices(this.eventTypeDropDownChoice.getModelObject()
-							.getValueTypes());
+					this.desiredAttributeDropDownChoice.setChoices(this.eventTypeDropDownChoice.getModelObject().getValueTypes());
 					this.desiredAttributeDropDownChoice.setModelObject(expression.getDesiredAttribute());
 				}
 				item.add(this.desiredAttributeDropDownChoice);
@@ -207,8 +195,7 @@ public class ExternalKnowledgePanel extends Panel {
 				}
 
 				this.criteriaAttributeAndValueColumns = new ArrayList<IColumn<TypeTreeNode, String>>();
-				this.criteriaAttributeAndValueColumns.add(new AbstractColumn<TypeTreeNode, String>(
-						new Model<String>("")) {
+				this.criteriaAttributeAndValueColumns.add(new AbstractColumn<TypeTreeNode, String>(new Model<String>("")) {
 					private static final long serialVersionUID = -9120188492434788547L;
 
 					@Override
@@ -217,25 +204,20 @@ public class ExternalKnowledgePanel extends Panel {
 						cellItem.add(new SelectEntryPanel(componentId, entryId, eventAttributeProvider));
 					}
 				});
-				this.criteriaAttributeAndValueColumns.add(new PropertyColumn<TypeTreeNode, String>(Model
-						.of("Attribute"), "attributeExpression"));
-				this.criteriaAttributeAndValueColumns.add(new AbstractColumn<TypeTreeNode, String>(new Model<String>(
-						"Value")) {
+				this.criteriaAttributeAndValueColumns.add(new PropertyColumn<TypeTreeNode, String>(Model.of("Attribute"), "attributeExpression"));
+				this.criteriaAttributeAndValueColumns.add(new AbstractColumn<TypeTreeNode, String>(new Model<String>("Value")) {
 					private static final long serialVersionUID = -5994858051827872697L;
 
 					@Override
 					public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
-						final String attributeExpression = ((TypeTreeNode) rowModel.getObject())
-								.getAttributeExpression();
-						cellItem.add(new CriteriaValuePanel(componentId, attributeExpression,
-								criteriaAttributesAndValues, ExternalKnowledgePanel.this.patternTree));
+						final String attributeExpression = ((TypeTreeNode) rowModel.getObject()).getAttributeExpression();
+						cellItem.add(new CriteriaValuePanel(componentId, attributeExpression, criteriaAttributesAndValues, ExternalKnowledgePanel.this.patternTree));
 					}
 				});
 
 				this.renderOrUpdateTable(item, eventAttributeProvider);
 
-				final AjaxButton saveCoalesceExpressionButton = new AjaxButton("saveCoalesceExpressionButton",
-						ExternalKnowledgePanel.this.layoutForm) {
+				final AjaxButton saveCoalesceExpressionButton = new AjaxButton("saveCoalesceExpressionButton", ExternalKnowledgePanel.this.layoutForm) {
 					private static final long serialVersionUID = 6456362459418575615L;
 
 					@Override
@@ -243,41 +225,32 @@ public class ExternalKnowledgePanel extends Panel {
 						final Map<String, String> newCriteriaAttributesAndValues = new HashMap<String, String>();
 						for (final String criteriaAttribute : criteriaAttributesAndValues.keySet()) {
 							if (eventAttributeProvider.getSelectedAttributeExpressions().contains(criteriaAttribute)) {
-								newCriteriaAttributesAndValues.put(criteriaAttribute,
-										criteriaAttributesAndValues.get(criteriaAttribute));
+								newCriteriaAttributesAndValues.put(criteriaAttribute, criteriaAttributesAndValues.get(criteriaAttribute));
 							}
 						}
 						ExternalKnowledgePanel.this.coalesceExpressions.remove(item.getModelObject());
-						ExternalKnowledgePanel.this.coalesceExpressions.add(new ExternalKnowledgeExpression(
-								eventTypeDropDownChoice.getModelObject(), desiredAttributeDropDownChoice
-										.getModelObject(), newCriteriaAttributesAndValues));
-						ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView
-								.setList(ExternalKnowledgePanel.this.coalesceExpressions);
+						ExternalKnowledgePanel.this.coalesceExpressions.add(new ExternalKnowledgeExpression(eventTypeDropDownChoice.getModelObject(), desiredAttributeDropDownChoice.getModelObject(), newCriteriaAttributesAndValues));
+						ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView.setList(ExternalKnowledgePanel.this.coalesceExpressions);
 						target.add(ExternalKnowledgePanel.this.container);
 					}
 				};
 				item.add(saveCoalesceExpressionButton);
 
-				final AjaxButton removeCoalesceExpressionButton = new AjaxButton("removeCoalesceExpressionButton",
-						ExternalKnowledgePanel.this.layoutForm) {
+				final AjaxButton removeCoalesceExpressionButton = new AjaxButton("removeCoalesceExpressionButton", ExternalKnowledgePanel.this.layoutForm) {
 					private static final long serialVersionUID = 6456362459418575615L;
 
 					@Override
 					public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 						ExternalKnowledgePanel.this.coalesceExpressions.remove(item.getModelObject());
-						ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView
-								.setList(ExternalKnowledgePanel.this.coalesceExpressions);
+						ExternalKnowledgePanel.this.criteriaAttributesAndValuesListView.setList(ExternalKnowledgePanel.this.coalesceExpressions);
 						target.add(ExternalKnowledgePanel.this.container);
 					}
 				};
 				item.add(removeCoalesceExpressionButton);
 			}
 
-			private void renderOrUpdateTable(final ListItem<ExternalKnowledgeExpression> item,
-					final EventAttributeProvider eventAttributeProvider) {
-				this.criteriaAttributesAndValuesTable = new DefaultDataTable<TypeTreeNode, String>(
-						"criteriaAttributesAndValuesTable", this.criteriaAttributeAndValueColumns,
-						eventAttributeProvider, 20);
+			private void renderOrUpdateTable(final ListItem<ExternalKnowledgeExpression> item, final EventAttributeProvider eventAttributeProvider) {
+				this.criteriaAttributesAndValuesTable = new DefaultDataTable<TypeTreeNode, String>("criteriaAttributesAndValuesTable", this.criteriaAttributeAndValueColumns, eventAttributeProvider, 20);
 				this.criteriaAttributesAndValuesTable.setOutputMarkupId(true);
 
 				item.addOrReplace(this.criteriaAttributesAndValuesTable);
@@ -312,8 +285,7 @@ public class ExternalKnowledgePanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				ExternalKnowledgePanel.this.attributeIdentifiersWithExternalKnowledge
-						.remove(ExternalKnowledgePanel.this.attributeIdentifier);
+				ExternalKnowledgePanel.this.attributeIdentifiersWithExternalKnowledge.remove(ExternalKnowledgePanel.this.attributeIdentifier);
 				ExternalKnowledgePanel.this.parentPanel.enableAllComponents(target);
 			}
 		};
@@ -325,49 +297,36 @@ public class ExternalKnowledgePanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 				if (ExternalKnowledgePanel.this.coalesceExpressions.isEmpty()) {
-					feedbackLabel
-							.setDefaultModelObject("<font color=\"red\">Please provide external knowledge.</font>");
+					feedbackLabel.setDefaultModelObject("<font color=\"red\">Please provide external knowledge.</font>");
 					target.add(feedbackLabel);
 					return;
 				} else {
 					for (final ExternalKnowledgeExpression expression : ExternalKnowledgePanel.this.coalesceExpressions) {
 						if (expression.getEventType() == null) {
-							feedbackLabel
-									.setDefaultModelObject("<font color=\"red\">Please choose an event type.</font>");
+							feedbackLabel.setDefaultModelObject("<font color=\"red\">Please choose an event type.</font>");
 							target.add(feedbackLabel);
 							return;
 						} else if (expression.getDesiredAttribute() == null) {
-							feedbackLabel
-									.setDefaultModelObject("<font color=\"red\">Please choose a desired attribute.</font>");
+							feedbackLabel.setDefaultModelObject("<font color=\"red\">Please choose a desired attribute.</font>");
 							target.add(feedbackLabel);
 							return;
 						} else if (expression.getCriteriaAttributesAndValues().isEmpty()) {
-							feedbackLabel
-									.setDefaultModelObject("<font color=\"red\">Please provide at least one attribute with a value.</font>");
+							feedbackLabel.setDefaultModelObject("<font color=\"red\">Please provide at least one attribute with a value.</font>");
 							target.add(feedbackLabel);
 							return;
 						}
 					}
 				}
 				if (ExternalKnowledgePanel.this.externalKnowledgeExpressionSet == null) {
-					ExternalKnowledgePanel.this.externalKnowledgeExpressionSet = new ExternalKnowledgeExpressionSet(
-							ExternalKnowledgePanel.this.attributeToFill.getType(),
-							ExternalKnowledgePanel.this.attributeIdentifier);
+					ExternalKnowledgePanel.this.externalKnowledgeExpressionSet = new ExternalKnowledgeExpressionSet(ExternalKnowledgePanel.this.attributeToFill.getType(), ExternalKnowledgePanel.this.attributeIdentifier);
 				}
-				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet
-						.setDefaultValue(ExternalKnowledgePanel.this.defaultValueInput.getModelObject());
-				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet
-						.setResultingType(ExternalKnowledgePanel.this.attributeToFill.getType());
-				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet
-						.setExternalKnowledgeExpressions(ExternalKnowledgePanel.this.coalesceExpressions);
-				ExternalKnowledgePanel.this.attributeIdentifiersWithExternalKnowledge.put(
-						ExternalKnowledgePanel.this.attributeIdentifier,
-						ExternalKnowledgePanel.this.externalKnowledgeExpressionSet);
-				ExternalKnowledgePanel.this.attributeIdentifiersAndExpressions.put(
-						ExternalKnowledgePanel.this.attributeIdentifier, null);
+				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet.setDefaultValue(ExternalKnowledgePanel.this.defaultValueInput.getModelObject());
+				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet.setResultingType(ExternalKnowledgePanel.this.attributeToFill.getType());
+				ExternalKnowledgePanel.this.externalKnowledgeExpressionSet.setExternalKnowledgeExpressions(ExternalKnowledgePanel.this.coalesceExpressions);
+				ExternalKnowledgePanel.this.attributeIdentifiersWithExternalKnowledge.put(ExternalKnowledgePanel.this.attributeIdentifier, ExternalKnowledgePanel.this.externalKnowledgeExpressionSet);
+				ExternalKnowledgePanel.this.attributeIdentifiersAndExpressions.put(ExternalKnowledgePanel.this.attributeIdentifier, null);
 				ExternalKnowledgePanel.this.parentPanel.disableAllComponents(target);
-				feedbackLabel
-						.setDefaultModelObject("<font color=\"green\">Information about external knowledge saved.</font>");
+				feedbackLabel.setDefaultModelObject("<font color=\"green\">Information about external knowledge saved.</font>");
 
 				target.add(feedbackLabel);
 			}
@@ -396,8 +355,7 @@ public class ExternalKnowledgePanel extends Panel {
 		return this.attributeIdentifiersWithExternalKnowledge;
 	}
 
-	public void setAttributeIdentifiersWithExternalKnowledge(
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
+	public void setAttributeIdentifiersWithExternalKnowledge(final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge) {
 		this.attributeIdentifiersWithExternalKnowledge = attributeIdentifiersWithExternalKnowledge;
 		this.externalKnowledgeExpressionSet = attributeIdentifiersWithExternalKnowledge.get(this.attributeIdentifier);
 		if (this.externalKnowledgeExpressionSet == null) {

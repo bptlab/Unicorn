@@ -19,8 +19,7 @@ import org.apache.wicket.Session;
 /**
  * Handles the expansion state of the tree.
  */
-public class ProcessInstanceMonitoringTreeTableExpansion implements Set<ProcessInstanceMonitoringTreeTableElement>,
-		Serializable {
+public class ProcessInstanceMonitoringTreeTableExpansion implements Set<ProcessInstanceMonitoringTreeTableElement>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,6 +28,15 @@ public class ProcessInstanceMonitoringTreeTableExpansion implements Set<ProcessI
 
 	private final Set<Integer> IDs = new HashSet<Integer>();
 	private boolean inverse;
+
+	public static ProcessInstanceMonitoringTreeTableExpansion get() {
+		ProcessInstanceMonitoringTreeTableExpansion expansion = Session.get().getMetaData(ProcessInstanceMonitoringTreeTableExpansion.KEY);
+		if (expansion == null) {
+			expansion = new ProcessInstanceMonitoringTreeTableExpansion();
+			Session.get().setMetaData(ProcessInstanceMonitoringTreeTableExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
 
 	public void expandAll() {
 		this.IDs.clear();
@@ -125,15 +133,5 @@ public class ProcessInstanceMonitoringTreeTableExpansion implements Set<ProcessI
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static ProcessInstanceMonitoringTreeTableExpansion get() {
-		ProcessInstanceMonitoringTreeTableExpansion expansion = Session.get().getMetaData(
-				ProcessInstanceMonitoringTreeTableExpansion.KEY);
-		if (expansion == null) {
-			expansion = new ProcessInstanceMonitoringTreeTableExpansion();
-			Session.get().setMetaData(ProcessInstanceMonitoringTreeTableExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

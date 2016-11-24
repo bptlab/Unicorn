@@ -16,7 +16,7 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
 
 /**
  * Representation of a tree node for filter expression connectors.
- * 
+ *
  * @see FilterExpressionConnectorEnum
  */
 @Entity
@@ -31,11 +31,9 @@ public class FilterExpressionConnectorElement extends EventTreeElement<Serializa
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression connector
+	 *
+	 * @param id      the identifier
+	 * @param content filter expression connector
 	 */
 	public FilterExpressionConnectorElement(final int id, final FilterExpressionConnectorEnum content) {
 		super(id, content);
@@ -43,15 +41,12 @@ public class FilterExpressionConnectorElement extends EventTreeElement<Serializa
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression connector
+	 * @param id      the identifier
+	 * @param content filter expression connector
 	 */
-	public FilterExpressionConnectorElement(final EventTreeElement<Serializable> parent, final int id,
-			final FilterExpressionConnectorEnum content) {
+	public FilterExpressionConnectorElement(final EventTreeElement<Serializable> parent, final int id, final FilterExpressionConnectorEnum content) {
 		super(parent, id, content);
 	}
 

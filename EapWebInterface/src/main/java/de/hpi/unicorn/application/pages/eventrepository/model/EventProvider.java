@@ -23,11 +23,10 @@ import de.hpi.unicorn.eventhandling.Broker;
 /**
  * This class is the provider for {@link EapEvent}s. A filter can be specified
  * to return only some events.
- * 
+ *
  * @author micha
  */
-public class EventProvider extends EapProvider<EapEvent> implements ISortableDataProvider<EapEvent, String>,
-		IFilterStateLocator {
+public class EventProvider extends EapProvider<EapEvent> implements ISortableDataProvider<EapEvent, String>, IFilterStateLocator {
 
 	private static final long serialVersionUID = 1L;
 	private EventFilter eventFilter = new EventFilter();

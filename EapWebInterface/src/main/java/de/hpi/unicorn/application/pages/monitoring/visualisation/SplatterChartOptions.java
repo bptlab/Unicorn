@@ -38,11 +38,10 @@ import de.hpi.unicorn.visualisation.ChartConfiguration;
  */
 public class SplatterChartOptions extends Options {
 
+	private static final long serialVersionUID = 1L;
 	public EapEventType eventType;
 	public String attributeName;
 	public String title;
-
-	private static final long serialVersionUID = 1L;
 
 	public SplatterChartOptions(final ChartConfiguration configuration) throws Exception {
 		this.eventType = configuration.getEventType();
@@ -59,9 +58,7 @@ public class SplatterChartOptions extends Options {
 		final Axis xAxis = new Axis();
 		xAxis.setType(AxisType.DATETIME);
 
-		final DateTimeLabelFormat dateTimeLabelFormat = new DateTimeLabelFormat()
-				.setProperty(DateTimeProperties.DAY, "%e.%m.%Y").setProperty(DateTimeProperties.MONTH, "%m/%Y")
-				.setProperty(DateTimeProperties.YEAR, "%Y");
+		final DateTimeLabelFormat dateTimeLabelFormat = new DateTimeLabelFormat().setProperty(DateTimeProperties.DAY, "%e.%m.%Y").setProperty(DateTimeProperties.MONTH, "%m/%Y").setProperty(DateTimeProperties.YEAR, "%Y");
 
 		xAxis.setDateTimeLabelFormats(dateTimeLabelFormat);
 
@@ -76,8 +73,7 @@ public class SplatterChartOptions extends Options {
 
 		// Tooltip
 		final Tooltip tooltip = new Tooltip();
-		tooltip.setFormatter(new Function(
-				"return '<b>'+ this.series.name +'</b><br/>'+Highcharts.dateFormat('%e.%m.%Y', this.x) +': '+ this.y ;"));
+		tooltip.setFormatter(new Function("return '<b>'+ this.series.name +'</b><br/>'+Highcharts.dateFormat('%e.%m.%Y', this.x) +': '+ this.y ;"));
 		this.setTooltip(tooltip);
 
 		final CustomCoordinatesSeries<String, Number> series = new CustomCoordinatesSeries<String, Number>();
@@ -90,7 +86,7 @@ public class SplatterChartOptions extends Options {
 
 	/**
 	 * prepares data for the chart
-	 * 
+	 *
 	 * @return data series
 	 * @throws Exception
 	 */
@@ -101,8 +97,7 @@ public class SplatterChartOptions extends Options {
 		for (final EapEvent event : EapEvent.findByEventType(this.eventType)) {
 			final Serializable value = event.getValues().get(this.attributeName);
 			if (value == null) {
-				throw new Exception("AttributeName " + this.attributeName + " contains null-Values for "
-						+ this.eventType);
+				throw new Exception("AttributeName " + this.attributeName + " contains null-Values for " + this.eventType);
 			}
 			// values should be integer
 			int intValue = 0;
@@ -112,8 +107,7 @@ public class SplatterChartOptions extends Options {
 				intValue = (Integer) value;
 			}
 			;
-			seriesData.add(new Coordinate<String, Number>(DateUtils.format(event.getTimestamp(),
-					"'Date.UTC('yyyy, M, d, h, m, s')'"), intValue));
+			seriesData.add(new Coordinate<String, Number>(DateUtils.format(event.getTimestamp(), "'Date.UTC('yyyy, M, d, h, m, s')'"), intValue));
 		}
 
 		return seriesData;

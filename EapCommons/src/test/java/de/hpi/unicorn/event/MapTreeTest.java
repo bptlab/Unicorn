@@ -41,8 +41,7 @@ public class MapTreeTest {
 
 	@Test
 	public void testTreeAdding() {
-		TransformationTree<String, String> testMapTree = new TransformationTree<String, String>(rootElement1Key,
-				rootElement1Value);
+		TransformationTree<String, String> testMapTree = new TransformationTree<String, String>(rootElement1Key, rootElement1Value);
 		assertFalse(testMapTree.isEmpty());
 		assertTrue(testMapTree.getRootElementValues().size() == 1);
 		assertTrue(testMapTree.getRootElementValues().get(0) == rootElement1Value);
@@ -85,8 +84,7 @@ public class MapTreeTest {
 	}
 
 	private TransformationTree<String, String> buildTestMap() {
-		TransformationTree<String, String> testMapTree = new TransformationTree<String, String>(rootElement1Key,
-				rootElement1Value);
+		TransformationTree<String, String> testMapTree = new TransformationTree<String, String>(rootElement1Key, rootElement1Value);
 
 		testMapTree.addRootElement(rootElement2Key, rootElement2Value);
 		testMapTree.addChild(rootElement1Key, rootElement1Child1Key, rootElement1Child1Value);

@@ -26,17 +26,16 @@ import de.hpi.unicorn.process.CorrelationProcess;
 /**
  * This class is the provider for {@link CorrelationProcess}es. A filter can be
  * specified to return only some processes.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")
-public class ProcessProvider extends AbstractDataProvider implements ISortableDataProvider<CorrelationProcess, String>,
-		IFilterStateLocator {
+public class ProcessProvider extends AbstractDataProvider implements ISortableDataProvider<CorrelationProcess, String>, IFilterStateLocator {
 
 	private static List<CorrelationProcess> processes;
 	private final ISortState sortState = new SingleSortState();
-	private ProcessFilter processFilter = new ProcessFilter();
 	private final List<CorrelationProcess> selectedProcesses;
+	private ProcessFilter processFilter = new ProcessFilter();
 
 	/**
 	 * Constructor for providing {@link CorrelationProcess}es.
@@ -44,6 +43,14 @@ public class ProcessProvider extends AbstractDataProvider implements ISortableDa
 	public ProcessProvider() {
 		ProcessProvider.processes = this.filterProcesses(CorrelationProcess.findAll(), this.processFilter);
 		this.selectedProcesses = new ArrayList<CorrelationProcess>();
+	}
+
+	public static List<CorrelationProcess> getProcesses() {
+		return ProcessProvider.processes;
+	}
+
+	public static void setProcesses(final List<CorrelationProcess> processList) {
+		ProcessProvider.processes = processList;
 	}
 
 	@Override
@@ -63,8 +70,7 @@ public class ProcessProvider extends AbstractDataProvider implements ISortableDa
 		return data.subList((int) first, (int) Math.min(first + count, data.size())).iterator();
 	}
 
-	private List<CorrelationProcess> filterProcesses(final List<CorrelationProcess> processesToFilter,
-			final ProcessFilter processFilter) {
+	private List<CorrelationProcess> filterProcesses(final List<CorrelationProcess> processesToFilter, final ProcessFilter processFilter) {
 		final List<CorrelationProcess> returnedProcesses = new ArrayList<CorrelationProcess>();
 		for (final CorrelationProcess process : processesToFilter) {
 			if (processFilter.match(process)) {
@@ -82,14 +88,6 @@ public class ProcessProvider extends AbstractDataProvider implements ISortableDa
 	@Override
 	public long size() {
 		return ProcessProvider.processes.size();
-	}
-
-	public static List<CorrelationProcess> getProcesses() {
-		return ProcessProvider.processes;
-	}
-
-	public static void setProcesses(final List<CorrelationProcess> processList) {
-		ProcessProvider.processes = processList;
 	}
 
 	@Override

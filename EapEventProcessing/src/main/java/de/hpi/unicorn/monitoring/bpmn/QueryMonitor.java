@@ -37,12 +37,11 @@ public class QueryMonitor implements Serializable {
 	// private Set<ViolationStatus> violationStatus;
 	private final CorrelationProcessInstance processInstance;
 	private final Date startTime;
-	private Date endTime;
 	private final boolean isInLoop;
 	private final List<DetailedQueryStatus> detailedQueryStatus;
+	private Date endTime;
 
-	public QueryMonitor(final PatternQuery query, final QueryStatus queryStatus,
-			final CorrelationProcessInstance processInstance) {
+	public QueryMonitor(final PatternQuery query, final QueryStatus queryStatus, final CorrelationProcessInstance processInstance) {
 		this.query = query;
 		// this.queryStatus = new ArrayList<QueryStatus>();
 		// this.queryStatus.add(queryStatus);
@@ -78,8 +77,7 @@ public class QueryMonitor implements Serializable {
 			this.getLastDetailedQueryStatus().setQueryStatus(queryStatus);
 		} else {
 			// Falls Query nochmal fertiggestellt wird (Schleife)
-			this.detailedQueryStatus.add(new DetailedQueryStatus(this.query, queryStatus,
-					new HashSet<ViolationStatus>()));
+			this.detailedQueryStatus.add(new DetailedQueryStatus(this.query, queryStatus, new HashSet<ViolationStatus>()));
 		}
 
 	}
@@ -89,8 +87,7 @@ public class QueryMonitor implements Serializable {
 			final AbstractBPMNElement firstElement = this.query.getMonitoredElements().get(0);
 			final MonitoringPoint firstMonitoringPoint = this.getFirstMonitoringPoint(firstElement);
 			if (firstMonitoringPoint != null) {
-				final List<EapEvent> eventsWithMatchingEventType = EapEvent.findByEventType(firstMonitoringPoint
-						.getEventType());
+				final List<EapEvent> eventsWithMatchingEventType = EapEvent.findByEventType(firstMonitoringPoint.getEventType());
 				for (final EapEvent event : eventsWithMatchingEventType) {
 					if (event.getProcessInstances().contains(this.processInstance)) {
 						return event.getTimestamp();
@@ -126,6 +123,10 @@ public class QueryMonitor implements Serializable {
 		return (this.endTime != null) ? this.endTime : new Date();
 	}
 
+	public void setEndTime(final Date endTime) {
+		this.endTime = endTime;
+	}
+
 	public Set<ViolationStatus> getViolationStatus() {
 		final Set<ViolationStatus> violations = new HashSet<ViolationStatus>();
 		for (final DetailedQueryStatus detailedQueryStatus : this.detailedQueryStatus) {
@@ -142,13 +143,9 @@ public class QueryMonitor implements Serializable {
 		this.getLastDetailedQueryStatus().getViolationStatus().add(violationStatus);
 	}
 
-	public void setEndTime(final Date endTime) {
-		this.endTime = endTime;
-	}
-
 	/**
 	 * Returns, how often the query was triggered as finished or skipped.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getExecutionCount() {
@@ -158,7 +155,7 @@ public class QueryMonitor implements Serializable {
 	/**
 	 * Returns true, if the monitored elements of this queries are contained in
 	 * a loop.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isInLoop() {
@@ -173,11 +170,9 @@ public class QueryMonitor implements Serializable {
 				return monitoredElement.getIndirectSuccessors().contains(monitoredElement);
 			}
 		} else {
-			final EventTree<AbstractBPMNElement> processDecompositionTree = this.processInstance.getProcess()
-					.getProcessDecompositionTree();
+			final EventTree<AbstractBPMNElement> processDecompositionTree = this.processInstance.getProcess().getProcessDecompositionTree();
 			if (processDecompositionTree != null) {
-				final Set<AbstractBPMNElement> indirectParents = processDecompositionTree.getIndirectParents(this.query
-						.getMonitoredElements());
+				final Set<AbstractBPMNElement> indirectParents = processDecompositionTree.getIndirectParents(this.query.getMonitoredElements());
 				for (final AbstractBPMNElement parent : indirectParents) {
 					if (parent instanceof Component && ((Component) parent).getType().equals(IPattern.LOOP)) {
 						return true;
@@ -190,18 +185,17 @@ public class QueryMonitor implements Serializable {
 
 	/**
 	 * Returns true, if the {@link QueryStatus} is Finished or Skipped.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isTerminated() {
 		final QueryStatus currentStatus = this.getLastDetailedQueryStatus().getQueryStatus();
-		return currentStatus.equals(QueryStatus.Finished) || currentStatus.equals(QueryStatus.Skipped)
-				|| currentStatus.equals(QueryStatus.Aborted);
+		return currentStatus.equals(QueryStatus.Finished) || currentStatus.equals(QueryStatus.Skipped) || currentStatus.equals(QueryStatus.Aborted);
 	}
 
 	/**
 	 * Returns true, if the {@link QueryStatus} is Finished.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isFinished() {

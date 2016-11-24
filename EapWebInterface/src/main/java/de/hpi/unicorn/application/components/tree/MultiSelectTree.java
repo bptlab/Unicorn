@@ -19,26 +19,22 @@ import org.apache.wicket.model.IModel;
 /**
  * tree component for visualization of hierarchical elements multiple can be
  * selected at a time
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
+ *
+ * @param <T> the type of nodes to be stored in the tree
  */
 public class MultiSelectTree<T> extends LabelTree<T> {
 
 	private static final long serialVersionUID = 1L;
-	protected ProviderSubset<T> selectedElements;
 	private final MultiSelectTree<T> multiSelectTree;
+	protected ProviderSubset<T> selectedElements;
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param provider
-	 *            see de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param state
-	 *            see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id       wicket identifier used in the corresponding HTML file
+	 * @param provider see de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param state    see
+	 *                 de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
 	public MultiSelectTree(final String id, final ITreeProvider<T> provider, final IModel<Set<T>> state) {
 		super(id, provider, state);
@@ -71,8 +67,7 @@ public class MultiSelectTree<T> extends LabelTree<T> {
 
 			@Override
 			protected void onClick(final AjaxRequestTarget target) {
-				MultiSelectTree.this.multiSelectTree.toggle(this.getModelObject(),
-						MultiSelectTree.this.multiSelectTree, target);
+				MultiSelectTree.this.multiSelectTree.toggle(this.getModelObject(), MultiSelectTree.this.multiSelectTree, target);
 			}
 
 			@Override

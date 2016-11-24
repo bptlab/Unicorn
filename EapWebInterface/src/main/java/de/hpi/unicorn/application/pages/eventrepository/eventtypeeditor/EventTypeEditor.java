@@ -21,7 +21,7 @@ import de.hpi.unicorn.application.pages.AbstractEapPage;
 /**
  * This page contains the {@link NewEventTypeEditor} and
  * {@link ExistingEventTypeEditor} as tabs.
- * 
+ *
  * @author micha
  */
 public class EventTypeEditor extends AbstractEapPage {

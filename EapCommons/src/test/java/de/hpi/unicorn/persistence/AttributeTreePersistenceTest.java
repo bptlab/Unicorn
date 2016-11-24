@@ -34,13 +34,11 @@ public class AttributeTreePersistenceTest implements PersistenceTest {
 	@Override
 	public void testStoreAndRetrieve() {
 		storeExampleTree();
-		assertTrue("Value should be 1, but was " + AttributeTypeTree.findAll().size(), AttributeTypeTree.findAll()
-				.size() == 1);
+		assertTrue("Value should be 1, but was " + AttributeTypeTree.findAll().size(), AttributeTypeTree.findAll().size() == 1);
 		AttributeTypeTree loadedTree = AttributeTypeTree.findAll().get(0);
 		assertTrue(loadedTree.getAttributes().size() == 4);
 		AttributeTypeTree.removeAll();
-		assertTrue("Value should be 0, but was " + AttributeTypeTree.findAll().size(), AttributeTypeTree.findAll()
-				.size() == 0);
+		assertTrue("Value should be 0, but was " + AttributeTypeTree.findAll().size(), AttributeTypeTree.findAll().size() == 0);
 	}
 
 	@Test
@@ -59,8 +57,7 @@ public class AttributeTreePersistenceTest implements PersistenceTest {
 
 	private void storeExampleTree() {
 		TypeTreeNode rootElement1 = new TypeTreeNode("Root Element 1");
-		TypeTreeNode rootElement1Child1 = new TypeTreeNode(rootElement1, "Root Element 1 Child 1",
-				AttributeTypeEnum.INTEGER);
+		TypeTreeNode rootElement1Child1 = new TypeTreeNode(rootElement1, "Root Element 1 Child 1", AttributeTypeEnum.INTEGER);
 		new TypeTreeNode(rootElement1Child1, "Root Element 1 Child 1 Child 1", AttributeTypeEnum.DATE);
 		TypeTreeNode rootElement2 = new TypeTreeNode("Root Element 2", AttributeTypeEnum.STRING);
 

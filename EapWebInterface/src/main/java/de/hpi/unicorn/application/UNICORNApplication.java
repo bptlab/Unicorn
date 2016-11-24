@@ -39,7 +39,7 @@ import de.hpi.unicorn.messageQueue.JMSProvider;
 /**
  * The controller for the web application. Most of the initialization is done
  * here.
- * 
+ *
  * @author micha
  */
 public class UNICORNApplication extends WebApplication {
@@ -89,8 +89,7 @@ public class UNICORNApplication extends WebApplication {
 
 		// initialize jms event import interface
 		try {
-			JMSProvider
-					.receiveMessage(new JmsAdapter(), JMSProvider.HOST, JMSProvider.PORT, JMSProvider.IMPORT_CHANNEL);
+			JMSProvider.receiveMessage(new JmsAdapter(), JMSProvider.HOST, JMSProvider.PORT, JMSProvider.IMPORT_CHANNEL);
 		} catch (final JMSException e) {
 			e.printStackTrace();
 		}
@@ -155,7 +154,7 @@ public class UNICORNApplication extends WebApplication {
 
 	/**
 	 * Gets the adapter for the Esper event processing engine.
-	 * 
+	 *
 	 * @return
 	 */
 	public StreamProcessingAdapter getEp() {

@@ -9,7 +9,7 @@ package de.hpi.unicorn.monitoring.bpmn;
 
 /**
  * The status of violation a monitored element can adopt.
- * 
+ *
  * @author micha
  */
 public enum ViolationStatus {

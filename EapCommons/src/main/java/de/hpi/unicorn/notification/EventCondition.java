@@ -34,19 +34,17 @@ import de.hpi.unicorn.utils.DateUtils;
 public class EventCondition extends Persistable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected int ID;
-
 	@Column(name = "attribute")
 	private final String attribute;
 	@Column(name = "value")
 	private final String value;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	protected int ID;
 
 	/**
 	 * Creates a condition.
-	 * 
+	 *
 	 * @param attribute
 	 * @param conditionValue
 	 */
@@ -64,8 +62,28 @@ public class EventCondition extends Persistable {
 	}
 
 	/**
+	 * retrieves all conditions from database
+	 *
+	 * @return all conditions
+	 */
+	public static List<EventCondition> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM EventCondition t");
+		return q.getResultList();
+	}
+
+	/**
+	 * finds condition with ID
+	 *
+	 * @param ID
+	 * @return condition
+	 */
+	public static EventCondition findByID(final int ID) {
+		return Persistor.getEntityManager().find(EventCondition.class, ID);
+	}
+
+	/**
 	 * Checks whether an event matches a condition
-	 * 
+	 *
 	 * @param event
 	 * @return whether the condition matches the event
 	 */
@@ -90,9 +108,11 @@ public class EventCondition extends Persistable {
 		}
 	}
 
+	// JPA-Methods
+
 	/**
 	 * generates a string representing the condition
-	 * 
+	 *
 	 * @return string representation of condition
 	 */
 	public String getConditionString() {
@@ -105,28 +125,6 @@ public class EventCondition extends Persistable {
 	@Override
 	public int getID() {
 		return this.ID;
-	}
-
-	// JPA-Methods
-
-	/**
-	 * retrieves all conditions from database
-	 * 
-	 * @return all conditions
-	 */
-	public static List<EventCondition> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM EventCondition t");
-		return q.getResultList();
-	}
-
-	/**
-	 * finds condition with ID
-	 * 
-	 * @param ID
-	 * @return condition
-	 */
-	public static EventCondition findByID(final int ID) {
-		return Persistor.getEntityManager().find(EventCondition.class, ID);
 	}
 
 }

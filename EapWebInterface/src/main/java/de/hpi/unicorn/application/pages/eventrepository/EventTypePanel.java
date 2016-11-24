@@ -59,7 +59,7 @@ public class EventTypePanel extends Panel {
 	/**
 	 * Constructor for the event type panel. The page is initialized in this
 	 * method and the data is loaded from the database.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -72,19 +72,16 @@ public class EventTypePanel extends Panel {
 
 		final WarnOnExitForm buttonForm = new WarnOnExitForm("buttonForm");
 
-		final List<String> eventTypeFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[] { "ID",
-				"Name" }));
+		final List<String> eventTypeFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Name"}));
 		final String selectedEventCriteria = "ID";
 
-		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>(
-				"eventTypeFilterCriteria", new Model<String>(selectedEventCriteria), eventTypeFilterCriteriaList);
+		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>("eventTypeFilterCriteria", new Model<String>(selectedEventCriteria), eventTypeFilterCriteriaList);
 		buttonForm.add(eventTypeFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>(
-				"eventTypeFilterCondition", new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("eventTypeFilterCondition", new Model<String>(selectedCondition), conditions);
 		buttonForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -97,13 +94,10 @@ public class EventTypePanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
-				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
-				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
+				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				EventTypePanel.this.eventTypeProvider.setEventTypeFilter(new EventTypeFilter(eventFilterCriteria,
-						eventFilterCondition, filterValue));
+				EventTypePanel.this.eventTypeProvider.setEventTypeFilter(new EventTypeFilter(eventFilterCriteria, eventFilterCondition, filterValue));
 				target.add(EventTypePanel.this.dataTable);
 			}
 		};
@@ -183,8 +177,7 @@ public class EventTypePanel extends Panel {
 
 								@Override
 								protected IResourceStream getResourceStream() {
-									final File file = new File(TempFolderUtil.getFolder()
-											+ System.getProperty("file.separator") + eventType.getTypeName() + ".xsd");
+									final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType.getTypeName() + ".xsd");
 									try {
 										final FileWriter writer = new FileWriter(file, false);
 										writer.write(eventType.getXsdString());
@@ -230,8 +223,7 @@ public class EventTypePanel extends Panel {
 			}
 		});
 
-		this.dataTable = new DefaultDataTable<EapEventType, String>("eventtypes", this.columns,
-				new EventTypeProvider(), 20);
+		this.dataTable = new DefaultDataTable<EapEventType, String>("eventtypes", this.columns, new EventTypeProvider(), 20);
 		this.dataTable.setOutputMarkupId(true);
 
 		this.add(this.dataTable);

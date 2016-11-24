@@ -20,8 +20,7 @@ public class CoordinatesHelper {
 	public static void main(String[] args) {
 		String content = "";
 		try {
-			content = new Scanner(new File("D:\\studium\\eap\\PTVcalculateRouteAnswer-AMS-COQ.json")).useDelimiter(
-					"\\Z").next();
+			content = new Scanner(new File("D:\\studium\\eap\\PTVcalculateRouteAnswer-AMS-COQ.json")).useDelimiter("\\Z").next();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

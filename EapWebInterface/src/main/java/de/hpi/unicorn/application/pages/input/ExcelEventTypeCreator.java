@@ -63,18 +63,18 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 	private static final long serialVersionUID = 1L;
 
 	public static String GENERATED_TIMESTAMP_COLUMN_NAME = AbstractXMLParser.GENERATED_TIMESTAMP_COLUMN_NAME;
+	private final String filePath;
+	private final List<Map<String, String>> tableRows = new ArrayList<Map<String, String>>();
+	private final ExcelEventTypeCreator excelEventTypeCreator;
 	private List<IColumn<TypeTreeNode, String>> attributeTableColumns;
 	private DefaultDataTable<TypeTreeNode, String> attributeTable;
 	private EventAttributeProvider eventAttributeProvider;
 	private ArrayList<String> columnTitles = new ArrayList<String>();
 	private FileNormalizer fileNormalizer;
-	private final String filePath;
-	private final List<Map<String, String>> tableRows = new ArrayList<Map<String, String>>();
 	private DropDownChoice<String> timestampDropDownChoice;
 	private ListView<List<String>> headerContainer;
 	private ListView<Map<String, String>> rowContainer;
 	private WebMarkupContainer tableContainer;
-	private final ExcelEventTypeCreator excelEventTypeCreator;
 	private Form<Void> layoutForm;
 	private TextField<String> eventTypeNameInput;
 	private String eventTypeName;
@@ -114,12 +114,10 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 		for (final String title : this.columnTitles) {
 			columns.add(new PropertyColumn(new Model(title), title));
 		}
-		columns.add(new PropertyColumn(new Model(ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME),
-				ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME));
+		columns.add(new PropertyColumn(new Model(ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME), ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME));
 
 		// text field with event type name
-		this.eventTypeNameInput = new TextField<String>("eventTypeNameInput", new PropertyModel<String>(this,
-				"eventTypeName"));
+		this.eventTypeNameInput = new TextField<String>("eventTypeNameInput", new PropertyModel<String>(this, "eventTypeName"));
 		this.eventTypeNameInput.setOutputMarkupId(true);
 		this.layoutForm.add(this.eventTypeNameInput);
 
@@ -182,8 +180,7 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 		}
 		this.eventAttributeProvider.setTimestampName(this.timestampName);
 
-		this.importTimeCheckBox = new AjaxCheckBox("importTimeCheckBox", new PropertyModel<Boolean>(this,
-				"eventTypeUsingImportTime")) {
+		this.importTimeCheckBox = new AjaxCheckBox("importTimeCheckBox", new PropertyModel<Boolean>(this, "eventTypeUsingImportTime")) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -200,18 +197,15 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 					ExcelEventTypeCreator.this.timestampName = ExcelEventTypeCreator.this.timestampAttribute.getName();
 				}
 				// disable timestamp dropdown choice if check box is checked
-				ExcelEventTypeCreator.this.timestampDropDownChoice
-						.setEnabled(!ExcelEventTypeCreator.this.eventTypeUsingImportTime);
-				ExcelEventTypeCreator.this.eventAttributeProvider
-						.setTimestampName(ExcelEventTypeCreator.this.timestampName);
+				ExcelEventTypeCreator.this.timestampDropDownChoice.setEnabled(!ExcelEventTypeCreator.this.eventTypeUsingImportTime);
+				ExcelEventTypeCreator.this.eventAttributeProvider.setTimestampName(ExcelEventTypeCreator.this.timestampName);
 				target.add(ExcelEventTypeCreator.this.timestampDropDownChoice);
 				target.add(ExcelEventTypeCreator.this.attributeTable);
 				target.add(ExcelEventTypeCreator.this.tableContainer);
 			}
 		};
 
-		this.timestampDropDownChoice = new DropDownChoice<String>("timestampDropDownChoice", new PropertyModel<String>(
-				this, "timestampName"), dateExpressions) {
+		this.timestampDropDownChoice = new DropDownChoice<String>("timestampDropDownChoice", new PropertyModel<String>(this, "timestampName"), dateExpressions) {
 
 			private static final long serialVersionUID = 1L;
 
@@ -226,10 +220,8 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				ExcelEventTypeCreator.this.timestampAttribute = ExcelEventTypeCreator.this.eventTypeAttributesTree
-						.getAttributeByExpression(ExcelEventTypeCreator.this.timestampName);
-				ExcelEventTypeCreator.this.eventAttributeProvider
-						.setTimestampName(ExcelEventTypeCreator.this.timestampName);
+				ExcelEventTypeCreator.this.timestampAttribute = ExcelEventTypeCreator.this.eventTypeAttributesTree.getAttributeByExpression(ExcelEventTypeCreator.this.timestampName);
+				ExcelEventTypeCreator.this.eventAttributeProvider.setTimestampName(ExcelEventTypeCreator.this.timestampName);
 				target.add(ExcelEventTypeCreator.this.attributeTable);
 				target.add(ExcelEventTypeCreator.this.tableContainer);
 			}
@@ -255,13 +247,10 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				// disable attribute checkbox if the attribute is
 				// selected in
 				// timestamp dropdown
-				if (!ExcelEventTypeCreator.this.eventTypeUsingImportTime
-						&& ExcelEventTypeCreator.this.timestampAttribute != null
-						&& ExcelEventTypeCreator.this.timestampAttribute.equals(attribute)) {
+				if (!ExcelEventTypeCreator.this.eventTypeUsingImportTime && ExcelEventTypeCreator.this.timestampAttribute != null && ExcelEventTypeCreator.this.timestampAttribute.equals(attribute)) {
 					checkBoxEnabled = false;
 				}
-				cellItem.add(new AttributeTypeCheckBoxPanel(componentId, attribute, checkBoxEnabled,
-						ExcelEventTypeCreator.this.eventAttributeProvider, ExcelEventTypeCreator.this.tableContainer));
+				cellItem.add(new AttributeTypeCheckBoxPanel(componentId, attribute, checkBoxEnabled, ExcelEventTypeCreator.this.eventAttributeProvider, ExcelEventTypeCreator.this.tableContainer));
 			}
 		});
 		this.attributeTableColumns.add(new PropertyColumn<TypeTreeNode, String>(Model.of("Name"), "name"));
@@ -273,18 +262,14 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				// disable attribute type dropdown choice if the
 				// attribute is
 				// selected in timestamp dropdown
-				if (!ExcelEventTypeCreator.this.eventTypeUsingImportTime
-						&& ExcelEventTypeCreator.this.timestampAttribute != null
-						&& ExcelEventTypeCreator.this.timestampAttribute.equals(attribute)) {
+				if (!ExcelEventTypeCreator.this.eventTypeUsingImportTime && ExcelEventTypeCreator.this.timestampAttribute != null && ExcelEventTypeCreator.this.timestampAttribute.equals(attribute)) {
 					dropDownChoiceEnabled = false;
 				}
-				cellItem.add(new AttributeTypeDropDownChoicePanel(componentId, attribute, dropDownChoiceEnabled,
-						ExcelEventTypeCreator.this.eventAttributeProvider));
+				cellItem.add(new AttributeTypeDropDownChoicePanel(componentId, attribute, dropDownChoiceEnabled, ExcelEventTypeCreator.this.eventAttributeProvider));
 			}
 		});
 
-		this.attributeTable = new DefaultDataTable<TypeTreeNode, String>("attributeTable", this.attributeTableColumns,
-				this.eventAttributeProvider, 20);
+		this.attributeTable = new DefaultDataTable<TypeTreeNode, String>("attributeTable", this.attributeTableColumns, this.eventAttributeProvider, 20);
 		this.attributeTable.setOutputMarkupId(true);
 
 		this.layoutForm.add(this.attributeTable);
@@ -299,16 +284,14 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				super.onSubmit(target, form);
 
 				if (ExcelEventTypeCreator.this.eventTypeName.isEmpty()) {
-					ExcelEventTypeCreator.this.eventTypeName = FileUtils
-							.getFileNameWithoutExtension(ExcelEventTypeCreator.this.filePath);
+					ExcelEventTypeCreator.this.eventTypeName = FileUtils.getFileNameWithoutExtension(ExcelEventTypeCreator.this.filePath);
 				}
 
 				// check if event type with this name already exists
 				if (EapEventType.getAllTypeNames().contains(ExcelEventTypeCreator.this.eventTypeName)) {
 					// TODO: Ask the user if it shall be added to the existing
 					// event type with this name
-					ExcelEventTypeCreator.this.excelEventTypeCreator.getFeedbackPanel().error(
-							"Event type with this name already exists!");
+					ExcelEventTypeCreator.this.excelEventTypeCreator.getFeedbackPanel().error("Event type with this name already exists!");
 					target.add(ExcelEventTypeCreator.this.excelEventTypeCreator.getFeedbackPanel());
 					return;
 				}
@@ -320,28 +303,21 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				 */
 				if (!ExcelEventTypeCreator.this.eventTypeUsingImportTime) {
 					ExcelEventTypeCreator.this.timestampAttribute.removeAttribute();
-					ExcelEventTypeCreator.this.eventTypeAttributesTree
-							.removeRoot(ExcelEventTypeCreator.this.timestampAttribute);
+					ExcelEventTypeCreator.this.eventTypeAttributesTree.removeRoot(ExcelEventTypeCreator.this.timestampAttribute);
 				}
 
 				// remove attributes that are not selected
-				ExcelEventTypeCreator.this.eventTypeAttributesTree
-						.retainAllAttributes(ExcelEventTypeCreator.this.eventAttributeProvider.getSelectedEntities());
+				ExcelEventTypeCreator.this.eventTypeAttributesTree.retainAllAttributes(ExcelEventTypeCreator.this.eventAttributeProvider.getSelectedEntities());
 				EapEventType eventType;
 				try {
-					eventType = new EapEventType(ExcelEventTypeCreator.this.eventTypeName,
-							ExcelEventTypeCreator.this.eventTypeAttributesTree,
-							ExcelEventTypeCreator.this.timestampName);
+					eventType = new EapEventType(ExcelEventTypeCreator.this.eventTypeName, ExcelEventTypeCreator.this.eventTypeAttributesTree, ExcelEventTypeCreator.this.timestampName);
 					Broker.getEventAdministrator().importEventType(eventType);
 				} catch (final RuntimeException e) {
 					ExcelEventTypeCreator.this.excelEventTypeCreator.getFeedbackPanel().error(e.getMessage());
 					target.add(ExcelEventTypeCreator.this.excelEventTypeCreator.getFeedbackPanel());
 					return;
 				}
-				final List<EapEvent> events = ExcelEventTypeCreator.this.fileNormalizer.importEventsFromFile(
-						ExcelEventTypeCreator.this.filePath,
-						ExcelEventTypeCreator.this.eventTypeAttributesTree.getRoots(),
-						ExcelEventTypeCreator.this.timestampName);
+				final List<EapEvent> events = ExcelEventTypeCreator.this.fileNormalizer.importEventsFromFile(ExcelEventTypeCreator.this.filePath, ExcelEventTypeCreator.this.eventTypeAttributesTree.getRoots(), ExcelEventTypeCreator.this.timestampName);
 				if (ExcelEventTypeCreator.this.eventTypeUsingImportTime) {
 					for (final EapEvent actualEvent : events) {
 						actualEvent.setTimestamp(new Date());
@@ -354,8 +330,7 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				Broker.getEventImporter().importEvents(events);
 				final PageParameters pageParameters = new PageParameters();
 
-				pageParameters.add("successFeedback", events.size() + " events have been added to "
-						+ ExcelEventTypeCreator.this.eventTypeName);
+				pageParameters.add("successFeedback", events.size() + " events have been added to " + ExcelEventTypeCreator.this.eventTypeName);
 				this.setResponsePage(MainPage.class, pageParameters);
 			}
 		};
@@ -373,8 +348,7 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 				eventValues.put(event.getExtractedTimestampName(), event.getTimestamp().toString());
 			}
 			for (final String columnTitle : this.columnTitles) {
-				if (!(TimeStampNames.contains(columnTitle) || columnTitle
-						.equals(ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME))) {
+				if (!(TimeStampNames.contains(columnTitle) || columnTitle.equals(ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME))) {
 					final String actualEventValue = (String) event.getValues().get(columnTitle);
 					if (actualEventValue != null) {
 						eventValues.put(columnTitle, actualEventValue.toString());
@@ -400,8 +374,7 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 
 			@Override
 			protected void populateItem(final ListItem<List<String>> item) {
-				final List<String> selectedColumnTitles = ExcelEventTypeCreator.this.eventAttributeProvider
-						.getSelectedColumnNames();
+				final List<String> selectedColumnTitles = ExcelEventTypeCreator.this.eventAttributeProvider.getSelectedColumnNames();
 				item.add(new ListView<String>("column", selectedColumnTitles) {
 					private static final long serialVersionUID = -6368677142275503560L;
 
@@ -420,8 +393,7 @@ public class ExcelEventTypeCreator extends AbstractEapPage {
 
 			@Override
 			protected void populateItem(final ListItem<Map<String, String>> item) {
-				final List<String> selectedColumnTitles = ExcelEventTypeCreator.this.eventAttributeProvider
-						.getSelectedColumnNames();
+				final List<String> selectedColumnTitles = ExcelEventTypeCreator.this.eventAttributeProvider.getSelectedColumnNames();
 				final Map<String, String> row = item.getModelObject();
 				item.add(new ListView<String>("column", selectedColumnTitles) {
 					private static final long serialVersionUID = -2477176270802239757L;

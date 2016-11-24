@@ -14,15 +14,14 @@ import de.hpi.unicorn.event.EapEventType;
 
 /**
  * Administration of event types and events
- * 
+ *
  * @author Robert Breske
- * 
  */
 public interface EventAdministrator {
 
 	/**
 	 * Permanently remove an event from the platform.
-	 * 
+	 *
 	 * @param event
 	 * @return the removed event
 	 */
@@ -31,7 +30,7 @@ public interface EventAdministrator {
 	/**
 	 * Permanently remove and eventType and consequently all its associated
 	 * events from the platform.
-	 * 
+	 *
 	 * @param eventType
 	 * @return the removed event type
 	 */
@@ -39,7 +38,7 @@ public interface EventAdministrator {
 
 	/**
 	 * Register a new event type.
-	 * 
+	 *
 	 * @param eventType
 	 * @return the registered event type
 	 */
@@ -47,7 +46,7 @@ public interface EventAdministrator {
 
 	/**
 	 * See all registered event types
-	 * 
+	 *
 	 * @return all registered event types
 	 */
 	public List<EapEventType> getAllEventTypes();

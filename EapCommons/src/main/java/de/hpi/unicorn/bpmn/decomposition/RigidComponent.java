@@ -13,8 +13,7 @@ public class RigidComponent extends Component {
 
 	private static final long serialVersionUID = 1L;
 
-	public RigidComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public RigidComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		super(entryPoint, sourceElement, exitPoint, sinkElement);
 	}
 

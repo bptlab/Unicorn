@@ -61,14 +61,13 @@ public class QueryMonitoringPoint extends Persistable {
 
 	/**
 	 * Creates a new query monitoring point.
-	 * 
+	 *
 	 * @param process
 	 * @param query
 	 * @param percentage
 	 * @param isAbsolute
 	 */
-	public QueryMonitoringPoint(final CorrelationProcess process, final QueryWrapper query, final int percentage,
-			final boolean isAbsolute) {
+	public QueryMonitoringPoint(final CorrelationProcess process, final QueryWrapper query, final int percentage, final boolean isAbsolute) {
 		this.process = process;
 		this.query = query;
 		this.percentage = percentage;
@@ -76,9 +75,60 @@ public class QueryMonitoringPoint extends Persistable {
 	}
 
 	/**
+	 * Returns all {@link QueryMonitoringPoint}s from the database.
+	 *
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<QueryMonitoringPoint> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("select t from QueryMonitoringPoint t");
+		return q.getResultList();
+	}
+
+	// Getter and Setter
+
+	/**
+	 * Deletes all query monitoring points from the database.
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM QueryMonitoringPoint");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			// System.out.println(ex.getMessage());
+		}
+	}
+
+	/**
+	 * Finds a query monitoring point with a certain ID.
+	 *
+	 * @param ID
+	 * @return
+	 */
+	public static QueryMonitoringPoint findByID(final int ID) {
+		return Persistor.getEntityManager().find(QueryMonitoringPoint.class, ID);
+	}
+
+	/**
+	 * Finds query monitoring points that are connected with a certain query.
+	 *
+	 * @param query
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<QueryMonitoringPoint> findByQuery(final QueryWrapper query) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM QueryMonitoringPoint WHERE QUERY_ID = '" + query.getID() + "'", QueryMonitoringPoint.class);
+		return q.getResultList();
+	}
+
+	/**
 	 * This method is called when a query is triggered. It updates the progress
 	 * of the process instance.
-	 * 
+	 *
 	 * @param instance
 	 */
 	public void trigger(final CorrelationProcessInstance instance) {
@@ -93,8 +143,6 @@ public class QueryMonitoringPoint extends Persistable {
 		}
 
 	}
-
-	// Getter and Setter
 
 	public CorrelationProcess getProcess() {
 		return this.process;
@@ -116,6 +164,8 @@ public class QueryMonitoringPoint extends Persistable {
 		return this.percentage;
 	}
 
+	// JPA-Methods
+
 	public void setPercentage(final int percentage) {
 		this.percentage = percentage;
 	}
@@ -131,59 +181,6 @@ public class QueryMonitoringPoint extends Persistable {
 	@Override
 	public int getID() {
 		return this.ID;
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Returns all {@link QueryMonitoringPoint}s from the database.
-	 * 
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<QueryMonitoringPoint> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("select t from QueryMonitoringPoint t");
-		return q.getResultList();
-	}
-
-	/**
-	 * Deletes all query monitoring points from the database.
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM QueryMonitoringPoint");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			// System.out.println(ex.getMessage());
-		}
-	}
-
-	/**
-	 * Finds a query monitoring point with a certain ID.
-	 * 
-	 * @param ID
-	 * @return
-	 */
-	public static QueryMonitoringPoint findByID(final int ID) {
-		return Persistor.getEntityManager().find(QueryMonitoringPoint.class, ID);
-	}
-
-	/**
-	 * Finds query monitoring points that are connected with a certain query.
-	 * 
-	 * @param query
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<QueryMonitoringPoint> findByQuery(final QueryWrapper query) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM QueryMonitoringPoint WHERE QUERY_ID = '" + query.getID() + "'",
-				QueryMonitoringPoint.class);
-		return q.getResultList();
 	}
 
 }

@@ -46,19 +46,16 @@ import de.hpi.unicorn.event.EapEventType;
 
 /**
  * This class generates a logical BPMN representation from a BPMN-2.0-XML
- * 
+ *
  * @author micha
- * 
  */
 public class BPMNParser extends AbstractXMLParser {
 
-	private static ArrayList<String> VALID_BPMN_XML_ELEMENTS = new ArrayList<String>(Arrays.asList("startEvent",
-			"task", "sendTask", "subProcess", "boundaryEvent", "endEvent", "parallelGateway", "exclusiveGateway",
-			"intermediateCatchEvent", "eventBasedGateway"));
+	private static ArrayList<String> VALID_BPMN_XML_ELEMENTS = new ArrayList<String>(Arrays.asList("startEvent", "task", "sendTask", "subProcess", "boundaryEvent", "endEvent", "parallelGateway", "exclusiveGateway", "intermediateCatchEvent", "eventBasedGateway"));
 
 	/**
 	 * Parses a BPMN-2.0-XML from the given file path to a {@link BPMNProcess}.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws IOException
@@ -71,7 +68,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses a BPMN-2.0-XML from the given file path to a {@link BPMNProcess}.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
@@ -82,8 +79,7 @@ public class BPMNParser extends AbstractXMLParser {
 		try {
 			doc = AbstractXMLParser.readXMLDocument(filePath);
 		} catch (ParserConfigurationException | SAXException | IOException e) {
-			throw new XMLParsingException("could not read XSD named " + filePath
-					+ " with the following error message:\n" + e.getMessage());
+			throw new XMLParsingException("could not read XSD named " + filePath + " with the following error message:\n" + e.getMessage());
 		}
 
 		return BPMNParser.generateBPMNProcess(doc);
@@ -91,7 +87,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses a {@link BPMNProcess} from the {@link Document}.
-	 * 
+	 *
 	 * @param doc
 	 * @return
 	 */
@@ -119,8 +115,7 @@ public class BPMNParser extends AbstractXMLParser {
 			}
 			final NodeList processNode = (NodeList) processResult;
 
-			final BPMNProcess process = new BPMNProcess(BPMNParser.extractID(processNode.item(0)), "",
-					new ArrayList<MonitoringPoint>());
+			final BPMNProcess process = new BPMNProcess(BPMNParser.extractID(processNode.item(0)), "", new ArrayList<MonitoringPoint>());
 
 			final NodeList processElements = (NodeList) elementsResult;
 			for (int i = 0; i < processElements.getLength(); i++) {
@@ -149,7 +144,7 @@ public class BPMNParser extends AbstractXMLParser {
 	 * <li>subProcess</li>
 	 * <li>task</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -180,51 +175,48 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNEndEvent} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNEndEvent extractEndEvent(final Node element) {
-		return new BPMNEndEvent(BPMNParser.extractID(element), BPMNParser.extractName(element),
-				BPMNParser.extractMonitoringPoints(element));
+		return new BPMNEndEvent(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element));
 	}
 
 	/**
 	 * Parses an {@link BPMNBoundaryEvent} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNBoundaryEvent extractBoundaryEvent(final Node element) {
-		final BPMNBoundaryEvent boundaryEvent = new BPMNBoundaryEvent(BPMNParser.extractID(element),
-				BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element),
-				BPMNParser.extractEventType(element));
+		final BPMNBoundaryEvent boundaryEvent = new BPMNBoundaryEvent(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element), BPMNParser.extractEventType(element));
 		boundaryEvent.setCancelActivity(BPMNParser.extractCancelActivity(element));
 		switch (boundaryEvent.getIntermediateEventType()) {
-		case Cancel:
-			break;
-		case Compensation:
-			break;
-		case Error:
-			break;
-		case Link:
-			break;
-		case Message:
-			break;
-		case Signal:
-			break;
-		case Timer:
-			BPMNParser.extractEventTimerDefinition(element, boundaryEvent);
-			break;
-		default:
-			break;
+			case Cancel:
+				break;
+			case Compensation:
+				break;
+			case Error:
+				break;
+			case Link:
+				break;
+			case Message:
+				break;
+			case Signal:
+				break;
+			case Timer:
+				BPMNParser.extractEventTimerDefinition(element, boundaryEvent);
+				break;
+			default:
+				break;
 		}
 		return boundaryEvent;
 	}
 
 	/**
 	 * Parses an {@link BPMNEventType} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -242,7 +234,7 @@ public class BPMNParser extends AbstractXMLParser {
 	/**
 	 * Parses the timer definition for the given intermediate event and assigns
 	 * the definition to this element.
-	 * 
+	 *
 	 * @param element
 	 * @param intermediateEvent
 	 */
@@ -252,8 +244,7 @@ public class BPMNParser extends AbstractXMLParser {
 			for (final Node timerDefinition : timerDefinitions) {
 				// TimeDuration ermitteln
 				if (!BPMNParser.getChildNodesByNodeName(timerDefinition, "timeDuration").isEmpty()) {
-					final String timeDuration = BPMNParser.getChildNodesByNodeName(timerDefinition, "timeDuration")
-							.get(0).getTextContent();
+					final String timeDuration = BPMNParser.getChildNodesByNodeName(timerDefinition, "timeDuration").get(0).getTextContent();
 					if (timeDuration != null) {
 						float duration;
 						try {
@@ -272,14 +263,12 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNIntermediateEvent} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNIntermediateEvent extractIntermediateCatchEvent(final Node element) {
-		final BPMNIntermediateEvent intermediateEvent = new BPMNIntermediateEvent(BPMNParser.extractID(element),
-				BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element),
-				BPMNParser.extractIntermediateEventType(element));
+		final BPMNIntermediateEvent intermediateEvent = new BPMNIntermediateEvent(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element), BPMNParser.extractIntermediateEventType(element));
 		intermediateEvent.setCatchEvent(true);
 		if (intermediateEvent.getIntermediateEventType().equals(BPMNEventType.Timer)) {
 			BPMNParser.extractEventTimerDefinition(element, intermediateEvent);
@@ -289,7 +278,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Proofs, if the given {@link Node} has an cancelActivity attribute.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -305,24 +294,22 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNSequenceFlow} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNSequenceFlow extractSequenceFlow(final Node element) {
-		return new BPMNSequenceFlow(BPMNParser.extractID(element), BPMNParser.extractName(element),
-				BPMNParser.extractSourceRef(element), BPMNParser.extractTargetRef(element));
+		return new BPMNSequenceFlow(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractSourceRef(element), BPMNParser.extractTargetRef(element));
 	}
 
 	/**
 	 * Parses an {@link BPMNSubProcess} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNSubProcess extractSubProcess(final Node element) {
-		final BPMNSubProcess subProcess = new BPMNSubProcess(BPMNParser.extractID(element),
-				BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element));
+		final BPMNSubProcess subProcess = new BPMNSubProcess(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element));
 		final NodeList subProcessElements = element.getChildNodes();
 		for (int i = 0; i < subProcessElements.getLength(); i++) {
 			subProcess.addBPMNElement(BPMNParser.extractBPMNElement(subProcessElements.item(i)));
@@ -332,7 +319,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNTask} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -343,7 +330,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNAndGateway} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -354,19 +341,18 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNEventBasedGateway} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNEventBasedGateway extractEventBasedGateway(final Node element) {
 		final List<MonitoringPoint> monitoringPoints = BPMNParser.extractMonitoringPoints(element);
-		return new BPMNEventBasedGateway(BPMNParser.extractID(element), BPMNParser.extractName(element),
-				monitoringPoints, BPMNParser.extractEventGatewayType(element));
+		return new BPMNEventBasedGateway(BPMNParser.extractID(element), BPMNParser.extractName(element), monitoringPoints, BPMNParser.extractEventGatewayType(element));
 	}
 
 	/**
 	 * Parses an {@link BPMNXORGateway} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -377,19 +363,18 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNStartEvent} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
 	private static BPMNStartEvent extractStartEvent(final Node element) {
 		// TODO: MessageStartEvent unterstützen
-		return new BPMNStartEvent(BPMNParser.extractID(element), BPMNParser.extractName(element),
-				BPMNParser.extractMonitoringPoints(element), BPMNParser.extractEventType(element));
+		return new BPMNStartEvent(BPMNParser.extractID(element), BPMNParser.extractName(element), BPMNParser.extractMonitoringPoints(element), BPMNParser.extractEventType(element));
 	}
 
 	/**
 	 * Returns the value of the name attribute for the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -403,7 +388,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNEventBasedGatewayType} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -418,7 +403,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the value of the sourceRef attribute for the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -428,7 +413,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the value of the targetRef attribute for the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -438,7 +423,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Returns the value of the id attribute for the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -448,7 +433,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses an {@link BPMNEventType} from the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -464,7 +449,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Parses a list of {@link MonitoringPoint}s for the given {@link Node}.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -480,19 +465,15 @@ public class BPMNParser extends AbstractXMLParser {
 
 		// ArrayList<Node> monitoringPointNodes =
 		// getChildNodesByNodeName(extensionElementNode, "de.hpi.unicorn:transition");
-		final ArrayList<Node> monitoringPointNodes = BPMNParser.getChildNodesByNodeName(extensionElementNode,
-				"cep:transition");
+		final ArrayList<Node> monitoringPointNodes = BPMNParser.getChildNodesByNodeName(extensionElementNode, "cep:transition");
 
 		for (final Node actualTransitionNode : monitoringPointNodes) {
-			final String monitoringTypeString = actualTransitionNode.getAttributes().getNamedItem("type")
-					.getNodeValue();
-			for (final MonitoringPointStateTransition actualMonitoringPointType : MonitoringPointStateTransition
-					.values()) {
+			final String monitoringTypeString = actualTransitionNode.getAttributes().getNamedItem("type").getNodeValue();
+			for (final MonitoringPointStateTransition actualMonitoringPointType : MonitoringPointStateTransition.values()) {
 				if (monitoringTypeString.equals(actualMonitoringPointType.toString())) {
 					// EapEventType eventType =
 					// EapEventType.findByTypeName(actualTransitionNode.getAttributes().getNamedItem("regularExpression").getNodeValue());
-					final EapEventType eventType = EapEventType.findByTypeName(actualTransitionNode.getAttributes()
-							.getNamedItem("pemp").getNodeValue());
+					final EapEventType eventType = EapEventType.findByTypeName(actualTransitionNode.getAttributes().getNamedItem("pemp").getNodeValue());
 					monitoringPoints.add(new MonitoringPoint(eventType, actualMonitoringPointType, ""));
 				}
 			}
@@ -503,26 +484,21 @@ public class BPMNParser extends AbstractXMLParser {
 	/**
 	 * Creates a successor and predecessor relationship for the given
 	 * {@link AbstractBPMNElement} based on the {@link BPMNSequenceFlow}s.
-	 * 
+	 *
 	 * @param process
 	 * @param element
 	 * @param childNodes
 	 */
-	private static void linkActualElement(final BPMNProcess process, final AbstractBPMNElement element,
-			final NodeList childNodes) {
+	private static void linkActualElement(final BPMNProcess process, final AbstractBPMNElement element, final NodeList childNodes) {
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			final Node actualNode = childNodes.item(i);
 			if (actualNode.getNodeType() == 1) {
 				if (actualNode.getNodeName().equals("incoming")) {
-					final BPMNSequenceFlow sequenceFlow = (BPMNSequenceFlow) process.getBPMNElementById(actualNode
-							.getTextContent());
-					AbstractBPMNElement.connectElements(process.getBPMNElementById(sequenceFlow.getSourceRef()),
-							element);
+					final BPMNSequenceFlow sequenceFlow = (BPMNSequenceFlow) process.getBPMNElementById(actualNode.getTextContent());
+					AbstractBPMNElement.connectElements(process.getBPMNElementById(sequenceFlow.getSourceRef()), element);
 				} else if (actualNode.getNodeName().equals("outgoing")) {
-					final BPMNSequenceFlow sequenceFlow = (BPMNSequenceFlow) process.getBPMNElementById(actualNode
-							.getTextContent());
-					AbstractBPMNElement.connectElements(element,
-							process.getBPMNElementById(sequenceFlow.getTargetRef()));
+					final BPMNSequenceFlow sequenceFlow = (BPMNSequenceFlow) process.getBPMNElementById(actualNode.getTextContent());
+					AbstractBPMNElement.connectElements(element, process.getBPMNElementById(sequenceFlow.getTargetRef()));
 				}
 			}
 			if (actualNode.getNodeName().equals("subProcess")) {
@@ -534,7 +510,7 @@ public class BPMNParser extends AbstractXMLParser {
 	/**
 	 * Creates a successor and predecessor relationship between the parsed
 	 * {@link AbstractBPMNElement}s based on the {@link BPMNSequenceFlow}s.
-	 * 
+	 *
 	 * @param process
 	 * @param processElementNodes
 	 */
@@ -543,8 +519,7 @@ public class BPMNParser extends AbstractXMLParser {
 			final Node actualNode = processElementNodes.item(i);
 			if (actualNode.getNodeType() == 1 && BPMNParser.VALID_BPMN_XML_ELEMENTS.contains(actualNode.getNodeName())) {
 				if (actualNode.hasChildNodes()) {
-					final AbstractBPMNElement element = process.getBPMNElementById(actualNode.getAttributes()
-							.getNamedItem("id").getNodeValue());
+					final AbstractBPMNElement element = process.getBPMNElementById(actualNode.getAttributes().getNamedItem("id").getNodeValue());
 					if (element != null) {
 						BPMNParser.linkActualElement(process, element, actualNode.getChildNodes());
 						if (element instanceof BPMNBoundaryEvent) {
@@ -560,13 +535,12 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Attaches a boundary event to the given {@link Node}.
-	 * 
+	 *
 	 * @param process
 	 * @param boundaryEvent
 	 * @param actualNode
 	 */
-	private static void attachBoundaryEvent(final BPMNProcess process, final BPMNBoundaryEvent boundaryEvent,
-			final Node actualNode) {
+	private static void attachBoundaryEvent(final BPMNProcess process, final BPMNBoundaryEvent boundaryEvent, final Node actualNode) {
 		final String attachedToElementID = actualNode.getAttributes().getNamedItem("attachedToRef").getNodeValue();
 		final AbstractBPMNElement attachedToElement = process.getBPMNElementById(attachedToElementID);
 		boundaryEvent.setAttachedToElement(attachedToElement);
@@ -579,7 +553,7 @@ public class BPMNParser extends AbstractXMLParser {
 
 	/**
 	 * Returns all child nodes for a given node with the given name, if any.
-	 * 
+	 *
 	 * @param element
 	 * @param nodeName
 	 * @return

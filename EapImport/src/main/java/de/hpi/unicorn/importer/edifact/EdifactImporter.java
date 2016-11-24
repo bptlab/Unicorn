@@ -60,6 +60,42 @@ public class EdifactImporter {
 		return EdifactImporter.instance;
 	}
 
+	private static String getFilePathForEdifactXSD(final String id, final String version, final String release) {
+		final String path = System.getProperty("user.dir") + "/src/main/resources/";
+
+		if (id.equals("BERMAN") && version.equals("D") && release.equals("03A")) {
+			return path + "xsd-definitions/berman.xsd";
+		}
+
+		if (id.equals("IFTMCS") && version.equals("D") && release.equals("00B")) {
+			return path + "xsd-definitions/iftmcs.xsd";
+		}
+
+		if (id.equals("COPRAR") && version.equals("D") && release.equals("95B")) {
+			return path + "xsd-definitions/coprar.xsd";
+		}
+
+		if (id.equals("COARRI") && version.equals("D") && release.equals("95B")) {
+			return path + "xsd-definitions/coarri.xsd";
+		}
+
+		if (id.equals("COPINO") && version.equals("D") && release.equals("95B")) {
+			return path + "xsd-definitions/copino.xsd";
+		}
+
+		return null;
+	}
+
+	public static void main(final String[] args) {
+		try {
+			final Smooks smooksForEdifactFile = new EdifactImporter().getSmooksForEdifactFile("COPINO:D:95B:UN:INT10I");
+			System.out.println(smooksForEdifactFile);
+		} catch (final Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * generates Events from Edifact file
 	 */
@@ -101,8 +137,7 @@ public class EdifactImporter {
 			// Move file to server (but then it of course would only be
 			// accessible within the HPI or find other solution
 			// mh/11.08.14: use Java's resource lookup
-			final Smooks smooks_copino = new Smooks(EdifactImporter.class.getResource("/smooks-config-copino.xml")
-					.openStream());
+			final Smooks smooks_copino = new Smooks(EdifactImporter.class.getResource("/smooks-config-copino.xml").openStream());
 			// "http://172.16.64.105/epp/smooks-config-copino.xml");
 			// "https://dl.dropboxusercontent.com/u/18481312/SushiResources/smooks-config-copino.xml");
 			// This only works within EapImport...
@@ -113,22 +148,19 @@ public class EdifactImporter {
 
 		if (message.contains(":D:03A")) {
 			final Smooks smooks_95b = new Smooks();
-			smooks_95b.setReaderConfig(new UNEdifactReaderConfigurator(
-					"urn:org.milyn.edi.unedifact:d03a-mapping:1.5-SNAPSHOT"));
+			smooks_95b.setReaderConfig(new UNEdifactReaderConfigurator("urn:org.milyn.edi.unedifact:d03a-mapping:1.5-SNAPSHOT"));
 			// System.out.println("use do3a");
 			return smooks_95b;
 		}
 		if (message.contains(":D:95B")) {
 			final Smooks smooks_95b = new Smooks();
-			smooks_95b.setReaderConfig(new UNEdifactReaderConfigurator(
-					"urn:org.milyn.edi.unedifact:d95b-mapping:1.5-SNAPSHOT"));
+			smooks_95b.setReaderConfig(new UNEdifactReaderConfigurator("urn:org.milyn.edi.unedifact:d95b-mapping:1.5-SNAPSHOT"));
 			// System.out.println("use d95b");
 			return smooks_95b;
 		}
 		if (message.contains(":D:00B")) {
 			final Smooks smooks_00b = new Smooks();
-			smooks_00b.setReaderConfig(new UNEdifactReaderConfigurator(
-					"urn:org.milyn.edi.unedifact:d00b-mapping:1.5-SNAPSHOT"));
+			smooks_00b.setReaderConfig(new UNEdifactReaderConfigurator("urn:org.milyn.edi.unedifact:d00b-mapping:1.5-SNAPSHOT"));
 			// System.out.println("use d00b");
 			return smooks_00b;
 		}
@@ -138,7 +170,6 @@ public class EdifactImporter {
 
 	/**
 	 * returns Eventtyp for given Edifact document
-	 * 
 	 */
 	public EapEventType getEventTypeForEdifact(final Document doc) throws XMLParsingException {
 		/**
@@ -163,14 +194,9 @@ public class EdifactImporter {
 		XPathExpression miVersionExpression = null;
 		XPathExpression miReleaseExpression = null;
 		try {
-			miIdExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/" + "*[local-name() = 'UNH']/"
-					+ "*[local-name() = 'messageIdentifier']/" + "*[local-name() = 'id']");
-			miVersionExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/"
-					+ "*[local-name() = 'UNH']/" + "*[local-name() = 'messageIdentifier']/"
-					+ "*[local-name() = 'versionNum']");
-			miReleaseExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/"
-					+ "*[local-name() = 'UNH']/" + "*[local-name() = 'messageIdentifier']/"
-					+ "*[local-name() = 'releaseNum']");
+			miIdExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/" + "*[local-name() = 'UNH']/" + "*[local-name() = 'messageIdentifier']/" + "*[local-name() = 'id']");
+			miVersionExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/" + "*[local-name() = 'UNH']/" + "*[local-name() = 'messageIdentifier']/" + "*[local-name() = 'versionNum']");
+			miReleaseExpression = xpath.compile("//*[local-name() = 'interchangeMessage']/" + "*[local-name() = 'UNH']/" + "*[local-name() = 'messageIdentifier']/" + "*[local-name() = 'releaseNum']");
 		} catch (final XPathExpressionException e) {
 			e.printStackTrace();
 		}
@@ -190,45 +216,7 @@ public class EdifactImporter {
 		}
 
 		// System.out.println(getFilePathForEdifactXSD(id, version, release));
-		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(
-				EdifactImporter.getFilePathForEdifactXSD(id, version, release),
-				FileUtils.getFileNameWithoutExtension(EdifactImporter.getFilePathForEdifactXSD(id, version, release)));
+		final EapEventType eventType = XSDParser.generateEventTypeFromXSD(EdifactImporter.getFilePathForEdifactXSD(id, version, release), FileUtils.getFileNameWithoutExtension(EdifactImporter.getFilePathForEdifactXSD(id, version, release)));
 		return eventType;
-	}
-
-	private static String getFilePathForEdifactXSD(final String id, final String version, final String release) {
-		final String path = System.getProperty("user.dir") + "/src/main/resources/";
-
-		if (id.equals("BERMAN") && version.equals("D") && release.equals("03A")) {
-			return path + "xsd-definitions/berman.xsd";
-		}
-
-		if (id.equals("IFTMCS") && version.equals("D") && release.equals("00B")) {
-			return path + "xsd-definitions/iftmcs.xsd";
-		}
-
-		if (id.equals("COPRAR") && version.equals("D") && release.equals("95B")) {
-			return path + "xsd-definitions/coprar.xsd";
-		}
-
-		if (id.equals("COARRI") && version.equals("D") && release.equals("95B")) {
-			return path + "xsd-definitions/coarri.xsd";
-		}
-
-		if (id.equals("COPINO") && version.equals("D") && release.equals("95B")) {
-			return path + "xsd-definitions/copino.xsd";
-		}
-
-		return null;
-	}
-
-	public static void main(final String[] args) {
-		try {
-			final Smooks smooksForEdifactFile = new EdifactImporter().getSmooksForEdifactFile("COPINO:D:95B:UN:INT10I");
-			System.out.println(smooksForEdifactFile);
-		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

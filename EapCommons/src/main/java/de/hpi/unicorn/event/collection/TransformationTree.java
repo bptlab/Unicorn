@@ -38,7 +38,7 @@ import de.hpi.unicorn.persistence.Persistor;
 /**
  * TreeStructure used for structured key value mapping. Each node can have
  * childes. Its possible to have many root nodes.
- * 
+ *
  * @param <K>
  * @param <V>
  */
@@ -47,24 +47,20 @@ import de.hpi.unicorn.persistence.Persistor;
 public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	private static final long serialVersionUID = 1L;
-
+	// JPA cannot save empty objects. this element is carrying
+	@Column(name = "Test")
+	private final String test = "Test";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "TransformationMapID")
 	protected int ID;
-
 	// splitted root elements and hierachical for more convinience
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinTable(name = "TransformationMapTree_TransformationMapTreeElements")
 	private List<EventTransformationElement<K, V>> treeElements = new ArrayList<EventTransformationElement<K, V>>();
-
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
 	@JoinTable(name = "TransformationMapTree_TransformationMapTreeRootElements")
 	private List<EventTransformationElement<K, V>> treeRootElements = new ArrayList<EventTransformationElement<K, V>>();
-
-	// JPA cannot save empty objects. this element is carrying
-	@Column(name = "Test")
-	private final String test = "Test";
 
 	public TransformationTree() {
 		this.ID = 0;
@@ -72,10 +68,33 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	public TransformationTree(final K rootElementKey, final V rootElementValue) {
 		this.ID = 0;
-		final EventTransformationElement<K, V> element = new EventTransformationElement<K, V>(rootElementKey,
-				rootElementValue);
+		final EventTransformationElement<K, V> element = new EventTransformationElement<K, V>(rootElementKey, rootElementValue);
 		this.treeElements.add(element);
 		this.treeRootElements.add(element);
+	}
+
+	/**
+	 * @return all maptrees
+	 */
+	public static List<TransformationTree> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t from TransformationTree t");
+		return q.getResultList();
+	}
+
+	/**
+	 * removes all maptrees from DB
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM TransformationTree");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 
 	public boolean isHierarchical() {
@@ -116,7 +135,6 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 	}
 
 	/**
-	 * 
 	 * @param treeElementKey
 	 * @return key of the node of the given key
 	 */
@@ -132,7 +150,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 	/**
 	 * @param treeElementKey
 	 * @return all children keys for a specific element in the tree with the key
-	 *         treeElementKey.
+	 * treeElementKey.
 	 */
 	public List<K> getChildrenKeys(final K treeElementKey) {
 		final List<K> childrenKeys = new ArrayList<K>();
@@ -146,7 +164,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 	/**
 	 * @param treeElementKey
 	 * @return all children values for a specific element in the tree with the
-	 *         key treeElementKey.
+	 * key treeElementKey.
 	 */
 	public List<V> getChildrenValues(final K treeElementKey) {
 		final List<V> childrenValues = new ArrayList<V>();
@@ -159,7 +177,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * checks if the node of the given key has children
-	 * 
+	 *
 	 * @param treeElementKey
 	 * @return
 	 */
@@ -170,14 +188,13 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * Adds a child to the specified parent.
-	 * 
+	 *
 	 * @param parentKey
 	 * @param child
 	 */
 	public void addChild(final K parentKey, final K childKey, final V childValue) {
 		final EventTransformationElement<K, V> parentElement = this.findMapElementByKey(parentKey);
-		final EventTransformationElement<K, V> childMapElement = new EventTransformationElement<K, V>(parentElement,
-				childKey, childValue);
+		final EventTransformationElement<K, V> childMapElement = new EventTransformationElement<K, V>(parentElement, childKey, childValue);
 		// for (EventTransformationElement<K,V> mapElement : treeElements) {
 		// if (mapElement.getKey().equals(parentKey)) {
 		//
@@ -191,7 +208,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * adds root node with the given key and value
-	 * 
+	 *
 	 * @param childKey
 	 * @param childValue
 	 * @return
@@ -203,7 +220,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * Removes all children from the specified map element.
-	 * 
+	 *
 	 * @param treeElement
 	 * @return
 	 */
@@ -261,7 +278,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * removes the given node from the tree
-	 * 
+	 *
 	 * @param removeTreeElement
 	 * @return
 	 */
@@ -272,8 +289,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 		}
 		if (removeTreeElement != null) {
 			if (removeTreeElement.hasChildren()) {
-				final List<EventTransformationElement<K, V>> children = new ArrayList<EventTransformationElement<K, V>>(
-						removeTreeElement.getChildren());
+				final List<EventTransformationElement<K, V>> children = new ArrayList<EventTransformationElement<K, V>>(removeTreeElement.getChildren());
 				for (final EventTransformationElement<K, V> child : children) {
 					this.remove(child.getKey());
 				}
@@ -330,7 +346,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * return value of the node of the given key
-	 * 
+	 *
 	 * @param elementKey
 	 * @return
 	 */
@@ -346,7 +362,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * return node with the given key
-	 * 
+	 *
 	 * @param treeElementKey
 	 * @return
 	 */
@@ -360,30 +376,6 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * @return all maptrees
-	 */
-	public static List<TransformationTree> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t from TransformationTree t");
-		return q.getResultList();
-	}
-
-	/**
-	 * removes all maptrees from DB
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM TransformationTree");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
 	}
 
 	@Override
@@ -407,14 +399,13 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * deletes all elements except the given
-	 * 
+	 *
 	 * @param collection
 	 * @return
 	 */
 	public boolean retainAll(final Collection collection) {
 		final boolean retainSuccess = true;
-		final List<EventTransformationElement<K, V>> copyTreeList = new ArrayList<EventTransformationElement<K, V>>(
-				this.treeElements);
+		final List<EventTransformationElement<K, V>> copyTreeList = new ArrayList<EventTransformationElement<K, V>>(this.treeElements);
 		for (final EventTransformationElement<K, V> element : copyTreeList) {
 			if (!collection.contains(element.getValue())) {
 				this.remove(element.getValue());
@@ -426,7 +417,6 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 	/**
 	 * use this only if the TransformationTree is used as attribute name/value
 	 * mapping
-	 * 
 	 */
 	public void retainAllByAttributeExpression(final ArrayList<String> retainableAttributeExpressions) {
 		final List<EventTransformationElement<K, V>> treeElementsToBeRemoved = new ArrayList<EventTransformationElement<K, V>>();
@@ -442,7 +432,7 @@ public class TransformationTree<K, V> extends Persistable implements Map<K, V> {
 
 	/**
 	 * delete all node except those which keys are mentioned
-	 * 
+	 *
 	 * @param retainableKeys
 	 */
 	public void retainAllKeys(final ArrayList<String> retainableKeys) {

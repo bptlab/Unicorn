@@ -67,7 +67,7 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
 	 * @throws RuntimeException
 	 */
@@ -80,15 +80,14 @@ public class EapEventType extends Persistable {
 		 */
 		final String strippedTypeName = typeName.trim().replaceAll(" +", "_");
 		if (!this.isValidName(strippedTypeName)) {
-			throw new RuntimeException(
-					"Event type name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
+			throw new RuntimeException("Event type name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
 		}
 		this.typeName = strippedTypeName;
 	}
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
 	 * @param attributeTree
 	 * @throws RuntimeException
@@ -100,17 +99,15 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
 	 * @param attributeTree
-	 * @param timestampName
-	 *            must be an attribute expression (e.g. 'timestamp' for a
-	 *            timestamp that is in root level, 'someroot.time' for a
-	 *            timestamp that is in the second level etc.
+	 * @param timestampName must be an attribute expression (e.g. 'timestamp' for a
+	 *                      timestamp that is in root level, 'someroot.time' for a
+	 *                      timestamp that is in the second level etc.
 	 * @throws RuntimeException
 	 */
-	public EapEventType(final String typeName, final AttributeTypeTree attributeTree, final String timestampName)
-			throws RuntimeException {
+	public EapEventType(final String typeName, final AttributeTypeTree attributeTree, final String timestampName) throws RuntimeException {
 		this(typeName, attributeTree);
 		/*
 		 * remove leading and trailing whitespace and replace each sequence of
@@ -119,8 +116,7 @@ public class EapEventType extends Persistable {
 		if (timestampName != null) {
 			final String strippedTimestampName = timestampName.trim().replaceAll(" +", "_");
 			if (!this.isValidName(strippedTimestampName)) {
-				throw new RuntimeException(
-						"Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
+				throw new RuntimeException("Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
 			}
 			this.timestampName = strippedTimestampName;
 		}
@@ -128,18 +124,16 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
 	 * @param attributeTree
-	 * @param timestampName
-	 *            must be an attribute expression (e.g. 'timestamp' for a
-	 *            timestamp that is in root level, 'someroot.time' for a
-	 *            timestamp that is in the second level etc.
+	 * @param timestampName must be an attribute expression (e.g. 'timestamp' for a
+	 *                      timestamp that is in root level, 'someroot.time' for a
+	 *                      timestamp that is in the second level etc.
 	 * @param schemaName
 	 * @throws RuntimeException
 	 */
-	public EapEventType(final String typeName, final AttributeTypeTree attributeTree, final String timestampName,
-			final String schemaName) throws RuntimeException {
+	public EapEventType(final String typeName, final AttributeTypeTree attributeTree, final String timestampName, final String schemaName) throws RuntimeException {
 		this(typeName, attributeTree, timestampName);
 		this.isXMLEvent = true;
 		this.schemaName = schemaName;
@@ -147,10 +141,9 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
-	 * @param attributes
-	 *            list of root level attributes
+	 * @param attributes list of root level attributes
 	 * @throws RuntimeException
 	 */
 	public EapEventType(final String typeName, final List<TypeTreeNode> attributes) throws RuntimeException {
@@ -162,18 +155,15 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param typeName
-	 * @param attributes
-	 *            list of root level attributes
-	 * @param timestampName
-	 *            must be an attribute expression (e.g. 'timestamp' for a
-	 *            timestamp that is in root level, 'someroot.time' for a
-	 *            timestamp that is in the second level etc.
+	 * @param attributes    list of root level attributes
+	 * @param timestampName must be an attribute expression (e.g. 'timestamp' for a
+	 *                      timestamp that is in root level, 'someroot.time' for a
+	 *                      timestamp that is in the second level etc.
 	 * @throws RuntimeException
 	 */
-	public EapEventType(final String typeName, final List<TypeTreeNode> attributes, final String timestampName)
-			throws RuntimeException {
+	public EapEventType(final String typeName, final List<TypeTreeNode> attributes, final String timestampName) throws RuntimeException {
 		this(typeName, attributes);
 		/*
 		 * remove leading and trailing whitespace and replace each sequence of
@@ -182,11 +172,145 @@ public class EapEventType extends Persistable {
 		if (timestampName != null) {
 			final String strippedTimestampName = timestampName.trim().replaceAll(" +", "_");
 			if (!this.isValidName(strippedTimestampName)) {
-				throw new RuntimeException(
-						"Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
+				throw new RuntimeException("Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
 			}
 			this.timestampName = strippedTimestampName;
 		}
+	}
+
+	public static EapEventType findByID(final int ID) {
+		final List<EapEventType> eventTypes = EapEventType.findByAttribute("ID", Integer.toString(ID));
+		if (!eventTypes.isEmpty()) {
+			return eventTypes.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * return Eventtype which has the given structuredefinition
+	 */
+	public static EapEventType findBySchemaName(final String schemaName) {
+		final List<EapEventType> eventTypes = EapEventType.findByAttribute("SchemaName", schemaName);
+		if (!eventTypes.isEmpty()) {
+			return eventTypes.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	public static List<EapEventType> findByIDGreaterThan(final int ID) {
+		return EapEventType.findByAttributeGreaterThan("ID", Integer.toString(ID));
+	}
+
+	public static List<EapEventType> findByIDLessThan(final int ID) {
+		return EapEventType.findByAttributeLessThan("ID", Integer.toString(ID));
+	}
+
+	public static List<EapEventType> findByAttribute(final String attributeName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM EventType WHERE " + attributeName + " = '" + value + "'", EapEventType.class);
+		return query.getResultList();
+	}
+
+	private static List<EapEventType> findByAttributeGreaterThan(final String attributeName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM EventType " + "WHERE " + attributeName + " > '" + value + "'", EapEventType.class);
+		return query.getResultList();
+	}
+
+	private static List<EapEventType> findByAttributeLessThan(final String attributeName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM EventType " + "WHERE " + attributeName + " < '" + value + "'", EapEventType.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * @param typeName name of the EventType
+	 * @return
+	 */
+	public static EapEventType findByTypeName(final String typeName) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM EventType " + "WHERE TypeName = '" + typeName + "'", EapEventType.class);
+		// Type names should be distinct!
+		assert (query.getResultList().size() < 2);
+		try {
+			if (query.getResultList().size() > 0) {
+				return (EapEventType) query.getResultList().get(0);
+			} else {
+				return null;
+			}
+		} catch (final Exception e) {
+			System.err.println(e);
+			return null;
+		}
+	}
+
+	public static List<EapEventType> findAll() {
+		final Query query = Persistor.getEntityManager().createQuery("select t from EapEventType t");
+		return query.getResultList();
+	}
+
+	/**
+	 * returns Eventtypes which have a subset of the given attributes
+	 */
+	public static List<EapEventType> findMatchingEventTypesForNonHierarchicalAttributes(final List<String> attributeExpressions, final String importTimeName) {
+		final List<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
+		for (final EapEventType eventType : EapEventType.findAll()) {
+			// prepare attributes without import time
+			final ArrayList<String> attributes = eventType.getNonHierarchicalAttributeExpressions();
+			attributes.remove(importTimeName);
+
+			OUTERCHECK:
+			if (attributeExpressions.containsAll(attributes)) {
+				selectedEventTypes.add(eventType);
+			} else {
+				for (final String attribute : attributes) {
+					if (attributeExpressions.contains(attribute)) {
+						selectedEventTypes.add(eventType);
+						break OUTERCHECK;
+					}
+				}
+			}
+		}
+		return selectedEventTypes;
+	}
+
+	public static boolean save(final List<EapEventType> eventTypes) {
+		try {
+			final EntityManager entityManager = Persistor.getEntityManager();
+			entityManager.getTransaction().begin();
+			for (final EapEventType eventType : eventTypes) {
+				entityManager.persist(eventType);
+			}
+			entityManager.getTransaction().commit();
+			return true;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	/**
+	 * Deletes the specified eventtypes from the database.
+	 *
+	 * @return
+	 */
+	public static boolean remove(final List<EapEventType> eventTypes) {
+		boolean removed = true;
+		for (final EapEventType eventType : eventTypes) {
+			removed = (eventType.remove() != null);
+		}
+		return removed;
+	}
+
+	public static void removeAll() {
+		final List<EapEventType> allEventTypes = EapEventType.findAll();
+		EapEventType.remove(allEventTypes);
+	}
+
+	public static List<String> getAllTypeNames() {
+		final ArrayList<String> eventTypeNames = new ArrayList<String>();
+		for (final EapEventType eventType : EapEventType.findAll()) {
+			eventTypeNames.add(eventType.getTypeName());
+		}
+		return eventTypeNames;
 	}
 
 	/**
@@ -241,15 +365,15 @@ public class EapEventType extends Persistable {
 
 	public boolean isValidName(final String string) {
 		return string != null && string.matches("^[-a-zA-Z0-9._]+"); // a-z A-Z
-																		// 0-9 _
-																		// -
-																		// sind
-																		// erlaubt
+		// 0-9 _
+		// -
+		// sind
+		// erlaubt
 	}
 
 	/**
 	 * @return list of root attribute names from the value type tree plus the
-	 *         timestamp name
+	 * timestamp name
 	 */
 	public ArrayList<String> getNonHierarchicalAttributeExpressions() {
 		final ArrayList<String> attributeNames = new ArrayList<String>();
@@ -263,7 +387,7 @@ public class EapEventType extends Persistable {
 
 	/**
 	 * @return list of attribute expressions from the value type tree plus the
-	 *         timestamp name
+	 * timestamp name
 	 */
 	public ArrayList<String> getAttributeExpressions() {
 		final ArrayList<String> attributeExpressions = this.getAttributeExpressionsWithoutTimestampName();
@@ -310,24 +434,23 @@ public class EapEventType extends Persistable {
 		return this.timestampName;
 	}
 
-	public String getTimestampNameAsXPath() {
-		if (this.timestampName == null) {
-			return null;
-		}
-		return "/" + this.timestampName.replace(".", "/");
-	}
-
 	public void setTimestampName(final String timestampName) {
 		if (timestampName != null) {
 			final String strippedTimestampName = timestampName.trim().replaceAll(" +", "_");
 			if (!this.isValidName(strippedTimestampName)) {
-				throw new RuntimeException(
-						"Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
+				throw new RuntimeException("Timestamp name is not valid. Only characters [a-z], [A-Z], [0-9], - and _ are allowed!");
 			}
 			this.timestampName = strippedTimestampName;
 		} else {
 			this.timestampName = null;
 		}
+	}
+
+	public String getTimestampNameAsXPath() {
+		if (this.timestampName == null) {
+			return null;
+		}
+		return "/" + this.timestampName.replace(".", "/");
 	}
 
 	@JsonIgnore
@@ -349,12 +472,12 @@ public class EapEventType extends Persistable {
 		this.attributes = attributes;
 	}
 
-	public void setXMLEvent(final boolean isXMLEvent) {
-		this.isXMLEvent = isXMLEvent;
-	}
-
 	public boolean isXMLEvent() {
 		return this.isXMLEvent;
+	}
+
+	public void setXMLEvent(final boolean isXMLEvent) {
+		this.isXMLEvent = isXMLEvent;
 	}
 
 	public String getXMLName() {
@@ -377,76 +500,6 @@ public class EapEventType extends Persistable {
 	public String toString() {
 		final String processText = this.typeName + " (" + this.ID + ")";
 		return processText;
-	}
-
-	public static EapEventType findByID(final int ID) {
-		final List<EapEventType> eventTypes = EapEventType.findByAttribute("ID", Integer.toString(ID));
-		if (!eventTypes.isEmpty()) {
-			return eventTypes.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * return Eventtype which has the given structuredefinition
-	 */
-	public static EapEventType findBySchemaName(final String schemaName) {
-		final List<EapEventType> eventTypes = EapEventType.findByAttribute("SchemaName", schemaName);
-		if (!eventTypes.isEmpty()) {
-			return eventTypes.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	public static List<EapEventType> findByIDGreaterThan(final int ID) {
-		return EapEventType.findByAttributeGreaterThan("ID", Integer.toString(ID));
-	}
-
-	public static List<EapEventType> findByIDLessThan(final int ID) {
-		return EapEventType.findByAttributeLessThan("ID", Integer.toString(ID));
-	}
-
-	public static List<EapEventType> findByAttribute(final String attributeName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM EventType WHERE " + attributeName + " = '" + value + "'", EapEventType.class);
-		return query.getResultList();
-	}
-
-	private static List<EapEventType> findByAttributeGreaterThan(final String attributeName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM EventType " + "WHERE " + attributeName + " > '" + value + "'", EapEventType.class);
-		return query.getResultList();
-	}
-
-	private static List<EapEventType> findByAttributeLessThan(final String attributeName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM EventType " + "WHERE " + attributeName + " < '" + value + "'", EapEventType.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * 
-	 * @param typeName
-	 *            name of the EventType
-	 * @return
-	 */
-	public static EapEventType findByTypeName(final String typeName) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM EventType " + "WHERE TypeName = '" + typeName + "'", EapEventType.class);
-		// Type names should be distinct!
-		assert (query.getResultList().size() < 2);
-		try {
-			if (query.getResultList().size() > 0) {
-				return (EapEventType) query.getResultList().get(0);
-			} else {
-				return null;
-			}
-		} catch (final Exception e) {
-			System.err.println(e);
-			return null;
-		}
 	}
 
 	public List<String> getNonHierarchicalAttributeExpressionsWithoutTimestamp() {
@@ -480,8 +533,7 @@ public class EapEventType extends Persistable {
 		if (selectedConditionAttribute == null) {
 			return new ArrayList<Serializable>();
 		} else {
-			final List<Serializable> result = EapEvent.findValuesByEventTypeAndAttributeExpression(this,
-					selectedConditionAttribute);
+			final List<Serializable> result = EapEvent.findValuesByEventTypeAndAttributeExpression(this, selectedConditionAttribute);
 			if (result == null) {
 				return new ArrayList<Serializable>();
 			}
@@ -489,90 +541,19 @@ public class EapEventType extends Persistable {
 		}
 	}
 
-	public static List<EapEventType> findAll() {
-		final Query query = Persistor.getEntityManager().createQuery("select t from EapEventType t");
-		return query.getResultList();
-	}
-
-	/**
-	 * returns Eventtypes which have a subset of the given attributes
-	 */
-	public static List<EapEventType> findMatchingEventTypesForNonHierarchicalAttributes(
-			final List<String> attributeExpressions, final String importTimeName) {
-		final List<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
-		for (final EapEventType eventType : EapEventType.findAll()) {
-			// prepare attributes without import time
-			final ArrayList<String> attributes = eventType.getNonHierarchicalAttributeExpressions();
-			attributes.remove(importTimeName);
-
-			OUTERCHECK: if (attributeExpressions.containsAll(attributes)) {
-				selectedEventTypes.add(eventType);
-			} else {
-				for (final String attribute : attributes) {
-					if (attributeExpressions.contains(attribute)) {
-						selectedEventTypes.add(eventType);
-						break OUTERCHECK;
-					}
-				}
-			}
-		}
-		return selectedEventTypes;
-	}
-
 	@Override
 	public EapEventType save() {
 		return (EapEventType) super.save();
 	}
 
-	public static boolean save(final List<EapEventType> eventTypes) {
-		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
-			entityManager.getTransaction().begin();
-			for (final EapEventType eventType : eventTypes) {
-				entityManager.persist(eventType);
-			}
-			entityManager.getTransaction().commit();
-			return true;
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
 	/**
 	 * Deletes this event type from the database.
-	 * 
+	 *
 	 * @return
 	 */
 	@Override
 	public EapEventType remove() {
 		return (EapEventType) super.remove();
-	}
-
-	/**
-	 * Deletes the specified eventtypes from the database.
-	 * 
-	 * @return
-	 */
-	public static boolean remove(final List<EapEventType> eventTypes) {
-		boolean removed = true;
-		for (final EapEventType eventType : eventTypes) {
-			removed = (eventType.remove() != null);
-		}
-		return removed;
-	}
-
-	public static void removeAll() {
-		final List<EapEventType> allEventTypes = EapEventType.findAll();
-		EapEventType.remove(allEventTypes);
-	}
-
-	public static List<String> getAllTypeNames() {
-		final ArrayList<String> eventTypeNames = new ArrayList<String>();
-		for (final EapEventType eventType : EapEventType.findAll()) {
-			eventTypeNames.add(eventType.getTypeName());
-		}
-		return eventTypeNames;
 	}
 
 	public ArrayList<String> getEventAttributes() {

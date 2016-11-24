@@ -10,10 +10,6 @@ public class ReplayFileBean implements Serializable {
 	public String eventTypeName;
 	public FileType type;
 
-	public enum FileType {
-		CSV, XML_ZIP;
-	}
-
 	public ReplayFileBean(String name, String filePath, String eventTypeName, FileType type) {
 		this.name = name;
 		this.filePath = filePath;
@@ -24,6 +20,10 @@ public class ReplayFileBean implements Serializable {
 	@Override
 	public String toString() {
 		return name + " (" + eventTypeName + ")";
+	}
+
+	public enum FileType {
+		CSV, XML_ZIP;
 	}
 
 }

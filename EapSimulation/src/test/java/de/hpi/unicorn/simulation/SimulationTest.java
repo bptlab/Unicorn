@@ -70,10 +70,8 @@ public class SimulationTest {
 
 		this.simpleBPMNProcess = new BPMNProcess("1", "SimpleProcess", null);
 		final BPMNStartEvent startEvent = new BPMNStartEvent("2", "StartEvent", null);
-		final BPMNTask task1 = new BPMNTask("3", "Task1", Arrays.asList(new MonitoringPoint(this.eventType1,
-				MonitoringPointStateTransition.terminate, "")));
-		final BPMNTask task2 = new BPMNTask("4", "Task2", Arrays.asList(new MonitoringPoint(this.eventType2,
-				MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task1 = new BPMNTask("3", "Task1", Arrays.asList(new MonitoringPoint(this.eventType1, MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task2 = new BPMNTask("4", "Task2", Arrays.asList(new MonitoringPoint(this.eventType2, MonitoringPointStateTransition.terminate, "")));
 		final BPMNEndEvent endEvent = new BPMNEndEvent("5", "EndEvent", null);
 
 		AbstractBPMNElement.connectElements(startEvent, task1);
@@ -94,17 +92,12 @@ public class SimulationTest {
 	private CorrelationProcess createComplexProcess() {
 		this.complexBPMNProcess = new BPMNProcess("6", "ComplexProcess", null);
 		final BPMNStartEvent startEvent = new BPMNStartEvent("7", "StartEvent", null);
-		final BPMNTask task1 = new BPMNTask("8", "Task1", Arrays.asList(new MonitoringPoint(this.eventType1,
-				MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task1 = new BPMNTask("8", "Task1", Arrays.asList(new MonitoringPoint(this.eventType1, MonitoringPointStateTransition.terminate, "")));
 		final BPMNAndGateway and1 = new BPMNAndGateway("9", "XOR1", null);
-		final BPMNTask task2 = new BPMNTask("10", "Task2", Arrays.asList(new MonitoringPoint(this.eventType2,
-				MonitoringPointStateTransition.terminate, "")));
-		final BPMNTask task3 = new BPMNTask("11", "Task3", Arrays.asList(new MonitoringPoint(this.eventType3,
-				MonitoringPointStateTransition.terminate, "")));
-		final BPMNTask task4 = new BPMNTask("12", "Task4", Arrays.asList(new MonitoringPoint(this.eventType4,
-				MonitoringPointStateTransition.terminate, "")));
-		final BPMNTask task5 = new BPMNTask("13", "Task5", Arrays.asList(new MonitoringPoint(this.eventType5,
-				MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task2 = new BPMNTask("10", "Task2", Arrays.asList(new MonitoringPoint(this.eventType2, MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task3 = new BPMNTask("11", "Task3", Arrays.asList(new MonitoringPoint(this.eventType3, MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task4 = new BPMNTask("12", "Task4", Arrays.asList(new MonitoringPoint(this.eventType4, MonitoringPointStateTransition.terminate, "")));
+		final BPMNTask task5 = new BPMNTask("13", "Task5", Arrays.asList(new MonitoringPoint(this.eventType5, MonitoringPointStateTransition.terminate, "")));
 		final BPMNAndGateway and2 = new BPMNAndGateway("14", "XOR2", null);
 		final BPMNEndEvent endEvent = new BPMNEndEvent("15", "EndEvent", null);
 
@@ -118,11 +111,9 @@ public class SimulationTest {
 		AbstractBPMNElement.connectElements(task5, and2);
 		AbstractBPMNElement.connectElements(and2, endEvent);
 
-		this.complexBPMNProcess.addBPMNElements(Arrays.asList(startEvent, task1, task2, task3, task4, task5, and1,
-				and2, endEvent));
+		this.complexBPMNProcess.addBPMNElements(Arrays.asList(startEvent, task1, task2, task3, task4, task5, and1, and2, endEvent));
 		this.complexBPMNProcess.save();
-		final Set<EapEventType> eventTypes = new HashSet<EapEventType>(Arrays.asList(this.eventType1, this.eventType2,
-				this.eventType3, this.eventType4, this.eventType5));
+		final Set<EapEventType> eventTypes = new HashSet<EapEventType>(Arrays.asList(this.eventType1, this.eventType2, this.eventType3, this.eventType4, this.eventType5));
 		final CorrelationProcess process = new CorrelationProcess("ComplexProcess", eventTypes);
 		process.save();
 		process.setBpmnProcess(this.simpleBPMNProcess);
@@ -140,8 +131,7 @@ public class SimulationTest {
 			elementDerivation.put(bpmnElement, DerivationType.FIXED);
 			elementDurations.put(bpmnElement, "1");
 		}
-		final Simulator simulator = new Simulator(process, this.simpleBPMNProcess, this.attributes, elementDurations,
-				new HashMap<AbstractBPMNElement, String>(), elementDerivation, null);
+		final Simulator simulator = new Simulator(process, this.simpleBPMNProcess, this.attributes, elementDurations, new HashMap<AbstractBPMNElement, String>(), elementDerivation, null);
 		simulator.simulate(1);
 
 		final List<EapEvent> events = EapEvent.findAll();
@@ -161,18 +151,13 @@ public class SimulationTest {
 			elementDurations.put(bpmnElement, "1");
 		}
 
-		final Simulator simulator = new Simulator(process, this.complexBPMNProcess, this.attributes, elementDurations,
-				new HashMap<AbstractBPMNElement, String>(), elementDerivation, null);
+		final Simulator simulator = new Simulator(process, this.complexBPMNProcess, this.attributes, elementDurations, new HashMap<AbstractBPMNElement, String>(), elementDerivation, null);
 		simulator.simulate(1);
 
 		final List<EapEvent> events = EapEvent.findAll();
 		Assert.assertTrue(events.size() == 5);
 		Assert.assertEquals(this.eventType1, events.get(0).getEventType());
-		Assert.assertTrue(this.eventType2.equals(events.get(1).getEventType())
-				|| this.eventType3.equals(events.get(1).getEventType()));
-		Assert.assertTrue(this.eventType4.equals(events.get(2).getEventType())
-				|| this.eventType5.equals(events.get(2).getEventType())
-				|| this.eventType2.equals(events.get(1).getEventType())
-				|| this.eventType3.equals(events.get(1).getEventType()));
+		Assert.assertTrue(this.eventType2.equals(events.get(1).getEventType()) || this.eventType3.equals(events.get(1).getEventType()));
+		Assert.assertTrue(this.eventType4.equals(events.get(2).getEventType()) || this.eventType5.equals(events.get(2).getEventType()) || this.eventType2.equals(events.get(1).getEventType()) || this.eventType3.equals(events.get(1).getEventType()));
 	}
 }

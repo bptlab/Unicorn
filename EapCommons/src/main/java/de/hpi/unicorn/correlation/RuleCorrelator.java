@@ -30,21 +30,17 @@ public class RuleCorrelator {
 	/**
 	 * Defines the correlation for a process using correlation rules and
 	 * correlates existing events for the process.
-	 * 
-	 * @param correlationRules
-	 *            set of correlation rules (pairs of attributes belonging to the
-	 *            same or different event type) defining the correlation of the
-	 *            given process (e.g. E1.A=E2.B, E2.G=E3.H, E3.H=E4.H for event
-	 *            types E1, E2, E3, E4)
-	 * @param process
-	 *            the process from which the process instances are derived and
-	 *            created
-	 * @param timeCondition
-	 *            (optional) rule for advanced time correlation related to the
-	 *            process
+	 *
+	 * @param correlationRules set of correlation rules (pairs of attributes belonging to the
+	 *                         same or different event type) defining the correlation of the
+	 *                         given process (e.g. E1.A=E2.B, E2.G=E3.H, E3.H=E4.H for event
+	 *                         types E1, E2, E3, E4)
+	 * @param process          the process from which the process instances are derived and
+	 *                         created
+	 * @param timeCondition    (optional) rule for advanced time correlation related to the
+	 *                         process
 	 */
-	public static void correlate(final Set<CorrelationRule> correlationRules, final CorrelationProcess process,
-			final TimeCondition timeCondition) {
+	public static void correlate(final Set<CorrelationRule> correlationRules, final CorrelationProcess process, final TimeCondition timeCondition) {
 		final Set<EapEventType> eventTypes = new HashSet<EapEventType>();
 		for (final CorrelationRule rule : correlationRules) {
 			rule.setProcess(process);
@@ -74,24 +70,18 @@ public class RuleCorrelator {
 	 * Correlates an event to a process instance using correlation rules. If no
 	 * matching process instance is found, a new process instance is created and
 	 * the event is be correlated to this instance.
-	 * 
-	 * @param actualEvent
-	 *            the event to be correlated to a process instance
-	 * @param correlationRules
-	 *            set of correlation rules (pairs of attributes belonging to the
-	 *            same or different event type) defining the correlation of the
-	 *            given process (e.g. E1.A=E2.B, E2.G=E3.H, E3.H=E4.H for event
-	 *            types E1, E2, E3, E4)
-	 * @param process
-	 *            the process from which the process instances are derived and
-	 *            created
-	 * @param timeCondition
-	 *            (optional) rule for advanced time correlation related to the
-	 *            process
+	 *
+	 * @param actualEvent      the event to be correlated to a process instance
+	 * @param correlationRules set of correlation rules (pairs of attributes belonging to the
+	 *                         same or different event type) defining the correlation of the
+	 *                         given process (e.g. E1.A=E2.B, E2.G=E3.H, E3.H=E4.H for event
+	 *                         types E1, E2, E3, E4)
+	 * @param process          the process from which the process instances are derived and
+	 *                         created
+	 * @param timeCondition    (optional) rule for advanced time correlation related to the
+	 *                         process
 	 */
-	static void correlateEventToProcessInstance(final EapEvent actualEvent,
-			final Set<CorrelationRule> correlationRules, final CorrelationProcess process,
-			final TimeCondition timeCondition) {
+	static void correlateEventToProcessInstance(final EapEvent actualEvent, final Set<CorrelationRule> correlationRules, final CorrelationProcess process, final TimeCondition timeCondition) {
 
 		boolean insertedInExistingProcessInstance = false;
 		final List<CorrelationProcessInstance> processInstances = CorrelationProcessInstance.findByProcess(process);
@@ -105,19 +95,14 @@ public class RuleCorrelator {
 		 */
 		for (final CorrelationProcessInstance actualProcessInstance : processInstances) {
 			boolean processInstanceAndEventMatch = false;
-			final Map<String, Serializable> valuesOfProcessInstance = actualProcessInstance
-					.getCorrelationAttributesAndValues();
+			final Map<String, Serializable> valuesOfProcessInstance = actualProcessInstance.getCorrelationAttributesAndValues();
 			final Map<String, Serializable> valuesOfEvent = actualEvent.getValues();
 			for (final CorrelationRule actualCorrelationRule : correlationRules) {
-				if (actualCorrelationRule.getFirstAttribute().getEventType().getID() == actualEvent.getEventType()
-						.getID()) {
-					final String qualifiedAttributeName = actualCorrelationRule.getSecondAttribute()
-							.getQualifiedAttributeName();
-					final String attributeExpression = actualCorrelationRule.getFirstAttribute()
-							.getAttributeExpression();
+				if (actualCorrelationRule.getFirstAttribute().getEventType().getID() == actualEvent.getEventType().getID()) {
+					final String qualifiedAttributeName = actualCorrelationRule.getSecondAttribute().getQualifiedAttributeName();
+					final String attributeExpression = actualCorrelationRule.getFirstAttribute().getAttributeExpression();
 					if (valuesOfProcessInstance.get(qualifiedAttributeName) != null) {
-						if (valuesOfProcessInstance.get(qualifiedAttributeName).equals(
-								valuesOfEvent.get(attributeExpression))) {
+						if (valuesOfProcessInstance.get(qualifiedAttributeName).equals(valuesOfEvent.get(attributeExpression))) {
 							processInstanceAndEventMatch = true;
 						} else {
 							processInstanceAndEventMatch = false;
@@ -126,15 +111,11 @@ public class RuleCorrelator {
 						continue;
 					}
 				}
-				if (actualCorrelationRule.getSecondAttribute().getEventType().getID() == actualEvent.getEventType()
-						.getID()) {
-					final String qualifiedAttributeName = actualCorrelationRule.getFirstAttribute()
-							.getQualifiedAttributeName();
-					final String attributeExpression = actualCorrelationRule.getSecondAttribute()
-							.getAttributeExpression();
+				if (actualCorrelationRule.getSecondAttribute().getEventType().getID() == actualEvent.getEventType().getID()) {
+					final String qualifiedAttributeName = actualCorrelationRule.getFirstAttribute().getQualifiedAttributeName();
+					final String attributeExpression = actualCorrelationRule.getSecondAttribute().getAttributeExpression();
 					if (valuesOfProcessInstance.get(qualifiedAttributeName) != null) {
-						if (valuesOfProcessInstance.get(qualifiedAttributeName).equals(
-								valuesOfEvent.get(attributeExpression))) {
+						if (valuesOfProcessInstance.get(qualifiedAttributeName).equals(valuesOfEvent.get(attributeExpression))) {
 							processInstanceAndEventMatch = true;
 						} else {
 							processInstanceAndEventMatch = false;
@@ -167,15 +148,11 @@ public class RuleCorrelator {
 		 */
 		if (!matchedProcessInstances.isEmpty()) {
 			for (final CorrelationProcessInstance actualProcessInstance : matchedProcessInstances) {
-				if (timeCondition == null
-						|| timeCondition.belongsEventToTimerEvent(actualEvent, actualProcessInstance.getTimerEvent())) {
-					final Iterator<CorrelationProcessInstance> processInstanceIterator = matchedProcessInstances
-							.iterator();
+				if (timeCondition == null || timeCondition.belongsEventToTimerEvent(actualEvent, actualProcessInstance.getTimerEvent())) {
+					final Iterator<CorrelationProcessInstance> processInstanceIterator = matchedProcessInstances.iterator();
 					while (processInstanceIterator.hasNext()) {
 						final CorrelationProcessInstance processInstanceToMerge = processInstanceIterator.next();
-						if (processInstanceToMerge != actualProcessInstance
-								&& (processInstanceToMerge.getTimerEvent() == null || processInstanceToMerge
-										.getTimerEvent().equals(actualProcessInstance.getTimerEvent()))) {
+						if (processInstanceToMerge != actualProcessInstance && (processInstanceToMerge.getTimerEvent() == null || processInstanceToMerge.getTimerEvent().equals(actualProcessInstance.getTimerEvent()))) {
 							for (final EapEvent eventToMerge : processInstanceToMerge.getEvents()) {
 								if (!actualProcessInstance.getEvents().contains(eventToMerge)) {
 									actualProcessInstance.addEvent(eventToMerge);
@@ -184,14 +161,12 @@ public class RuleCorrelator {
 								}
 							}
 							// The correlation values are merged here.
-							actualProcessInstance.addCorrelationAttributesAndValues(processInstanceToMerge
-									.getCorrelationAttributesAndValues());
+							actualProcessInstance.addCorrelationAttributesAndValues(processInstanceToMerge.getCorrelationAttributesAndValues());
 							processInstanceToMerge.remove();
 							// System.out.println("Process instance merged and removed.");
 						}
 					}
-					RuleCorrelator.storeCorrelationValuesOfProcessInstance(actualProcessInstance, correlationRules,
-							actualEvent);
+					RuleCorrelator.storeCorrelationValuesOfProcessInstance(actualProcessInstance, correlationRules, actualEvent);
 
 					actualProcessInstance.addEvent(actualEvent);
 					actualProcessInstance.merge();
@@ -249,18 +224,14 @@ public class RuleCorrelator {
 	 * Example: Event from type E2 has values c=3 and d=4. Correlation rules are
 	 * E1.a=E2.c and E2.d=E3.d - correlation values are. E1.a=3, E2.c=3, E2.d=4
 	 * and E3.d=4.
-	 * 
-	 * @param processInstance
-	 *            the process instance where the correlation values have to be
-	 *            stored
-	 * @param correlationRules
-	 *            set of correlation rules defining the correlation of the given
-	 *            process
-	 * @param event
-	 *            the event where the values for correlation are derived from
+	 *
+	 * @param processInstance  the process instance where the correlation values have to be
+	 *                         stored
+	 * @param correlationRules set of correlation rules defining the correlation of the given
+	 *                         process
+	 * @param event            the event where the values for correlation are derived from
 	 */
-	private static void storeCorrelationValuesOfProcessInstance(final CorrelationProcessInstance processInstance,
-			final Set<CorrelationRule> correlationRules, final EapEvent event) {
+	private static void storeCorrelationValuesOfProcessInstance(final CorrelationProcessInstance processInstance, final Set<CorrelationRule> correlationRules, final EapEvent event) {
 		final List<TypeTreeNode> correlationAttributes = RuleCorrelator.extractCorrelationAttributes(correlationRules);
 		// Set<CorrelationRule> correlationRules = new
 		// HashSet<CorrelationRule>(correlationRulesOfProcess);
@@ -276,26 +247,20 @@ public class RuleCorrelator {
 					for (final CorrelationRule actualCorrelationRule : correlationRules) {
 						if (actualCorrelationAttribute.equalsWithEventType(actualCorrelationRule.getFirstAttribute())) {
 							final TypeTreeNode relatedAttribute = actualCorrelationRule.getSecondAttribute();
-							if (!processInstance.getCorrelationAttributesAndValues().containsKey(
-									relatedAttribute.getQualifiedAttributeName())) {
-								processInstance.addCorrelationAttributeAndValue(
-										relatedAttribute.getQualifiedAttributeName(), correlationValue);
+							if (!processInstance.getCorrelationAttributesAndValues().containsKey(relatedAttribute.getQualifiedAttributeName())) {
+								processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(), correlationValue);
 								// correlationAttributes.remove(relatedAttribute);
 								// correlationRules.remove(actualCorrelationRule);
-								RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance,
-										correlationRules, correlationAttributes, relatedAttribute, correlationValue);
+								RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules, correlationAttributes, relatedAttribute, correlationValue);
 							}
 						}
 						if (actualCorrelationAttribute.equalsWithEventType(actualCorrelationRule.getSecondAttribute())) {
 							final TypeTreeNode relatedAttribute = actualCorrelationRule.getFirstAttribute();
-							if (!processInstance.getCorrelationAttributesAndValues().containsKey(
-									relatedAttribute.getQualifiedAttributeName())) {
-								processInstance.addCorrelationAttributeAndValue(
-										relatedAttribute.getQualifiedAttributeName(), correlationValue);
+							if (!processInstance.getCorrelationAttributesAndValues().containsKey(relatedAttribute.getQualifiedAttributeName())) {
+								processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(), correlationValue);
 								// correlationAttributes.remove(relatedAttribute);
 								// correlationRules.remove(actualCorrelationRule);
-								RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance,
-										correlationRules, correlationAttributes, relatedAttribute, correlationValue);
+								RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules, correlationAttributes, relatedAttribute, correlationValue);
 							}
 						}
 					}
@@ -304,28 +269,20 @@ public class RuleCorrelator {
 		}
 	}
 
-	private static void storeCorrelationValuesOfProcessInstance(final CorrelationProcessInstance processInstance,
-			final Set<CorrelationRule> correlationRules, final List<TypeTreeNode> correlationAttributes,
-			final TypeTreeNode actualAttribute, final Serializable correlationValue) {
+	private static void storeCorrelationValuesOfProcessInstance(final CorrelationProcessInstance processInstance, final Set<CorrelationRule> correlationRules, final List<TypeTreeNode> correlationAttributes, final TypeTreeNode actualAttribute, final Serializable correlationValue) {
 		for (final CorrelationRule actualCorrelationRule : correlationRules) {
 			if (actualAttribute.equalsWithEventType(actualCorrelationRule.getFirstAttribute())) {
 				final TypeTreeNode relatedAttribute = actualCorrelationRule.getSecondAttribute();
-				if (!processInstance.getCorrelationAttributesAndValues().containsKey(
-						relatedAttribute.getQualifiedAttributeName())) {
-					processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(),
-							correlationValue);
-					RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules,
-							correlationAttributes, relatedAttribute, correlationValue);
+				if (!processInstance.getCorrelationAttributesAndValues().containsKey(relatedAttribute.getQualifiedAttributeName())) {
+					processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(), correlationValue);
+					RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules, correlationAttributes, relatedAttribute, correlationValue);
 				}
 			}
 			if (actualAttribute.equalsWithEventType(actualCorrelationRule.getSecondAttribute())) {
 				final TypeTreeNode relatedAttribute = actualCorrelationRule.getFirstAttribute();
-				if (!processInstance.getCorrelationAttributesAndValues().containsKey(
-						relatedAttribute.getQualifiedAttributeName())) {
-					processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(),
-							correlationValue);
-					RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules,
-							correlationAttributes, relatedAttribute, correlationValue);
+				if (!processInstance.getCorrelationAttributesAndValues().containsKey(relatedAttribute.getQualifiedAttributeName())) {
+					processInstance.addCorrelationAttributeAndValue(relatedAttribute.getQualifiedAttributeName(), correlationValue);
+					RuleCorrelator.storeCorrelationValuesOfProcessInstance(processInstance, correlationRules, correlationAttributes, relatedAttribute, correlationValue);
 				}
 			}
 		}
@@ -334,10 +291,9 @@ public class RuleCorrelator {
 	/**
 	 * Helper method to extract all attributes from the correlation rules.
 	 * Unique by attribute expression and event type.
-	 * 
-	 * @param correlationRules
-	 *            correlation rules where the attributes have to be extracted
-	 *            from
+	 *
+	 * @param correlationRules correlation rules where the attributes have to be extracted
+	 *                         from
 	 * @return list of event type attributes
 	 */
 	private static List<TypeTreeNode> extractCorrelationAttributes(final Set<CorrelationRule> correlationRules) {

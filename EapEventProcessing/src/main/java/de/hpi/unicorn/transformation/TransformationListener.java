@@ -43,7 +43,7 @@ public class TransformationListener implements UpdateListener {
 
 	/**
 	 * Normalizes the transformed events and sends them to the broker.
-	 * 
+	 *
 	 * @see UpdateListener#update(EventBean[], EventBean[])
 	 */
 	@Override
@@ -51,30 +51,29 @@ public class TransformationListener implements UpdateListener {
 
 		this.uniqueEvents = new HashSet<Object>();
 
-//		 create event/attribute values for event type
-		 for (EventBean data : newData) {
-		
-		//TODO: CHeck because this avoids UNICORN to match all events that fit to the query!
-//		final EventBean data = newData[newData.length - 1]; // [Integration Bug
-															// #416]
-		// System.out.println("Event received: " + data.getUnderlying());
-		if (data.getUnderlying() instanceof ElementImpl) {
-			this.addEvent((ElementImpl) data.getUnderlying());
-		} else if (data.getUnderlying() instanceof HashMap) {
-			final Map<String, Serializable> attributeExpressionsAndValues = (Map<String, Serializable>) data
-					.getUnderlying();
-			for (final Object value : attributeExpressionsAndValues.values()) {
-				if (value instanceof XMLEventBean) {
-					final XMLEventBean bean = (XMLEventBean) value;
-					if (bean.getUnderlying() instanceof ElementImpl) {
-						this.addEvent((ElementImpl) bean.getUnderlying());
+		//		 create event/attribute values for event type
+		for (EventBean data : newData) {
+
+			//TODO: CHeck because this avoids UNICORN to match all events that fit to the query!
+			//		final EventBean data = newData[newData.length - 1]; // [Integration Bug
+			// #416]
+			// System.out.println("Event received: " + data.getUnderlying());
+			if (data.getUnderlying() instanceof ElementImpl) {
+				this.addEvent((ElementImpl) data.getUnderlying());
+			} else if (data.getUnderlying() instanceof HashMap) {
+				final Map<String, Serializable> attributeExpressionsAndValues = (Map<String, Serializable>) data.getUnderlying();
+				for (final Object value : attributeExpressionsAndValues.values()) {
+					if (value instanceof XMLEventBean) {
+						final XMLEventBean bean = (XMLEventBean) value;
+						if (bean.getUnderlying() instanceof ElementImpl) {
+							this.addEvent((ElementImpl) bean.getUnderlying());
+						}
+					} else {
+						this.addEvent(attributeExpressionsAndValues);
 					}
-				} else {
-					this.addEvent(attributeExpressionsAndValues);
 				}
 			}
 		}
-		 }
 		this.uniqueEvents.clear();
 	}
 

@@ -30,7 +30,7 @@ import de.hpi.unicorn.utils.TestHelper;
 
 /**
  * This class tests the saving, finding and removing of {@link EapEventType}.
- * 
+ *
  * @author micha
  */
 @FixMethodOrder(MethodSorters.JVM)

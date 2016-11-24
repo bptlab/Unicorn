@@ -29,10 +29,7 @@ import de.hpi.unicorn.query.QueryWrapper;
 public class OnDemandQueryEditor extends QueryEditor {
 
 	private static final long serialVersionUID = 1L;
-	private static final String ON_DEMAND_QUERY_HELP_TEXT = "On-Demand Queries are always asked from a Window"
-			+ QueryEditor.lineBreak + QueryEditor.lineBreak + "Example-Query:" + QueryEditor.lineBreak
-			+ "SELECT ValueName, Timestamp" + QueryEditor.lineBreak + "FROM EventTypeWindow" + QueryEditor.lineBreak
-			+ "WHERE ValueName = 'ValueX'";
+	private static final String ON_DEMAND_QUERY_HELP_TEXT = "On-Demand Queries are always asked from a Window" + QueryEditor.lineBreak + QueryEditor.lineBreak + "Example-Query:" + QueryEditor.lineBreak + "SELECT ValueName, Timestamp" + QueryEditor.lineBreak + "FROM EventTypeWindow" + QueryEditor.lineBreak + "WHERE ValueName = 'ValueX'";
 	private BlockingAjaxButton executeQueryButton;
 	private AjaxButton editQueryButton, deleteQueryButton, saveQueryButton;
 
@@ -70,8 +67,7 @@ public class OnDemandQueryEditor extends QueryEditor {
 					}
 
 					if (OnDemandQueryEditor.this.selectedQuery == null) {
-						final QueryWrapper query = new QueryWrapper(queryTitle, OnDemandQueryEditor.this.queryString,
-								QueryTypeEnum.ONDEMAND);
+						final QueryWrapper query = new QueryWrapper(queryTitle, OnDemandQueryEditor.this.queryString, QueryTypeEnum.ONDEMAND);
 						query.validate();
 						query.save();
 						OnDemandQueryEditor.this.queries.add(query);
@@ -107,8 +103,7 @@ public class OnDemandQueryEditor extends QueryEditor {
 					OnDemandQueryEditor.this.getFeedbackPanel().error("No query selected.");
 					target.add(OnDemandQueryEditor.this.getFeedbackPanel());
 				} else {
-					OnDemandQueryEditor.this.textFieldDefaultValues
-							.setQueryNameTextField(OnDemandQueryEditor.this.selectedQuery.getTitle());
+					OnDemandQueryEditor.this.textFieldDefaultValues.setQueryNameTextField(OnDemandQueryEditor.this.selectedQuery.getTitle());
 					OnDemandQueryEditor.this.queryString = OnDemandQueryEditor.this.selectedQuery.getQueryString();
 					OnDemandQueryEditor.this.updateQueryListChoice();
 					target.add(OnDemandQueryEditor.this.queryNameTextField);
@@ -169,11 +164,9 @@ public class OnDemandQueryEditor extends QueryEditor {
 		final ArrayList<LabelTreeElement<String>> treeElements = new ArrayList<LabelTreeElement<String>>();
 		final List<EapEventType> eventTypes = EapEventType.findAll();
 		for (final EapEventType eventType : eventTypes) {
-			final LabelTreeElement<String> eventTypeRootElement = new LabelTreeElement<String>(count++,
-					eventType.getTypeName() + "Window");
+			final LabelTreeElement<String> eventTypeRootElement = new LabelTreeElement<String>(count++, eventType.getTypeName() + "Window");
 			treeElements.add(eventTypeRootElement);
-			final List<LabelTreeElement<String>> rootElements = this.convertToTreeElements(count,
-					eventType.getRootLevelValueTypes());
+			final List<LabelTreeElement<String>> rootElements = this.convertToTreeElements(count, eventType.getRootLevelValueTypes());
 			for (final LabelTreeElement<String> element : rootElements) {
 				element.setParent(eventTypeRootElement);
 			}

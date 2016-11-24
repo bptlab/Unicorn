@@ -12,7 +12,7 @@ import de.hpi.unicorn.event.EapEventType;
 
 /**
  * This class filters {@link EapEventType}s in the {@link EventTypePanel}.
- * 
+ *
  * @author micha
  */
 public class EventTypeFilter extends AbstractFilter {
@@ -26,7 +26,7 @@ public class EventTypeFilter extends AbstractFilter {
 	/**
 	 * Constructor for the class, which filters {@link EapEventType}s in the
 	 * {@link EventTypePanel}.
-	 * 
+	 *
 	 * @param filterCriteria
 	 * @param filterCondition
 	 * @param filterValue

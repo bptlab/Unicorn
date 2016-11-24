@@ -46,6 +46,7 @@ import de.hpi.unicorn.utils.TempFolderUtil;
 public class CategoryPanel extends Panel {
 
 	private static final long serialVersionUID = 573672364803879784L;
+	protected TimeMode timeMode;
 	private CheckBoxMultipleChoice<ReplayFileBean> eventsCheckBoxMultipleChoice;
 	private FilesPanel panel;
 	private List<ReplayFileBean> selectedFiles = new ArrayList<ReplayFileBean>();
@@ -57,7 +58,6 @@ public class CategoryPanel extends Panel {
 	private String fixedOffset = "-1";
 	private List<ReplayFileBean> beans;
 	private String category;
-	protected TimeMode timeMode;
 
 	public CategoryPanel(final String id, final FilesPanel panel, String category, List<ReplayFileBean> beans) {
 		super(id);
@@ -114,8 +114,7 @@ public class CategoryPanel extends Panel {
 	}
 
 	private void addEventsCheckBoxMultipleChoice(final Form<Void> layoutForm) {
-		this.eventsCheckBoxMultipleChoice = new CheckBoxMultipleChoice<ReplayFileBean>("eventsCheckBoxMultipleChoice",
-				new PropertyModel<List<ReplayFileBean>>(this, "selectedFiles"), beans);
+		this.eventsCheckBoxMultipleChoice = new CheckBoxMultipleChoice<ReplayFileBean>("eventsCheckBoxMultipleChoice", new PropertyModel<List<ReplayFileBean>>(this, "selectedFiles"), beans);
 		this.eventsCheckBoxMultipleChoice.setOutputMarkupId(true);
 		layoutForm.add(this.eventsCheckBoxMultipleChoice);
 
@@ -138,29 +137,25 @@ public class CategoryPanel extends Panel {
 	}
 
 	private void addScaleFactorTextField(Form<Void> form) {
-		this.scaleFactorInput = new TextField<String>("scaleFactorInput",
-				new PropertyModel<String>(this, "scaleFactor"));
+		this.scaleFactorInput = new TextField<String>("scaleFactorInput", new PropertyModel<String>(this, "scaleFactor"));
 		this.scaleFactorInput.setOutputMarkupId(true);
 		form.add(this.scaleFactorInput);
 	}
 
 	private void addAlignedTimeTextField(Form<Void> form) {
-		this.alignedTimeInput = new TextField<String>("alignedTimeInput",
-				new PropertyModel<String>(this, "alignedTime"));
+		this.alignedTimeInput = new TextField<String>("alignedTimeInput", new PropertyModel<String>(this, "alignedTime"));
 		this.alignedTimeInput.setOutputMarkupId(true);
 		form.add(this.alignedTimeInput);
 	}
 
 	private void addFixedOffsetTextField(Form<Void> form) {
-		this.fixedOffsetInput = new TextField<String>("fixedOffsetInput",
-				new PropertyModel<String>(this, "fixedOffset"));
+		this.fixedOffsetInput = new TextField<String>("fixedOffsetInput", new PropertyModel<String>(this, "fixedOffset"));
 		this.fixedOffsetInput.setOutputMarkupId(true);
 		form.add(this.fixedOffsetInput);
 	}
 
 	private void addRadioChoiceForTimeMode(Form<Void> form) {
-		final RadioChoice<TimeMode> timeModeRadioChoice = new RadioChoice<TimeMode>("timeModeChoice",
-				new Model<TimeMode>(), Arrays.asList(TimeMode.values()));
+		final RadioChoice<TimeMode> timeModeRadioChoice = new RadioChoice<TimeMode>("timeModeChoice", new Model<TimeMode>(), Arrays.asList(TimeMode.values()));
 		timeModeRadioChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 
 			@Override
@@ -198,16 +193,13 @@ public class CategoryPanel extends Panel {
 					if (b.type == FileType.CSV) {
 
 						if (timeMode == TimeMode.ALIGNED) {
-							List<EapEvent> temp = panel.generateEventsFromCSV(b.filePath,
-									EapEventType.findByTypeName(b.eventTypeName));
+							List<EapEvent> temp = panel.generateEventsFromCSV(b.filePath, EapEventType.findByTypeName(b.eventTypeName));
 							eventLists.add(temp);
 						} else {
-							events.addAll(panel.generateEventsFromCSV(b.filePath,
-									EapEventType.findByTypeName(b.eventTypeName)));
+							events.addAll(panel.generateEventsFromCSV(b.filePath, EapEventType.findByTypeName(b.eventTypeName)));
 						}
 					} else if (b.type == FileType.XML_ZIP) {
-						String outputFolder = TempFolderUtil.getFolder() + System.getProperty("file.separator")
-								+ b.name;
+						String outputFolder = TempFolderUtil.getFolder() + System.getProperty("file.separator") + b.name;
 						File folder = new File(outputFolder);
 						if (!folder.exists()) {
 							folder.mkdir();
@@ -255,14 +247,12 @@ public class CategoryPanel extends Panel {
 						if (timeMode == TimeMode.ALIGNED) {
 							List<EapEvent> temp = new ArrayList<EapEvent>();
 							for (String path : extractedXmlFilePaths) {
-								temp.addAll(panel.generateEventsFromXML(path,
-										EapEventType.findByTypeName(b.eventTypeName)));
+								temp.addAll(panel.generateEventsFromXML(path, EapEventType.findByTypeName(b.eventTypeName)));
 							}
 							eventLists.add(temp);
 						} else {
 							for (String path : extractedXmlFilePaths) {
-								events.addAll(panel.generateEventsFromXML(path,
-										EapEventType.findByTypeName(b.eventTypeName)));
+								events.addAll(panel.generateEventsFromXML(path, EapEventType.findByTypeName(b.eventTypeName)));
 							}
 						}
 					}
@@ -293,20 +283,16 @@ public class CategoryPanel extends Panel {
 				}
 
 				if (timeMode == TimeMode.ALIGNED_MULTIPLE) {
-					panel.replayEventsWithMultipleAlignment(replayEvents, Integer.parseInt(scaleFactor), category,
-							selectedFiles, timeMode, simulationTimeInit, fOffset);
+					panel.replayEventsWithMultipleAlignment(replayEvents, Integer.parseInt(scaleFactor), category, selectedFiles, timeMode, simulationTimeInit, fOffset);
 				} else if (timeMode == TimeMode.ALIGNED) {
 					for (List<EapEvent> e : eventLists) {
-						panel.replayEvents(e, Integer.parseInt(scaleFactor), category, selectedFiles, timeMode,
-								simulationTimeInit, fOffset);
+						panel.replayEvents(e, Integer.parseInt(scaleFactor), category, selectedFiles, timeMode, simulationTimeInit, fOffset);
 					}
 				} else {
-					panel.replayEvents(events, Integer.parseInt(scaleFactor), category, selectedFiles, timeMode,
-							simulationTimeInit, fOffset);
+					panel.replayEvents(events, Integer.parseInt(scaleFactor), category, selectedFiles, timeMode, simulationTimeInit, fOffset);
 				}
 
-				panel.getParentPage().getFeedbackPanel()
-						.success("Replayer started for " + category + " - files: " + selectedFiles + ".");
+				panel.getParentPage().getFeedbackPanel().success("Replayer started for " + category + " - files: " + selectedFiles + ".");
 
 				target.add(panel.getParentPage());
 			}
@@ -320,8 +306,9 @@ public class CategoryPanel extends Panel {
 		ReplayEvent ceiling = replayList.ceiling(re);
 		ReplayEvent floor = replayList.floor(re);
 		// update the offsets
-		if (ceiling != null)
+		if (ceiling != null) {
 			ceiling.setOffset(ceiling.getTime() - re.getTime());
+		}
 		if (floor != null) {
 			re.setOffset(re.getTime() - floor.getTime());
 		} else {

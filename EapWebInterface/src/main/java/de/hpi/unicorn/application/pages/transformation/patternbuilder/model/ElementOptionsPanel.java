@@ -26,8 +26,7 @@ public class ElementOptionsPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
 
-	public ElementOptionsPanel(final String id, final EventTreeElement<Serializable> element,
-			final PatternBuilderPanel patternBuilderPanel) {
+	public ElementOptionsPanel(final String id, final EventTreeElement<Serializable> element, final PatternBuilderPanel patternBuilderPanel) {
 		super(id);
 
 		final Form<Void> layoutForm = new Form<Void>("layoutForm");
@@ -52,8 +51,7 @@ public class ElementOptionsPanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				Collections.swap(this.relatedElements, this.relatedElements.indexOf(element) - 1,
-						this.relatedElements.indexOf(element));
+				Collections.swap(this.relatedElements, this.relatedElements.indexOf(element) - 1, this.relatedElements.indexOf(element));
 				element.getParent().setChildren(this.relatedElements);
 				target.add(table);
 			}
@@ -71,14 +69,12 @@ public class ElementOptionsPanel extends Panel {
 				} else {
 					return false;
 				}
-				return (this.relatedElements.size() > 1)
-						&& (this.relatedElements.indexOf(element) < this.relatedElements.size() - 1);
+				return (this.relatedElements.size() > 1) && (this.relatedElements.indexOf(element) < this.relatedElements.size() - 1);
 			}
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				Collections.swap(this.relatedElements, this.relatedElements.indexOf(element),
-						this.relatedElements.indexOf(element) + 1);
+				Collections.swap(this.relatedElements, this.relatedElements.indexOf(element), this.relatedElements.indexOf(element) + 1);
 				element.getParent().setChildren(this.relatedElements);
 				target.add(table);
 			}

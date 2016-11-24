@@ -51,8 +51,7 @@ public class XMLExporter {
 			e.printStackTrace();
 		}
 		final DOMSource source = new DOMSource(doc);
-		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator")
-				+ event.getEventType().getTypeName() + "export.xml");
+		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + event.getEventType().getTypeName() + "export.xml");
 		final StreamResult result = new StreamResult(file);
 		try {
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -82,8 +81,7 @@ public class XMLExporter {
 		element.setAttribute("xsi:noNamespaceSchemaLocation", eventTypeName + ".xsd");
 		final Node timestampNode = doc.importNode(event.getTimestampAsNode().getFirstChild(), true);
 		element.appendChild(timestampNode);
-		final List<EventTransformationElement<String, Serializable>> treeRootElements = event.getValueTree()
-				.getTreeRootElements();
+		final List<EventTransformationElement<String, Serializable>> treeRootElements = event.getValueTree().getTreeRootElements();
 		for (final EventTransformationElement<String, Serializable> rootElement : treeRootElements) {
 			final Node rootNode = doc.importNode(rootElement.getNodeWithChildnodes().getFirstChild(), true);
 			element.appendChild(rootNode);
@@ -95,14 +93,12 @@ public class XMLExporter {
 
 	public File generateZipWithXMLFiles(final List<EapEvent> events) {
 		final String eventType = events.get(0).getEventType().getTypeName();
-		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType
-				+ "XMLexport.zip");
+		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType + "XMLexport.zip");
 		try {
 			final ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(file));
 			for (int i = 0; i < events.size(); i++) {
 				// add leading zeros to keep events sorted in the right order
-				final ZipEntry ze = new ZipEntry(eventType
-						+ String.format("%0" + (Math.log10(events.size()) + 1) + "d", events.get(i).getID()) + ".xml");
+				final ZipEntry ze = new ZipEntry(eventType + String.format("%0" + (Math.log10(events.size()) + 1) + "d", events.get(i).getID()) + ".xml");
 				// events.get(i).getValues().get("index")) + ".xml");
 				// final ZipEntry ze = new ZipEntry(eventType
 				// + String.format("%0" + (Math.log10(events.size()) + 1) + "d",

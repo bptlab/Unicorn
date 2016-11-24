@@ -20,7 +20,7 @@ import de.hpi.unicorn.bpmn.element.AbstractBPMNGateway;
  * This class is a container for {@link AbstractBPMNElement}s and results from a
  * process decomposition with the RPST. A {@link Component} is created for each
  * canonical fragment of the RPST.
- * 
+ *
  * @author micha
  */
 public class Component extends AbstractBPMNElement {
@@ -67,18 +67,13 @@ public class Component extends AbstractBPMNElement {
 
 	/**
 	 * Creates a new component as a container.
-	 * 
-	 * @param entryPoint
-	 *            - not included
-	 * @param sourceElement
-	 *            - included
-	 * @param exitPoint
-	 *            - not included
-	 * @param sinkElement
-	 *            - included
+	 *
+	 * @param entryPoint    - not included
+	 * @param sourceElement - included
+	 * @param exitPoint     - not included
+	 * @param sinkElement   - included
 	 */
-	public Component(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public Component(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		this.entryPoint = entryPoint;
 		this.sourceElement = sourceElement;
 		this.children = new HashSet<AbstractBPMNElement>(Arrays.asList(sourceElement));
@@ -200,13 +195,12 @@ public class Component extends AbstractBPMNElement {
 	/**
 	 * Checks, if a component contains gateways, that are not the source or sink
 	 * element
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean includesInnerGateways() {
 		for (final AbstractBPMNElement child : this.children) {
-			if (child instanceof AbstractBPMNGateway
-					&& !(child.equals(this.sourceElement) || child.equals(this.sinkElement))) {
+			if (child instanceof AbstractBPMNGateway && !(child.equals(this.sourceElement) || child.equals(this.sinkElement))) {
 				return true;
 			}
 		}

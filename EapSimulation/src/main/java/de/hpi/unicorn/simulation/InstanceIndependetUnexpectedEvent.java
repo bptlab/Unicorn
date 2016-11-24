@@ -13,8 +13,7 @@ import de.hpi.unicorn.bpmn.element.AbstractBPMNElement;
 
 public class InstanceIndependetUnexpectedEvent extends PathSimulator {
 
-	public InstanceIndependetUnexpectedEvent(final AbstractBPMNElement startElement,
-			final InstanceSimulator parentSimulator, final Date currentSimulationDate) {
+	public InstanceIndependetUnexpectedEvent(final AbstractBPMNElement startElement, final InstanceSimulator parentSimulator, final Date currentSimulationDate) {
 		super(startElement, parentSimulator, currentSimulationDate);
 	}
 

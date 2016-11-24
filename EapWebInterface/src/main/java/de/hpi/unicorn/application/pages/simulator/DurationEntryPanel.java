@@ -24,13 +24,11 @@ public class DurationEntryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	private final TextField<String> durationTextField, derivationTextField;
 
-	public DurationEntryPanel(final String id, final int entryId,
-			final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
+	public DurationEntryPanel(final String id, final int entryId, final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
 		super(id);
 		final Form<Void> form = new Form<Void>("form");
 
-		this.durationTextField = new TextField<String>("durationTextField", Model.of(simulationTreeTableProvider
-				.getDurationForEntry(entryId)));
+		this.durationTextField = new TextField<String>("durationTextField", Model.of(simulationTreeTableProvider.getDurationForEntry(entryId)));
 		this.durationTextField.setOutputMarkupPlaceholderTag(true);
 		this.durationTextField.setOutputMarkupId(true);
 		this.durationTextField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -40,15 +38,13 @@ public class DurationEntryPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 
-				simulationTreeTableProvider.setDurationForEntry(DurationEntryPanel.this.getMeanDurationFromField(),
-						entryId);
+				simulationTreeTableProvider.setDurationForEntry(DurationEntryPanel.this.getMeanDurationFromField(), entryId);
 			}
 		});
 
 		form.add(this.durationTextField);
 
-		this.derivationTextField = new TextField<String>("derivationTextField", Model.of(simulationTreeTableProvider
-				.getDerivationForEntry(entryId)));
+		this.derivationTextField = new TextField<String>("derivationTextField", Model.of(simulationTreeTableProvider.getDerivationForEntry(entryId)));
 		this.derivationTextField.setOutputMarkupPlaceholderTag(true);
 		this.derivationTextField.setOutputMarkupId(true);
 		this.derivationTextField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -58,8 +54,7 @@ public class DurationEntryPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 
-				simulationTreeTableProvider.setDerivationForEntry(DurationEntryPanel.this.getMeanDurationFromField(),
-						entryId);
+				simulationTreeTableProvider.setDerivationForEntry(DurationEntryPanel.this.getMeanDurationFromField(), entryId);
 			}
 		});
 		final DerivationType derivationType = simulationTreeTableProvider.getDerivationTypeForEntry(entryId);

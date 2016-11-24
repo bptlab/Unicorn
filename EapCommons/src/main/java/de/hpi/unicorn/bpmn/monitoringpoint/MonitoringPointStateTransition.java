@@ -13,7 +13,7 @@ import javax.persistence.Enumerated;
 /**
  * This enum specifies the supported state transition types of an BPMN element,
  * which can be monitored with PatternQueries.
- * 
+ *
  * @author micha
  */
 public enum MonitoringPointStateTransition {

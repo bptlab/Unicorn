@@ -37,8 +37,7 @@ public class GeoUtilsTest {
 
 	@Test
 	public void testStringCoordinates() {
-		Assert.assertEquals(GeoUtils.distance(this.c1, this.c2),
-				GeoUtils.distance(this.lat1, this.lng1, this.lat2, this.lng2), 0);
+		Assert.assertEquals(GeoUtils.distance(this.c1, this.c2), GeoUtils.distance(this.lat1, this.lng1, this.lat2, this.lng2), 0);
 	}
 
 }

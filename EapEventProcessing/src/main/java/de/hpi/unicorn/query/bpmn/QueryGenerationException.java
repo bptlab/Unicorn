@@ -9,7 +9,7 @@ package de.hpi.unicorn.query.bpmn;
 
 /**
  * An exception for errors while generating queries from BPMN models.
- * 
+ *
  * @author anne
  */
 @SuppressWarnings("serial")

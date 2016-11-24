@@ -20,14 +20,13 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference;
 public class BlockingForm extends Form<Void> {
 
 	private static final long serialVersionUID = 1L;
-	private final JavaScriptResourceReference blockPageJS = new JavaScriptResourceReference(WarnOnExitForm.class,
-			"blockUI.js");
+	private final JavaScriptResourceReference blockPageJS = new JavaScriptResourceReference(WarnOnExitForm.class, "blockUI.js");
 
 	public BlockingForm(final String id) {
 		super(id);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public BlockingForm(final String id, final IModel model) {
 		super(id, model);
 	}

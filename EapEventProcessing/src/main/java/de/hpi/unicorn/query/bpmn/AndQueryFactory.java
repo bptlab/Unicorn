@@ -15,14 +15,14 @@ import de.hpi.unicorn.query.QueryTypeEnum;
 
 /**
  * This query factory creates queries for components of type AND.
- * 
+ *
  * @author micha
  */
 public class AndQueryFactory extends AbstractPatternQueryFactory {
 
 	/**
 	 * Constructor to create AND queries with a query factory.
-	 * 
+	 *
 	 * @param patternQueryGenerator
 	 */
 	public AndQueryFactory(final PatternQueryGenerator patternQueryGenerator) {
@@ -30,18 +30,14 @@ public class AndQueryFactory extends AbstractPatternQueryFactory {
 	}
 
 	@Override
-	protected PatternQuery generateQuery(final AbstractBPMNElement element,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	protected PatternQuery generateQuery(final AbstractBPMNElement element, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		if (element instanceof Component) {
 			final Component component = (Component) element;
 			// Component sollte mehrere Polygone beinhalten
 			// Operator: AND
-			final PatternQuery query = new PatternQuery(this.generateQueryName("And"), null, QueryTypeEnum.LIVE,
-					PatternQueryType.AND, this.orderElements(component));
+			final PatternQuery query = new PatternQuery(this.generateQueryName("And"), null, QueryTypeEnum.LIVE, PatternQueryType.AND, this.orderElements(component));
 
-			final String queryString = this.generateQueryString(component, EsperPatternOperators.AND,
-					catchingMonitorableElement, query);
+			final String queryString = this.generateQueryString(component, EsperPatternOperators.AND, catchingMonitorableElement, query);
 			query.setEsperQuery(queryString);
 			this.addQueryRelationship(parentQuery, query);
 

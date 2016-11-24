@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Interface for various patterns of well-structured BPMN components.
- * 
+ *
  * @author micha
  */
 public enum IPattern {

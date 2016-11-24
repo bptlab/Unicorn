@@ -23,7 +23,7 @@ import de.hpi.unicorn.bpmn.element.BPMNXORGateway;
  * Abstract class to centralize some multiple times used test methods. This
  * class provides a example {@link BPMNProcess} with contained
  * {@link AbstractBPMNElement}s.
- * 
+ *
  * @author micha
  */
 public class AbstractDecompositionTest {
@@ -91,8 +91,7 @@ public class AbstractDecompositionTest {
 		AbstractBPMNElement.connectElements(xor2, endEvent);
 
 		process = new BPMNProcess("12", "Process", null);
-		process.addBPMNElements(Arrays.asList(startEvent, task11, xor1, xor21, task2111, task2112, xor22, xor211,
-				task212, xor212, task22, and1, task31, task32, and2, xor2, endEvent, and211, and212));
+		process.addBPMNElements(Arrays.asList(startEvent, task11, xor1, xor21, task2111, task2112, xor22, xor211, task212, xor212, task22, and1, task31, task32, and2, xor2, endEvent, and211, and212));
 	}
 
 }

@@ -57,8 +57,7 @@ public class CorrelationWithRulesTest {
 		TypeTreeNode kinoFilmeAttribute1 = new TypeTreeNode("Location", AttributeTypeEnum.INTEGER);
 		TypeTreeNode kinoFilmeAttribute2 = new TypeTreeNode("Movie", AttributeTypeEnum.STRING);
 		TypeTreeNode kinoFilmeAttribute3 = new TypeTreeNode("Action", AttributeTypeEnum.STRING);
-		List<TypeTreeNode> kinoFilmeAttributes = Arrays.asList(kinoFilmeAttribute1, kinoFilmeAttribute2,
-				kinoFilmeAttribute3);
+		List<TypeTreeNode> kinoFilmeAttributes = Arrays.asList(kinoFilmeAttribute1, kinoFilmeAttribute2, kinoFilmeAttribute3);
 		EapEventType kinoFilmeEventType = new EapEventType("KinoFilme", kinoFilmeAttributes);
 		correlationEventTypes.add(kinoFilmeEventType.save());
 
@@ -77,9 +76,7 @@ public class CorrelationWithRulesTest {
 		process.save();
 		assertNumberOfDataSets(6, 2, 1, 0);
 
-		RuleCorrelator.correlate(
-				new HashSet<CorrelationRule>(Arrays.asList(new CorrelationRule(kinoRatingAttribute1,
-						kinoFilmeAttribute1))), process, null);
+		RuleCorrelator.correlate(new HashSet<CorrelationRule>(Arrays.asList(new CorrelationRule(kinoRatingAttribute1, kinoFilmeAttribute1))), process, null);
 
 		// Prüfen, gleiche Anzahl Events, EventTypen, Prozesse und richtige
 		// Anzahl Prozessinstanzen
@@ -103,8 +100,7 @@ public class CorrelationWithRulesTest {
 		TypeTreeNode secondEventAttribute3 = new TypeTreeNode("SecondEventAttributeThree");
 		new TypeTreeNode(secondEventAttribute3, "SecondEventAttributeThreeOne", AttributeTypeEnum.INTEGER);
 		TypeTreeNode secondEventAttribute4 = new TypeTreeNode("SecondEventAttributeFour", AttributeTypeEnum.INTEGER);
-		AttributeTypeTree secondEventAttributeTree = new AttributeTypeTree(Arrays.asList(secondEventAttribute1,
-				secondEventAttribute2, secondEventAttribute3, secondEventAttribute4));
+		AttributeTypeTree secondEventAttributeTree = new AttributeTypeTree(Arrays.asList(secondEventAttribute1, secondEventAttribute2, secondEventAttribute3, secondEventAttribute4));
 		EapEventType secondEventType = (new EapEventType("SecondEvent", secondEventAttributeTree)).save();
 		correlationEventTypes.add(secondEventType);
 
@@ -116,12 +112,8 @@ public class CorrelationWithRulesTest {
 		assertNumberOfDataSets(0, 3, 0, 0);
 
 		Set<CorrelationRule> correlationRules = new HashSet<CorrelationRule>();
-		correlationRules.add(new CorrelationRule(firstEventType.getValueTypeTree().getAttributeByExpression(
-				"FirstEventAttributeTwo"), secondEventType.getValueTypeTree().getAttributeByExpression(
-				"SecondEventAttributeOne")));
-		correlationRules.add(new CorrelationRule(secondEventType.getValueTypeTree().getAttributeByExpression(
-				"SecondEventAttributeThree.SecondEventAttributeThreeOne"), thirdEventType.getValueTypeTree()
-				.getAttributeByExpression("ThirdEventAttributeOne")));
+		correlationRules.add(new CorrelationRule(firstEventType.getValueTypeTree().getAttributeByExpression("FirstEventAttributeTwo"), secondEventType.getValueTypeTree().getAttributeByExpression("SecondEventAttributeOne")));
+		correlationRules.add(new CorrelationRule(secondEventType.getValueTypeTree().getAttributeByExpression("SecondEventAttributeThree.SecondEventAttributeThreeOne"), thirdEventType.getValueTypeTree().getAttributeByExpression("ThirdEventAttributeOne")));
 
 		CorrelationProcess process = new CorrelationProcess("SomeProcess");
 		process.save();
@@ -148,15 +140,10 @@ public class CorrelationWithRulesTest {
 	}
 
 	private void assertNumberOfDataSets(int events, int eventTypes, int processes, int processInstances) {
-		assertTrue("Number of events must be " + events + " but was " + EapEvent.findAll().size(), EapEvent.findAll()
-				.size() == events);
-		assertTrue("Number of event types must be " + eventTypes + " but was " + EapEventType.findAll().size(),
-				EapEventType.findAll().size() == eventTypes);
-		assertTrue("Number of processes must be " + processes + " but was " + CorrelationProcess.findAll().size(),
-				CorrelationProcess.findAll().size() == processes);
-		assertTrue("Number of process instances must be " + processInstances + " but was "
-				+ CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == processInstances);
+		assertTrue("Number of events must be " + events + " but was " + EapEvent.findAll().size(), EapEvent.findAll().size() == events);
+		assertTrue("Number of event types must be " + eventTypes + " but was " + EapEventType.findAll().size(), EapEventType.findAll().size() == eventTypes);
+		assertTrue("Number of processes must be " + processes + " but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll().size() == processes);
+		assertTrue("Number of process instances must be " + processInstances + " but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == processInstances);
 	}
 
 	private List<EapEvent> createEventsForCorrelation(EapEventType eventType) {

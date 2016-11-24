@@ -30,14 +30,12 @@ public class PatternQuery extends QueryWrapper {
 	private Set<PatternQuery> childQueries = new HashSet<PatternQuery>();
 	private EPStatement epStatement;
 
-	public PatternQuery(final String title, final String queryString, final QueryTypeEnum queryType,
-			final PatternQueryType patternQueryType) {
+	public PatternQuery(final String title, final String queryString, final QueryTypeEnum queryType, final PatternQueryType patternQueryType) {
 		super(title, queryString, queryType);
 		this.patternQueryType = patternQueryType;
 	}
 
-	public PatternQuery(final String title, final String queryString, final QueryTypeEnum queryType,
-			final PatternQueryType patternQueryType, final List<AbstractBPMNElement> monitoredElements) {
+	public PatternQuery(final String title, final String queryString, final QueryTypeEnum queryType, final PatternQueryType patternQueryType, final List<AbstractBPMNElement> monitoredElements) {
 		this(title, queryString, queryType, patternQueryType);
 		this.setMonitoredElements(monitoredElements);
 	}
@@ -58,25 +56,25 @@ public class PatternQuery extends QueryWrapper {
 		return esper.updatePatternQuery(this);
 	}
 
-	public void setListener(final PatternQueryListener patternQueryListener) {
-		this.patternQueryListener = patternQueryListener;
-	}
-
 	public PatternQueryListener getListener() {
 		return this.patternQueryListener;
 	}
 
-	public void setMonitoredElements(final List<AbstractBPMNElement> monitoredElements) {
-		this.monitoredElements = new ArrayList<AbstractBPMNElement>(monitoredElements);
+	public void setListener(final PatternQueryListener patternQueryListener) {
+		this.patternQueryListener = patternQueryListener;
 	}
 
 	/**
 	 * Returns a ordered list of the monitored elements of the query.
-	 * 
+	 *
 	 * @return
 	 */
 	public List<AbstractBPMNElement> getMonitoredElements() {
 		return this.monitoredElements;
+	}
+
+	public void setMonitoredElements(final List<AbstractBPMNElement> monitoredElements) {
+		this.monitoredElements = new ArrayList<AbstractBPMNElement>(monitoredElements);
 	}
 
 	@Override
@@ -96,6 +94,10 @@ public class PatternQuery extends QueryWrapper {
 		return this.childQueries;
 	}
 
+	public void setChildQueries(final Set<PatternQuery> childQueries) {
+		this.childQueries = childQueries;
+	}
+
 	public boolean hasChildQueries() {
 		return !this.childQueries.isEmpty();
 	}
@@ -112,16 +114,12 @@ public class PatternQuery extends QueryWrapper {
 		this.childQueries.remove(childQuery);
 	}
 
-	public void setChildQueries(final Set<PatternQuery> childQueries) {
-		this.childQueries = childQueries;
+	public EPStatement getEPStatement() {
+		return this.epStatement;
 	}
 
 	public void setEPStatement(final EPStatement epStatement) {
 		this.epStatement = epStatement;
-	}
-
-	public EPStatement getEPStatement() {
-		return this.epStatement;
 	}
 
 }

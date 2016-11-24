@@ -40,8 +40,8 @@ import de.hpi.unicorn.visualisation.EventView;
  */
 public class Broker implements EventImporter, EventAdministrator {
 
-	private static Broker instance;
 	private static final Logger logger = Logger.getLogger(Broker.class);
+	private static Broker instance;
 
 	private Broker() {
 
@@ -66,7 +66,7 @@ public class Broker implements EventImporter, EventAdministrator {
 	 * This method should be used to insert an event into the platform. It will
 	 * be correlated, saved in the database, send to the streaming engine and
 	 * possibly invoke notifications.
-	 * 
+	 *
 	 * @param event
 	 * @return
 	 */
@@ -89,8 +89,7 @@ public class Broker implements EventImporter, EventAdministrator {
 			final long corrStart = System.currentTimeMillis();
 			Correlator.correlate(Arrays.asList(event));
 			final long corrEnd = System.currentTimeMillis();
-			Broker.logger.debug(String.format("Correlating event took %.2f seconds",
-					(double) (corrEnd - corrStart) / 1000));
+			Broker.logger.debug(String.format("Correlating event took %.2f seconds", (double) (corrEnd - corrStart) / 1000));
 		}
 		final long addStart = System.currentTimeMillis();
 		StreamProcessingAdapter.getInstance().addEvent(event);
@@ -101,8 +100,7 @@ public class Broker implements EventImporter, EventAdministrator {
 			final long notifyStart = System.currentTimeMillis();
 			NotificationObservable.getInstance().trigger(event);
 			final long notifyEnd = System.currentTimeMillis();
-			Broker.logger.debug(String.format("Notification of event took %.2f seconds",
-					(double) (notifyEnd - notifyStart) / 1000));
+			Broker.logger.debug(String.format("Notification of event took %.2f seconds", (double) (notifyEnd - notifyStart) / 1000));
 		}
 		return event;
 	}
@@ -110,7 +108,7 @@ public class Broker implements EventImporter, EventAdministrator {
 	/**
 	 * This method should be used to save eventNotificationRules. They will be
 	 * added to the observable and saved in the database.
-	 * 
+	 *
 	 * @param rule
 	 * @return
 	 */
@@ -138,7 +136,7 @@ public class Broker implements EventImporter, EventAdministrator {
 	 * This method should be used to send several events to the platform. They
 	 * will be correlated, saved in the database, send to the streaming engine
 	 * and possibly invoke notifications.
-	 * 
+	 *
 	 * @param events
 	 * @return
 	 */
@@ -149,8 +147,7 @@ public class Broker implements EventImporter, EventAdministrator {
 				for (final String attribute : event.getValuesForExport().keySet()) {
 					final String value = event.getValuesForExport().get(attribute);
 					if (value.contains("'") || value.contains("\\")) {
-						event.getValuesForExport().put(attribute,
-								value.replaceAll("\\\\", "/").replaceAll("\'", "\\\\\'"));
+						event.getValuesForExport().put(attribute, value.replaceAll("\\\\", "/").replaceAll("\'", "\\\\\'"));
 					}
 				}
 			}
@@ -167,7 +164,7 @@ public class Broker implements EventImporter, EventAdministrator {
 	/**
 	 * This method should be used to remove event types from the platform. It
 	 * will be removed from the database and deleted from the streaming engine.
-	 * 
+	 *
 	 * @param eventType
 	 * @return
 	 */
@@ -184,8 +181,7 @@ public class Broker implements EventImporter, EventAdministrator {
 					process.getTimeCondition().remove();
 				}
 				process.setCorrelationAttributes(new ArrayList<TypeTreeNode>());
-				final Set<CorrelationRule> correlationRulesOfProcess = new HashSet<CorrelationRule>(
-						process.getCorrelationRules());
+				final Set<CorrelationRule> correlationRulesOfProcess = new HashSet<CorrelationRule>(process.getCorrelationRules());
 				process.setCorrelationRules(new HashSet<CorrelationRule>());
 				process.merge();
 				for (final CorrelationRule correlationRule : correlationRulesOfProcess) {
@@ -252,7 +248,7 @@ public class Broker implements EventImporter, EventAdministrator {
 	/**
 	 * This method should be used to remove an event from the platform. It will
 	 * be removed from the database and deleted from the streaming engine.
-	 * 
+	 *
 	 * @param eventType
 	 * @return
 	 */
@@ -280,21 +276,19 @@ public class Broker implements EventImporter, EventAdministrator {
 	}
 
 	public void activateTransformationRule(final TransformationRule transformationRule) {
-		final EPStatement statement = StreamProcessingAdapter.getInstance().getStatement(
-				TransformationRuleLogic.generateStatementName(transformationRule));
+		final EPStatement statement = StreamProcessingAdapter.getInstance().getStatement(TransformationRuleLogic.generateStatementName(transformationRule));
 		statement.start();
 	}
 
 	public void deactivateTransformationRule(final TransformationRule transformationRule) {
-		final EPStatement statement = StreamProcessingAdapter.getInstance().getStatement(
-				TransformationRuleLogic.generateStatementName(transformationRule));
+		final EPStatement statement = StreamProcessingAdapter.getInstance().getStatement(TransformationRuleLogic.generateStatementName(transformationRule));
 		statement.stop();
 	}
 
 	/**
 	 * Unregisters the transformation rule with Esper and removes it from the
 	 * database. TODO: Naming
-	 * 
+	 *
 	 * @param transformationRule
 	 */
 	public void remove(final TransformationRule transformationRule) {

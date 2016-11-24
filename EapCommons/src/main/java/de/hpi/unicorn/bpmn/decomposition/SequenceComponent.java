@@ -11,8 +11,7 @@ import de.hpi.unicorn.bpmn.element.AbstractBPMNElement;
 
 public class SequenceComponent extends Component {
 
-	public SequenceComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public SequenceComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		super(entryPoint, sourceElement, exitPoint, sinkElement);
 	}
 

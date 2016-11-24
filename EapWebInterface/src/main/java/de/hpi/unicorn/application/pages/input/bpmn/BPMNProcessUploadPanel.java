@@ -52,13 +52,16 @@ import de.hpi.unicorn.process.CorrelationProcess;
  * This panel allows the upload and visualisation of a BPMN process model from a
  * BPMN2.0-XML file. Furthermore it is possible to simulate this process with
  * the {@link SimulationPanel}.
- * 
+ *
  * @author micha
  * @author benni
  */
 public class BPMNProcessUploadPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
+	private final AbstractEapPage abstractEapPage;
+	private final ProcessModelProvider processModelProvider;
+	private final ExternalPage externalPage;
 	private FileUploadField fileUpload;
 	private ProcessEditorModal processEditorModal;
 	private ArrayList<String> processNameList;
@@ -74,11 +77,8 @@ public class BPMNProcessUploadPanel extends Panel {
 	private TextField<String> bpmnProcessNameInput;
 	private String fileNameWithoutExtension;
 	private String bpmnProcessNameInputValue;
-	private final AbstractEapPage abstractEapPage;
 	private ArrayList<IColumn<AbstractBPMNElement, String>> columns;
 	private DefaultDataTable<AbstractBPMNElement, String> processModelTable;
-	private final ProcessModelProvider processModelProvider;
-	private final ExternalPage externalPage;
 	private BPMNSimulationPanel simulationPanel;
 	private List<Component> targets;
 
@@ -87,7 +87,7 @@ public class BPMNProcessUploadPanel extends Panel {
 	 * visualisation of a BPMN process model from a BPMN2.0-XML file.
 	 * Furthermore it is possible to simulate this process with the
 	 * {@link SimulationPanel}.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -141,14 +141,11 @@ public class BPMNProcessUploadPanel extends Panel {
 				if (BPMNProcessUploadPanel.this.process.getBpmnProcess() != null) {
 					BPMNProcessUploadPanel.this.process.getBpmnProcess().remove();
 				}
-				if (BPMNProcessUploadPanel.this.bpmnProcessNameInputValue == null
-						|| BPMNProcessUploadPanel.this.bpmnProcessNameInputValue.isEmpty()) {
+				if (BPMNProcessUploadPanel.this.bpmnProcessNameInputValue == null || BPMNProcessUploadPanel.this.bpmnProcessNameInputValue.isEmpty()) {
 					BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = BPMNProcessUploadPanel.this.fileNameWithoutExtension;
 				}
-				if (!BPMNProcessUploadPanel.this.containsOtherProcessSameBPMNProcessName(
-						BPMNProcessUploadPanel.this.process, BPMNProcessUploadPanel.this.bpmnProcessNameInputValue)) {
-					BPMNProcessUploadPanel.this.processModel
-							.setName(BPMNProcessUploadPanel.this.bpmnProcessNameInputValue);
+				if (!BPMNProcessUploadPanel.this.containsOtherProcessSameBPMNProcessName(BPMNProcessUploadPanel.this.process, BPMNProcessUploadPanel.this.bpmnProcessNameInputValue)) {
+					BPMNProcessUploadPanel.this.processModel.setName(BPMNProcessUploadPanel.this.bpmnProcessNameInputValue);
 					BPMNProcessUploadPanel.this.process.setBpmnProcess(BPMNProcessUploadPanel.this.processModel);
 					BPMNProcessUploadPanel.this.processModel.save();
 					BPMNProcessUploadPanel.this.process.save();
@@ -158,8 +155,7 @@ public class BPMNProcessUploadPanel extends Panel {
 					BPMNProcessUploadPanel.this.deleteModelButton.setVisible(true);
 					BPMNProcessUploadPanel.this.abstractEapPage.getFeedbackPanel().success("Saved process!");
 				} else {
-					BPMNProcessUploadPanel.this.abstractEapPage.getFeedbackPanel().error(
-							"Another process has the same BPMN process name!");
+					BPMNProcessUploadPanel.this.abstractEapPage.getFeedbackPanel().error("Another process has the same BPMN process name!");
 				}
 				BPMNProcessUploadPanel.this.addTargets(target);
 			}
@@ -177,8 +173,7 @@ public class BPMNProcessUploadPanel extends Panel {
 			@Override
 			protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 				BPMNProcessUploadPanel.this.processModel = BPMNProcessUploadPanel.this.process.getBpmnProcess();
-				BPMNProcessUploadPanel.this.processModelProvider
-						.setProcessModel(BPMNProcessUploadPanel.this.processModel);
+				BPMNProcessUploadPanel.this.processModelProvider.setProcessModel(BPMNProcessUploadPanel.this.processModel);
 				if (BPMNProcessUploadPanel.this.processModel != null) {
 					BPMNProcessUploadPanel.this.deleteModelButton.setVisible(true);
 					BPMNProcessUploadPanel.this.saveChangesButton.setVisible(true);
@@ -202,8 +197,7 @@ public class BPMNProcessUploadPanel extends Panel {
 
 			@Override
 			protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				if (BPMNProcessUploadPanel.this.bpmnProcessNameInputValue == null
-						|| BPMNProcessUploadPanel.this.bpmnProcessNameInputValue.isEmpty()) {
+				if (BPMNProcessUploadPanel.this.bpmnProcessNameInputValue == null || BPMNProcessUploadPanel.this.bpmnProcessNameInputValue.isEmpty()) {
 					BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = BPMNProcessUploadPanel.this.fileNameWithoutExtension;
 				}
 				BPMNProcessUploadPanel.this.processModel.setName(BPMNProcessUploadPanel.this.bpmnProcessNameInputValue);
@@ -221,7 +215,7 @@ public class BPMNProcessUploadPanel extends Panel {
 
 		this.deleteModelButton = (new AjaxButton("deleteModel") {
 			/**
-			 * 
+			 *
 			 */
 			private static final long serialVersionUID = 1L;
 
@@ -296,8 +290,7 @@ public class BPMNProcessUploadPanel extends Panel {
 					try {
 						newFile = uploadedFile.writeToTempFile();
 					} catch (final IOException e) {
-						throw new IllegalStateException("Error: File could not be saved under "
-								+ newFile.getAbsolutePath() + ".");
+						throw new IllegalStateException("Error: File could not be saved under " + newFile.getAbsolutePath() + ".");
 					}
 
 					final int index = fileName.lastIndexOf('.');
@@ -315,8 +308,7 @@ public class BPMNProcessUploadPanel extends Panel {
 						// new BPM2XMLToSignavioXMLConverter(newFile);
 						// String newFileName =
 						// signavioConverter.generateSignavioXMLFromBPM2XML();
-						BPMNProcessUploadPanel.this.processModelProvider
-								.setProcessModel(BPMNProcessUploadPanel.this.processModel);
+						BPMNProcessUploadPanel.this.processModelProvider.setProcessModel(BPMNProcessUploadPanel.this.processModel);
 						BPMNProcessUploadPanel.this.cancelButton.setVisible(true);
 						BPMNProcessUploadPanel.this.saveModelButton.setVisible(true);
 						BPMNProcessUploadPanel.this.deleteModelButton.setVisible(false);
@@ -349,8 +341,7 @@ public class BPMNProcessUploadPanel extends Panel {
 		this.uploadButton.setOutputMarkupId(true);
 		this.uploadForm.add(this.uploadButton);
 
-		this.bpmnProcessNameInput = new TextField<String>("bpmnProcessNameInput", new PropertyModel(this,
-				"bpmnProcessNameInputValue"));
+		this.bpmnProcessNameInput = new TextField<String>("bpmnProcessNameInput", new PropertyModel(this, "bpmnProcessNameInputValue"));
 		this.bpmnProcessNameInput.setOutputMarkupId(true);
 
 		this.bpmnProcessNameInput.add(new OnChangeAjaxBehavior() {
@@ -359,8 +350,7 @@ public class BPMNProcessUploadPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = ((TextField<String>) this.getComponent())
-						.getModelObject();
+				BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = ((TextField<String>) this.getComponent()).getModelObject();
 			}
 		});
 
@@ -383,18 +373,14 @@ public class BPMNProcessUploadPanel extends Panel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				BPMNProcessUploadPanel.this.fileUpload.setEnabled(true);
 				BPMNProcessUploadPanel.this.uploadButton.setEnabled(true);
-				BPMNProcessUploadPanel.this.process = CorrelationProcess.findByName(
-						BPMNProcessUploadPanel.this.processSelect.getChoices().get(
-								Integer.parseInt(BPMNProcessUploadPanel.this.processSelect.getValue()))).get(0);
+				BPMNProcessUploadPanel.this.process = CorrelationProcess.findByName(BPMNProcessUploadPanel.this.processSelect.getChoices().get(Integer.parseInt(BPMNProcessUploadPanel.this.processSelect.getValue()))).get(0);
 				BPMNProcessUploadPanel.this.processModel = BPMNProcessUploadPanel.this.process.getBpmnProcess();
-				BPMNProcessUploadPanel.this.processModelProvider
-						.setProcessModel(BPMNProcessUploadPanel.this.processModel);
+				BPMNProcessUploadPanel.this.processModelProvider.setProcessModel(BPMNProcessUploadPanel.this.processModel);
 
 				if (BPMNProcessUploadPanel.this.processModel != null) {
 					BPMNProcessUploadPanel.this.deleteModelButton.setVisible(true);
 					BPMNProcessUploadPanel.this.saveChangesButton.setVisible(true);
-					BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = BPMNProcessUploadPanel.this.processModel
-							.getName();
+					BPMNProcessUploadPanel.this.bpmnProcessNameInputValue = BPMNProcessUploadPanel.this.processModel.getName();
 					if (BPMNProcessUploadPanel.this.simulationPanel != null) {
 						BPMNProcessUploadPanel.this.simulationPanel.updateMonitoringPoints(target);
 					}
@@ -419,11 +405,9 @@ public class BPMNProcessUploadPanel extends Panel {
 		});
 		this.columns.add(new PropertyColumn<AbstractBPMNElement, String>(Model.of("Predecessors"), "predecessors"));
 		this.columns.add(new PropertyColumn<AbstractBPMNElement, String>(Model.of("Successors"), "successors"));
-		this.columns.add(new PropertyColumn<AbstractBPMNElement, String>(Model.of("Monitoring Points"),
-				"monitoringPoints"));
+		this.columns.add(new PropertyColumn<AbstractBPMNElement, String>(Model.of("Monitoring Points"), "monitoringPoints"));
 
-		this.processModelTable = new DefaultDataTable<AbstractBPMNElement, String>("processModelElements",
-				this.columns, this.processModelProvider, 40);
+		this.processModelTable = new DefaultDataTable<AbstractBPMNElement, String>("processModelElements", this.columns, this.processModelProvider, 40);
 		this.processModelTable.setOutputMarkupId(true);
 		this.processModelTable.setOutputMarkupPlaceholderTag(true);
 
@@ -471,13 +455,12 @@ public class BPMNProcessUploadPanel extends Panel {
 	/**
 	 * Searches for BPMN processes with the same, but a different containing
 	 * process.
-	 * 
+	 *
 	 * @param process
 	 * @param bpmnProcessName
 	 * @return
 	 */
-	private boolean containsOtherProcessSameBPMNProcessName(final CorrelationProcess process,
-			final String bpmnProcessName) {
+	private boolean containsOtherProcessSameBPMNProcessName(final CorrelationProcess process, final String bpmnProcessName) {
 		final List<BPMNProcess> bpmnProcesses = BPMNProcess.findByName(bpmnProcessName);
 		for (final BPMNProcess bpmnProcess : bpmnProcesses) {
 			if (!CorrelationProcess.findByBPMNProcess(bpmnProcess).equals(process)) {

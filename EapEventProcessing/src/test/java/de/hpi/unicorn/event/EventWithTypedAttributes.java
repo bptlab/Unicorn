@@ -55,8 +55,7 @@ public class EventWithTypedAttributes {
 
 	@Test
 	public void testTreeAdding() {
-		final TransformationTree<String, Serializable> testMapTree = new TransformationTree<String, Serializable>(
-				this.rootElement1Key, null);
+		final TransformationTree<String, Serializable> testMapTree = new TransformationTree<String, Serializable>(this.rootElement1Key, null);
 		Assert.assertFalse(testMapTree.isEmpty());
 		Assert.assertTrue(testMapTree.getRootElementValues().size() == 1);
 		Assert.assertTrue(testMapTree.getRootElementValues().get(0) == null);
@@ -71,40 +70,22 @@ public class EventWithTypedAttributes {
 		this.type = new EapEventType("testEventTypeTyped", this.createTree(), "testTimestamp");
 		Broker.getInstance().importEventType(this.type);
 
-		final QueryWrapper liveTyped = new QueryWrapper("testTypes", "SELECT * FROM testEventTypeTyped ",
-				QueryTypeEnum.LIVE);
+		final QueryWrapper liveTyped = new QueryWrapper("testTypes", "SELECT * FROM testEventTypeTyped ", QueryTypeEnum.LIVE);
 		liveTyped.addToEsper();
 
 		this.event = new EapEvent(this.type, new Date(), this.createMap());
 		Broker.getInstance().importEvent(this.event);
 
 		// System.out.println(Arrays.asList((StreamProcessingAdapter.getInstance().getAttributesOfEventType(type))));
-		Assert.assertTrue(Arrays.asList(StreamProcessingAdapter.getInstance().getAttributesOfEventType(this.type))
-				.contains(this.rootElement1Key + "." + this.rootElement1Child2Key));
+		Assert.assertTrue(Arrays.asList(StreamProcessingAdapter.getInstance().getAttributesOfEventType(this.type)).contains(this.rootElement1Key + "." + this.rootElement1Child2Key));
 
-		Assert.assertTrue(StreamProcessingAdapter.getInstance().eventTypeHasAttribute(this.type,
-				this.rootElement1Key + "." + this.rootElement1Child2Key));
+		Assert.assertTrue(StreamProcessingAdapter.getInstance().eventTypeHasAttribute(this.type, this.rootElement1Key + "." + this.rootElement1Child2Key));
 
-		Assert.assertTrue("type of eventtype " + this.rootElement2Key + " was "
-				+ StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement2Key),
-				StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement2Key) == Date.class);
+		Assert.assertTrue("type of eventtype " + this.rootElement2Key + " was " + StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement2Key), StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement2Key) == Date.class);
 		Assert.assertTrue(StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, "Timestamp") == Date.class);
-		Assert.assertTrue(
-				"type of eventtype "
-						+ this.rootElement1Key
-						+ "."
-						+ this.rootElement1Child2Key
-						+ " was "
-						+ StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type,
-								this.rootElement1Key + "." + this.rootElement1Child2Key),
-				StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type,
-						this.rootElement1Key + "." + this.rootElement1Child2Key) == Integer.class);
+		Assert.assertTrue("type of eventtype " + this.rootElement1Key + "." + this.rootElement1Child2Key + " was " + StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement1Key + "." + this.rootElement1Child2Key), StreamProcessingAdapter.getInstance().getEventTypeInfo(this.type, this.rootElement1Key + "." + this.rootElement1Child2Key) == Integer.class);
 
-		final QueryWrapper testTyped = new QueryWrapper("testTypes", "SELECT RootDateElement.getTime(), "
-				+ this.rootElement1Key + "." + this.rootElement1Child1Key + " , " + this.rootElement1Key + "."
-				+ this.rootElement1Child2Key + " FROM testEventTypeTypedWindow " + "WHERE " + this.rootElement1Key
-				+ "." + this.rootElement1Child1Key + " = '" + this.rootElement1Child1Value + "' " + " AND "
-				+ this.rootElement1Key + "." + this.rootElement1Child2Key + " > 0", QueryTypeEnum.ONDEMAND);
+		final QueryWrapper testTyped = new QueryWrapper("testTypes", "SELECT RootDateElement.getTime(), " + this.rootElement1Key + "." + this.rootElement1Child1Key + " , " + this.rootElement1Key + "." + this.rootElement1Child2Key + " FROM testEventTypeTypedWindow " + "WHERE " + this.rootElement1Key + "." + this.rootElement1Child1Key + " = '" + this.rootElement1Child1Value + "' " + " AND " + this.rootElement1Key + "." + this.rootElement1Child2Key + " > 0", QueryTypeEnum.ONDEMAND);
 		final String result = testTyped.execute();
 		// System.out.println(result);
 		Assert.assertTrue(result.contains("Number of events found: 1"));

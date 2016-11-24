@@ -66,17 +66,13 @@ public class ColumnChartOptions extends Options {
 
 		this.setxAxis(new Axis().setCategories(this.eventType.getTypeName()).setTitle(new Title(null)));
 
-		this.setyAxis(new Axis().setTitle(new Title("Frequency").setAlign(HorizontalAlignment.HIGH)).setLabels(
-				new Labels().setOverflow(Overflow.JUSTIFY)));
+		this.setyAxis(new Axis().setTitle(new Title("Frequency").setAlign(HorizontalAlignment.HIGH)).setLabels(new Labels().setOverflow(Overflow.JUSTIFY)));
 
 		this.setTooltip(new Tooltip().setFormatter(new Function("return ''+this.series.name +': '+ this.y;")));
 
-		this.setPlotOptions(new PlotOptionsChoice().setBar(new PlotOptions().setDataLabels(new DataLabels()
-				.setEnabled(Boolean.TRUE))));
+		this.setPlotOptions(new PlotOptionsChoice().setBar(new PlotOptions().setDataLabels(new DataLabels().setEnabled(Boolean.TRUE))));
 
-		this.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT)
-				.setVerticalAlign(VerticalAlignment.TOP).setX(-100).setY(100).setFloating(Boolean.TRUE)
-				.setBorderWidth(1).setBackgroundColor(new HexColor("#ffffff")).setShadow(Boolean.TRUE));
+		this.setLegend(new Legend().setLayout(LegendLayout.VERTICAL).setAlign(HorizontalAlignment.RIGHT).setVerticalAlign(VerticalAlignment.TOP).setX(-100).setY(100).setFloating(Boolean.TRUE).setBorderWidth(1).setBackgroundColor(new HexColor("#ffffff")).setShadow(Boolean.TRUE));
 
 		this.setCredits(new CreditOptions().setEnabled(Boolean.FALSE));
 
@@ -88,7 +84,7 @@ public class ColumnChartOptions extends Options {
 
 	/**
 	 * create data series for diagram
-	 * 
+	 *
 	 * @return data series
 	 */
 	public List<SimpleSeries> buildSeries() {
@@ -101,18 +97,16 @@ public class ColumnChartOptions extends Options {
 
 	/**
 	 * create data series for string attributes
-	 * 
+	 *
 	 * @return data series
 	 */
 	public List<SimpleSeries> getStringSeries() {
 		final List<SimpleSeries> series = new ArrayList<SimpleSeries>();
 		// collect values of attribute, each value will be one column
-		final List<String> distinctValues = EapEvent.findDistinctValuesOfAttributeOfType(this.attributeName,
-				this.eventType);
+		final List<String> distinctValues = EapEvent.findDistinctValuesOfAttributeOfType(this.attributeName, this.eventType);
 		for (final String value : distinctValues) {
 			// count number of appearances
-			final long numberOfAppearances = EapEvent.findNumberOfAppearancesByAttributeValue(this.attributeName,
-					value, this.eventType);
+			final long numberOfAppearances = EapEvent.findNumberOfAppearancesByAttributeValue(this.attributeName, value, this.eventType);
 			final SimpleSeries serie = new SimpleSeries();
 			serie.setName(value);
 			serie.setData(numberOfAppearances);
@@ -123,7 +117,7 @@ public class ColumnChartOptions extends Options {
 
 	/**
 	 * create data series for integer attributes
-	 * 
+	 *
 	 * @return data series
 	 */
 	public List<SimpleSeries> getIntegerValues() {
@@ -148,8 +142,7 @@ public class ColumnChartOptions extends Options {
 			for (final EapEvent event : events) {
 				// int value = Integer.parseInt((String)
 				// event.getValues().getValueOfAttribute(attributeName));
-				final int value = Integer.parseInt((String) event.getValueTree()
-						.getValueOfAttribute(this.attributeName));
+				final int value = Integer.parseInt((String) event.getValueTree().getValueOfAttribute(this.attributeName));
 				for (final IntegerBarChartValue period : periods) {
 					if (period.containsValue(value)) {
 						period.increaseFrequency();

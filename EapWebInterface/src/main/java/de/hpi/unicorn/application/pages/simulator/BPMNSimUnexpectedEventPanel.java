@@ -61,21 +61,16 @@ public class BPMNSimUnexpectedEventPanel extends Panel {
 			@Override
 			protected void populateItem(final ListItem<Object> item) {
 
-				final TextField<String> probabilityInput = new TextField<String>("probabilityInput",
-						new Model<String>());
+				final TextField<String> probabilityInput = new TextField<String>("probabilityInput", new Model<String>());
 				item.add(probabilityInput);
 
-				final DropDownChoice<BPMNTask> previousEventTypeSelect = new DropDownChoice<BPMNTask>("taskSelect",
-						new Model<BPMNTask>(), BPMNSimUnexpectedEventPanel.this.tasks);
+				final DropDownChoice<BPMNTask> previousEventTypeSelect = new DropDownChoice<BPMNTask>("taskSelect", new Model<BPMNTask>(), BPMNSimUnexpectedEventPanel.this.tasks);
 				item.add(previousEventTypeSelect);
 
-				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect",
-						new Model<String>(), BPMNSimUnexpectedEventPanel.this.effectList);
+				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect", new Model<String>(), BPMNSimUnexpectedEventPanel.this.effectList);
 				item.add(effectSelect);
 
-				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>(
-						"additionalEventTypeSelect", new Model<EapEventType>(),
-						BPMNSimUnexpectedEventPanel.this.listOfAllEventTypes);
+				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>("additionalEventTypeSelect", new Model<EapEventType>(), BPMNSimUnexpectedEventPanel.this.listOfAllEventTypes);
 				item.add(additionalEventTypeSelect);
 			}
 

@@ -61,8 +61,7 @@ public class NotificationQueryTest {
 		final EapEvent event = new EapEvent(eventType, new Date(), values);
 		Broker.getInstance().importEvent(event);
 
-		final List<NotificationForQuery> listOfNotifications = NotificationForQuery
-				.findUnseenQueryNotificationForUser(user);
+		final List<NotificationForQuery> listOfNotifications = NotificationForQuery.findUnseenQueryNotificationForUser(user);
 		Assert.assertTrue(listOfNotifications.size() == 1);
 		final NotificationForQuery notification = listOfNotifications.get(0);
 		notification.setSeen();

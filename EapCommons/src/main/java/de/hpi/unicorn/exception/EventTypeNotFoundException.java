@@ -9,13 +9,13 @@ package de.hpi.unicorn.exception;
 
 public class EventTypeNotFoundException extends Exception {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -169552174093973647L;
+
 	public EventTypeNotFoundException(final String schemaName) {
 		super(String.format("Event type '%s' not found.", schemaName));
 	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -169552174093973647L;
 
 }

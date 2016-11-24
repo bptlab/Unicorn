@@ -13,7 +13,7 @@ import org.apache.wicket.model.IModel;
 
 /**
  * removes the folder / document icons
- * 
+ *
  * @param <T>
  */
 public class TreeLinkLabel<T> extends Folder<T> {

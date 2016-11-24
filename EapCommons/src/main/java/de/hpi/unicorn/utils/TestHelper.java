@@ -24,7 +24,7 @@ import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
  * This class collects some often used methods for testing purposes.
- * 
+ *
  * @author micha
  */
 public class TestHelper {
@@ -32,7 +32,7 @@ public class TestHelper {
 	/**
 	 * Creates attributes from the given attribute names which are the column
 	 * titles of the excel files.
-	 * 
+	 *
 	 * @return list of Attributes
 	 */
 	public static List<TypeTreeNode> createAttributes(final List<String> attributeNames) {
@@ -52,7 +52,7 @@ public class TestHelper {
 	/**
 	 * Creates two event types for testing. The event types have to be saved in
 	 * the test at first!
-	 * 
+	 *
 	 * @return list of two EapEventTypes
 	 */
 	public static List<EapEventType> createEventTypes() {
@@ -69,7 +69,7 @@ public class TestHelper {
 	/**
 	 * Creates three events for the given EventType. The events have to be saved
 	 * in the test at first!
-	 * 
+	 *
 	 * @return list of three EapEvent
 	 */
 	public static List<EapEvent> createEvents(final EapEventType eventType) {
@@ -105,7 +105,7 @@ public class TestHelper {
 
 	/**
 	 * Creates a new process. The process has to be saved in the test at first!
-	 * 
+	 *
 	 * @return a CorrelationProcess
 	 */
 	public static CorrelationProcess createProcess(final Set<EapEventType> eventTypes) {

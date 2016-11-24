@@ -25,8 +25,7 @@ public class RepeatPatternOperatorRangePanel extends Panel {
 	private final int matchCount;
 	private final TextField<Integer> matchCountInput;
 
-	public RepeatPatternOperatorRangePanel(final String id, final PatternOperatorElement element,
-			final AdvancedTransformationRuleEditorPanel panel) {
+	public RepeatPatternOperatorRangePanel(final String id, final PatternOperatorElement element, final AdvancedTransformationRuleEditorPanel panel) {
 		super(id);
 
 		this.layoutForm = new Form<Void>("layoutForm");

@@ -46,11 +46,9 @@ public class NotificationPersistenceTest implements PersistenceTest {
 	public void testStoreAndRetrieve() {
 		storeExampleNotificationRules();
 		storeExampleNotifications();
-		assertTrue("Value should be 2, but was " + NotificationForEvent.findAll().size(), NotificationForEvent
-				.findAll().size() == 2);
+		assertTrue("Value should be 2, but was " + NotificationForEvent.findAll().size(), NotificationForEvent.findAll().size() == 2);
 		NotificationForEvent.removeAll();
-		assertTrue("Value should be 0, but was " + NotificationForEvent.findAll().size(), NotificationForEvent
-				.findAll().size() == 0);
+		assertTrue("Value should be 0, but was " + NotificationForEvent.findAll().size(), NotificationForEvent.findAll().size() == 0);
 
 	}
 
@@ -68,8 +66,7 @@ public class NotificationPersistenceTest implements PersistenceTest {
 		assertTrue(NotificationForEvent.findUnseenForUser(user1).size() == 0);
 
 		assertTrue(NotificationForEvent.findForNotificationRule(rule2).size() == 1);
-		assertTrue(((NotificationForEvent) NotificationForEvent.findForNotificationRule(rule2).get(0)).getEvent()
-				.getID() == event2.getID());
+		assertTrue(((NotificationForEvent) NotificationForEvent.findForNotificationRule(rule2).get(0)).getEvent().getID() == event2.getID());
 	}
 
 	@Test

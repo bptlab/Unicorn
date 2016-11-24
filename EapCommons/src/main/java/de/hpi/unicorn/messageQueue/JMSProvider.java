@@ -27,6 +27,10 @@ import de.hpi.unicorn.configuration.EapConfiguration;
 
 public class JMSProvider {
 
+	public static String HOST;
+	public static String PORT;
+	public static String IMPORT_CHANNEL;
+
 	static {
 		final Properties properties = EapConfiguration.getProperties();
 		JMSProvider.HOST = properties.getProperty("de.hpi.unicorn.messageQueue.jmsHost");
@@ -34,15 +38,9 @@ public class JMSProvider {
 		JMSProvider.IMPORT_CHANNEL = properties.getProperty("de.hpi.unicorn.messageQueue.jmsImportChannel");
 	}
 
-	public static String HOST;
-	public static String PORT;
-	public static String IMPORT_CHANNEL;
-
-	public static void receiveMessage(final MessageListener listener, final String brokerHost, final String brokerPort,
-			final String topic) throws JMSException {
+	public static void receiveMessage(final MessageListener listener, final String brokerHost, final String brokerPort, final String topic) throws JMSException {
 		// Create a ConnectionFactory
-		final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format("tcp://%s:%s",
-				brokerHost, brokerPort));
+		final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format("tcp://%s:%s", brokerHost, brokerPort));
 
 		// Create a Connection
 		final Connection connection = connectionFactory.createConnection();
@@ -59,12 +57,10 @@ public class JMSProvider {
 		consumer.setMessageListener(listener);
 	}
 
-	public static void sendMessage(final String brokerHost, final String brokerPort, final String topic,
-			final String message) {
+	public static void sendMessage(final String brokerHost, final String brokerPort, final String topic, final String message) {
 		try {
 			// Create a ConnectionFactory
-			final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format(
-					"tcp://%s:%s", brokerHost, brokerPort));
+			final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format("tcp://%s:%s", brokerHost, brokerPort));
 
 			// Create a Connection
 			final Connection connection = connectionFactory.createConnection();
@@ -99,17 +95,15 @@ public class JMSProvider {
 	 * Queues are created dynamically, but can must be destroyed explicitly by
 	 * calling this method. Queues with active subscribers cannot be destroyed
 	 * and result in an exception.
-	 * 
+	 *
 	 * @param brokerHost
 	 * @param brokerPort
 	 * @param topic
 	 * @throws JMSException
 	 */
-	public static void destroyMessageQueue(final String brokerHost, final String brokerPort, final String topic)
-			throws JMSException {
+	public static void destroyMessageQueue(final String brokerHost, final String brokerPort, final String topic) throws JMSException {
 		// Create a ConnectionFactory
-		final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format("tcp://%s:%s",
-				brokerHost, brokerPort));
+		final ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(String.format("tcp://%s:%s", brokerHost, brokerPort));
 
 		// Create a Connection
 		final Connection connection = connectionFactory.createConnection();

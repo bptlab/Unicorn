@@ -35,11 +35,10 @@ import de.hpi.unicorn.query.QueryTypeEnum;
 import de.hpi.unicorn.query.QueryWrapper;
 
 public class EsperTests {
-	StreamProcessingAdapter esper;
 	private static String kinoFileName = "Kino.xls";
-	private static String kinoFilePath = System.getProperty("user.dir") + "/src/test/resources/"
-			+ EsperTests.kinoFileName;
+	private static String kinoFilePath = System.getProperty("user.dir") + "/src/test/resources/" + EsperTests.kinoFileName;
 	private static List<EapEvent> events;
+	StreamProcessingAdapter esper;
 	private EapEventType eventType;
 
 	@Before
@@ -50,8 +49,7 @@ public class EsperTests {
 		this.esper = StreamProcessingAdapter.getInstance();
 		final ExcelImporter excelNormalizer = new ExcelImporter();
 		final ArrayList<String> columnTitles = excelNormalizer.getColumnTitlesFromFile(EsperTests.kinoFilePath);
-		Assert.assertTrue("Not the right attributes",
-				columnTitles.equals(new ArrayList<String>(Arrays.asList("Timestamp", "Location", "Rating"))));
+		Assert.assertTrue("Not the right attributes", columnTitles.equals(new ArrayList<String>(Arrays.asList("Timestamp", "Location", "Rating"))));
 		columnTitles.remove("Timestamp");
 		final List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
 		for (final String attributeName : columnTitles) {
@@ -127,34 +125,29 @@ public class EsperTests {
 
 		Broker.getInstance().importEvents(EsperTests.events);
 		final String log = query.execute();
-		final String numberOfEvents = log.substring(log.indexOf(System.getProperty("line.separator")) - 3,
-				log.indexOf(System.getProperty("line.separator")));
+		final String numberOfEvents = log.substring(log.indexOf(System.getProperty("line.separator")) - 3, log.indexOf(System.getProperty("line.separator")));
 		Assert.assertTrue("expected 999, got: " + numberOfEvents, numberOfEvents.equals("999")); // 999
-																									// events,
-																									// last
-																									// line
-																									// has
-																									// \n
-																									// too
+		// events,
+		// last
+		// line
+		// has
+		// \n
+		// too
 	}
 
 	@Test
 	public void testWindowCreation() {
-		Assert.assertTrue("Window has already been created",
-				!StreamProcessingAdapter.getInstance().hasWindow(this.eventType.getTypeName() + "Window"));
+		Assert.assertTrue("Window has already been created", !StreamProcessingAdapter.getInstance().hasWindow(this.eventType.getTypeName() + "Window"));
 		StreamProcessingAdapter.getInstance().addEventType(this.eventType);
-		Assert.assertTrue("Window has not been created",
-				StreamProcessingAdapter.getInstance().hasWindow(this.eventType.getTypeName() + "Window"));
+		Assert.assertTrue("Window has not been created", StreamProcessingAdapter.getInstance().hasWindow(this.eventType.getTypeName() + "Window"));
 		// Send Events
 		for (final EapEvent event : EsperTests.events) {
 			event.setEventType(this.eventType);
 			StreamProcessingAdapter.getInstance().addEvent(event);
 		}
 
-		final EPOnDemandQueryResult result = StreamProcessingAdapter.getInstance().getEsperRuntime()
-				.executeQuery("Select * From KinoWindow");
-		Assert.assertTrue("Number of events should have been 999, instead of " + result.getArray().length,
-				result.getArray().length == 999);
+		final EPOnDemandQueryResult result = StreamProcessingAdapter.getInstance().getEsperRuntime().executeQuery("Select * From KinoWindow");
+		Assert.assertTrue("Number of events should have been 999, instead of " + result.getArray().length, result.getArray().length == 999);
 	}
 
 }

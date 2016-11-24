@@ -22,22 +22,18 @@ import org.apache.wicket.model.IModel;
 /**
  * tree component for visualization of hierarchical elements nodes are not
  * selectable
- * 
- * @param <T>
- *            the type of nodes to be stored in the tree
+ *
+ * @param <T> the type of nodes to be stored in the tree
  */
 public class LabelTree<T> extends NestedTree<T> {
 
 	/**
 	 * constructor
-	 * 
-	 * @param id
-	 *            wicket identifier used in the corresponding HTML file
-	 * @param provider
-	 *            see de.hpi.unicorn.application.components.tree.NestedTreeProvider
-	 * @param state
-	 *            see
-	 *            de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
+	 *
+	 * @param id       wicket identifier used in the corresponding HTML file
+	 * @param provider see de.hpi.unicorn.application.components.tree.NestedTreeProvider
+	 * @param state    see
+	 *                 de.hpi.unicorn.application.components.tree.NestedTreeExpansionModel
 	 */
 	public LabelTree(final String id, final ITreeProvider<T> provider, final IModel<Set<T>> state) {
 		super(id, provider, state);

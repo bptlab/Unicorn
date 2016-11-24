@@ -23,7 +23,7 @@ import de.hpi.unicorn.application.images.ImageReference;
 /**
  * This class is a {@link IModel} and provides the images for the web
  * application.
- * 
+ *
  * @author micha
  */
 public class ImageModel implements IModel<List<? extends ICarouselImage>> {
@@ -34,31 +34,23 @@ public class ImageModel implements IModel<List<? extends ICarouselImage>> {
 	/**
 	 * The constructor for this class, which provides the images for the web
 	 * application.
-	 * 
+	 *
 	 * @param component
 	 */
 	public ImageModel(final Component component) {
 		final SharedResources sharedResources = WebApplication.get().getSharedResources();
-		final ResourceReference aligmentImageReference = sharedResources.get(ImageReference.class, "alignment.jpg",
-				null, null, null, false);
-		final ResourceReference eventStreamImageReference = sharedResources.get(ImageReference.class,
-				"eventStream.jpg", null, null, null, false);
-		final ResourceReference groupImageReference = sharedResources.get(ImageReference.class, "group.jpg", null,
-				null, null, false);
-		final ResourceReference processImageReference = sharedResources.get(ImageReference.class, "process.jpg", null,
-				null, null, false);
+		final ResourceReference aligmentImageReference = sharedResources.get(ImageReference.class, "alignment.jpg", null, null, null, false);
+		final ResourceReference eventStreamImageReference = sharedResources.get(ImageReference.class, "eventStream.jpg", null, null, null, false);
+		final ResourceReference groupImageReference = sharedResources.get(ImageReference.class, "group.jpg", null, null, null, false);
+		final ResourceReference processImageReference = sharedResources.get(ImageReference.class, "process.jpg", null, null, null, false);
 
-		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(eventStreamImageReference, null)
-				.toString(), "Event streaming platform", "Capture all your event streams in one platform"));
+		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(eventStreamImageReference, null).toString(), "Event streaming platform", "Capture all your event streams in one platform"));
 
-		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(groupImageReference, null).toString(),
-				"Next generation process management", "Monitor and analyze your processes"));
+		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(groupImageReference, null).toString(), "Next generation process management", "Monitor and analyze your processes"));
 
-		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(processImageReference, null).toString(),
-				"Process optimization", "Capture running process instances to optimize them"));
+		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(processImageReference, null).toString(), "Process optimization", "Capture running process instances to optimize them"));
 
-		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(aligmentImageReference, null).toString(),
-				"Business and IT alignment", "Gain knowlegde through combining business and IT"));
+		this.images.add(new CarouselImage(component.getRequestCycle().urlFor(aligmentImageReference, null).toString(), "Business and IT alignment", "Gain knowlegde through combining business and IT"));
 	}
 
 	@Override

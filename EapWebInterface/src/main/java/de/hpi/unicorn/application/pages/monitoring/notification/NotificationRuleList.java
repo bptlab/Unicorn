@@ -40,10 +40,10 @@ import de.hpi.unicorn.notification.NotificationRuleForQuery;
 public class NotificationRuleList extends Panel {
 
 	private final BlockingForm notificationForm;
-	private ArrayList<IColumn<NotificationRule, String>> columns;
+	private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public DefaultDataTable<NotificationRule, String> notificationRuleTable;
 	public EapProvider<NotificationRule> notificationRuleProvider;
-	private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private ArrayList<IColumn<NotificationRule, String>> columns;
 
 	public NotificationRuleList(final String id, final AbstractEapPage abstractEapPage) {
 		super(id);
@@ -53,7 +53,7 @@ public class NotificationRuleList extends Panel {
 		this.add(this.notificationForm);
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private Component addNotificationRules() {
 
 		this.notificationRuleProvider = new EapProvider<NotificationRule>(NotificationRule.findAll());
@@ -62,10 +62,8 @@ public class NotificationRuleList extends Panel {
 		this.columns.add(new PropertyColumn<NotificationRule, String>(Model.of("ID"), "ID"));
 		this.columns.add(new PropertyColumn<NotificationRule, String>(Model.of("Timestamp"), "timestamp") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<NotificationRule>> item, final String componentId,
-					final IModel<NotificationRule> rowModel) {
-				final String shortenedValues = NotificationRuleList.this.formatter.format(rowModel.getObject()
-						.getTimestamp());
+			public void populateItem(final Item<ICellPopulator<NotificationRule>> item, final String componentId, final IModel<NotificationRule> rowModel) {
+				final String shortenedValues = NotificationRuleList.this.formatter.format(rowModel.getObject().getTimestamp());
 				final Label label = new Label(componentId, shortenedValues);
 				item.add(label);
 			}
@@ -104,7 +102,9 @@ public class NotificationRuleList extends Panel {
 				}
 				label.setOutputMarkupId(true);
 				cellItem.add(label);
-			};
+			}
+
+			;
 		});
 		this.columns.add(new AbstractColumn(new Model("Delete")) {
 			@Override
@@ -135,11 +135,12 @@ public class NotificationRuleList extends Panel {
 				}
 				buttonPanel.setOutputMarkupId(true);
 				cellItem.add(buttonPanel);
-			};
+			}
+
+			;
 		});
 
-		this.notificationRuleTable = new DefaultDataTable<NotificationRule, String>("notificationRules", this.columns,
-				this.notificationRuleProvider, 20000);
+		this.notificationRuleTable = new DefaultDataTable<NotificationRule, String>("notificationRules", this.columns, this.notificationRuleProvider, 20000);
 		this.notificationRuleTable.setOutputMarkupId(true);
 
 		return this.notificationRuleTable;

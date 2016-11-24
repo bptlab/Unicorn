@@ -34,7 +34,7 @@ public class EapUtils {
 
 	/**
 	 * Formats a date as defined in the format string.
-	 * 
+	 *
 	 * @param date
 	 * @param format
 	 * @return formatted date
@@ -46,7 +46,7 @@ public class EapUtils {
 
 	/**
 	 * Parse string to date using given format.
-	 * 
+	 *
 	 * @param date
 	 * @param format
 	 * @return Date
@@ -59,7 +59,7 @@ public class EapUtils {
 
 	/**
 	 * Checks whether several Integer-Lists have common elements
-	 * 
+	 *
 	 * @param collectionOfIDLists
 	 * @return true if intersection is not empty
 	 */
@@ -85,7 +85,7 @@ public class EapUtils {
 
 	/**
 	 * Returns the common elements of several Integer-Lists.
-	 * 
+	 *
 	 * @param collectionOfIDLists
 	 * @return common elements of lists
 	 */
@@ -109,16 +109,14 @@ public class EapUtils {
 
 	/**
 	 * Transforms an attribute-value of an event to an integer value.
-	 * 
+	 *
 	 * @param eventTypeName
 	 * @param attributeExpression
 	 * @param array
 	 * @return integer value
 	 */
-	public static Integer integerValueFromEvent(final String eventTypeName, final String attributeExpression,
-			final Object[] array) {
-		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName,
-				attributeExpression, array);
+	public static Integer integerValueFromEvent(final String eventTypeName, final String attributeExpression, final Object[] array) {
+		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName, attributeExpression, array);
 		if (value != null) {
 			try {
 				return (Integer) value;
@@ -131,16 +129,14 @@ public class EapUtils {
 
 	/**
 	 * Transforms an attribute value of an event to a double value.
-	 * 
+	 *
 	 * @param eventTypeName
 	 * @param attributeExpression
 	 * @param array
 	 * @return
 	 */
-	public static Double doubleValueFromEvent(final String eventTypeName, final String attributeExpression,
-			final Object[] array) {
-		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName,
-				attributeExpression, array);
+	public static Double doubleValueFromEvent(final String eventTypeName, final String attributeExpression, final Object[] array) {
+		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName, attributeExpression, array);
 		if (value != null) {
 			try {
 				return (Double) value;
@@ -153,16 +149,14 @@ public class EapUtils {
 
 	/**
 	 * Transforms an attribute value of an event to a string value.
-	 * 
+	 *
 	 * @param eventTypeName
 	 * @param attributeExpression
 	 * @param array
 	 * @return
 	 */
-	public static String stringValueFromEvent(final String eventTypeName, final String attributeExpression,
-			final Object[] array) {
-		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName,
-				attributeExpression, array);
+	public static String stringValueFromEvent(final String eventTypeName, final String attributeExpression, final Object[] array) {
+		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName, attributeExpression, array);
 		if (value != null) {
 			return value.toString();
 		}
@@ -171,16 +165,14 @@ public class EapUtils {
 
 	/**
 	 * Transforms an attribute value of an event to a date value.
-	 * 
+	 *
 	 * @param eventTypeName
 	 * @param attributeExpression
 	 * @param array
 	 * @return
 	 */
-	public static Date dateValueFromEvent(final String eventTypeName, final String attributeExpression,
-			final Object[] array) {
-		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName,
-				attributeExpression, array);
+	public static Date dateValueFromEvent(final String eventTypeName, final String attributeExpression, final Object[] array) {
+		final Serializable value = EapUtils.findValueByEventTypeAndAttributeExpressionsAndValues(eventTypeName, attributeExpression, array);
 		if (value != null) {
 			try {
 				return (Date) value;
@@ -199,32 +191,30 @@ public class EapUtils {
 	/**
 	 * Returns attribute values of events with a certain event type and
 	 * attribute expressions.
-	 * 
+	 *
 	 * @param eventTypeName
 	 * @param attributeExpression
 	 * @param array
 	 * @return
 	 */
-	private static Serializable findValueByEventTypeAndAttributeExpressionsAndValues(final String eventTypeName,
-			final String attributeExpression, final Object[] array) {
+	private static Serializable findValueByEventTypeAndAttributeExpressionsAndValues(final String eventTypeName, final String attributeExpression, final Object[] array) {
 		final Map<String, Serializable> attributeExpressionsAndValues = new HashMap<String, Serializable>();
 		for (int i = 0; i < array.length; i = i + 2) {
 			attributeExpressionsAndValues.put((String) array[i], (Serializable) array[i + 1]);
 		}
-		return EapEvent.findValueByEventTypeAndAttributeExpressionsAndValues(
-				EapEventType.findByTypeName(eventTypeName), attributeExpression, attributeExpressionsAndValues);
+		return EapEvent.findValueByEventTypeAndAttributeExpressionsAndValues(EapEventType.findByTypeName(eventTypeName), attributeExpression, attributeExpressionsAndValues);
 	}
 
 	/**
 	 * Sums up the attribute values of certain attribute from each event of an
 	 * event list.
-	 * 
+	 *
 	 * @param events
 	 * @param attributeName
 	 * @return
 	 */
 	public static Integer sumFromEventList(final Node[] events, final String attributeName) {
-		String[] attributeNameByLevels = { attributeName };
+		String[] attributeNameByLevels = {attributeName};
 		if (attributeName.contains(".")) {
 			attributeNameByLevels = attributeName.split(".");
 		}
@@ -253,7 +243,7 @@ public class EapUtils {
 
 	/**
 	 * Checks if string is part of another string.
-	 * 
+	 *
 	 * @param substring
 	 * @param mainString
 	 * @return

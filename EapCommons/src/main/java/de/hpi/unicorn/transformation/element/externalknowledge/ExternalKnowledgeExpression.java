@@ -32,7 +32,6 @@ import de.hpi.unicorn.persistence.Persistable;
  * Values from occurred events may be retrieved by a external knowledge
  * expression as well. The value is determined by a event type, the attribute of
  * the value and criteria attributes and values to find the right value.
- * 
  */
 @Entity
 @Table(name = "ExternalKnowledgeExpression")
@@ -67,18 +66,14 @@ public class ExternalKnowledgeExpression extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param eventType
-	 *            the events of the event type serve as external knowledge
-	 * @param desiredAttribute
-	 *            the value of the desired attribute belonging to the event type
-	 *            will be fetched
-	 * @param criteriaAttributesAndValues
-	 *            pairs of attributes and values that narrow down the choice of
-	 *            events from which the value can be fetched
+	 *
+	 * @param eventType                   the events of the event type serve as external knowledge
+	 * @param desiredAttribute            the value of the desired attribute belonging to the event type
+	 *                                    will be fetched
+	 * @param criteriaAttributesAndValues pairs of attributes and values that narrow down the choice of
+	 *                                    events from which the value can be fetched
 	 */
-	public ExternalKnowledgeExpression(final EapEventType eventType, final TypeTreeNode desiredAttribute,
-			final Map<String, String> criteriaAttributesAndValues) {
+	public ExternalKnowledgeExpression(final EapEventType eventType, final TypeTreeNode desiredAttribute, final Map<String, String> criteriaAttributesAndValues) {
 		this();
 		this.eventType = eventType;
 		this.desiredAttribute = desiredAttribute;

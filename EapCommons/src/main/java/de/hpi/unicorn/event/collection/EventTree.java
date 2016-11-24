@@ -30,25 +30,21 @@ import de.hpi.unicorn.persistence.Persistable;
 import de.hpi.unicorn.persistence.Persistor;
 
 /**
- * @author micha
- * 
  * @param <T>
+ * @author micha
  */
 @Entity
 @Table(name = "EventTree")
 public class EventTree<T> extends Persistable implements Collection<T> {
 
 	private static final long serialVersionUID = 1L;
-
+	// essentiell, da sonst keine (leeren) EventTrees gespeichert werden können
+	@Column(name = "Auxiliary")
+	private final String auxiliary = "Auxiliary";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "EventTreeID")
 	protected int ID;
-
-	// essentiell, da sonst keine (leeren) EventTrees gespeichert werden können
-	@Column(name = "Auxiliary")
-	private final String auxiliary = "Auxiliary";
-
 	@OneToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(name = "EventTree_EventTreeElements")
 	private List<EventTreeElement<T>> treeElements = new ArrayList<EventTreeElement<T>>();
@@ -70,10 +66,27 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		this.treeRootElements.add(element);
 	}
 
+	public static List<EventTree> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("select t from EventTree t");
+		return q.getResultList();
+	}
+
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM EventTree");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
 	public T getParent(final T treeElementValue) {
 		for (final EventTreeElement<T> currentTreeElement : this.treeElements) {
-			if (currentTreeElement.getValue() != null && currentTreeElement.getValue() == treeElementValue
-					&& currentTreeElement.getParent() != null) {
+			if (currentTreeElement.getValue() != null && currentTreeElement.getValue() == treeElementValue && currentTreeElement.getParent() != null) {
 				return currentTreeElement.getParent().getValue();
 			}
 		}
@@ -82,7 +95,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all parents in the tree for the given element.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -106,7 +119,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all elements from the tree, which contain exactly these children.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -114,8 +127,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		final Set<T> parentValues = new HashSet<T>();
 		final Set<EventTreeElement<T>> parents = new HashSet<EventTreeElement<T>>();
 		for (final EventTreeElement<T> treeElement : this.treeElements) {
-			if (treeElement.getChildValues().containsAll(children)
-					&& children.containsAll(treeElement.getChildValues())) {
+			if (treeElement.getChildValues().containsAll(children) && children.containsAll(treeElement.getChildValues())) {
 				parents.add(treeElement);
 				parentValues.add(treeElement.getValue());
 			}
@@ -128,7 +140,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all descendants for the given element.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -170,7 +182,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	/**
 	 * Returns a list of BPMN elements, which are parents for the specified
 	 * elements.
-	 * 
+	 *
 	 * @param elements
 	 * @return
 	 */
@@ -188,7 +200,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	/**
 	 * Returns the values for all elements of the tree that are leaves (elements
 	 * that have no children).
-	 * 
+	 *
 	 * @return
 	 */
 	public List<T> getValuesOfLeaves() {
@@ -203,7 +215,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all leaf elements descending from the specified element.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -222,7 +234,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all elements of the tree, that have no children.
-	 * 
+	 *
 	 * @return
 	 */
 	public Set<T> getLeafElements() {
@@ -235,7 +247,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Returns all tree elements, that have no children.
-	 * 
+	 *
 	 * @return
 	 */
 	private Set<EventTreeElement<T>> getLeafs() {
@@ -258,6 +270,17 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		return false;
 	}
 
+	// public void addChild(T parent, T child, AttributeTypeEnum type) {
+	//
+	// EventTreeElement<T> treeElement = findTreeElementByValue(parent);
+	// TypeTreeNode<T> childTreeElement = new TypeTreeNode<T>(treeElement,
+	// child, type);
+	// treeElements.add(childTreeElement);
+	// if(parent == null){
+	// treeRootElements.add(childTreeElement);
+	// }
+	// }
+
 	public boolean hasChildren(final T treeElement) {
 		final EventTreeElement<T> currentTreeElement = this.findTreeElementByValue(treeElement);
 		if (currentTreeElement != null) {
@@ -269,7 +292,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 
 	/**
 	 * Adds a child to the specified parent.
-	 * 
+	 *
 	 * @param parent
 	 * @param child
 	 */
@@ -282,20 +305,16 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		}
 	}
 
-	// public void addChild(T parent, T child, AttributeTypeEnum type) {
 	//
-	// EventTreeElement<T> treeElement = findTreeElementByValue(parent);
-	// TypeTreeNode<T> childTreeElement = new TypeTreeNode<T>(treeElement,
-	// child, type);
-	// treeElements.add(childTreeElement);
-	// if(parent == null){
-	// treeRootElements.add(childTreeElement);
-	// }
+	// public boolean addRootElement(T rootElement, AttributeTypeEnum type){
+	// TypeTreeNode<T> element = new TypeTreeNode<T>(null, rootElement, type);
+	// treeElements.add(element);
+	// return treeRootElements.add(element);
 	// }
 
 	/**
 	 * Returns true if the parent contains the specified child.
-	 * 
+	 *
 	 * @param parent
 	 * @param child
 	 */
@@ -309,16 +328,9 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		return this.treeRootElements.add(element);
 	}
 
-	//
-	// public boolean addRootElement(T rootElement, AttributeTypeEnum type){
-	// TypeTreeNode<T> element = new TypeTreeNode<T>(null, rootElement, type);
-	// treeElements.add(element);
-	// return treeRootElements.add(element);
-	// }
-
 	/**
 	 * Removes all children from the specified tree element.
-	 * 
+	 *
 	 * @param treeElement
 	 * @return
 	 */
@@ -387,8 +399,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	public boolean remove(final EventTreeElement<T> removeTreeElement) {
 		if (removeTreeElement != null) {
 			if (removeTreeElement.hasChildren()) {
-				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(
-						removeTreeElement.getChildren());
+				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(removeTreeElement.getChildren());
 				for (final EventTreeElement<T> child : children) {
 					this.remove(child);
 				}
@@ -402,11 +413,9 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	}
 
 	/**
-	 * @author tsun
-	 * 
-	 * @param parent
-	 *            Will be removed as well if it has no childs.
+	 * @param parent Will be removed as well if it has no childs.
 	 * @param child
+	 * @author tsun
 	 */
 	public boolean removeChild(final T parent, final T child) {
 		EventTreeElement<T> parentElement;
@@ -416,16 +425,14 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		}
 		if (parentElement != null) {
 			if (parentElement.hasChildren()) {
-				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(
-						parentElement.getChildren());
+				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(parentElement.getChildren());
 				for (final EventTreeElement<T> childTreeElement : children) {
 					if (childTreeElement.getValue().equals(child)) {
 						this.remove(childTreeElement);
 						if (!parentElement.hasChildren()) {
 							this.remove(parentElement);
 						}
-						return (this.treeElements.remove(childTreeElement) && this.treeElements.remove(parentElement) && this.treeRootElements
-								.remove(parentElement));
+						return (this.treeElements.remove(childTreeElement) && this.treeElements.remove(parentElement) && this.treeRootElements.remove(parentElement));
 					}
 				}
 			}
@@ -434,11 +441,9 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	}
 
 	/**
-	 * @author tsun
-	 * 
-	 * @param parent
-	 *            Will not be removed in any case.
+	 * @param parent Will not be removed in any case.
 	 * @param child
+	 * @author tsun
 	 */
 	public boolean removeChildOnly(final T parent, final T child) {
 		EventTreeElement<T> parentElement;
@@ -448,13 +453,11 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		}
 		if (parentElement != null) {
 			if (parentElement.hasChildren()) {
-				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(
-						parentElement.getChildren());
+				final List<EventTreeElement<T>> children = new ArrayList<EventTreeElement<T>>(parentElement.getChildren());
 				for (final EventTreeElement<T> childTreeElement : children) {
 					if (childTreeElement.getValue().equals(child)) {
 						this.remove(childTreeElement);
-						return (this.treeElements.remove(childTreeElement) && this.treeElements.remove(parentElement) && this.treeRootElements
-								.remove(parentElement));
+						return (this.treeElements.remove(childTreeElement) && this.treeElements.remove(parentElement) && this.treeRootElements.remove(parentElement));
 					}
 				}
 			}
@@ -554,24 +557,6 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 		}
 	}
 
-	public static List<EventTree> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("select t from EventTree t");
-		return q.getResultList();
-	}
-
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM EventTree");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
-	}
-
 	public ArrayList<T> getElements() {
 		return this.getTreeElementValues(this.treeElements);
 	}
@@ -579,7 +564,7 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	/**
 	 * Returns the depth of an element from the tree. If the element is not
 	 * contained, -1 will be returned.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */
@@ -640,13 +625,11 @@ public class EventTree<T> extends Persistable implements Collection<T> {
 	/**
 	 * Checks if a node with the given value exists in the children of a parent
 	 * node.
-	 * 
+	 *
 	 * @param parent
-	 * @param child
-	 *            the node that shall be in the children of the parent
-	 * 
+	 * @param child  the node that shall be in the children of the parent
 	 * @return true if the node with the given value exists in the children of
-	 *         the given parent node
+	 * the given parent node
 	 */
 	public boolean isInChildrenOfNode(final T parent, final T child) {
 		if (parent != null) {

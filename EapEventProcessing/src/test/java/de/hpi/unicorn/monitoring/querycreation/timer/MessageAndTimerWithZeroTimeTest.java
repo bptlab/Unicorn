@@ -31,16 +31,20 @@ import de.hpi.unicorn.utils.TestHelper;
 /**
  * Tests the boundary intermediate timer event with a waiting time of zero and
  * not sending the message intermediate event that could follow the TimerTask.
- * 
+ *
  * @author micha
  */
 public class MessageAndTimerWithZeroTimeTest extends AbstractQueryCreationTest {
 
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
+
 	@Before
 	public void setup() {
 		Persistor.useTestEnviroment();
-		this.filePath = System.getProperty("user.dir")
-				+ "/src/test/resources/bpmn/MessageAndTimerWithZeroWaiting.bpmn20.xml";
+		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/MessageAndTimerWithZeroWaiting.bpmn20.xml";
 	}
 
 	@Test
@@ -54,8 +58,7 @@ public class MessageAndTimerWithZeroTimeTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 		MessageAndTimerTest.afterQueriesTests(this.process);
 	}
 
@@ -98,10 +101,5 @@ public class MessageAndTimerWithZeroTimeTest extends AbstractQueryCreationTest {
 			}
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 }

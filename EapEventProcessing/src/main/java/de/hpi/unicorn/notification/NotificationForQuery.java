@@ -43,24 +43,22 @@ public class NotificationForQuery extends Notification {
 		this.notificationRule = rule;
 	}
 
+	@SuppressWarnings("unchecked")
+	public static List<NotificationForQuery> findUnseenQueryNotificationForUser(final EapUser user) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0 AND Disc = 'Q'", NotificationForQuery.class);
+		return query.getResultList();
+	}
+
 	@Override
 	public String toString() {
 		final NotificationRuleForQuery notificationQueryType = (NotificationRuleForQuery) this.notificationRule;
 		return notificationQueryType.getQuery() + " was triggered on " + this.timestamp + " : " + this.log;
 	}
 
+	// JPA-Methods
+
 	@Override
 	public String getTriggeringText() {
 		return this.log;
-	}
-
-	// JPA-Methods
-
-	@SuppressWarnings("unchecked")
-	public static List<NotificationForQuery> findUnseenQueryNotificationForUser(final EapUser user) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0 AND Disc = 'Q'",
-				NotificationForQuery.class);
-		return query.getResultList();
 	}
 }

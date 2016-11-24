@@ -40,17 +40,17 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 @SuppressWarnings("serial")
 public class CorrelationPage extends AbstractEapPage {
 
-	private SimpleCorrelationPanel simpleCorrelationPanel;
-	private SimpleCorrelationWithRulesPanel scenario3Panel;
-	private boolean simpleCorrelationWithRules = false;
 	// private AdvancedCorrelationPanel advancedCorrelationPanel;
 	private final DropDownChoice<String> processSelect;
-	private ProcessEditorModal processEditorModal;
 	private final ArrayList<String> processNameList;
 	private final ExistingCorrelationAlert existingCorrelationAlert;
 	private final CorrelationPage correlationPage;
-	protected ArrayList<TypeTreeNode> commonCorrelationAttributes = new ArrayList<TypeTreeNode>();
 	private final Form<Void> layoutForm;
+	protected ArrayList<TypeTreeNode> commonCorrelationAttributes = new ArrayList<TypeTreeNode>();
+	private SimpleCorrelationPanel simpleCorrelationPanel;
+	private SimpleCorrelationWithRulesPanel scenario3Panel;
+	private boolean simpleCorrelationWithRules = false;
+	private ProcessEditorModal processEditorModal;
 
 	public CorrelationPage() {
 		super();
@@ -68,15 +68,12 @@ public class CorrelationPage extends AbstractEapPage {
 		this.processSelect.setOutputMarkupId(true);
 		this.layoutForm.add(this.processSelect);
 
-		final RadioChoice<String> simpleCorrelationWithRulesRadioChoice = new RadioChoice<String>(
-				"simpleCorrelationWithRulesRadioChoice", new Model<String>(), Arrays.asList("same-name attributes",
-						"correlation rules"));
+		final RadioChoice<String> simpleCorrelationWithRulesRadioChoice = new RadioChoice<String>("simpleCorrelationWithRulesRadioChoice", new Model<String>(), Arrays.asList("same-name attributes", "correlation rules"));
 		simpleCorrelationWithRulesRadioChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				CorrelationPage.this.simpleCorrelationWithRules = simpleCorrelationWithRulesRadioChoice
-						.getModelObject().equals("correlation rules");
+				CorrelationPage.this.simpleCorrelationWithRules = simpleCorrelationWithRulesRadioChoice.getModelObject().equals("correlation rules");
 				CorrelationPage.this.updateSimpleCorrelationPanelComponents(target);
 				CorrelationPage.this.updateSimpleCorrelationWithRulesPanelComponents(target);
 			}
@@ -90,8 +87,7 @@ public class CorrelationPage extends AbstractEapPage {
 
 		this.addProcessEditorModal();
 
-		this.existingCorrelationAlert = new ExistingCorrelationAlert("warning",
-				"Correlation exists! Do you want to override it?", this);
+		this.existingCorrelationAlert = new ExistingCorrelationAlert("warning", "Correlation exists! Do you want to override it?", this);
 		this.existingCorrelationAlert.setVisible(false);
 		this.existingCorrelationAlert.setOutputMarkupId(true);
 		this.existingCorrelationAlert.setOutputMarkupPlaceholderTag(true);
@@ -121,11 +117,7 @@ public class CorrelationPage extends AbstractEapPage {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 				super.onSubmit(target, form);
-				if ((CorrelationPage.this.simpleCorrelationWithRules && CorrelationPage.this
-						.isSimpleCorrelationWithRulesPanelFilled())
-						|| (!CorrelationPage.this.simpleCorrelationWithRules && CorrelationPage.this
-								.isSimpleCorrelationPanelFilled())
-						&& CorrelationPage.this.isAdvancedCorrelationPanelFilled()) {
+				if ((CorrelationPage.this.simpleCorrelationWithRules && CorrelationPage.this.isSimpleCorrelationWithRulesPanelFilled()) || (!CorrelationPage.this.simpleCorrelationWithRules && CorrelationPage.this.isSimpleCorrelationPanelFilled()) && CorrelationPage.this.isAdvancedCorrelationPanelFilled()) {
 					CorrelationPage.this.addEventTypesToProcessAndCorrelate(target);
 				}
 				target.add(CorrelationPage.this.correlationPage.getFeedbackPanel());
@@ -167,8 +159,7 @@ public class CorrelationPage extends AbstractEapPage {
 		} else {
 			for (final CorrelationRule correlationRule : this.scenario3Panel.getCorrelationRules()) {
 				if (correlationRule.getFirstAttribute() == null || correlationRule.getSecondAttribute() == null) {
-					this.correlationPage.getFeedbackPanel().error(
-							"Some of the correlation rules are missing attributes!");
+					this.correlationPage.getFeedbackPanel().error("Some of the correlation rules are missing attributes!");
 					this.correlationPage.getFeedbackPanel().setVisible(true);
 					return false;
 				}
@@ -239,8 +230,7 @@ public class CorrelationPage extends AbstractEapPage {
 		tabs.add(new AbstractTab(new Model<String>("Correlation with same-name attributes")) {
 			@Override
 			public Panel getPanel(final String panelId) {
-				CorrelationPage.this.simpleCorrelationPanel = new SimpleCorrelationPanel(panelId,
-						CorrelationPage.this.correlationPage);
+				CorrelationPage.this.simpleCorrelationPanel = new SimpleCorrelationPanel(panelId, CorrelationPage.this.correlationPage);
 				return CorrelationPage.this.simpleCorrelationPanel;
 			}
 		});
@@ -248,8 +238,7 @@ public class CorrelationPage extends AbstractEapPage {
 		tabs.add(new AbstractTab(new Model<String>("Correlation with correlation rules")) {
 			@Override
 			public Panel getPanel(final String panelId) {
-				CorrelationPage.this.scenario3Panel = new SimpleCorrelationWithRulesPanel(panelId,
-						CorrelationPage.this.correlationPage);
+				CorrelationPage.this.scenario3Panel = new SimpleCorrelationWithRulesPanel(panelId, CorrelationPage.this.correlationPage);
 				return CorrelationPage.this.scenario3Panel;
 			}
 		});
@@ -265,13 +254,10 @@ public class CorrelationPage extends AbstractEapPage {
 	}
 
 	private void addEventTypesToProcessAndCorrelate(final AjaxRequestTarget target) {
-		final CorrelationProcess selectedProcess = CorrelationProcess.findByName(
-				this.processSelect.getChoices().get(Integer.parseInt(this.processSelect.getValue()))).get(0);
+		final CorrelationProcess selectedProcess = CorrelationProcess.findByName(this.processSelect.getChoices().get(Integer.parseInt(this.processSelect.getValue()))).get(0);
 		if (selectedProcess.hasCorrelation() || CorrelationProcessInstance.findByProcess(selectedProcess).size() > 0) {
 			// showCorrelationExistsWarningModal(selectedProcess, target);
-			this.correlationPage
-					.getFeedbackPanel()
-					.error("Correlation condition currently in use. Remove condition and all process instances to set new condition.");
+			this.correlationPage.getFeedbackPanel().error("Correlation condition currently in use. Remove condition and all process instances to set new condition.");
 			this.correlationPage.getFeedbackPanel().setVisible(true);
 		} else {
 			// addEventTypesToSelectedProcess(selectedProcess);
@@ -309,8 +295,7 @@ public class CorrelationPage extends AbstractEapPage {
 
 	public void correlateEvents(final CorrelationProcess selectedProcess) {
 		if (this.simpleCorrelationWithRules) {
-			final Set<CorrelationRule> correlationRules = new HashSet<CorrelationRule>(
-					this.scenario3Panel.getCorrelationRules());
+			final Set<CorrelationRule> correlationRules = new HashSet<CorrelationRule>(this.scenario3Panel.getCorrelationRules());
 			// if (advancedCorrelationPanel.isTimeCorrelationSelected()) {
 			// RuleCorrelator.correlate(correlationRules, selectedProcess,
 			// advancedCorrelationPanel.getTimeCondition());
@@ -318,8 +303,7 @@ public class CorrelationPage extends AbstractEapPage {
 			RuleCorrelator.correlate(correlationRules, selectedProcess, null);
 			// }
 		} else {
-			final List<TypeTreeNode> correlationAttributes = this.simpleCorrelationPanel
-					.getSelectedCorrelationAttributes();
+			final List<TypeTreeNode> correlationAttributes = this.simpleCorrelationPanel.getSelectedCorrelationAttributes();
 
 			final Set<EapEventType> correlationEventTypes = this.simpleCorrelationPanel.getCorrelationEventTypes();
 			// if (advancedCorrelationPanel.isTimeCorrelationSelected()) {
@@ -330,9 +314,7 @@ public class CorrelationPage extends AbstractEapPage {
 			AttributeCorrelator.correlate(correlationEventTypes, correlationAttributes, selectedProcess, null);
 			// }
 		}
-		this.correlationPage.getFeedbackPanel().success(
-				"Correlation finished! " + CorrelationProcessInstance.findByProcess(selectedProcess).size()
-						+ " process instances created!");
+		this.correlationPage.getFeedbackPanel().success("Correlation finished! " + CorrelationProcessInstance.findByProcess(selectedProcess).size() + " process instances created!");
 		this.correlationPage.getFeedbackPanel().setVisible(true);
 	}
 

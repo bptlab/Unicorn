@@ -37,30 +37,26 @@ import de.hpi.unicorn.user.EapUser;
 public class NotificationCreationPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
-
-	List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
+	// private static final List<String> TYPES = Arrays.asList("Event Type",
+	// "Query");
+	// private IModel<String> selectedType = Model.of("Event Type");
+	private static final List<NotificationMethod> PRIORITIES = Arrays.asList(NotificationMethod.values());
 	private final NotificationPage visualisationPage;
 	private final NotificationCreationPanel panel;
-
-	private NotificationPanel feedbackPanel;
 	private final Form<Void> layoutForm;
-
+	// private String selectedEventTypeName = null;
+	// private EapEventType selectedEventType = null;
+	private final EapUser selectedUser = null;
+	private final QueryWrapper selectedQuery = null;
+	private final IModel<NotificationMethod> selectedPriority = Model.of(NotificationMethod.GUI);
+	List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
+	private NotificationPanel feedbackPanel;
 	private DropDownChoice<EapUser> userSelect;
 	// private DropDownChoice<String> typeSelect;
 	private DropDownChoice<NotificationMethod> prioritySelect;
 	// private WebMarkupContainer eventTypeContainer;
 	private WebMarkupContainer queryContainer;
 	private DropDownChoice<QueryWrapper> querySelect;
-
-	// private String selectedEventTypeName = null;
-	// private EapEventType selectedEventType = null;
-	private final EapUser selectedUser = null;
-	private final QueryWrapper selectedQuery = null;
-	// private static final List<String> TYPES = Arrays.asList("Event Type",
-	// "Query");
-	// private IModel<String> selectedType = Model.of("Event Type");
-	private static final List<NotificationMethod> PRIORITIES = Arrays.asList(NotificationMethod.values());
-	private final IModel<NotificationMethod> selectedPriority = Model.of(NotificationMethod.GUI);
 
 	public NotificationCreationPanel(final String id, final NotificationPage notificationPage) {
 		super(id);
@@ -115,8 +111,7 @@ public class NotificationCreationPanel extends Panel {
 	}
 
 	private Component addPrioritySelect() {
-		this.prioritySelect = new DropDownChoice<NotificationMethod>("prioritySelect", this.selectedPriority,
-				NotificationCreationPanel.PRIORITIES);
+		this.prioritySelect = new DropDownChoice<NotificationMethod>("prioritySelect", this.selectedPriority, NotificationCreationPanel.PRIORITIES);
 		this.prioritySelect.setOutputMarkupId(true);
 		return this.prioritySelect;
 	}
@@ -168,8 +163,7 @@ public class NotificationCreationPanel extends Panel {
 	// }
 
 	private Component addQuerySelect() {
-		this.querySelect = new DropDownChoice<QueryWrapper>("querySelect", new PropertyModel<QueryWrapper>(this,
-				"selectedQuery"), QueryWrapper.getAllLiveQueries()) {
+		this.querySelect = new DropDownChoice<QueryWrapper>("querySelect", new PropertyModel<QueryWrapper>(this, "selectedQuery"), QueryWrapper.getAllLiveQueries()) {
 			// public boolean isVisible() {
 			// return isQueryDivVisible();
 			// }
@@ -179,8 +173,7 @@ public class NotificationCreationPanel extends Panel {
 	}
 
 	private Component addUserSelect() {
-		this.userSelect = new DropDownChoice<EapUser>("userSelect", new PropertyModel<EapUser>(this, "selectedUser"),
-				EapUser.findAll());
+		this.userSelect = new DropDownChoice<EapUser>("userSelect", new PropertyModel<EapUser>(this, "selectedUser"), EapUser.findAll());
 		return this.userSelect;
 	}
 
@@ -248,9 +241,7 @@ public class NotificationCreationPanel extends Panel {
 					// UUID.randomUUID().toString());
 					// notification.save();
 					// }
-					notification = new NotificationRuleForQuery(NotificationCreationPanel.this.selectedQuery,
-							NotificationCreationPanel.this.selectedUser,
-							NotificationCreationPanel.this.selectedPriority.getObject());
+					notification = new NotificationRuleForQuery(NotificationCreationPanel.this.selectedQuery, NotificationCreationPanel.this.selectedUser, NotificationCreationPanel.this.selectedPriority.getObject());
 					notification.save();
 
 					// update notification rule list in notification page
@@ -262,7 +253,9 @@ public class NotificationCreationPanel extends Panel {
 					NotificationCreationPanel.this.visualisationPage.addNotificationModal.close(target);
 					// TODO: after closing, the page is still disabled/overlayed
 				}
-			};
+			}
+
+			;
 		};
 		layoutForm.add(createButton);
 	}

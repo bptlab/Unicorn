@@ -13,7 +13,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 
 /**
  * This class filters {@link CorrelationProcess}es in the {@link ProcessPanel}.
- * 
+ *
  * @author micha
  */
 public class ProcessFilter extends AbstractFilter {
@@ -31,13 +31,12 @@ public class ProcessFilter extends AbstractFilter {
 	/**
 	 * Constructor for the class, which filters {@link CorrelationProcess}es in
 	 * the {@link ProcessPanel}.
-	 * 
+	 *
 	 * @param processFilterCriteria
 	 * @param processFilterCondition
 	 * @param filterValue
 	 */
-	public ProcessFilter(final String processFilterCriteria, final String processFilterCondition,
-			final String filterValue) {
+	public ProcessFilter(final String processFilterCriteria, final String processFilterCondition, final String filterValue) {
 		super(processFilterCriteria, processFilterCondition, filterValue);
 	}
 

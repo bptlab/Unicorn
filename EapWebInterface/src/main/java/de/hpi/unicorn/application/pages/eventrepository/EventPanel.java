@@ -52,7 +52,7 @@ public class EventPanel extends Panel {
 	/**
 	 * Constructor for the event panel. The page is initialized in this method
 	 * and the data is loaded from the database.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -67,22 +67,19 @@ public class EventPanel extends Panel {
 
 		final Form<Void> buttonForm = new WarnOnExitForm("buttonForm");
 
-		final List<String> eventFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[] { "ID",
-				"Event Type (ID)", "Process Instance" }));
+		final List<String> eventFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Event Type (ID)", "Process Instance"}));
 		for (final String eventAttribute : EapEvent.findAllEventAttributes()) {
 			eventFilterCriteriaList.add(eventAttribute);
 		}
 		final String selectedEventCriteria = "ID";
 
-		final DropDownChoice<String> eventFilterCriteriaSelect = new DropDownChoice<String>("eventFilterCriteria",
-				new Model<String>(selectedEventCriteria), eventFilterCriteriaList);
+		final DropDownChoice<String> eventFilterCriteriaSelect = new DropDownChoice<String>("eventFilterCriteria", new Model<String>(selectedEventCriteria), eventFilterCriteriaList);
 		buttonForm.add(eventFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("eventFilterCondition",
-				new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("eventFilterCondition", new Model<String>(selectedCondition), conditions);
 		buttonForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -94,13 +91,10 @@ public class EventPanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
-				final String eventFilterCriteria = eventFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(eventFilterCriteriaSelect.getValue()));
-				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String eventFilterCriteria = eventFilterCriteriaSelect.getChoices().get(Integer.parseInt(eventFilterCriteriaSelect.getValue()));
+				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				EventPanel.this.eventProvider.setEventFilter(new EventFilter(eventFilterCriteria, eventFilterCondition,
-						filterValue));
+				EventPanel.this.eventProvider.setEventFilter(new EventFilter(eventFilterCriteria, eventFilterCondition, filterValue));
 				target.add(EventPanel.this.dataTable);
 			}
 		};
@@ -150,8 +144,7 @@ public class EventPanel extends Panel {
 		this.columns.add(new PropertyColumn<EapEvent, String>(Model.of("ID"), "ID"));
 		this.columns.add(new PropertyColumn<EapEvent, String>(Model.of("Timestamp"), "timestamp") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<EapEvent>> item, final String componentId,
-					final IModel<EapEvent> rowModel) {
+			public void populateItem(final Item<ICellPopulator<EapEvent>> item, final String componentId, final IModel<EapEvent> rowModel) {
 				final String shortenedValues = EventPanel.this.formatter.format(rowModel.getObject().getTimestamp());
 				final Label label = new Label(componentId, shortenedValues);
 				item.add(label);
@@ -160,8 +153,7 @@ public class EventPanel extends Panel {
 		this.columns.add(new PropertyColumn<EapEvent, String>(Model.of("EventType"), "eventType"));
 		this.columns.add(new AbstractColumn<EapEvent, String>(Model.of("Values"), "values") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<EapEvent>> item, final String componentId,
-					final IModel<EapEvent> rowModel) {
+			public void populateItem(final Item<ICellPopulator<EapEvent>> item, final String componentId, final IModel<EapEvent> rowModel) {
 				String shortenedValues = rowModel.getObject().getValues().toString();
 				shortenedValues = shortenedValues.substring(1, shortenedValues.length() - 1);
 				if (shortenedValues.length() > 200) {
@@ -187,7 +179,9 @@ public class EventPanel extends Panel {
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((EapEvent) rowModel.getObject()).getID();
 				cellItem.add(new SelectEntryPanel(componentId, entryId, EventPanel.this.eventProvider));
-			};
+			}
+
+			;
 		});
 
 		this.dataTable = new DefaultDataTable<EapEvent, String>("events", this.columns, this.eventProvider, 20);

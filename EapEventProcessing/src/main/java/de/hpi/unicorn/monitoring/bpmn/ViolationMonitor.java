@@ -27,24 +27,23 @@ import de.hpi.unicorn.query.PatternQueryType;
  * The ViolationMonitor tries to reveal violations while the execution of
  * process instances. For instance order, exclusiveness or cooccurence
  * violations.
- * 
+ *
  * @author micha
  */
 public class ViolationMonitor {
 
-	private ProcessInstanceMonitor processInstanceMonitor;
 	private final EventTree<AbstractBPMNElement> processDecompositionTree;
+	private ProcessInstanceMonitor processInstanceMonitor;
 
 	/**
 	 * Creates a new ViolationMonitor for the given
 	 * {@link ProcessInstanceMonitor} to monitor execution violations.
-	 * 
+	 *
 	 * @param processInstanceMonitor
 	 */
 	public ViolationMonitor(final ProcessInstanceMonitor processInstanceMonitor) {
 		this.processInstanceMonitor = processInstanceMonitor;
-		this.processDecompositionTree = this.processInstanceMonitor.getProcessInstance().getProcess()
-				.getProcessDecompositionTree();
+		this.processDecompositionTree = this.processInstanceMonitor.getProcessInstance().getProcess().getProcessDecompositionTree();
 	}
 
 	/**
@@ -67,8 +66,7 @@ public class ViolationMonitor {
 		// TODO: OrderViolation: Elemente in einer Sequenz, Reihenfolge der
 		// Elemente ermitteln, falls Elemente alle getriggert, aber in falscher
 		// Reihenfolge
-		for (final QueryMonitor queryMonitor : this.processInstanceMonitor
-				.getQueryMonitorsWithQueryType(PatternQueryType.SEQUENCE)) {
+		for (final QueryMonitor queryMonitor : this.processInstanceMonitor.getQueryMonitorsWithQueryType(PatternQueryType.SEQUENCE)) {
 			if (queryMonitor.isRunning()) {
 				List<QueryMonitor> subQueryMonitors = this.processInstanceMonitor.getSubQueryMonitors(queryMonitor);
 				if (subQueryMonitors != null && !subQueryMonitors.contains(null) && subQueryMonitors.size() >= 1) {
@@ -106,23 +104,19 @@ public class ViolationMonitor {
 
 	/**
 	 * Tries to order {@link QueryMonitor}s which belong to a sequence.
-	 * 
+	 *
 	 * @param sequentialQueryMonitors
 	 * @return
 	 */
 	private List<QueryMonitor> orderQueryMonitorsSequential(final QueryMonitor sequentialQueryMonitor) {
-		final List<QueryMonitor> subQueryMonitors = this.processInstanceMonitor
-				.getSubQueryMonitors(sequentialQueryMonitor);
-		final List<AbstractBPMNElement> sequentialParents = this.processDecompositionTree
-				.getParents(sequentialQueryMonitor.getQuery().getMonitoredElements());
+		final List<QueryMonitor> subQueryMonitors = this.processInstanceMonitor.getSubQueryMonitors(sequentialQueryMonitor);
+		final List<AbstractBPMNElement> sequentialParents = this.processDecompositionTree.getParents(sequentialQueryMonitor.getQuery().getMonitoredElements());
 		if (sequentialParents.size() == 1 && sequentialParents.get(0) instanceof Component) {
 			final List<QueryMonitor> orderedQueryMonitors = new ArrayList<QueryMonitor>();
 			final Component sequentialComponent = (Component) sequentialParents.get(0);
 			// Hier sollte jeweils nur ein Element zurückkommen
-			orderedQueryMonitors.addAll(this.processInstanceMonitor.getQueryMonitorsWithMonitoredElements(Arrays
-					.asList(sequentialComponent.getSourceElement())));
-			orderedQueryMonitors.addAll(this.processInstanceMonitor.getQueryMonitorsWithMonitoredElements(Arrays
-					.asList(sequentialComponent.getSinkElement())));
+			orderedQueryMonitors.addAll(this.processInstanceMonitor.getQueryMonitorsWithMonitoredElements(Arrays.asList(sequentialComponent.getSourceElement())));
+			orderedQueryMonitors.addAll(this.processInstanceMonitor.getQueryMonitorsWithMonitoredElements(Arrays.asList(sequentialComponent.getSinkElement())));
 			for (final QueryMonitor queryMonitor : subQueryMonitors) {
 				if (!orderedQueryMonitors.contains(queryMonitor)) {
 					QueryMonitor orderQueryMonitor;
@@ -149,13 +143,12 @@ public class ViolationMonitor {
 	/**
 	 * Searches for an QueryMonitor from the list of orderedQueryMonitors, that
 	 * could be the predecessor of the specified QueryMonitor.
-	 * 
+	 *
 	 * @param queryMonitor
 	 * @param orderedQueryMonitors
 	 * @return
 	 */
-	private QueryMonitor searchPredecessor(final QueryMonitor queryMonitor,
-			final List<QueryMonitor> orderedQueryMonitors) {
+	private QueryMonitor searchPredecessor(final QueryMonitor queryMonitor, final List<QueryMonitor> orderedQueryMonitors) {
 		Set<AbstractBPMNElement> predecessors;
 		for (final QueryMonitor orderedQueryMonitor : orderedQueryMonitors) {
 			predecessors = new HashSet<AbstractBPMNElement>();
@@ -167,8 +160,7 @@ public class ViolationMonitor {
 				// Component, also bekommt man den Vorgänger als EntryPoint der
 				// Component
 			} else {
-				for (final AbstractBPMNElement parent : this.processDecompositionTree.getParents(queryMonitor
-						.getQuery().getMonitoredElements())) {
+				for (final AbstractBPMNElement parent : this.processDecompositionTree.getParents(queryMonitor.getQuery().getMonitoredElements())) {
 					if (parent instanceof Component) {
 						final Component parentComponent = (Component) parent;
 						predecessors.add(parentComponent.getEntryPoint());
@@ -186,7 +178,7 @@ public class ViolationMonitor {
 	/**
 	 * Searches for an QueryMonitor from the list of orderedQueryMonitors, that
 	 * could be the successor of the specified QueryMonitor.
-	 * 
+	 *
 	 * @param queryMonitor
 	 * @param orderedQueryMonitors
 	 * @return
@@ -203,8 +195,7 @@ public class ViolationMonitor {
 				// Component, also bekommt man den Nachfolger als ExitPoint der
 				// Component
 			} else {
-				for (final AbstractBPMNElement parent : this.processDecompositionTree.getParents(queryMonitor
-						.getQuery().getMonitoredElements())) {
+				for (final AbstractBPMNElement parent : this.processDecompositionTree.getParents(queryMonitor.getQuery().getMonitoredElements())) {
 					if (parent instanceof Component) {
 						final Component parentComponent = (Component) parent;
 						successors.add(parentComponent.getExitPoint());
@@ -225,8 +216,7 @@ public class ViolationMonitor {
 	 * component, it will be treated as a exclusiveness-violation.
 	 */
 	private void searchForExclusivenessViolations() {
-		for (final QueryMonitor queryMonitor : this.processInstanceMonitor
-				.getQueryMonitorsWithQueryType(PatternQueryType.XOR)) {
+		for (final QueryMonitor queryMonitor : this.processInstanceMonitor.getQueryMonitorsWithQueryType(PatternQueryType.XOR)) {
 			final List<QueryMonitor> subQueryMonitors = this.processInstanceMonitor.getSubQueryMonitors(queryMonitor);
 			if (!subQueryMonitors.contains(null) && !queryMonitor.isInLoop()) {
 				int subQueriesFinished = 0;
@@ -259,19 +249,15 @@ public class ViolationMonitor {
 			}
 		}
 		if (endEvent != null && this.processDecompositionTree != null) {
-			final AbstractBPMNElement lastMonitorableElement = this.getNearestMonitorablePredecessor(endEvent,
-					this.processDecompositionTree.getLeafElements());
-			final Set<QueryMonitor> lastElementQueryMonitors = this.processInstanceMonitor
-					.getQueryMonitorsWithMonitoredElements(Arrays.asList(lastMonitorableElement));
+			final AbstractBPMNElement lastMonitorableElement = this.getNearestMonitorablePredecessor(endEvent, this.processDecompositionTree.getLeafElements());
+			final Set<QueryMonitor> lastElementQueryMonitors = this.processInstanceMonitor.getQueryMonitorsWithMonitoredElements(Arrays.asList(lastMonitorableElement));
 			if (!lastElementQueryMonitors.isEmpty()) {
 				final QueryMonitor lastElementQueryMonitor = lastElementQueryMonitors.iterator().next();
 				if (lastElementQueryMonitor.isTerminated()) {
 					// Ohne Schleife
-					for (final QueryMonitor runningQueryMonitor : this.processInstanceMonitor
-							.getQueryMonitorsWithStatus(QueryStatus.Started)) {
+					for (final QueryMonitor runningQueryMonitor : this.processInstanceMonitor.getQueryMonitorsWithStatus(QueryStatus.Started)) {
 						// StateTransitions
-						if (runningQueryMonitor.getQuery().getPatternQueryType()
-								.equals(PatternQueryType.STATETRANSITION)) {
+						if (runningQueryMonitor.getQuery().getPatternQueryType().equals(PatternQueryType.STATETRANSITION)) {
 							runningQueryMonitor.addViolationStatus(ViolationStatus.Missing);
 							runningQueryMonitor.setQueryStatus(QueryStatus.Aborted);
 							this.abortParentQueries(runningQueryMonitor);
@@ -291,8 +277,7 @@ public class ViolationMonitor {
 		// LoopComponents untersuchen: Wenn ExecutionCount unterschiedlich in
 		// einer LoopComponent, dann LoopViolation für LoopComponent
 		// außer SubComponent ist wieder eine Loop
-		for (final QueryMonitor queryMonitor : this.processInstanceMonitor
-				.getQueryMonitorsWithQueryType(PatternQueryType.LOOP)) {
+		for (final QueryMonitor queryMonitor : this.processInstanceMonitor.getQueryMonitorsWithQueryType(PatternQueryType.LOOP)) {
 			final int loopExecutionCount = queryMonitor.getExecutionCount();
 			final List<QueryMonitor> subQueryMonitors = this.processInstanceMonitor.getSubQueryMonitors(queryMonitor);
 			if (!subQueryMonitors.contains(null)) {
@@ -311,7 +296,7 @@ public class ViolationMonitor {
 	/**
 	 * Aborts recursevily all parent queries for the specified query, that are
 	 * running.
-	 * 
+	 *
 	 * @param queryMonitor
 	 */
 	private void abortParentQueries(final QueryMonitor queryMonitor) {
@@ -327,8 +312,7 @@ public class ViolationMonitor {
 		}
 	}
 
-	private AbstractBPMNElement getNearestMonitorablePredecessor(final AbstractBPMNElement sourceElement,
-			final Set<AbstractBPMNElement> considerableElements) {
+	private AbstractBPMNElement getNearestMonitorablePredecessor(final AbstractBPMNElement sourceElement, final Set<AbstractBPMNElement> considerableElements) {
 		if (sourceElement.hasMonitoringPointsWithEventType() && !(sourceElement instanceof Component)) {
 			return sourceElement;
 		}
@@ -337,8 +321,7 @@ public class ViolationMonitor {
 		final Map<AbstractBPMNElement, Integer> elements = new HashMap<AbstractBPMNElement, Integer>();
 		final Set<AbstractBPMNElement> visitedElements = new HashSet<AbstractBPMNElement>();
 		visitedElements.add(sourceElement);
-		this.getMonitorablePredecessors(sourceElement.getPredecessors(), elements, considerableElements, 1,
-				visitedElements);
+		this.getMonitorablePredecessors(sourceElement.getPredecessors(), elements, considerableElements, 1, visitedElements);
 		// Nähstes Element ermitteln
 		int minDepth = Integer.MAX_VALUE;
 		AbstractBPMNElement nearestElement = null;
@@ -351,17 +334,14 @@ public class ViolationMonitor {
 		return nearestElement;
 	}
 
-	private void getMonitorablePredecessors(final Set<AbstractBPMNElement> predecessors,
-			final Map<AbstractBPMNElement, Integer> elements, final Set<AbstractBPMNElement> considerableElements,
-			int depth, final Set<AbstractBPMNElement> visitedElements) {
+	private void getMonitorablePredecessors(final Set<AbstractBPMNElement> predecessors, final Map<AbstractBPMNElement, Integer> elements, final Set<AbstractBPMNElement> considerableElements, int depth, final Set<AbstractBPMNElement> visitedElements) {
 		for (final AbstractBPMNElement predecessor : predecessors) {
 			if (considerableElements.contains(predecessor) && !visitedElements.contains(predecessor)) {
 				visitedElements.add(predecessor);
 				if (predecessor.hasMonitoringPointsWithEventType() && !(predecessor instanceof Component)) {
 					elements.put(predecessor, depth);
 				}
-				this.getMonitorablePredecessors(predecessor.getPredecessors(), elements, considerableElements, ++depth,
-						visitedElements);
+				this.getMonitorablePredecessors(predecessor.getPredecessors(), elements, considerableElements, ++depth, visitedElements);
 			}
 		}
 	}

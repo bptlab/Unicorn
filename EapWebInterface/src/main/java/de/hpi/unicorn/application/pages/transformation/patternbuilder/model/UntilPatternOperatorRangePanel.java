@@ -39,8 +39,7 @@ public class UntilPatternOperatorRangePanel extends Panel {
 
 		this.leftEndpoint = rangeElement.getLeftEndpoint();
 
-		this.leftEndpointInput = new TextField<Integer>("leftEndpointInput", new PropertyModel<Integer>(this,
-				"leftEndpoint")) {
+		this.leftEndpointInput = new TextField<Integer>("leftEndpointInput", new PropertyModel<Integer>(this, "leftEndpoint")) {
 			private static final long serialVersionUID = -3575218222042227551L;
 
 			@Override
@@ -60,8 +59,7 @@ public class UntilPatternOperatorRangePanel extends Panel {
 		this.leftEndpointInput.setOutputMarkupId(true);
 		this.layoutForm.add(this.leftEndpointInput);
 
-		this.leftEndpointEnabledCheckBox = new AjaxCheckBox("leftEndpointEnabledCheckbox", Model.of(rangeElement
-				.getLeftEndpoint() != -1)) {
+		this.leftEndpointEnabledCheckBox = new AjaxCheckBox("leftEndpointEnabledCheckbox", Model.of(rangeElement.getLeftEndpoint() != -1)) {
 			private static final long serialVersionUID = -8207035371422899809L;
 
 			@Override
@@ -80,8 +78,7 @@ public class UntilPatternOperatorRangePanel extends Panel {
 
 		this.rightEndpoint = rangeElement.getRightEndpoint();
 
-		this.rightEndpointInput = new TextField<Integer>("rightEndpointInput", new PropertyModel<Integer>(this,
-				"rightEndpoint")) {
+		this.rightEndpointInput = new TextField<Integer>("rightEndpointInput", new PropertyModel<Integer>(this, "rightEndpoint")) {
 			private static final long serialVersionUID = 4121692531784473397L;
 
 			@Override
@@ -101,8 +98,7 @@ public class UntilPatternOperatorRangePanel extends Panel {
 		this.rightEndpointInput.setOutputMarkupId(true);
 		this.layoutForm.add(this.rightEndpointInput);
 
-		this.rightEndpointEnabledCheckBox = new AjaxCheckBox("rightEndpointEnabledCheckbox", Model.of(rangeElement
-				.getLeftEndpoint() != -1)) {
+		this.rightEndpointEnabledCheckBox = new AjaxCheckBox("rightEndpointEnabledCheckbox", Model.of(rangeElement.getLeftEndpoint() != -1)) {
 			private static final long serialVersionUID = -7937834776333473869L;
 
 			@Override

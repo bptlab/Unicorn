@@ -23,16 +23,14 @@ import de.hpi.unicorn.utils.TestHelper;
 
 /**
  * This class tests the import of excel files.
- * 
+ *
  * @author micha
  */
 public class ExcelImportTest {
 
 	private static String filePath = System.getProperty("user.dir") + "/src/test/resources/Kino.xls";
-	private static String cinemaSchedulePath = System.getProperty("user.dir")
-			+ "/src/test/resources/CinemaSchedule.xls";
-	private static String cinemaScheduleWithoutTimestampPath = System.getProperty("user.dir")
-			+ "/src/test/resources/CinemaScheduleWithoutTime.xls";
+	private static String cinemaSchedulePath = System.getProperty("user.dir") + "/src/test/resources/CinemaSchedule.xls";
+	private static String cinemaScheduleWithoutTimestampPath = System.getProperty("user.dir") + "/src/test/resources/CinemaScheduleWithoutTime.xls";
 	private static String emptyFilePath = System.getProperty("user.dir") + "/src/test/resources/EmptySheet.xls";
 
 	@Test
@@ -51,27 +49,23 @@ public class ExcelImportTest {
 		columnTitles.remove("Timestamp");
 		final List<TypeTreeNode> attributes = TestHelper.createAttributes(columnTitles);
 		final EapEventType eventType = new EapEventType("Kino", attributes, "Timestamp");
-		final List<EapEvent> events = excelNormalizer.importEventsFromFile(ExcelImportTest.filePath, attributes,
-				"Timestamp");
+		final List<EapEvent> events = excelNormalizer.importEventsFromFile(ExcelImportTest.filePath, attributes, "Timestamp");
 		for (final EapEvent event : events) {
 			event.setEventType(eventType);
 		}
 		Assert.assertTrue("Not the right number of events imported.", events.size() == 999);
 		// 12: 30.10.2012 20:46 1 yellow
 		final EapEvent testEvent1 = events.get(10);
-		Assert.assertTrue("Date of event 1 does not match.",
-				testEvent1.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 46, 58)) == 0);
+		Assert.assertTrue("Date of event 1 does not match.", testEvent1.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 46, 58)) == 0);
 		// ID is set when saving in DB
 		// assertTrue("ID of event 1 (" + testEvent1.getID()
 		// +") does not match.", testEvent1.getID() == 10);
 		System.out.println(testEvent1.getValues());
-		Assert.assertTrue("Location of event 1 does not match.",
-				testEvent1.getValues().get("Location").equals(new Long(1)));
+		Assert.assertTrue("Location of event 1 does not match.", testEvent1.getValues().get("Location").equals(new Long(1)));
 		Assert.assertTrue("Rating of event 1 is not right.", testEvent1.getValues().get("Rating").equals("yellow"));
 		// 28: 30.10.2012 20:27 1 red
 		final EapEvent testEvent2 = events.get(26);
-		Assert.assertTrue("Date of event 2 does not match.",
-				testEvent2.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 27, 58)) == 0);
+		Assert.assertTrue("Date of event 2 does not match.", testEvent2.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 27, 58)) == 0);
 		// ID is set when saving in DB
 		// assertTrue("ID of event 2 (" + testEvent2.getID()
 		// +") does not match.", testEvent2.getID() == 26);
@@ -92,15 +86,13 @@ public class ExcelImportTest {
 		Assert.assertTrue("Not the right number of events imported.", events.size() == 999);
 		// 12: 30.10.2012 20:46 1 yellow
 		final EapEvent testEvent1 = events.get(10);
-		Assert.assertTrue("Date of event 1 does not match.",
-				testEvent1.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 46, 58)) == 0);
+		Assert.assertTrue("Date of event 1 does not match.", testEvent1.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 46, 58)) == 0);
 		// ID is set when saving in DB
 		// assertTrue("ID of event 1 (" + testEvent1.getID()
 		// +") does not match.", testEvent1.getID() == 10);
 		// 28: 30.10.2012 20:27 1 red
 		final EapEvent testEvent2 = events.get(26);
-		Assert.assertTrue("Date of event 2 does not match.",
-				testEvent2.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 27, 58)) == 0);
+		Assert.assertTrue("Date of event 2 does not match.", testEvent2.getTimestamp().compareTo(new Date(2012 - 1900, 9, 30, 20, 27, 58)) == 0);
 		// ID is set when saving in DB
 		// assertTrue("ID of event 2 (" + testEvent2.getID()
 		// +") does not match.", testEvent2.getID() == 26);
@@ -111,10 +103,8 @@ public class ExcelImportTest {
 		final ExcelImporter excelNormalizer = new ExcelImporter();
 		final List<String> columnTitles = excelNormalizer.getColumnTitlesFromFile(ExcelImportTest.cinemaSchedulePath);
 		final List<TypeTreeNode> attributes = TestHelper.createAttributes(columnTitles);
-		final List<EapEvent> events = excelNormalizer.importEventsFromFile(ExcelImportTest.cinemaSchedulePath,
-				attributes);
-		Assert.assertTrue("Not the right number of events imported. Should be 12, but were " + events.size(),
-				events.size() == 12);
+		final List<EapEvent> events = excelNormalizer.importEventsFromFile(ExcelImportTest.cinemaSchedulePath, attributes);
+		Assert.assertTrue("Not the right number of events imported. Should be 12, but were " + events.size(), events.size() == 12);
 		System.out.println(events.get(0));
 	}
 
@@ -177,19 +167,13 @@ public class ExcelImportTest {
 		// Importieren mit ImportEvent von Events mit TimeStamp
 		final ExcelImporter excelNormalizer = new ExcelImporter();
 		final List<String> columnTitles = excelNormalizer.getColumnTitlesFromFile(ExcelImportTest.cinemaSchedulePath);
-		final List<ImportEvent> events = excelNormalizer.importEventsForPreviewFromFile(
-				ExcelImportTest.cinemaSchedulePath, columnTitles);
-		Assert.assertTrue("Not the right number of events imported. Should be 12, but were " + events.size(),
-				events.size() == 12);
+		final List<ImportEvent> events = excelNormalizer.importEventsForPreviewFromFile(ExcelImportTest.cinemaSchedulePath, columnTitles);
+		Assert.assertTrue("Not the right number of events imported. Should be 12, but were " + events.size(), events.size() == 12);
 		System.out.println("Event: " + events.get(0));
 		// Importieren mit ImportEvent von Events ohne TimeStamp
-		final List<String> columnTitlesWithoutTimestamp = excelNormalizer
-				.getColumnTitlesFromFile(ExcelImportTest.cinemaScheduleWithoutTimestampPath);
-		final List<ImportEvent> eventsWithoutTimestamp = excelNormalizer.importEventsForPreviewFromFile(
-				ExcelImportTest.cinemaScheduleWithoutTimestampPath, columnTitlesWithoutTimestamp);
-		Assert.assertTrue(
-				"Not the right number of events imported. Should be 12, but were " + eventsWithoutTimestamp.size(),
-				eventsWithoutTimestamp.size() == 12);
+		final List<String> columnTitlesWithoutTimestamp = excelNormalizer.getColumnTitlesFromFile(ExcelImportTest.cinemaScheduleWithoutTimestampPath);
+		final List<ImportEvent> eventsWithoutTimestamp = excelNormalizer.importEventsForPreviewFromFile(ExcelImportTest.cinemaScheduleWithoutTimestampPath, columnTitlesWithoutTimestamp);
+		Assert.assertTrue("Not the right number of events imported. Should be 12, but were " + eventsWithoutTimestamp.size(), eventsWithoutTimestamp.size() == 12);
 		System.out.println("Event: " + eventsWithoutTimestamp.get(0));
 	}
 
@@ -197,8 +181,7 @@ public class ExcelImportTest {
 	public void testEmptySheet() {
 		final ExcelImporter excelNormalizer = new ExcelImporter();
 		final List<String> columnTitles = excelNormalizer.getColumnTitlesFromFile(ExcelImportTest.emptyFilePath);
-		final List<ImportEvent> events = excelNormalizer.importEventsForPreviewFromFile(ExcelImportTest.emptyFilePath,
-				columnTitles);
+		final List<ImportEvent> events = excelNormalizer.importEventsForPreviewFromFile(ExcelImportTest.emptyFilePath, columnTitles);
 		Assert.assertTrue(events.isEmpty());
 	}
 

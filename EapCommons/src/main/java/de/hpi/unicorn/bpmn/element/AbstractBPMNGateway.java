@@ -18,7 +18,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 
 /**
  * This class is a logical representation for a BPMN gateway element.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -42,7 +42,7 @@ public abstract class AbstractBPMNGateway extends AbstractBPMNElement {
 
 	/**
 	 * Proofs, if a gateway is a joining gateway.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isJoinGateway() {
@@ -51,7 +51,7 @@ public abstract class AbstractBPMNGateway extends AbstractBPMNElement {
 
 	/**
 	 * Proofs, if a gateway is a split gateway.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean isSplitGateway() {

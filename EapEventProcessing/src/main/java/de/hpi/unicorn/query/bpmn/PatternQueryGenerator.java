@@ -19,7 +19,7 @@ import de.hpi.unicorn.query.PatternQuery;
 /**
  * This class is intended as a controller to generate queries for Esper from a
  * BPMN process.
- * 
+ *
  * @author micha
  */
 public class PatternQueryGenerator {
@@ -31,7 +31,7 @@ public class PatternQueryGenerator {
 	/**
 	 * Constructor for the PatternQueryGenerator, which is intended as a
 	 * controller to generate queries from a BPMN process.
-	 * 
+	 *
 	 * @param rpstTree
 	 */
 	public PatternQueryGenerator(final RPSTBuilder rpstTree) {
@@ -41,7 +41,7 @@ public class PatternQueryGenerator {
 
 	/**
 	 * This method generates queries for the given BPMN process.
-	 * 
+	 *
 	 * @throws QueryGenerationException
 	 */
 	public void generateQueries() throws QueryGenerationException {
@@ -52,8 +52,7 @@ public class PatternQueryGenerator {
 		// berücksichtig werden können
 		for (final AbstractBPMNElement treeElement : this.processDecompositionTree.getLeafElements()) {
 			if (treeElement.hasMonitoringPointsWithEventType()) {
-				final PatternQuery stateTransitionQuery = new StateTransitionQueryFactory(this).generateQuery(
-						treeElement, null, null);
+				final PatternQuery stateTransitionQuery = new StateTransitionQueryFactory(this).generateQuery(treeElement, null, null);
 				this.queries.add(stateTransitionQuery);
 			}
 		}
@@ -101,7 +100,7 @@ public class PatternQueryGenerator {
 	/**
 	 * This method searches for {@link PatternQuery}s, which contain only the
 	 * given element.
-	 * 
+	 *
 	 * @param element
 	 * @return
 	 */

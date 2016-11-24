@@ -47,8 +47,7 @@ public class NotificationProvider extends EapProvider<Notification> implements I
 		}
 	}
 
-	private List<Notification> filterNotifications(final List<Notification> notificationsToFilter,
-			final NotificationFilter notificationFilter) {
+	private List<Notification> filterNotifications(final List<Notification> notificationsToFilter, final NotificationFilter notificationFilter) {
 		final List<Notification> returnedNotifications = new ArrayList<Notification>();
 		for (final Notification notification : notificationsToFilter) {
 			if (notificationFilter.match(notification)) {

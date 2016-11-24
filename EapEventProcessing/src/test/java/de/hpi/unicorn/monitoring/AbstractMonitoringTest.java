@@ -33,7 +33,7 @@ import de.hpi.unicorn.query.bpmn.QueryGenerationException;
  * This class centralizes methods for monitoring and query creation tests. All
  * these tests should derive from these class. It provides a template method for
  * the query creation and monitoring testing process.
- * 
+ *
  * @author micha
  */
 public abstract class AbstractMonitoringTest implements IQueryCreationTest {
@@ -44,15 +44,27 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 	protected Set<EapEventType> eventTypes;
 
 	/**
+	 * Removes all created test data from the database.
+	 */
+	public static void resetDatabase() {
+		EapEvent.removeAll();
+		EapEventType.removeAll();
+		CorrelationProcess.removeAll();
+		CorrelationProcessInstance.removeAll();
+		// TODO: Ist es sinnvoll für den Test jedesmal wieder von einem frischen
+		// QueryEditor auszugehen?
+		BPMNQueryMonitor.reset();
+	}
+
+	/**
 	 * Template method for the query creation for Esper.
-	 * 
+	 *
 	 * @param filePath
 	 * @param processName
 	 * @param correlationAttributes
 	 * @throws XMLParsingException
 	 */
-	protected void queryCreationTemplateMethod(final String filePath, final String processName,
-			final List<TypeTreeNode> correlationAttributes) throws XMLParsingException {
+	protected void queryCreationTemplateMethod(final String filePath, final String processName, final List<TypeTreeNode> correlationAttributes) throws XMLParsingException {
 		this.filePath = filePath;
 		this.eventTypes = this.createEventTypes();
 		this.sendEventTypes(this.eventTypes);
@@ -73,14 +85,14 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 
 	/**
 	 * Creates the event types used in the test for query creation.
-	 * 
+	 *
 	 * @return
 	 */
 	protected abstract Set<EapEventType> createEventTypes();
 
 	/**
 	 * Sends the given event types to Esper and to the database.
-	 * 
+	 *
 	 * @param eventTypes2
 	 */
 	protected void sendEventTypes(final Set<EapEventType> eventTypes2) {
@@ -91,7 +103,7 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 
 	/**
 	 * Creates a sample {@link BPMNProcess} and saves it in the database.
-	 * 
+	 *
 	 * @param filePath
 	 * @return
 	 * @throws XMLParsingException
@@ -105,14 +117,13 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 	/**
 	 * Creates a sample {@link CorrelationProcess} with the given eventtypes,
 	 * processName and BPMNProcess and saves it in the database.
-	 * 
+	 *
 	 * @param eventTypes
 	 * @param bpmnProcess
 	 * @param processName
 	 * @return
 	 */
-	protected CorrelationProcess createProcess(final Set<EapEventType> eventTypes, final BPMNProcess bpmnProcess,
-			final String processName) {
+	protected CorrelationProcess createProcess(final Set<EapEventType> eventTypes, final BPMNProcess bpmnProcess, final String processName) {
 		final CorrelationProcess process = new CorrelationProcess(processName, eventTypes);
 		process.setBpmnProcess(bpmnProcess);
 		process.save();
@@ -121,14 +132,13 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 
 	/**
 	 * Creates a correlation for the sample process.
-	 * 
+	 *
 	 * @param eventTypes
 	 * @param correlationAttributes
 	 * @param process
 	 * @param timeCondition
 	 */
-	protected void correlate(final Set<EapEventType> eventTypes, final List<TypeTreeNode> correlationAttributes,
-			final CorrelationProcess process, final TimeCondition timeCondition) {
+	protected void correlate(final Set<EapEventType> eventTypes, final List<TypeTreeNode> correlationAttributes, final CorrelationProcess process, final TimeCondition timeCondition) {
 		AttributeCorrelator.correlate(eventTypes, correlationAttributes, process, timeCondition);
 	}
 
@@ -136,7 +146,7 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 	 * Creates the queries from the given {@link BPMNProcess}. Therefore,
 	 * computes the RPST of the BPMNProcess and derives queries from that.
 	 * Finally, the queries are registered at Esper.
-	 * 
+	 *
 	 * @param BPMNProcess
 	 */
 	protected void generateQueries(final BPMNProcess BPMNProcess) {
@@ -159,7 +169,7 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 	 * {@link Broker}. The ordering of the events is important for the
 	 * monitoring of the execution and is assured because of the usage of a
 	 * ordered list.
-	 * 
+	 *
 	 * @param eventTypes2
 	 */
 	protected abstract void simulate(Set<EapEventType> eventTypes2);
@@ -171,21 +181,8 @@ public abstract class AbstractMonitoringTest implements IQueryCreationTest {
 	protected abstract void assertQueryStatus();
 
 	/**
-	 * Removes all created test data from the database.
-	 */
-	public static void resetDatabase() {
-		EapEvent.removeAll();
-		EapEventType.removeAll();
-		CorrelationProcess.removeAll();
-		CorrelationProcessInstance.removeAll();
-		// TODO: Ist es sinnvoll für den Test jedesmal wieder von einem frischen
-		// QueryEditor auszugehen?
-		BPMNQueryMonitor.reset();
-	}
-
-	/**
 	 * Creates the tree of attributes for the event types.
-	 * 
+	 *
 	 * @return
 	 */
 	protected AttributeTypeTree createAttributeTree() {

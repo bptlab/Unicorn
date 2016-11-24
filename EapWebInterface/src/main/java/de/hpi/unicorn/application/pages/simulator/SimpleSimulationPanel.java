@@ -63,10 +63,10 @@ import de.hpi.unicorn.utils.Tuple;
 public class SimpleSimulationPanel extends SimulationPanel {
 
 	private static final long serialVersionUID = -7896431319431474548L;
+	private final List<String> eventTypeAndPatternList = new ArrayList<String>();
 	private DropDownChoice<String> processSelect;
 	private DropDownChoice<String> eventTypeSelect;
 	private List<String> processNameList;
-	private final List<String> eventTypeAndPatternList = new ArrayList<String>();
 	private CorrelationProcess selectedProcess;
 	private LabelTreeTable<SimulationTreeTableElement<Object>, String> treeTable;
 	private UnexpectedEventPanel unexpectedEventPanel;
@@ -110,14 +110,12 @@ public class SimpleSimulationPanel extends SimulationPanel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				if (SimpleSimulationPanel.this.treeTableProvider.getSelectedTreeTableElements().size() > 1) {
-					SimpleSimulationPanel.this.abstractEapPage.getFeedbackPanel().error(
-							"Please select only one value to add elements!");
+					SimpleSimulationPanel.this.abstractEapPage.getFeedbackPanel().error("Please select only one value to add elements!");
 					SimpleSimulationPanel.this.abstractEapPage.getFeedbackPanel().setVisible(true);
 					target.add(SimpleSimulationPanel.this.abstractEapPage.getFeedbackPanel());
 				} else if (!SimpleSimulationPanel.this.eventTypeSelect.getValue().isEmpty()) {
 					// TODO: Element im TreeTableProvider hinzufügen
-					final String eventTypeSelectValue = SimpleSimulationPanel.this.eventTypeSelect.getChoices().get(
-							Integer.parseInt(SimpleSimulationPanel.this.eventTypeSelect.getValue()));
+					final String eventTypeSelectValue = SimpleSimulationPanel.this.eventTypeSelect.getChoices().get(Integer.parseInt(SimpleSimulationPanel.this.eventTypeSelect.getValue()));
 					SimulationTreeTableElement<Object> treeTableElement;
 					if (IPattern.contains(eventTypeSelectValue)) {
 						AbstractBPMNElement component = null;
@@ -130,21 +128,17 @@ public class SimpleSimulationPanel extends SimulationPanel {
 						} else if (eventTypeSelectValue.equals(IPattern.LOOP.value)) {
 							component = new LoopComponent(null, null, null, null);
 						}
-						treeTableElement = new SimulationTreeTableElement<Object>(
-								SimpleSimulationPanel.this.treeTableProvider.getNextID(), component);
+						treeTableElement = new SimulationTreeTableElement<Object>(SimpleSimulationPanel.this.treeTableProvider.getNextID(), component);
 						SimpleSimulationPanel.this.treeTableProvider.addTreeTableElement(treeTableElement);
 					} else {
 						final EapEventType eventType = EapEventType.findByTypeName(eventTypeSelectValue);
 						if (eventType != null) {
-							treeTableElement = new SimulationTreeTableElement<Object>(
-									SimpleSimulationPanel.this.treeTableProvider.getNextID(), eventType);
+							treeTableElement = new SimulationTreeTableElement<Object>(SimpleSimulationPanel.this.treeTableProvider.getNextID(), eventType);
 							SimpleSimulationPanel.this.treeTableProvider.addTreeTableElement(treeTableElement);
 							SimulationTreeTableElement<Object> childTreeTableElement;
 							for (final TypeTreeNode attribute : eventType.getValueTypes()) {
-								childTreeTableElement = new SimulationTreeTableElement<Object>(
-										SimpleSimulationPanel.this.treeTableProvider.getNextID(), attribute);
-								SimpleSimulationPanel.this.treeTableProvider.addTreeTableElementWithParent(
-										childTreeTableElement, treeTableElement);
+								childTreeTableElement = new SimulationTreeTableElement<Object>(SimpleSimulationPanel.this.treeTableProvider.getNextID(), attribute);
+								SimpleSimulationPanel.this.treeTableProvider.addTreeTableElementWithParent(childTreeTableElement, treeTableElement);
 							}
 						}
 					}
@@ -205,65 +199,48 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 				final EventTree<Object> modelTree = SimpleSimulationPanel.this.treeTableProvider.getModelAsTree();
 
-				final Map<TypeTreeNode, List<Serializable>> attributeValues = SimpleSimulationPanel.this.treeTableProvider
-						.getAttributeValuesFromModel();
+				final Map<TypeTreeNode, List<Serializable>> attributeValues = SimpleSimulationPanel.this.treeTableProvider.getAttributeValuesFromModel();
 				final BPMNProcess model = new SimulationTreeTableToModelConverter().convertTreeToModel(modelTree);
 
 				// TODO: wahrscheinlichkeiten auslesen
-				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSplitsWithSuccessorProbabilityStrings = this
-						.getProbabilityForXorSuccessors(model);
+				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSplitsWithSuccessorProbabilityStrings = this.getProbabilityForXorSuccessors(model);
 				// System.out.println(xorSplitsWithSuccessorProbabilityStrings);
-				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities = SimulationUtils
-						.convertProbabilityStrings(xorSplitsWithSuccessorProbabilityStrings);
+				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities = SimulationUtils.convertProbabilityStrings(xorSplitsWithSuccessorProbabilityStrings);
 				// System.out.println(xorSplitsWithSuccessorProbabilities);
-				final Map<EapEventType, String> eventTypesDurationStrings = SimpleSimulationPanel.this.treeTableProvider
-						.getEventTypesWithDuration();
-				final Map<AbstractBPMNElement, String> tasksDurationString = SimulationUtils
-						.getBPMNElementsFromEventTypes(eventTypesDurationStrings, model);
+				final Map<EapEventType, String> eventTypesDurationStrings = SimpleSimulationPanel.this.treeTableProvider.getEventTypesWithDuration();
+				final Map<AbstractBPMNElement, String> tasksDurationString = SimulationUtils.getBPMNElementsFromEventTypes(eventTypesDurationStrings, model);
 
-				final Map<EapEventType, String> eventTypesDerivationStrings = SimpleSimulationPanel.this.treeTableProvider
-						.getEventTypesWithDuration();
-				final Map<AbstractBPMNElement, String> tasksDerivationString = SimulationUtils
-						.getBPMNElementsFromEventTypes(eventTypesDerivationStrings, model);
+				final Map<EapEventType, String> eventTypesDerivationStrings = SimpleSimulationPanel.this.treeTableProvider.getEventTypesWithDuration();
+				final Map<AbstractBPMNElement, String> tasksDerivationString = SimulationUtils.getBPMNElementsFromEventTypes(eventTypesDerivationStrings, model);
 
-				final Map<EapEventType, DerivationType> eventTypesDerivationTypes = SimpleSimulationPanel.this.treeTableProvider
-						.getEventTypesWithDerivationType();
-				final Map<AbstractBPMNElement, DerivationType> tasksDerivationTypes = SimulationUtils
-						.getBPMNElementsFromEventTypes2(eventTypesDerivationTypes, model);
+				final Map<EapEventType, DerivationType> eventTypesDerivationTypes = SimpleSimulationPanel.this.treeTableProvider.getEventTypesWithDerivationType();
+				final Map<AbstractBPMNElement, DerivationType> tasksDerivationTypes = SimulationUtils.getBPMNElementsFromEventTypes2(eventTypesDerivationTypes, model);
 
-				final CorrelationProcess process = CorrelationProcess.findByName(
-						SimpleSimulationPanel.this.processSelect.getModelObject()).get(0);
-				final Simulator simulator = new Simulator(process, model, attributeValues, tasksDurationString,
-						tasksDerivationString, tasksDerivationTypes, xorSplitsWithSuccessorProbabilities);
+				final CorrelationProcess process = CorrelationProcess.findByName(SimpleSimulationPanel.this.processSelect.getModelObject()).get(0);
+				final Simulator simulator = new Simulator(process, model, attributeValues, tasksDurationString, tasksDerivationString, tasksDerivationTypes, xorSplitsWithSuccessorProbabilities);
 				simulator.addAdvancedValueRules(SimpleSimulationPanel.this.advancedValuesPanel.getValueRules());
 				simulator.simulate(numberOfInstances, numberOfDays);
 			}
 
-			private Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> getProbabilityForXorSuccessors(
-					final BPMNProcess model) {
-				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>> xorPathProbabilityEvents = SimulationUtils
-						.getXORSplitsWithFollowingEventTypes(model);
+			private Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> getProbabilityForXorSuccessors(final BPMNProcess model) {
+				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, EapEventType>>> xorPathProbabilityEvents = SimulationUtils.getXORSplitsWithFollowingEventTypes(model);
 				// System.out.println(xorPathProbabilityEvents);
 				final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>> xorSuccessorsProbability = new HashMap<BPMNXORGateway, List<Tuple<AbstractBPMNElement, String>>>();
 				// TODO: eventTypes finden --> elternelement besuchen bis xor
 				// gefunden -> probability auslesen
-				final List<SimulationTreeTableElement<Object>> eventTypeElements = SimpleSimulationPanel.this.treeTableProvider
-						.getEventTypeElements();
+				final List<SimulationTreeTableElement<Object>> eventTypeElements = SimpleSimulationPanel.this.treeTableProvider.getEventTypeElements();
 				// Paare von Nachfolgeelementen des XOR-Splits und 1. folgendem
 				// eventTyp durchlaufen
 				for (final BPMNXORGateway xorGateway : xorPathProbabilityEvents.keySet()) {
-					final List<Tuple<AbstractBPMNElement, EapEventType>> listOfTuples = xorPathProbabilityEvents
-							.get(xorGateway);
+					final List<Tuple<AbstractBPMNElement, EapEventType>> listOfTuples = xorPathProbabilityEvents.get(xorGateway);
 					final List<Tuple<AbstractBPMNElement, String>> oneXorSuccessors = new ArrayList<Tuple<AbstractBPMNElement, String>>();
 					for (final Tuple<AbstractBPMNElement, EapEventType> tuple : listOfTuples) {
 						if (tuple.x != null) {
-							SimulationTreeTableElement<Object> targetElement = SimpleSimulationPanel.this
-									.findEventTypeElementWithEventType(eventTypeElements, tuple);
+							SimulationTreeTableElement<Object> targetElement = SimpleSimulationPanel.this.findEventTypeElementWithEventType(eventTypeElements, tuple);
 							while (!(targetElement.getParent().getContent() instanceof XORComponent)) {
 								targetElement = targetElement.getParent();
 							}
-							final Tuple<AbstractBPMNElement, String> successorProbability = new Tuple<AbstractBPMNElement, String>(
-									tuple.x, targetElement.getProbability());
+							final Tuple<AbstractBPMNElement, String> successorProbability = new Tuple<AbstractBPMNElement, String>(tuple.x, targetElement.getProbability());
 							oneXorSuccessors.add(successorProbability);
 							xorSuccessorsProbability.put(xorGateway, oneXorSuccessors);
 						} else {
@@ -280,13 +257,11 @@ public class SimpleSimulationPanel extends SimulationPanel {
 	private void createTreeTable(final Form<Void> layoutForm) {
 		final List<IColumn<SimulationTreeTableElement<Object>, String>> columns = this.createColumns();
 
-		this.treeTable = new LabelTreeTable<SimulationTreeTableElement<Object>, String>("sequenceTree", columns,
-				this.treeTableProvider, Integer.MAX_VALUE, new SimulationTreeTableExpansionModel<Object>());
+		this.treeTable = new LabelTreeTable<SimulationTreeTableElement<Object>, String>("sequenceTree", columns, this.treeTableProvider, Integer.MAX_VALUE, new SimulationTreeTableExpansionModel<Object>());
 
 		this.treeTable.setOutputMarkupId(true);
 
-		this.treeTable.getTable().addTopToolbar(
-				new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
+		this.treeTable.getTable().addTopToolbar(new HeadersToolbar<String>(this.treeTable.getTable(), this.treeTableProvider));
 
 		SimulationTreeTableExpansion.get().expandAll();
 
@@ -304,10 +279,8 @@ public class SimpleSimulationPanel extends SimulationPanel {
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 
 				final int entryId = ((SimulationTreeTableElement<Object>) rowModel.getObject()).getID();
-				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).hasParent()
-						&& ((SimulationTreeTableElement<Object>) rowModel.getObject()).getParent().getContent() instanceof XORComponent) {
-					final ProbabilityEntryPanel probabilityEntryPanel = new ProbabilityEntryPanel(componentId, entryId,
-							SimpleSimulationPanel.this.treeTableProvider);
+				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).hasParent() && ((SimulationTreeTableElement<Object>) rowModel.getObject()).getParent().getContent() instanceof XORComponent) {
+					final ProbabilityEntryPanel probabilityEntryPanel = new ProbabilityEntryPanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider);
 					cellItem.add(probabilityEntryPanel);
 					probabilityEntryPanel.setTable(SimpleSimulationPanel.this.treeTable);
 				} else {
@@ -322,8 +295,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 				final int entryId = ((SimulationTreeTableElement<Object>) rowModel.getObject()).getID();
 				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).canHaveSubElements()) {
-					cellItem.add(new SelectEntryPanel(componentId, entryId,
-							SimpleSimulationPanel.this.treeTableProvider));
+					cellItem.add(new SelectEntryPanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider));
 				} else {
 					cellItem.add(new EmptyPanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider));
 				}
@@ -336,8 +308,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 				final int entryId = ((SimulationTreeTableElement<Object>) rowModel.getObject()).getID();
 				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).editableColumnsVisible()) {
-					final TextFieldEntryPanel textFieldEntryPanel = new TextFieldEntryPanel(componentId, entryId,
-							SimpleSimulationPanel.this.treeTableProvider);
+					final TextFieldEntryPanel textFieldEntryPanel = new TextFieldEntryPanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider);
 					cellItem.add(textFieldEntryPanel);
 					textFieldEntryPanel.setTable(SimpleSimulationPanel.this.treeTable);
 				} else {
@@ -352,8 +323,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 				final int entryId = ((SimulationTreeTableElement<Object>) rowModel.getObject()).getID();
 				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).getContent() instanceof EapEventType) {
-					final DerivationTypeDropDownChoicePanel derivationChoicePanel = new DerivationTypeDropDownChoicePanel(
-							componentId, entryId, SimpleSimulationPanel.this.treeTableProvider);
+					final DerivationTypeDropDownChoicePanel derivationChoicePanel = new DerivationTypeDropDownChoicePanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider);
 					cellItem.add(derivationChoicePanel);
 					derivationChoicePanel.setTable(SimpleSimulationPanel.this.treeTable);
 				} else {
@@ -368,8 +338,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 				final int entryId = ((SimulationTreeTableElement<Object>) rowModel.getObject()).getID();
 				if (((SimulationTreeTableElement<Object>) rowModel.getObject()).getContent() instanceof EapEventType) {
-					final DurationEntryPanel textFieldEntryPanel = new DurationEntryPanel(componentId, entryId,
-							SimpleSimulationPanel.this.treeTableProvider);
+					final DurationEntryPanel textFieldEntryPanel = new DurationEntryPanel(componentId, entryId, SimpleSimulationPanel.this.treeTableProvider);
 					cellItem.add(textFieldEntryPanel);
 					textFieldEntryPanel.setTable(SimpleSimulationPanel.this.treeTable);
 				} else {
@@ -392,9 +361,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				final String processValue = SimpleSimulationPanel.this.processSelect.getValue();
 				if (processValue != null && !processValue.isEmpty()) {
-					final List<CorrelationProcess> processList = CorrelationProcess
-							.findByName(SimpleSimulationPanel.this.processSelect.getChoices().get(
-									Integer.parseInt(SimpleSimulationPanel.this.processSelect.getValue())));
+					final List<CorrelationProcess> processList = CorrelationProcess.findByName(SimpleSimulationPanel.this.processSelect.getChoices().get(Integer.parseInt(SimpleSimulationPanel.this.processSelect.getValue())));
 					if (processList.size() > 0) {
 						SimpleSimulationPanel.this.selectedProcess = processList.get(0);
 
@@ -402,8 +369,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 						target.add(SimpleSimulationPanel.this.eventTypeSelect);
 					}
 				}
-				SimpleSimulationPanel.this.treeTableProvider
-						.setCorrelationAttributes(SimpleSimulationPanel.this.selectedProcess.getCorrelationAttributes());
+				SimpleSimulationPanel.this.treeTableProvider.setCorrelationAttributes(SimpleSimulationPanel.this.selectedProcess.getCorrelationAttributes());
 			}
 		});
 
@@ -411,8 +377,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 	}
 
 	private void addEventTypeSelect(final Form<Void> layoutForm) {
-		this.eventTypeSelect = new DropDownChoice<String>("eventTypeSelect", new Model<String>(),
-				this.eventTypeAndPatternList);
+		this.eventTypeSelect = new DropDownChoice<String>("eventTypeSelect", new Model<String>(), this.eventTypeAndPatternList);
 		this.eventTypeSelect.setOutputMarkupId(true);
 		layoutForm.add(this.eventTypeSelect);
 	}
@@ -434,9 +399,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 		}
 	}
 
-	private SimulationTreeTableElement<Object> findEventTypeElementWithEventType(
-			final List<SimulationTreeTableElement<Object>> eventTypeElements,
-			final Tuple<AbstractBPMNElement, EapEventType> tuple) {
+	private SimulationTreeTableElement<Object> findEventTypeElementWithEventType(final List<SimulationTreeTableElement<Object>> eventTypeElements, final Tuple<AbstractBPMNElement, EapEventType> tuple) {
 		for (final SimulationTreeTableElement<Object> eventTypeElement : eventTypeElements) {
 			if (eventTypeElement.getContent() == tuple.y) {
 				return eventTypeElement;
@@ -452,8 +415,7 @@ public class SimpleSimulationPanel extends SimulationPanel {
 
 			@Override
 			public Panel getPanel(final String panelId) {
-				SimpleSimulationPanel.this.unexpectedEventPanel = new UnexpectedEventPanel(panelId,
-						SimpleSimulationPanel.this.simulationPanel);
+				SimpleSimulationPanel.this.unexpectedEventPanel = new UnexpectedEventPanel(panelId, SimpleSimulationPanel.this.simulationPanel);
 				return SimpleSimulationPanel.this.unexpectedEventPanel;
 			}
 		});

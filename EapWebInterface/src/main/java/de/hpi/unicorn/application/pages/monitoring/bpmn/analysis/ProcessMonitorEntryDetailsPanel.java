@@ -19,7 +19,7 @@ import de.hpi.unicorn.monitoring.bpmn.ProcessMonitor;
 /**
  * This is a button within a form, which shows on an ajax submit of the button
  * the {@link ProcessAnalysingModal}.
- * 
+ *
  * @author micha
  */
 public class ProcessMonitorEntryDetailsPanel extends Panel {
@@ -30,14 +30,13 @@ public class ProcessMonitorEntryDetailsPanel extends Panel {
 	/**
 	 * Constructor for a form, which contains a button. The button shows on an
 	 * ajax submit the {@link ProcessAnalysingModal}.
-	 * 
+	 *
 	 * @param id
 	 * @param entryId
 	 * @param dataprovider
 	 * @param modal
 	 */
-	public ProcessMonitorEntryDetailsPanel(final String id, final int entryId, final AbstractDataProvider dataprovider,
-			final ProcessAnalysingModal modal) {
+	public ProcessMonitorEntryDetailsPanel(final String id, final int entryId, final AbstractDataProvider dataprovider, final ProcessAnalysingModal modal) {
 		super(id);
 		this.processMonitorModal = modal;
 		final Form<Void> form = new Form<Void>("form");

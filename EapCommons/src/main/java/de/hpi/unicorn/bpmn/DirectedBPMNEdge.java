@@ -15,13 +15,12 @@ import de.hpi.unicorn.bpmn.element.AbstractBPMNElement;
 /**
  * Edge between two {@link AbstractBPMNElement}s in a
  * {@link MultiDirectedBPMNGraph}.
- * 
+ *
  * @author micha
  */
 public class DirectedBPMNEdge extends AbstractDirectedEdge<AbstractBPMNElement> {
 
-	protected DirectedBPMNEdge(final AbstractMultiDirectedGraph<?, AbstractBPMNElement> g,
-			final AbstractBPMNElement source, final AbstractBPMNElement target) {
+	protected DirectedBPMNEdge(final AbstractMultiDirectedGraph<?, AbstractBPMNElement> g, final AbstractBPMNElement source, final AbstractBPMNElement target) {
 		super(g, source, target);
 	}
 

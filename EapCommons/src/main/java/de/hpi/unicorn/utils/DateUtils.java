@@ -14,7 +14,7 @@ import java.util.Date;
 
 /**
  * This class centralizes methods to parse {@link Date}s.
- * 
+ *
  * @author micha
  */
 public class DateUtils {
@@ -24,7 +24,7 @@ public class DateUtils {
 	/**
 	 * This method parses a {@link Date} from a string with the format
 	 * dd.MM.yyyy kk:mm.
-	 * 
+	 *
 	 * @param dateString
 	 * @return
 	 */

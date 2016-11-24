@@ -31,6 +31,15 @@ public class AttributeTreeExpansion implements Set<TypeTreeNode>, Serializable {
 	private final Set<String> IDs = new HashSet<String>();
 	private boolean inverse;
 
+	public static AttributeTreeExpansion get() {
+		AttributeTreeExpansion expansion = Session.get().getMetaData(AttributeTreeExpansion.KEY);
+		if (expansion == null) {
+			expansion = new AttributeTreeExpansion();
+			Session.get().setMetaData(AttributeTreeExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
+
 	public void expandAll() {
 		this.IDs.clear();
 		this.inverse = true;
@@ -126,14 +135,5 @@ public class AttributeTreeExpansion implements Set<TypeTreeNode>, Serializable {
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static AttributeTreeExpansion get() {
-		AttributeTreeExpansion expansion = Session.get().getMetaData(AttributeTreeExpansion.KEY);
-		if (expansion == null) {
-			expansion = new AttributeTreeExpansion();
-			Session.get().setMetaData(AttributeTreeExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

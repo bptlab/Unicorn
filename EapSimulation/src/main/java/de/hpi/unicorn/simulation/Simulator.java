@@ -27,12 +27,9 @@ import de.hpi.unicorn.utils.Tuple;
  */
 public class Simulator {
 
-	private int numberOfInstances;
 	private final AbstractBPMNElement startEvent;
 	private final List<InstanceSimulator> instanceSimulators;
 	private final Map<TypeTreeNode, List<Serializable>> attributesAndValues;
-	private Map<TypeTreeNode, List<Serializable>> correlationAttributesMap;
-	private Date currentSimulationDate;
 	private final Map<AbstractBPMNElement, Long> elementExecutionDurations;
 	private final Map<AbstractBPMNElement, DerivationType> elementTimeDerivationTypes;
 	private final Random random = new Random();
@@ -40,13 +37,11 @@ public class Simulator {
 	private final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities;
 	private final List<TypeTreeNode> identicalAttributes;
 	private final List<TypeTreeNode> differingAttributes;
+	private int numberOfInstances;
+	private Map<TypeTreeNode, List<Serializable>> correlationAttributesMap;
+	private Date currentSimulationDate;
 
-	public Simulator(final CorrelationProcess process, final BPMNProcess bpmnProcess,
-			final Map<TypeTreeNode, List<Serializable>> attributesAndValues,
-			final Map<AbstractBPMNElement, String> tasksDurationString,
-			final Map<AbstractBPMNElement, String> tasksDerivationString,
-			final Map<AbstractBPMNElement, DerivationType> tasksDerivationTypes,
-			final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities) {
+	public Simulator(final CorrelationProcess process, final BPMNProcess bpmnProcess, final Map<TypeTreeNode, List<Serializable>> attributesAndValues, final Map<AbstractBPMNElement, String> tasksDurationString, final Map<AbstractBPMNElement, String> tasksDerivationString, final Map<AbstractBPMNElement, DerivationType> tasksDerivationTypes, final Map<BPMNXORGateway, List<Tuple<AbstractBPMNElement, Integer>>> xorSplitsWithSuccessorProbabilities) {
 		this.startEvent = bpmnProcess.getStartEvent();
 		this.instanceSimulators = new ArrayList<InstanceSimulator>();
 		this.attributesAndValues = attributesAndValues;
@@ -77,7 +72,7 @@ public class Simulator {
 
 	/**
 	 * Simulates the process numberOfInstances over 1 Day
-	 * 
+	 *
 	 * @param numberOfInstances
 	 */
 	public void simulate(final int numberOfInstances) {
@@ -86,7 +81,7 @@ public class Simulator {
 
 	/**
 	 * Simulates the process numberOfInstances over a numberOfDays
-	 * 
+	 *
 	 * @param numberOfInstances
 	 * @param numberOfDays
 	 */
@@ -94,8 +89,7 @@ public class Simulator {
 		final int timeDifferenceInMs = this.timeDifferenceInMs(numberOfInstances, numberOfDays);
 		for (int i = 0; i < numberOfInstances; i++) {
 			final Map<TypeTreeNode, List<Serializable>> instanceAttributes = this.createNewInstanceAttributesMap();
-			final InstanceSimulator instanceSimulator = new InstanceSimulator(this.startEvent, this,
-					instanceAttributes, this.currentSimulationDate, this.differingAttributes);
+			final InstanceSimulator instanceSimulator = new InstanceSimulator(this.startEvent, this, instanceAttributes, this.currentSimulationDate, this.differingAttributes);
 			this.currentSimulationDate = new Date(this.currentSimulationDate.getTime() + timeDifferenceInMs);
 			this.instanceSimulators.add(instanceSimulator);
 		}
@@ -145,8 +139,7 @@ public class Simulator {
 	 * overwrites the correlation attributes to make same identical per instance
 	 * and unique between instances
 	 */
-	private void addCorrelationAttributes(final Map<TypeTreeNode, List<Serializable>> instanceCorrelationAttributes,
-			final Map<TypeTreeNode, List<Serializable>> instanceAttributes) {
+	private void addCorrelationAttributes(final Map<TypeTreeNode, List<Serializable>> instanceCorrelationAttributes, final Map<TypeTreeNode, List<Serializable>> instanceAttributes) {
 		// Korrelationsattribute überschreiben andere ausgewählte
 		for (final TypeTreeNode correlationAttribute : instanceCorrelationAttributes.keySet()) {
 			for (final TypeTreeNode existingAttribute : instanceAttributes.keySet()) {
@@ -239,8 +232,7 @@ public class Simulator {
 	 * randomly chooses a path with the given probabilities
 	 */
 	public AbstractBPMNElement choosePath(final AbstractBPMNElement currentElement) {
-		final List<Tuple<AbstractBPMNElement, Integer>> successorsWithProbability = this.xorSplitsWithSuccessorProbabilities
-				.get(currentElement);
+		final List<Tuple<AbstractBPMNElement, Integer>> successorsWithProbability = this.xorSplitsWithSuccessorProbabilities.get(currentElement);
 		final Random random = new Random();
 		final int index = random.nextInt(100);
 		for (final Tuple<AbstractBPMNElement, Integer> tuple : successorsWithProbability) {

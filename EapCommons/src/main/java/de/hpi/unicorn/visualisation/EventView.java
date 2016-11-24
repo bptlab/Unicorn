@@ -38,13 +38,11 @@ import de.hpi.unicorn.user.EapUser;
 @Table(name = "EventView")
 public class EventView extends Persistable {
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	List<EapEventType> eventTypes;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int ID;
-
-	@ManyToMany(fetch = FetchType.EAGER)
-	List<EapEventType> eventTypes;
-
 	@Column(name = "timeRadius")
 	@Enumerated(EnumType.STRING)
 	private TimePeriodEnum timePeriod;
@@ -52,14 +50,9 @@ public class EventView extends Persistable {
 	@ManyToOne
 	private EapUser user;
 
-	@Override
-	public int getID() {
-		return this.ID;
-	}
-	
 	/**
 	 * Creates a default event view.
-	 * 
+	 *
 	 * @param user
 	 * @param eventTypes
 	 * @param timePeriod
@@ -72,7 +65,7 @@ public class EventView extends Persistable {
 
 	/**
 	 * Creates an event view.
-	 * 
+	 *
 	 * @param user
 	 * @param eventTypes
 	 * @param timePeriod
@@ -83,37 +76,9 @@ public class EventView extends Persistable {
 		this.timePeriod = timePeriod;
 	}
 
-	// Getter and Setter
-
-	public List<EapEventType> getEventTypes() {
-		return this.eventTypes;
-	}
-
-	public void setEventTypes(final List<EapEventType> eventTypes) {
-		this.eventTypes = eventTypes;
-	}
-
-	public TimePeriodEnum getTimePeriod() {
-		return this.timePeriod;
-	}
-
-	public void setTimePeriod(final TimePeriodEnum timePeriod) {
-		this.timePeriod = timePeriod;
-	}
-
-	public EapUser getUser() {
-		return this.user;
-	}
-
-	public void setUser(final EapUser user) {
-		this.user = user;
-	}
-
-	// JPA-Methods
-
 	/**
 	 * Finds all event views form the database.
-	 * 
+	 *
 	 * @return all event views
 	 */
 	public static List<EventView> findAll() {
@@ -121,35 +86,34 @@ public class EventView extends Persistable {
 		return q.getResultList();
 	}
 
+	// Getter and Setter
+
 	/**
 	 * Finds all event views that match a certain condition.
-	 * 
+	 *
 	 * @param columnName
 	 * @param value
 	 * @return event views that matches the condition
 	 */
 	private static List<EventView> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM EventView WHERE " + columnName + " = '" + value + "'", EventView.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM EventView WHERE " + columnName + " = '" + value + "'", EventView.class);
 		return query.getResultList();
 	}
 
 	/**
 	 * Finds all event views that contain a certain event type.
-	 * 
+	 *
 	 * @param eventType
 	 * @return event views that contain a certain event type
 	 */
 	public static List<EventView> findByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM EventView WHERE ID IN ( SELECT EventView_ID FROM EventView_EventType WHERE eventTypes_ID  = '"
-						+ eventType.getID() + "' )", EventView.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM EventView WHERE ID IN ( SELECT EventView_ID FROM EventView_EventType WHERE eventTypes_ID  = '" + eventType.getID() + "' )", EventView.class);
 		return query.getResultList();
 	}
 
 	/**
 	 * Finds an event view by ID from database.
-	 * 
+	 *
 	 * @param ID
 	 * @return event view
 	 */
@@ -176,6 +140,37 @@ public class EventView extends Persistable {
 		} catch (final Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+	}
+
+	@Override
+	public int getID() {
+		return this.ID;
+	}
+
+	public List<EapEventType> getEventTypes() {
+		return this.eventTypes;
+	}
+
+	// JPA-Methods
+
+	public void setEventTypes(final List<EapEventType> eventTypes) {
+		this.eventTypes = eventTypes;
+	}
+
+	public TimePeriodEnum getTimePeriod() {
+		return this.timePeriod;
+	}
+
+	public void setTimePeriod(final TimePeriodEnum timePeriod) {
+		this.timePeriod = timePeriod;
+	}
+
+	public EapUser getUser() {
+		return this.user;
+	}
+
+	public void setUser(final EapUser user) {
+		this.user = user;
 	}
 
 }

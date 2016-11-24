@@ -34,7 +34,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 /**
  * This class tests the saving, finding and removing of
  * {@link CorrelationProcessInstance}.
- * 
+ *
  * @author micha
  */
 public class ProcessInstancePersistorTest implements PersistenceTest {
@@ -80,11 +80,9 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 	@Test
 	public void testStoreAndRetrieve() {
 		storeExampleProcessInstances();
-		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == 2);
+		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == 2);
 		CorrelationProcessInstance.removeAll();
-		assertTrue("Value should be 0, but was " + CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == 0);
+		assertTrue("Value should be 0, but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == 0);
 	}
 
 	private void storeExampleProcessInstances() {
@@ -108,8 +106,7 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 		michaEvent.addProcessInstance(secondProcessInstance);
 		michaEvent.save();
 
-		ArrayList<CorrelationProcessInstance> processInstances = new ArrayList<CorrelationProcessInstance>(
-				Arrays.asList(firstProcessInstance, secondProcessInstance));
+		ArrayList<CorrelationProcessInstance> processInstances = new ArrayList<CorrelationProcessInstance>(Arrays.asList(firstProcessInstance, secondProcessInstance));
 		CorrelationProcessInstance.save(processInstances);
 		assertTrue(CorrelationProcessInstance.findAll().size() == 2);
 
@@ -133,11 +130,8 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 		storeExampleProcessInstances();
 		storeExampleProcess();
 		assertTrue(CorrelationProcessInstance.findAll().size() == 2);
-		assertTrue("Value should be 2, but was "
-				+ CorrelationProcessInstance.findByCorrelationAttribute("location").size(), CorrelationProcessInstance
-				.findByCorrelationAttribute("location").size() == 2);
-		List<CorrelationProcessInstance> processInstances = CorrelationProcessInstance
-				.findByCorrelationAttribute("location");
+		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findByCorrelationAttribute("location").size(), CorrelationProcessInstance.findByCorrelationAttribute("location").size() == 2);
+		List<CorrelationProcessInstance> processInstances = CorrelationProcessInstance.findByCorrelationAttribute("location");
 		testFirstProcessInstance(processInstances.get(0));
 		testSecondProcessInstance(processInstances.get(1));
 		processInstances = CorrelationProcessInstance.findByCorrelationAttributeAndValue("location", "1");
@@ -172,8 +166,7 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 		storeExampleProcessInstances();
 		List<CorrelationProcessInstance> processInstances;
 		processInstances = CorrelationProcessInstance.findAll();
-		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == 2);
+		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == 2);
 
 		CorrelationProcessInstance deleteProcessInstance = processInstances.get(0);
 
@@ -182,8 +175,7 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 		timerEvent.save();
 		deleteProcessInstance.setTimerEvent(timerEvent);
 		deleteProcessInstance.save();
-		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(),
-				CorrelationProcessInstance.findAll().size() == 2);
+		assertTrue("Value should be 2, but was " + CorrelationProcessInstance.findAll().size(), CorrelationProcessInstance.findAll().size() == 2);
 
 		List<EapEvent> eventsOfDeletedProcessInstance = deleteProcessInstance.getEvents();
 		assertTrue(eventsOfDeletedProcessInstance.size() == 1);
@@ -192,8 +184,7 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 		assertTrue(eventWithOutProcessInstance.getProcessInstances().size() == 0);
 		CorrelationProcess process = CorrelationProcess.findByID(processID);
 		assertNotNull("There should be a process", process);
-		assertTrue("Number of process instances was " + process.getProcessInstances().size() + " but should be 1.",
-				process.getProcessInstances().size() == 1);
+		assertTrue("Number of process instances was " + process.getProcessInstances().size() + " but should be 1.", process.getProcessInstances().size() == 1);
 
 		processInstances = CorrelationProcessInstance.findAll();
 		assertTrue(processInstances.size() == 1);

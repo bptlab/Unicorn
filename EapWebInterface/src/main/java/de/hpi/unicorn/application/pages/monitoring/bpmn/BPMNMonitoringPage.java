@@ -23,7 +23,7 @@ import de.hpi.unicorn.application.pages.monitoring.bpmn.monitoring.BPMNMonitorin
 /**
  * This page facilitates the monitoring of the execution of BPMN processes. It
  * provides a {@link BPMNMonitoringPanel} and a {@link BPMNAnalysisPanel}.
- * 
+ *
  * @author micha
  */
 public class BPMNMonitoringPage extends AbstractEapPage {

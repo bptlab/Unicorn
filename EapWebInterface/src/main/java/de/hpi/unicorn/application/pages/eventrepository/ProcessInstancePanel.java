@@ -50,7 +50,7 @@ public class ProcessInstancePanel extends Panel {
 	/**
 	 * Constructor for the process instance panel. The page is initialized in
 	 * this method and the data is loaded from the database.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -63,19 +63,16 @@ public class ProcessInstancePanel extends Panel {
 
 		final Form<Void> buttonForm = new WarnOnExitForm("buttonForm");
 
-		final List<String> processFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[] { "ID",
-				"Process", "Process (ID)" }));
+		final List<String> processFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Process", "Process (ID)"}));
 		final String selectedEventCriteria = "ID";
 
-		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>(
-				"processInstanceFilterCriteria", new Model<String>(selectedEventCriteria), processFilterCriteriaList);
+		final DropDownChoice<String> eventTypeFilterCriteriaSelect = new DropDownChoice<String>("processInstanceFilterCriteria", new Model<String>(selectedEventCriteria), processFilterCriteriaList);
 		buttonForm.add(eventTypeFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>(
-				"processInstanceFilterCondition", new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("processInstanceFilterCondition", new Model<String>(selectedCondition), conditions);
 		buttonForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -88,13 +85,10 @@ public class ProcessInstancePanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
-				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
-				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String eventFilterCriteria = eventTypeFilterCriteriaSelect.getChoices().get(Integer.parseInt(eventTypeFilterCriteriaSelect.getValue()));
+				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				ProcessInstancePanel.this.processInstanceProvider.setProcessInstanceFilter(new ProcessInstanceFilter(
-						eventFilterCriteria, eventFilterCondition, filterValue));
+				ProcessInstancePanel.this.processInstanceProvider.setProcessInstanceFilter(new ProcessInstanceFilter(eventFilterCriteria, eventFilterCondition, filterValue));
 				target.add(ProcessInstancePanel.this.dataTable);
 			}
 		};
@@ -144,11 +138,9 @@ public class ProcessInstancePanel extends Panel {
 		this.columns = new ArrayList<IColumn<CorrelationProcessInstance, String>>();
 		this.columns.add(new PropertyColumn<CorrelationProcessInstance, String>(Model.of("ID"), "ID"));
 		this.columns.add(new PropertyColumn<CorrelationProcessInstance, String>(Model.of("Process"), "process"));
-		this.columns.add(new PropertyColumn<CorrelationProcessInstance, String>(Model.of("Correlation Attributes"),
-				"correlationAttributesAndValues") {
+		this.columns.add(new PropertyColumn<CorrelationProcessInstance, String>(Model.of("Correlation Attributes"), "correlationAttributesAndValues") {
 			@Override
-			public void populateItem(final Item<ICellPopulator<CorrelationProcessInstance>> item,
-					final String componentId, final IModel<CorrelationProcessInstance> rowModel) {
+			public void populateItem(final Item<ICellPopulator<CorrelationProcessInstance>> item, final String componentId, final IModel<CorrelationProcessInstance> rowModel) {
 				final String values = rowModel.getObject().getCorrelationAttributesAndValues().toString();
 				final Label label = new Label(componentId, values.substring(1, values.length() - 1));
 				item.add(label);
@@ -160,13 +152,11 @@ public class ProcessInstancePanel extends Panel {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((CorrelationProcessInstance) rowModel.getObject()).getID();
-				cellItem.add(new SelectEntryPanel(componentId, entryId,
-						ProcessInstancePanel.this.processInstanceProvider));
+				cellItem.add(new SelectEntryPanel(componentId, entryId, ProcessInstancePanel.this.processInstanceProvider));
 			}
 		});
 
-		this.dataTable = new DefaultDataTable<CorrelationProcessInstance, String>("processInstances", this.columns,
-				new ProcessInstanceProvider(), 20);
+		this.dataTable = new DefaultDataTable<CorrelationProcessInstance, String>("processInstances", this.columns, new ProcessInstanceProvider(), 20);
 		this.dataTable.setOutputMarkupId(true);
 
 		this.add(this.dataTable);

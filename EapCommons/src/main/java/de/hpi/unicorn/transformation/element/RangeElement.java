@@ -52,18 +52,13 @@ public class RangeElement implements Serializable {
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param leftEndpoint
-	 *            left endpoint of a range
-	 * @param leftEndpointOpen
-	 *            true if left endpoint is open
-	 * @param rightEndpoint
-	 *            right endpoint of a range
-	 * @param rightEndpointOpen
-	 *            true if right endpoint is open
+	 *
+	 * @param leftEndpoint      left endpoint of a range
+	 * @param leftEndpointOpen  true if left endpoint is open
+	 * @param rightEndpoint     right endpoint of a range
+	 * @param rightEndpointOpen true if right endpoint is open
 	 */
-	public RangeElement(final int leftEndpoint, final boolean leftEndpointOpen, final int rightEndpoint,
-			final boolean rightEndpointOpen) {
+	public RangeElement(final int leftEndpoint, final boolean leftEndpointOpen, final int rightEndpoint, final boolean rightEndpointOpen) {
 		this();
 		this.leftEndpoint = leftEndpoint;
 		this.leftEndpointOpen = leftEndpointOpen;

@@ -72,7 +72,7 @@ public class ChartConfiguration extends Persistable {
 	/**
 	 * Creates a new chart configuration. For integer values (therefore the
 	 * rangesize).
-	 * 
+	 *
 	 * @param eventType
 	 * @param attributeName
 	 * @param attributeType
@@ -80,8 +80,7 @@ public class ChartConfiguration extends Persistable {
 	 * @param type
 	 * @param rangeSize
 	 */
-	public ChartConfiguration(final EapEventType eventType, final String attributeName,
-			final AttributeTypeEnum attributeType, final String title, final ChartTypeEnum type, final Integer rangeSize) {
+	public ChartConfiguration(final EapEventType eventType, final String attributeName, final AttributeTypeEnum attributeType, final String title, final ChartTypeEnum type, final Integer rangeSize) {
 		this.eventType = eventType;
 		this.attributeName = attributeName;
 		this.attributeType = attributeType;
@@ -93,15 +92,14 @@ public class ChartConfiguration extends Persistable {
 	/**
 	 * Creates a new chart configuration. For string values (therefore without
 	 * rangesize).
-	 * 
+	 *
 	 * @param eventType
 	 * @param attributeName
 	 * @param attributeType
 	 * @param title
 	 * @param type
 	 */
-	public ChartConfiguration(final EapEventType eventType, final String attributeName,
-			final AttributeTypeEnum attributeType, final String title, final ChartTypeEnum type) {
+	public ChartConfiguration(final EapEventType eventType, final String attributeName, final AttributeTypeEnum attributeType, final String title, final ChartTypeEnum type) {
 		this.eventType = eventType;
 		this.attributeName = attributeName;
 		this.attributeType = attributeType;
@@ -110,6 +108,70 @@ public class ChartConfiguration extends Persistable {
 	}
 
 	// Getter and Setter
+
+	/**
+	 * Finds all chart configurations from database.
+	 *
+	 * @return all chart configurations
+	 */
+	public static List<ChartConfiguration> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM ChartConfiguration t");
+		return q.getResultList();
+	}
+
+	/**
+	 * Finds chart configurations by attribute.
+	 *
+	 * @param columnName
+	 * @param value
+	 * @return chart configurations that matche the attribute condition
+	 */
+	private static List<ChartConfiguration> findByAttribute(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM ChartConfiguration WHERE " + columnName + " = '" + value + "'", ChartConfiguration.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds all chart configurations for an event type from database.
+	 *
+	 * @param eventType
+	 * @return all chart configuration for an event type
+	 */
+	public static List<ChartConfiguration> findByEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM ChartConfiguration WHERE EventType = " + eventType.getID(), ChartConfiguration.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds chart configuration by ID from database.
+	 *
+	 * @param ID
+	 * @return chart configuration
+	 */
+	public static ChartConfiguration findByID(final int ID) {
+		final List<ChartConfiguration> list = ChartConfiguration.findByAttribute("ID", new Integer(ID).toString());
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Deletes all chart configuration from the database.
+	 */
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM ChartConfiguration");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
 
 	public Integer getRangeSize() {
 		return this.rangeSize;
@@ -148,6 +210,8 @@ public class ChartConfiguration extends Persistable {
 		return this.title;
 	}
 
+	// JPA-Methods
+
 	public void setTitle(final String title) {
 		this.title = title;
 	}
@@ -166,75 +230,6 @@ public class ChartConfiguration extends Persistable {
 
 	public void setAttributeType(final AttributeTypeEnum attributeType) {
 		this.attributeType = attributeType;
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Finds all chart configurations from database.
-	 * 
-	 * @return all chart configurations
-	 */
-	public static List<ChartConfiguration> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM ChartConfiguration t");
-		return q.getResultList();
-	}
-
-	/**
-	 * Finds chart configurations by attribute.
-	 * 
-	 * @param columnName
-	 * @param value
-	 * @return chart configurations that matche the attribute condition
-	 */
-	private static List<ChartConfiguration> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager()
-				.createNativeQuery("SELECT * FROM ChartConfiguration WHERE " + columnName + " = '" + value + "'",
-						ChartConfiguration.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds all chart configurations for an event type from database.
-	 * 
-	 * @param eventType
-	 * @return all chart configuration for an event type
-	 */
-	public static List<ChartConfiguration> findByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM ChartConfiguration WHERE EventType = " + eventType.getID(), ChartConfiguration.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds chart configuration by ID from database.
-	 * 
-	 * @param ID
-	 * @return chart configuration
-	 */
-	public static ChartConfiguration findByID(final int ID) {
-		final List<ChartConfiguration> list = ChartConfiguration.findByAttribute("ID", new Integer(ID).toString());
-		if (list.size() > 0) {
-			return list.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * Deletes all chart configuration from the database.
-	 */
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM ChartConfiguration");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
 	}
 
 }

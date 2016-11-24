@@ -17,8 +17,7 @@ public class SimulationTreeTableElementModel<T> extends LoadableDetachableModel<
 	private final int ID;
 	private final List<SimulationTreeTableElement<T>> treeNodes;
 
-	public SimulationTreeTableElementModel(final List<SimulationTreeTableElement<T>> treeNodes,
-			final SimulationTreeTableElement<T> node) {
+	public SimulationTreeTableElementModel(final List<SimulationTreeTableElement<T>> treeNodes, final SimulationTreeTableElement<T> node) {
 		super(node);
 		this.treeNodes = treeNodes;
 		this.ID = node.getID();
@@ -46,8 +45,7 @@ public class SimulationTreeTableElementModel<T> extends LoadableDetachableModel<
 		return super.hashCode();
 	}
 
-	private SimulationTreeTableElement<T> findTreeElement(final List<SimulationTreeTableElement<T>> treeNodes,
-			final int id) {
+	private SimulationTreeTableElement<T> findTreeElement(final List<SimulationTreeTableElement<T>> treeNodes, final int id) {
 		for (final SimulationTreeTableElement<T> treeElement : treeNodes) {
 			if (treeElement.getID() == id) {
 				return treeElement;

@@ -33,7 +33,7 @@ public class NotificationForEvent extends Notification {
 
 	/**
 	 * Creates a default event notification.
-	 * 
+	 *
 	 * @param event
 	 * @param user
 	 * @param rule
@@ -44,10 +44,10 @@ public class NotificationForEvent extends Notification {
 		this.user = user;
 		this.notificationRule = new NotificationRuleForEvent();
 	}
-	
+
 	/**
 	 * Creates an event notification.
-	 * 
+	 *
 	 * @param event
 	 * @param user
 	 * @param rule
@@ -61,9 +61,43 @@ public class NotificationForEvent extends Notification {
 
 	// Getter and Setter
 
+	/**
+	 * Finds all notifications for an event.
+	 *
+	 * @param event
+	 * @return all notifications for an event
+	 */
+	public static List<NotificationForEvent> findForEvent(final EapEvent event) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE EVENT_ID = '" + event.getID() + "'", NotificationForEvent.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * Finds all event notifications.
+	 *
+	 * @return all event notifications
+	 */
+	public static List<NotificationForEvent> findAllEventNotifications() {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE Disc = 'E'", NotificationForEvent.class);
+		return q.getResultList();
+	}
+
+	/**
+	 * Finds unseen event notifications for a user
+	 *
+	 * @param user
+	 * @return unseen event notifications for user
+	 */
+	public static List<NotificationForEvent> findUnseenEventNotificationForUser(final EapUser user) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0 AND Disc = 'E'", NotificationForEvent.class);
+		return query.getResultList();
+	}
+
 	public EapEvent getEvent() {
 		return this.event;
 	}
+
+	// JPA-Methods
 
 	public void setEvent(final EapEvent event) {
 		this.event = event;
@@ -84,47 +118,8 @@ public class NotificationForEvent extends Notification {
 		if (!notificationEventType.hasCondition()) {
 			return this.event.shortenedString() + " was received on " + this.timestamp;
 		} else {
-			return this.event.shortenedString() + " with " + notificationEventType.getCondition().getConditionString()
-					+ " was received on " + this.timestamp;
+			return this.event.shortenedString() + " with " + notificationEventType.getCondition().getConditionString() + " was received on " + this.timestamp;
 		}
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Finds all notifications for an event.
-	 * 
-	 * @param event
-	 * @return all notifications for an event
-	 */
-	public static List<NotificationForEvent> findForEvent(final EapEvent event) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE EVENT_ID = '" + event.getID() + "'", NotificationForEvent.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * Finds all event notifications.
-	 * 
-	 * @return all event notifications
-	 */
-	public static List<NotificationForEvent> findAllEventNotifications() {
-		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Notification WHERE Disc = 'E'",
-				NotificationForEvent.class);
-		return q.getResultList();
-	}
-
-	/**
-	 * Finds unseen event notifications for a user
-	 * 
-	 * @param user
-	 * @return unseen event notifications for user
-	 */
-	public static List<NotificationForEvent> findUnseenEventNotificationForUser(final EapUser user) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Notification WHERE USER_ID = '" + user.getID() + "' AND seen = 0 AND Disc = 'E'",
-				NotificationForEvent.class);
-		return query.getResultList();
 	}
 
 }

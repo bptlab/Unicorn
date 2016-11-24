@@ -15,18 +15,13 @@ public class BondComponent extends Component {
 
 	/**
 	 * Creates a new component as a container.
-	 * 
-	 * @param entryPoint
-	 *            - not included
-	 * @param sourceElement
-	 *            - included
-	 * @param exitPoint
-	 *            - not included
-	 * @param sinkElement
-	 *            - included
+	 *
+	 * @param entryPoint    - not included
+	 * @param sourceElement - included
+	 * @param exitPoint     - not included
+	 * @param sinkElement   - included
 	 */
-	public BondComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement,
-			final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
+	public BondComponent(final AbstractBPMNElement entryPoint, final AbstractBPMNElement sourceElement, final AbstractBPMNElement exitPoint, final AbstractBPMNElement sinkElement) {
 		super(entryPoint, sourceElement, exitPoint, sinkElement);
 	}
 

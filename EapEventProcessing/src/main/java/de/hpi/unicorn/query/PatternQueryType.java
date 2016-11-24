@@ -12,13 +12,12 @@ import java.util.List;
 
 /**
  * Interface for various patterns of well-structured BPMN components.
- * 
+ *
  * @author micha
  */
 public enum PatternQueryType {
 
-	AND("AND"), XOR("XOR"), SEQUENCE("SEQUENCE"), LOOP("LOOP"), SUBPROCESS("SUBPROCESS"), TIMER("TIMER"), STATETRANSITION(
-			"STATETRANSITION");
+	AND("AND"), XOR("XOR"), SEQUENCE("SEQUENCE"), LOOP("LOOP"), SUBPROCESS("SUBPROCESS"), TIMER("TIMER"), STATETRANSITION("STATETRANSITION");
 
 	public String value;
 

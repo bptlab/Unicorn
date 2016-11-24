@@ -42,19 +42,15 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 
 	/**
 	 * Parses an Esper EPL query from the given parameters.
-	 * 
-	 * @param attributeIdentifiersAndExpressions
-	 *            pairs of attribute identifiers and expressions - determines
-	 *            what values are stored in the transformed events
-	 * @param patternTree
-	 *            pattern that is used to listen for events, built up from the
-	 *            provided elements
+	 *
+	 * @param attributeIdentifiersAndExpressions pairs of attribute identifiers and expressions - determines
+	 *                                           what values are stored in the transformed events
+	 * @param patternTree                        pattern that is used to listen for events, built up from the
+	 *                                           provided elements
 	 * @return Esper EPL query
 	 */
 	@Override
-	public String parseRule(final TransformationPatternTree patternTree,
-			final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
+	public String parseRule(final TransformationPatternTree patternTree, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
 		assert (patternTree.getRoots().size() == 1);
 
 		final StringBuffer query = new StringBuffer();
@@ -62,8 +58,7 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 		// SELECT part
 		query.append("SELECT");
 
-		final String valueSelection = this.buildValueSelectionString(attributeIdentifiersAndExpressions,
-				attributeIdentifiersAndExpressionSets);
+		final String valueSelection = this.buildValueSelectionString(attributeIdentifiersAndExpressions, attributeIdentifiersAndExpressionSets);
 		query.append(valueSelection);
 
 		// FROM PATTERN part
@@ -199,18 +194,15 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 	}
 
 	@Override
-	protected String buildValueSelectionString(final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
+	protected String buildValueSelectionString(final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersAndExpressionSets) {
 		Iterator<String> iteratorForAttributeIdentifiers;
 		final StringBuffer sb = new StringBuffer();
 		if (attributeIdentifiersAndExpressions != null) {
 			iteratorForAttributeIdentifiers = attributeIdentifiersAndExpressions.keySet().iterator();
 			while (iteratorForAttributeIdentifiers.hasNext()) {
 				final String attributeIdentifier = iteratorForAttributeIdentifiers.next();
-				if (attributeIdentifiersAndExpressions.get(attributeIdentifier) != null
-						&& !attributeIdentifiersAndExpressions.get(attributeIdentifier).isEmpty()) {
-					sb.append(" (" + attributeIdentifiersAndExpressions.get(attributeIdentifier) + ") AS "
-							+ attributeIdentifier);
+				if (attributeIdentifiersAndExpressions.get(attributeIdentifier) != null && !attributeIdentifiersAndExpressions.get(attributeIdentifier).isEmpty()) {
+					sb.append(" (" + attributeIdentifiersAndExpressions.get(attributeIdentifier) + ") AS " + attributeIdentifier);
 					if (iteratorForAttributeIdentifiers.hasNext()) {
 						sb.append(",");
 					}
@@ -225,9 +217,7 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 					if (sb.length() > 0) {
 						sb.append(",");
 					}
-					sb.append(" ("
-							+ this.buildValueSelectionStringFromExternalKnowledge(attributeIdentifiersAndExpressionSets
-									.get(attributeIdentifier)) + ") AS " + attributeIdentifier);
+					sb.append(" (" + this.buildValueSelectionStringFromExternalKnowledge(attributeIdentifiersAndExpressionSets.get(attributeIdentifier)) + ") AS " + attributeIdentifier);
 				}
 			}
 		}
@@ -235,21 +225,20 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 	}
 
 	@Override
-	protected String buildValueSelectionStringFromExternalKnowledge(
-			final ExternalKnowledgeExpressionSet externalKnowledge) {
+	protected String buildValueSelectionStringFromExternalKnowledge(final ExternalKnowledgeExpressionSet externalKnowledge) {
 		String externalKnowledgeFetchMethodName = null;
 		switch (externalKnowledge.getResultingType()) {
-		case DATE:
-			externalKnowledgeFetchMethodName = "dateValueFromEvent";
-			break;
-		case INTEGER:
-			externalKnowledgeFetchMethodName = "integerValueFromEvent";
-			break;
-		case FLOAT:
-			externalKnowledgeFetchMethodName = "doubleValueFromEvent";
-			break;
-		default:
-			externalKnowledgeFetchMethodName = "stringValueFromEvent";
+			case DATE:
+				externalKnowledgeFetchMethodName = "dateValueFromEvent";
+				break;
+			case INTEGER:
+				externalKnowledgeFetchMethodName = "integerValueFromEvent";
+				break;
+			case FLOAT:
+				externalKnowledgeFetchMethodName = "doubleValueFromEvent";
+				break;
+			default:
+				externalKnowledgeFetchMethodName = "stringValueFromEvent";
 		}
 		final StringBuffer sb = new StringBuffer();
 		sb.append("coalesce(");
@@ -260,8 +249,7 @@ public class EsperTransformationRuleParser extends TransformationRuleParser {
 			final Iterator<String> iterator = expression.getCriteriaAttributesAndValues().keySet().iterator();
 			while (iterator.hasNext()) {
 				final String criteriaAttributeExpression = iterator.next();
-				sb.append("'" + criteriaAttributeExpression + "', "
-						+ expression.getCriteriaAttributesAndValues().get(criteriaAttributeExpression));
+				sb.append("'" + criteriaAttributeExpression + "', " + expression.getCriteriaAttributesAndValues().get(criteriaAttributeExpression));
 				if (iterator.hasNext()) {
 					sb.append(", ");
 				}

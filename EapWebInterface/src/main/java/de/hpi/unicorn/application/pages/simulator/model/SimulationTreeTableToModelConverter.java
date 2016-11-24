@@ -31,7 +31,7 @@ import de.hpi.unicorn.utils.Tuple;
 /**
  * This class converts a tree from the simple simulation page to a BPMN model
  * for the simulator.
- * 
+ *
  * @author micha
  */
 public class SimulationTreeTableToModelConverter {
@@ -50,8 +50,7 @@ public class SimulationTreeTableToModelConverter {
 		this.convertTreeToBPMNTree();
 		// Annahme, dass Tree immer mit einer Component (Sequence, XOR, AND oder
 		// LOOP) beginnt
-		final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this.createSubBranch(this.bpmnTree
-				.getRootElements().get(0));
+		final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this.createSubBranch(this.bpmnTree.getRootElements().get(0));
 		AbstractBPMNElement.connectElements(startEvent, subStartAndEnd.x);
 		AbstractBPMNElement.connectElements(subStartAndEnd.y, endEvent);
 		return this.process;
@@ -60,7 +59,7 @@ public class SimulationTreeTableToModelConverter {
 	/**
 	 * Tries to create the whole subbrach recursively starting with the given
 	 * branchStartElement.
-	 * 
+	 *
 	 * @param branchStartElement
 	 * @return a list with the start and end element of the created branch
 	 */
@@ -81,14 +80,12 @@ public class SimulationTreeTableToModelConverter {
 		return (new Tuple<AbstractBPMNElement, AbstractBPMNElement>(task, task));
 	}
 
-	private Tuple<AbstractBPMNElement, AbstractBPMNElement> createSequenceSubBranch(
-			final SequenceComponent branchStartElement) {
+	private Tuple<AbstractBPMNElement, AbstractBPMNElement> createSequenceSubBranch(final SequenceComponent branchStartElement) {
 		final List<AbstractBPMNElement> children = this.bpmnTree.getChildren(branchStartElement);
 		AbstractBPMNElement firstElement = null;
 		AbstractBPMNElement predecessor = null;
 		for (int i = 0; i < children.size(); i++) {
-			final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this
-					.createSubBranch(children.get(i));
+			final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this.createSubBranch(children.get(i));
 			if (i == 0) { // erstes Element
 				firstElement = (subStartAndEnd.x);
 			} else { // Elemente dazwischen
@@ -144,8 +141,7 @@ public class SimulationTreeTableToModelConverter {
 		AbstractBPMNElement.connectElements(endGateway, startGateway);
 		AbstractBPMNElement predecessor = startGateway;
 		for (int i = 0; i < children.size(); i++) {
-			final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this
-					.createSubBranch(children.get(i));
+			final Tuple<AbstractBPMNElement, AbstractBPMNElement> subStartAndEnd = this.createSubBranch(children.get(i));
 			AbstractBPMNElement.connectElements(predecessor, subStartAndEnd.x);
 			if (i == children.size() - 1) { // letztes Element
 				AbstractBPMNElement.connectElements(subStartAndEnd.y, endGateway);
@@ -168,8 +164,7 @@ public class SimulationTreeTableToModelConverter {
 	private void convertAndAddElementToBPMNTree(final Object treeElement, final AbstractBPMNElement bpmnParent) {
 		if (treeElement instanceof EapEventType) {
 			final String ID = Integer.toString(++this.IDCounter);
-			final MonitoringPoint monitoringPoint = new MonitoringPoint((EapEventType) treeElement,
-					MonitoringPointStateTransition.terminate, "");
+			final MonitoringPoint monitoringPoint = new MonitoringPoint((EapEventType) treeElement, MonitoringPointStateTransition.terminate, "");
 			final ArrayList<MonitoringPoint> monitoringPoints = new ArrayList<MonitoringPoint>();
 			monitoringPoints.add(monitoringPoint);
 			final BPMNTask task = new BPMNTask(ID, "Task " + ID, monitoringPoints);

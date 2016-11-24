@@ -26,25 +26,21 @@ public class DerivationTypeDropDownChoicePanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
 	private final List<DerivationType> derivationTypes = Arrays.asList(DerivationType.values());
-	private LabelTreeTable<SimulationTreeTableElement<Object>, String> treeTable;
 	protected DerivationType derivationType;
+	private LabelTreeTable<SimulationTreeTableElement<Object>, String> treeTable;
 
-	public DerivationTypeDropDownChoicePanel(final String id, final int entryId,
-			final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
+	public DerivationTypeDropDownChoicePanel(final String id, final int entryId, final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
 		super(id);
 		final Form<Void> layoutForm = new Form<Void>("layoutForm");
 
-		final DropDownChoice<DerivationType> derivationTypeDropDownChoice = new DropDownChoice<DerivationType>(
-				"derivationTypeDropDownChoice",
-				Model.of(simulationTreeTableProvider.getDerivationTypeForEntry(entryId)), this.derivationTypes);
+		final DropDownChoice<DerivationType> derivationTypeDropDownChoice = new DropDownChoice<DerivationType>("derivationTypeDropDownChoice", Model.of(simulationTreeTableProvider.getDerivationTypeForEntry(entryId)), this.derivationTypes);
 		derivationTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				simulationTreeTableProvider.setDerivationTypeForEntry(derivationTypeDropDownChoice.getModelObject(),
-						entryId);
+				simulationTreeTableProvider.setDerivationTypeForEntry(derivationTypeDropDownChoice.getModelObject(), entryId);
 
 				if (DerivationTypeDropDownChoicePanel.this.treeTable != null) {
 					target.add(DerivationTypeDropDownChoicePanel.this.treeTable);

@@ -42,30 +42,22 @@ import de.hpi.unicorn.persistence.Persistor;
 public class TypeTreeNode extends Persistable {
 
 	private static final long serialVersionUID = -3804228219409837851L;
-
+	@OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	private final List<TypeTreeNode> children = new ArrayList<TypeTreeNode>();
+	@OneToMany(mappedBy = "firstAttribute")
+	private final Set<CorrelationRule> correlationRulesFirst = new HashSet<CorrelationRule>();
+	@OneToMany(mappedBy = "secondAttribute")
+	private final Set<CorrelationRule> correlationRulesSecond = new HashSet<CorrelationRule>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected int ID;
-
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	@JoinColumn(name = "attributeTree")
-	private AttributeTypeTree attributeTree;
-
-	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private TypeTreeNode parent;
-
-	@OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private final List<TypeTreeNode> children = new ArrayList<TypeTreeNode>();
-
-	@OneToMany(mappedBy = "firstAttribute")
-	private final Set<CorrelationRule> correlationRulesFirst = new HashSet<CorrelationRule>();
-
-	@OneToMany(mappedBy = "secondAttribute")
-	private final Set<CorrelationRule> correlationRulesSecond = new HashSet<CorrelationRule>();
-
 	@Column(name = "Name")
 	protected String name;
-
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	@JoinColumn(name = "attributeTree")
+	private AttributeTypeTree attributeTree;
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	private TypeTreeNode parent;
 	@Column(name = "AttributeType")
 	@Enumerated(EnumType.STRING)
 	private AttributeTypeEnum type = AttributeTypeEnum.STRING;
@@ -84,10 +76,9 @@ public class TypeTreeNode extends Persistable {
 	/**
 	 * creates a root attribute without data type (use this constructor if you
 	 * add child attributes to the root attribute)
-	 * 
-	 * @param name
-	 *            allowed characters: a-z, A-Z, 0-9, _; whitespace(s) converted
-	 *            to underscore
+	 *
+	 * @param name allowed characters: a-z, A-Z, 0-9, _; whitespace(s) converted
+	 *             to underscore
 	 */
 	public TypeTreeNode(final String name) throws RuntimeException {
 		this();
@@ -99,7 +90,7 @@ public class TypeTreeNode extends Persistable {
 
 	/**
 	 * creates a root attribute with data type
-	 * 
+	 *
 	 * @param name
 	 * @param type
 	 */
@@ -111,7 +102,7 @@ public class TypeTreeNode extends Persistable {
 	/**
 	 * creates a child node without data type and adds it to the given parent
 	 * (use this constructor if you add child attributes to the root attribute)
-	 * 
+	 *
 	 * @param parent
 	 * @param name
 	 */
@@ -124,13 +115,12 @@ public class TypeTreeNode extends Persistable {
 
 	/**
 	 * creates a child node with data type and adds it to the given parent
-	 * 
+	 *
 	 * @param parent
 	 * @param name
 	 * @param type
 	 */
-	public TypeTreeNode(final TypeTreeNode parent, final String name, final AttributeTypeEnum type)
-			throws RuntimeException {
+	public TypeTreeNode(final TypeTreeNode parent, final String name, final AttributeTypeEnum type) throws RuntimeException {
 		this(parent, name);
 		this.type = type;
 	}
@@ -147,7 +137,7 @@ public class TypeTreeNode extends Persistable {
 	/**
 	 * Use getAttributeExpression() instead if you want to use it as a key for
 	 * the values (HashMap) for the EapEvent.
-	 * 
+	 *
 	 * @return the name of the attribute
 	 */
 	public String getName() {
@@ -234,7 +224,7 @@ public class TypeTreeNode extends Persistable {
 	 * tree]-[name of parent attribute]-[name of this attribute] and returns it.
 	 * Does not return the ID under which the attribute is stored in the
 	 * database!
-	 * 
+	 *
 	 * @return generated identifier as String
 	 */
 	public String getIdentifier() {
@@ -258,7 +248,6 @@ public class TypeTreeNode extends Persistable {
 	}
 
 	/**
-	 * 
 	 * @return returns recursive the path to this element as XPath
 	 */
 	public String getXPath() {
@@ -286,9 +275,7 @@ public class TypeTreeNode extends Persistable {
 	@JsonIgnore
 	public EapEventType getEventType() {
 		final TypeTreeNode rootLevelParent = this.getRootLevelParent();
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM EventType " + "WHERE Attributes = '" + rootLevelParent.getAttributeTree().getID()
-						+ "'", EapEventType.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM EventType " + "WHERE Attributes = '" + rootLevelParent.getAttributeTree().getID() + "'", EapEventType.class);
 		return (EapEventType) query.getSingleResult();
 	}
 
@@ -296,7 +283,7 @@ public class TypeTreeNode extends Persistable {
 	 * attribute identifier consisting of event type name plus attribute
 	 * expression example: Order.orderId for first level attribute with name
 	 * "orderId" of event type "Order"
-	 * 
+	 *
 	 * @return qualified attribute name
 	 */
 	public String getQualifiedAttributeName() {

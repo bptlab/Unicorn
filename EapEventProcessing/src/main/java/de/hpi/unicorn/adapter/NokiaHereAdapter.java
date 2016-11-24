@@ -35,24 +35,23 @@ import de.hpi.unicorn.importer.xml.XSDParser;
 /**
  * This class is used for the retrieval and parsing of TrafficIncidentEvents
  * from the NokiaHereAPI along a specified Corridor.
- * 
+ *
  * @author Jan Selke
- * 
  */
 
 public class NokiaHereAdapter extends EventAdapter {
 
 	private final SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ssZ");
-	private String query = "";
 	private final List<EapEvent> eventsToSend = new ArrayList<EapEvent>();
+	private String query = "";
 
 	public NokiaHereAdapter(final String name) {
 		super(name);
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public NokiaHereAdapter(final String name, final int width, final double... coordinates) {
 		this(name);
@@ -63,23 +62,19 @@ public class NokiaHereAdapter extends EventAdapter {
 	/**
 	 * This method assembles a query for the NokiaHereAPI, combining the correct
 	 * area String with the API-Keys.
-	 * 
-	 * @param area
-	 *            specifies the geographical boundaries of the area that is
-	 *            relevant for the query of the TrafficEvents. Right now only
-	 *            corridor is supported but the implementation also allows for
-	 *            different kinds of area specification of the
-	 *            NokiaHereTrafficAPI like bounding-box or proximity within the
-	 *            area String.
-	 * 
+	 *
+	 * @param area specifies the geographical boundaries of the area that is
+	 *             relevant for the query of the TrafficEvents. Right now only
+	 *             corridor is supported but the implementation also allows for
+	 *             different kinds of area specification of the
+	 *             NokiaHereTrafficAPI like bounding-box or proximity within the
+	 *             area String.
 	 * @return returns a String that contains the combined HTTP-query with the
-	 *         correct area that is used for the API-webcall.
+	 * correct area that is used for the API-webcall.
 	 */
 	private String createQuery(final String area) {
 
-		final String query = "http://traffic.api.here.com/traffic/6.1/incidents.json?app_id="
-				+ EapConfiguration.nokiaHereAppID + "&app_code=" + EapConfiguration.nokiaHereAppCode + "&" + area
-				+ "&c=en&lg=en&i18n=true&localtime=true";
+		final String query = "http://traffic.api.here.com/traffic/6.1/incidents.json?app_id=" + EapConfiguration.nokiaHereAppID + "&app_code=" + EapConfiguration.nokiaHereAppCode + "&" + area + "&c=en&lg=en&i18n=true&localtime=true";
 
 		return query;
 	}
@@ -89,12 +84,10 @@ public class NokiaHereAdapter extends EventAdapter {
 	 * from the NokiaHere-API call. The extracted Events are also mapped onto
 	 * the Event-types RoadTraffic and NokiaHereTrafficIncident and saved into
 	 * the eventsToSend variable for later usage.
-	 * 
-	 * @param response
-	 *            Expects the JSON-response form the NokiaHere-API call which
-	 *            can be obtained via the callWebService() method.
-	 * @throws JSONException
-	 *             auto generated
+	 *
+	 * @param response Expects the JSON-response form the NokiaHere-API call which
+	 *                 can be obtained via the callWebService() method.
+	 * @throws JSONException auto generated
 	 */
 	// @Override
 	public void parseResponse(final JSONObject response) throws JSONException {
@@ -147,61 +140,38 @@ public class NokiaHereAdapter extends EventAdapter {
 							final JSONObject subItem3 = subItem2.getJSONObject(j);
 							if (subItem3.has("ORIGIN")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("ORIGIN");
-								this.setStringValue(subItem4, values,
-										"RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.EBU_COUNTRY_CODE", "EBU_COUNTRY_CODE");
-								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.TABLE_ID",
-										"TABLE_ID");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.LOCATION_ID",
-										"LOCATION_ID");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.LOCATION_DESC",
-										"LOCATION_DESC");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.RDS_DIRECTION",
-										"RDS_DIRECTION");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.EBU_COUNTRY_CODE", "EBU_COUNTRY_CODE");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.TABLE_ID", "TABLE_ID");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.LOCATION_ID", "LOCATION_ID");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.LOCATION_DESC", "LOCATION_DESC");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ORIGIN.RDS_DIRECTION", "RDS_DIRECTION");
 							}
 							if (subItem3.has("TO")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("TO");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.EBU_COUNTRY_CODE",
-										"EBU_COUNTRY_CODE");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.EBU_COUNTRY_CODE", "EBU_COUNTRY_CODE");
 								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.TABLE_ID", "TABLE_ID");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.LOCATION_ID",
-										"LOCATION_ID");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.LOCATION_DESC",
-										"LOCATION_DESC");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.RDS_DIRECTION",
-										"RDS_DIRECTION");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.LOCATION_ID", "LOCATION_ID");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.LOCATION_DESC", "LOCATION_DESC");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.TO.RDS_DIRECTION", "RDS_DIRECTION");
 							}
 							this.setStringValue(subItem3, values, "RDS-TMC_LOCATIONS.RDS-TMC.DIRECTION", "DIRECTION");
 							if (subItem3.has("ALERTC")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("ALERTC");
-								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.TRAFFIC_CODE",
-										"TRAFFIC_CODE");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_Q",
-										"ALERTC_Q");
-								this.setStringValue(subItem4, values,
-										"RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_Q_BINARY", "ALERTC_Q_BINARY");
-								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.QUANTIFIERS",
-										"QUANTIFIERS");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.DESCRIPTION",
-										"DESCRIPTION");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.NATURE",
-										"NATURE");
-								this.setStringValue(subItem4, values,
-										"RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_DURATION", "ALERTC_DURATION");
-								this.setLongValue(subItem4, values,
-										"RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_DIRECTION", "ALERTC_DIRECTION");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.URGENCY",
-										"URGENCY");
-								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.UPDATE_CLASS",
-										"UPDATE_CLASS");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.PHRASE_CODE",
-										"PHRASE_CODE");
-								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.EXTENT",
-										"EXTENT");
-								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.DURATION",
-										"DURATION");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.TRAFFIC_CODE", "TRAFFIC_CODE");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_Q", "ALERTC_Q");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_Q_BINARY", "ALERTC_Q_BINARY");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.QUANTIFIERS", "QUANTIFIERS");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.DESCRIPTION", "DESCRIPTION");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.NATURE", "NATURE");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_DURATION", "ALERTC_DURATION");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.ALERTC_DIRECTION", "ALERTC_DIRECTION");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.URGENCY", "URGENCY");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.UPDATE_CLASS", "UPDATE_CLASS");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.PHRASE_CODE", "PHRASE_CODE");
+								this.setStringValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.EXTENT", "EXTENT");
+								this.setLongValue(subItem4, values, "RDS-TMC_LOCATIONS.RDS-TMC.ALERTC.DURATION", "DURATION");
 							}
-							this.setDoubleValue(subItem3, values, "RDS-TMC_LOCATIONS.RDS-TMC.PRIMARY_OFFSET",
-									"PRIMARY_OFFSET");
+							this.setDoubleValue(subItem3, values, "RDS-TMC_LOCATIONS.RDS-TMC.PRIMARY_OFFSET", "PRIMARY_OFFSET");
 							this.setDoubleValue(subItem3, values, "RDS-TMC_LOCATIONS.RDS-TMC.LENGTH", "LENGTH");
 
 						}
@@ -218,8 +188,7 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("ROADWAY");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.ORIGIN.ROADWAY.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.ORIGIN.ROADWAY.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.ROADWAY.ID", "ID");
 							}
@@ -227,8 +196,7 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("POINT");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.ORIGIN.POINT.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.ORIGIN.POINT.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.POINT.ID", "ID");
 							}
@@ -236,16 +204,14 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("DIRECTION");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.ORIGIN.DIRECTION.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.ORIGIN.DIRECTION.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.DIRECTION.ID", "ID");
 							}
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.PROXIMITY.DESCRIPTION",
-										"DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.DEFINED.ORIGIN.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 							if (subItem3.has("BETWEEN")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("BETWEEN");
@@ -253,21 +219,17 @@ public class NokiaHereAdapter extends EventAdapter {
 									final JSONObject subItem5 = subItem4.getJSONObject("ROADWAY");
 									if (subItem5.has("DESCRIPTION")) {
 										final JSONArray subItem6 = subItem5.getJSONArray("DESCRIPTION");
-										this.setStringValue(subItem6.getJSONObject(0), values,
-												"LOCATION.DEFINED.ORIGIN.BETWEEN.ROADWAY.DESCRIPTION", "value");
+										this.setStringValue(subItem6.getJSONObject(0), values, "LOCATION.DEFINED.ORIGIN.BETWEEN.ROADWAY.DESCRIPTION", "value");
 									}
-									this.setLongValue(subItem5, values, "LOCATION.DEFINED.ORIGIN.BETWEEN.ROADWAY.ID",
-											"ID");
+									this.setLongValue(subItem5, values, "LOCATION.DEFINED.ORIGIN.BETWEEN.ROADWAY.ID", "ID");
 								}
 								if (subItem4.has("POINT")) {
 									final JSONObject subItem5 = subItem4.getJSONObject("POINT");
 									if (subItem5.has("DESCRIPTION")) {
 										final JSONArray subItem6 = subItem5.getJSONArray("DESCRIPTION");
-										this.setStringValue(subItem6.getJSONObject(0), values,
-												"LOCATION.DEFINED.ORIGIN.BETWEEN.POINT.DESCRIPTION", "value");
+										this.setStringValue(subItem6.getJSONObject(0), values, "LOCATION.DEFINED.ORIGIN.BETWEEN.POINT.DESCRIPTION", "value");
 									}
-									this.setLongValue(subItem5, values, "LOCATION.DEFINED.ORIGIN.BETWEEN.POINT.ID",
-											"ID");
+									this.setLongValue(subItem5, values, "LOCATION.DEFINED.ORIGIN.BETWEEN.POINT.ID", "ID");
 								}
 							}
 
@@ -278,8 +240,7 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("ROADWAY");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.TO.ROADWAY.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.TO.ROADWAY.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.TO.ROADWAY.ID", "ID");
 							}
@@ -287,8 +248,7 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("POINT");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.TO.POINT.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.TO.POINT.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.TO.POINT.ID", "ID");
 							}
@@ -296,16 +256,14 @@ public class NokiaHereAdapter extends EventAdapter {
 								final JSONObject subItem4 = subItem3.getJSONObject("DIRECTION");
 								if (subItem4.has("DESCRIPTION")) {
 									final JSONArray subItem5 = subItem4.getJSONArray("DESCRIPTION");
-									this.setStringValue(subItem5.getJSONObject(0), values,
-											"LOCATION.DEFINED.TO.DIRECTION.DESCRIPTION", "value");
+									this.setStringValue(subItem5.getJSONObject(0), values, "LOCATION.DEFINED.TO.DIRECTION.DESCRIPTION", "value");
 								}
 								this.setLongValue(subItem4, values, "LOCATION.DEFINED.TO.DIRECTION.ID", "ID");
 							}
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.DEFINED.TO.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values, "LOCATION.DEFINED.TO.PROXIMITY.DESCRIPTION",
-										"DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.DEFINED.TO.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 							if (subItem3.has("BETWEEN")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("BETWEEN");
@@ -313,8 +271,7 @@ public class NokiaHereAdapter extends EventAdapter {
 									final JSONObject subItem5 = subItem4.getJSONObject("ROADWAY");
 									if (subItem5.has("DESCRIPTION")) {
 										final JSONArray subItem6 = subItem5.getJSONArray("DESCRIPTION");
-										this.setStringValue(subItem6.getJSONObject(0), values,
-												"LOCATION.DEFINED.TO.BETWEEN.ROADWAY.DESCRIPTION", "value");
+										this.setStringValue(subItem6.getJSONObject(0), values, "LOCATION.DEFINED.TO.BETWEEN.ROADWAY.DESCRIPTION", "value");
 									}
 									this.setLongValue(subItem5, values, "LOCATION.DEFINED.TO.BETWEEN.ROADWAY.ID", "ID");
 								}
@@ -322,8 +279,7 @@ public class NokiaHereAdapter extends EventAdapter {
 									final JSONObject subItem5 = subItem4.getJSONObject("POINT");
 									if (subItem5.has("DESCRIPTION")) {
 										final JSONArray subItem6 = subItem5.getJSONArray("DESCRIPTION");
-										this.setStringValue(subItem6.getJSONObject(0), values,
-												"LOCATION.DEFINED.TO.BETWEEN.POINT.DESCRIPTION", "value");
+										this.setStringValue(subItem6.getJSONObject(0), values, "LOCATION.DEFINED.TO.BETWEEN.POINT.DESCRIPTION", "value");
 									}
 									this.setLongValue(subItem5, values, "LOCATION.DEFINED.TO.BETWEEN.POINT.ID", "ID");
 								}
@@ -338,17 +294,13 @@ public class NokiaHereAdapter extends EventAdapter {
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.ORIGIN.ID", "ID");
 							if (subItem3.has("STREET1")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("STREET1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET1.ADDRESS1",
-										"ADDRESS1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET1.ADDRESS2",
-										"ADDRESS2");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET1.ADDRESS1", "ADDRESS1");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET1.ADDRESS2", "ADDRESS2");
 							}
 							if (subItem3.has("STREET2")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("STREET2");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET2.ADDRESS1",
-										"ADDRESS1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET2.ADDRESS2",
-										"ADDRESS2");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET2.ADDRESS1", "ADDRESS1");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.STREET2.ADDRESS2", "ADDRESS2");
 							}
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.ORIGIN.CITY", "CITY");
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.ORIGIN.COUNTY", "COUNTY");
@@ -358,8 +310,7 @@ public class NokiaHereAdapter extends EventAdapter {
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values,
-										"LOCATION.INTERSECTION.ORIGIN.PROXIMITY.DESCRIPTION", "DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.ORIGIN.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 						}
 						if (subItem2.has("TO")) {
@@ -367,17 +318,13 @@ public class NokiaHereAdapter extends EventAdapter {
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.TO.ID", "ID");
 							if (subItem3.has("STREET1")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("STREET1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET1.ADDRESS1",
-										"ADDRESS1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET1.ADDRESS2",
-										"ADDRESS2");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET1.ADDRESS1", "ADDRESS1");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET1.ADDRESS2", "ADDRESS2");
 							}
 							if (subItem3.has("STREET2")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("STREET2");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET2.ADDRESS1",
-										"ADDRESS1");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET2.ADDRESS2",
-										"ADDRESS2");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET2.ADDRESS1", "ADDRESS1");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.STREET2.ADDRESS2", "ADDRESS2");
 							}
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.TO.CITY", "CITY");
 							this.setStringValue(subItem3, values, "LOCATION.INTERSECTION.TO.COUNTY", "COUNTY");
@@ -387,8 +334,7 @@ public class NokiaHereAdapter extends EventAdapter {
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem3.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.PROXIMITY.DESCRIPTION",
-										"DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.INTERSECTION.TO.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 						}
 
@@ -409,8 +355,7 @@ public class NokiaHereAdapter extends EventAdapter {
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem2.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.ORIGIN.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.ORIGIN.PROXIMITY.DESCRIPTION",
-										"DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.ORIGIN.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 						}
 						if (subItem2.has("TO")) {
@@ -427,8 +372,7 @@ public class NokiaHereAdapter extends EventAdapter {
 							if (subItem3.has("PROXIMITY")) {
 								final JSONObject subItem4 = subItem2.getJSONObject("PROXIMITY");
 								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.TO.PROXIMITY.ID", "ID");
-								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.TO.PROXIMITY.DESCRIPTION",
-										"DESCRIPTION");
+								this.setStringValue(subItem4, values, "LOCATION.ADDRESS.TO.PROXIMITY.DESCRIPTION", "DESCRIPTION");
 							}
 						}
 					}
@@ -445,10 +389,8 @@ public class NokiaHereAdapter extends EventAdapter {
 						}
 						if (subItem2.has("TO")) {
 							final JSONArray subItem3 = subItem2.getJSONArray("TO");
-							this.setDoubleValue(subItem3.getJSONObject(0), values, "LOCATION.GEOLOC.TO.LATITUDE",
-									"LATITUDE");
-							this.setDoubleValue(subItem3.getJSONObject(0), values, "LOCATION.GEOLOC.TO.LONGITUDE",
-									"LONGITUDE");
+							this.setDoubleValue(subItem3.getJSONObject(0), values, "LOCATION.GEOLOC.TO.LATITUDE", "LATITUDE");
+							this.setDoubleValue(subItem3.getJSONObject(0), values, "LOCATION.GEOLOC.TO.LONGITUDE", "LONGITUDE");
 						}
 					}
 					if (subItem1.has("POLITICAL_BOUNDARY")) {
@@ -461,10 +403,8 @@ public class NokiaHereAdapter extends EventAdapter {
 						this.setStringValue(subItem2, values, "LOCATION.POLITICAL_BOUNDARY.COUNTY", "COUNTY");
 						if (subItem2.has("MUNICIPALITY")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("MUNICIPALITY");
-							this.setStringValue(subItem3, values, "LOCATION.POLITICAL_BOUNDARY.MUNICIPALITY.NAME",
-									"NAME");
-							this.setStringValue(subItem3, values, "LOCATION.POLITICAL_BOUNDARY.MUNICIPALITY.ALIAS",
-									"ALIAS");
+							this.setStringValue(subItem3, values, "LOCATION.POLITICAL_BOUNDARY.MUNICIPALITY.NAME", "NAME");
+							this.setStringValue(subItem3, values, "LOCATION.POLITICAL_BOUNDARY.MUNICIPALITY.ALIAS", "ALIAS");
 						}
 
 					}
@@ -499,50 +439,32 @@ public class NokiaHereAdapter extends EventAdapter {
 						final JSONObject subItem2 = subItem1.getJSONObject("LANES_BLOCKED");
 						if (subItem2.has("LANE")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("LANE");
-							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.LANE.DESCRIPTION",
-									"DESCRIPTION");
-							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.LANE.NUM_BLOCKED",
-									"NUM_BLOCKED");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.LANE.DESCRIPTION", "DESCRIPTION");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.LANE.NUM_BLOCKED", "NUM_BLOCKED");
 						}
-						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.ALL_LANES",
-								"ALL_LANES");
+						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.LANES_BLOCKED.ALL_LANES", "ALL_LANES");
 					}
 					this.setStringValue(subItem1, values, "TRAFFIC_ITEM_DETAIL.LANES_CLEAR_DESC", "LANES_CLEAR_DESC");
 					if (subItem1.has("EVENT")) {
 						final JSONObject subItem2 = subItem1.getJSONObject("EVENT");
-						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.EVENT.EVENT_ITEM_CANCELLED",
-								"EVENT_ITEM_CANCELLED");
+						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.EVENT.EVENT_ITEM_CANCELLED", "EVENT_ITEM_CANCELLED");
 						if (subItem2.has("PLANNED_EVENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("PLANNED_EVENT");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.EVENT.PLANNED_EVENT.PLANNED_EVENT_TYPE_DESC",
-									"PLANNED_EVENT_TYPE_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.EVENT.PLANNED_EVENT.PLANNED_EVENT_DESC", "PLANNED_EVENT_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.EVENT.PLANNED_EVENT.PLANNED_EVENT_TYPE_DESC", "PLANNED_EVENT_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.EVENT.PLANNED_EVENT.PLANNED_EVENT_DESC", "PLANNED_EVENT_DESC");
 						}
 						if (subItem2.has("SCHEDULED_CONSTRUCTION_EVENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("SCHEDULED_CONSTRUCTION_EVENT");
-							this.setStringValue(
-									subItem3,
-									values,
-									"TRAFFIC_ITEM_DETAIL.EVENT.SCHEDULED_CONSTRUCTION_EVENT.SCHEDULED_CONSTRUCTION_TYPE_DESC",
-									"SCHEDULED_CONSTRUCTION_TYPE_DESC");
-							this.setStringValue(
-									subItem3,
-									values,
-									"TRAFFIC_ITEM_DETAIL.EVENT.SCHEDULED_CONSTRUCTION_EVENT.SCHEDULED_CONSTRUCTION_DETAIL",
-									"SCHEDULED_CONSTRUCTION_DETAIL");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.EVENT.SCHEDULED_CONSTRUCTION_EVENT.SCHEDULED_CONSTRUCTION_TYPE_DESC", "SCHEDULED_CONSTRUCTION_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.EVENT.SCHEDULED_CONSTRUCTION_EVENT.SCHEDULED_CONSTRUCTION_DETAIL", "SCHEDULED_CONSTRUCTION_DETAIL");
 						}
 					}
 					if (subItem1.has("INCIDENT")) {
 						final JSONObject subItem2 = subItem1.getJSONObject("INCIDENT");
-						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.RESPONSE_VEHICLES",
-								"RESPONSE_VEHICLES");
+						this.setStringValue(subItem2, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.RESPONSE_VEHICLES", "RESPONSE_VEHICLES");
 						if (subItem2.has("ROAD_HAZARD_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("ROAD_HAZARD_INCIDENT");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ROAD_HAZARD_INCIDENT.ROAD_HAZARD_TYPE_DESC",
-									"ROAD_HAZARD_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ROAD_HAZARD_INCIDENT.ROAD_HAZARD_TYPE_DESC", "ROAD_HAZARD_TYPE_DESC");
 						}
 						if (subItem2.has("TRAVEL_TIMES")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("TRAVEL_TIMES");
@@ -551,62 +473,35 @@ public class NokiaHereAdapter extends EventAdapter {
 								if (subItem4.has("TRAVEL_TIME")) {
 									subItem2.getJSONObject("TRAVEL_TIME");
 								}
-								this.setStringValue(subItem4, values,
-										"TRAFFIC_ITEM_DETAIL.INCIDENT.TRAVEL_TIMES.LANE_TYPE.TYPE", "TYPE");
+								this.setStringValue(subItem4, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.TRAVEL_TIMES.LANE_TYPE.TYPE", "TYPE");
 							}
 						}
 						if (subItem2.has("ACCIDENT_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("ACCIDENT_INCIDENT");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.CAR_COUNT", "CAR_COUNT");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.TRUCK_COUNT", "TRUCK_COUNT");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.TRACTOR_TRAILER_COUNT",
-									"TRACTOR_TRAILER_COUNT");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.MOTORCYCLE_COUNT",
-									"MOTORCYCLE_COUNT");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.OTHER_VEHICLE_COUNT",
-									"OTHER_VEHICLE_COUNT");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.CAR_COUNT", "CAR_COUNT");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.TRUCK_COUNT", "TRUCK_COUNT");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.TRACTOR_TRAILER_COUNT", "TRACTOR_TRAILER_COUNT");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.MOTORCYCLE_COUNT", "MOTORCYCLE_COUNT");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.ACCIDENT_INCIDENT.OTHER_VEHICLE_COUNT", "OTHER_VEHICLE_COUNT");
 						}
 						if (subItem2.has("CONGESTION_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("CONGESTION_INCIDENT");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.CONGESTION_INCIDENT.CONGESTION_TYPE_DESC",
-									"CONGESTION_TYPE_DESC");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.CONGESTION_INCIDENT.CONGESTION_FACTOR",
-									"CONGESTION_FACTOR");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.CONGESTION_INCIDENT.CONGESTION_TYPE_DESC", "CONGESTION_TYPE_DESC");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.CONGESTION_INCIDENT.CONGESTION_FACTOR", "CONGESTION_FACTOR");
 						}
 						if (subItem2.has("UNSCHEDULED_CONSTRUCTION_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("UNSCHEDULED_CONSTRUCTION_INCIDENT");
-							this.setStringValue(
-									subItem3,
-									values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.UNSCHEDULED_CONSTRUCTION_INCIDENT.UNSCHED_CONST_TYPE_DESC",
-									"UNSCHED_CONST_TYPE_DESC");
-							this.setStringValue(
-									subItem3,
-									values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.UNSCHEDULED_CONSTRUCTION_INCIDENT.UNSCHED_CONST_DETAIL",
-									"UNSCHED_CONST_DETAIL");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.UNSCHEDULED_CONSTRUCTION_INCIDENT.UNSCHED_CONST_TYPE_DESC", "UNSCHED_CONST_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.UNSCHEDULED_CONSTRUCTION_INCIDENT.UNSCHED_CONST_DETAIL", "UNSCHED_CONST_DETAIL");
 						}
 						if (subItem2.has("DISABLED_VEHICLE_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("DISABLED_VEHICLE_INCIDENT");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.DISABLED_VEHICLE_INCIDENT.DISABLED_ITEM_TYPE_DESC",
-									"DISABLED_ITEM_TYPE_DESC");
-							this.setLongValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.DISABLED_VEHICLE_INCIDENT.INTEGER_OF_VEHICLES",
-									"INTEGER_OF_VEHICLES");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.DISABLED_VEHICLE_INCIDENT.DISABLED_ITEM_TYPE_DESC", "DISABLED_ITEM_TYPE_DESC");
+							this.setLongValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.DISABLED_VEHICLE_INCIDENT.INTEGER_OF_VEHICLES", "INTEGER_OF_VEHICLES");
 						}
 						if (subItem2.has("MISCELLANEOUS_INCIDENT")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("MISCELLANEOUS_INCIDENT");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.INCIDENT.MISCELLANEOUS_INCIDENT.MISCELLANEOUS_TYPE_DESC",
-									"MISCELLANEOUS_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.INCIDENT.MISCELLANEOUS_INCIDENT.MISCELLANEOUS_TYPE_DESC", "MISCELLANEOUS_TYPE_DESC");
 						}
 
 					}
@@ -614,39 +509,27 @@ public class NokiaHereAdapter extends EventAdapter {
 						final JSONObject subItem2 = subItem1.getJSONObject("NEWS_TYPE");
 						if (subItem2.has("ALERT_NEWS")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("ALERT_NEWS");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_TYPE", "ALERT_TYPE");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_TYPE_DESC", "ALERT_TYPE_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_SOURCE_DESC", "ALERT_SOURCE_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_SOURCE_COMMENTS", "ALERT_SOURCE_COMMENTS");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_TYPE", "ALERT_TYPE");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_TYPE_DESC", "ALERT_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_NEWS.ALERT_SOURCE_DESC", "ALERT_SOURCE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.ALERT_SOURCE_COMMENTS", "ALERT_SOURCE_COMMENTS");
 						}
 						if (subItem2.has("MASS_TRANSIT_NEWS")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("MASS_TRANSIT_NEWS");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.DETAIL_DESC", "DETAIL_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.LINE_DESC", "LINE_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.TYPE_DESC", "TYPE_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.DIRECTION_DESC", "DIRECTION_DESC");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.SERVICE_DESC", "SERVICE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.DETAIL_DESC", "DETAIL_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.LINE_DESC", "LINE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.TYPE_DESC", "TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.DIRECTION_DESC", "DIRECTION_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.MASS_TRANSIT_NEWS.SERVICE_DESC", "SERVICE_DESC");
 						}
 						if (subItem2.has("OTHER_NEWS")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("OTHER_NEWS");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.OTHER_NEWS.SENSITIVITY_DESC", "SENSITIVITY_DESC");
-							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.OTHER_NEWS.NEWS_DESC",
-									"NEWS_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.OTHER_NEWS.SENSITIVITY_DESC", "SENSITIVITY_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.OTHER_NEWS.NEWS_DESC", "NEWS_DESC");
 						}
 						if (subItem2.has("WEATHER_NEWS")) {
 							final JSONObject subItem3 = subItem2.getJSONObject("WEATHER_NEWS");
-							this.setStringValue(subItem3, values,
-									"TRAFFIC_ITEM_DETAIL.NEWS_TYPE.WEATHER_NEWS.WEATHER_TYPE_DESC", "WEATHER_TYPE_DESC");
+							this.setStringValue(subItem3, values, "TRAFFIC_ITEM_DETAIL.NEWS_TYPE.WEATHER_NEWS.WEATHER_TYPE_DESC", "WEATHER_TYPE_DESC");
 						}
 					}
 				}
@@ -750,29 +633,25 @@ public class NokiaHereAdapter extends EventAdapter {
 
 	}
 
-	private void setDoubleValue(final JSONObject item, final Map<String, Serializable> values,
-			final String eventAttributeName, final String jsonAttributeName) throws JSONException {
+	private void setDoubleValue(final JSONObject item, final Map<String, Serializable> values, final String eventAttributeName, final String jsonAttributeName) throws JSONException {
 		if (item.has(jsonAttributeName)) {
 			values.put(eventAttributeName, item.getDouble(jsonAttributeName));
 		}
 	}
 
-	private void setLongValue(final JSONObject item, final Map<String, Serializable> values,
-			final String eventAttributeName, final String jsonAttributeName) throws JSONException {
+	private void setLongValue(final JSONObject item, final Map<String, Serializable> values, final String eventAttributeName, final String jsonAttributeName) throws JSONException {
 		if (item.has(jsonAttributeName)) {
 			values.put(eventAttributeName, item.getLong(jsonAttributeName));
 		}
 	}
 
-	private void setStringValue(final JSONObject item, final Map<String, Serializable> values,
-			final String eventAttributeName, final String jsonAttributeName) throws JSONException {
+	private void setStringValue(final JSONObject item, final Map<String, Serializable> values, final String eventAttributeName, final String jsonAttributeName) throws JSONException {
 		if (item.has(jsonAttributeName)) {
 			values.put(eventAttributeName, item.getString(jsonAttributeName));
 		}
 	}
 
-	private void setDateValue(final JSONObject item, final Map<String, Serializable> values,
-			final String eventAttributeName, final String jsonAttributeName) throws JSONException {
+	private void setDateValue(final JSONObject item, final Map<String, Serializable> values, final String eventAttributeName, final String jsonAttributeName) throws JSONException {
 		try {
 			if (item.has(jsonAttributeName)) {
 				String jsonString = item.getString(jsonAttributeName);
@@ -796,16 +675,14 @@ public class NokiaHereAdapter extends EventAdapter {
 	/**
 	 * This method is used to get the EventType for the
 	 * NokiaHereTrafficIncident-Events from the respective XSD.
-	 * 
+	 *
 	 * @return Returns the NokiaHereTrafficIncident EventType.
 	 */
 	private EapEventType getNokiaHereEventtype() {
 		EapEventType trafficEventType = EapEventType.findByTypeName("NokiaHereTrafficIncident");
 		if (trafficEventType == null) {
 			try {
-				trafficEventType = XSDParser.generateEventTypeFromXSD(
-						this.getClass().getResource("/predefinedEventTypes/NokiaHereTrafficIncident.xsd").getPath(),
-						"NokiaHereTrafficIncident");
+				trafficEventType = XSDParser.generateEventTypeFromXSD(this.getClass().getResource("/predefinedEventTypes/NokiaHereTrafficIncident.xsd").getPath(), "NokiaHereTrafficIncident");
 				trafficEventType = Broker.getEventAdministrator().importEventType(trafficEventType);
 			} catch (final XMLParsingException e) {
 				e.printStackTrace();
@@ -817,15 +694,14 @@ public class NokiaHereAdapter extends EventAdapter {
 	/**
 	 * This method is used to get the EventType for the RoadTraffic-Events from
 	 * the respective XSD.
-	 * 
+	 *
 	 * @return Returns the RoadTraffic EventType.
 	 */
 	private EapEventType getRoadTrafficEventtype() {
 		EapEventType trafficEventType = EapEventType.findByTypeName("RoadTraffic");
 		if (trafficEventType == null) {
 			try {
-				trafficEventType = XSDParser.generateEventTypeFromXSD(
-						this.getClass().getResource("/predefinedEventTypes/RoadTraffic.xsd").getPath(), "RoadTraffic");
+				trafficEventType = XSDParser.generateEventTypeFromXSD(this.getClass().getResource("/predefinedEventTypes/RoadTraffic.xsd").getPath(), "RoadTraffic");
 				trafficEventType = Broker.getEventAdministrator().importEventType(trafficEventType);
 			} catch (final XMLParsingException e) {
 				e.printStackTrace();
@@ -850,7 +726,7 @@ public class NokiaHereAdapter extends EventAdapter {
 	/**
 	 * This method is called periodically from the QuartzJob-Scheduler. The
 	 * interval can be configured.
-	 * 
+	 * <p>
 	 * In every cycle events for the specified Route are being queried and
 	 * loaded into the Unicorn-platform.
 	 */
@@ -869,9 +745,9 @@ public class NokiaHereAdapter extends EventAdapter {
 	/**
 	 * This method is executing the NokiaHereAPI-call. The http-string from the
 	 * query variable is being used.
-	 * 
+	 *
 	 * @return JSON-respond containing the traffic events for route specified in
-	 *         the query.
+	 * the query.
 	 */
 	// @Override
 	public JSONObject callWebservice() {
@@ -914,16 +790,14 @@ public class NokiaHereAdapter extends EventAdapter {
 	 * This Method is used to build an Area-String that specifies the corridor
 	 * for which the traffic events shall be polled. Then the query is being
 	 * build and saved to the instance of the NokiaHereAdapter.
-	 * 
-	 * @param width
-	 *            integer value that specifies the width of the corridor in
-	 *            meters
-	 * @param coordinates
-	 *            expects at least 4 double coordinates, latitude and longitude
-	 *            for the start- and end-point of the corridor respectively.
-	 *            More then 2 coordinate pairs can be specified, then the
-	 *            intermediate pairs will be taken as waypoints between start
-	 *            and end of the corridor.
+	 *
+	 * @param width       integer value that specifies the width of the corridor in
+	 *                    meters
+	 * @param coordinates expects at least 4 double coordinates, latitude and longitude
+	 *                    for the start- and end-point of the corridor respectively.
+	 *                    More then 2 coordinate pairs can be specified, then the
+	 *                    intermediate pairs will be taken as waypoints between start
+	 *                    and end of the corridor.
 	 */
 	public void setAreaForCorridor(final int width, final double... coordinates) {
 

@@ -43,11 +43,10 @@ import de.hpi.unicorn.importer.excel.ImportEvent;
 public class ExcelEventTypeMatcher extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
-
-	private List<String> columnTitles = new ArrayList<String>();
-	private FileNormalizer fileNormalizer;
 	private final String filePath;
 	private final List<Map<String, String>> tableRows = new ArrayList<Map<String, String>>();
+	private List<String> columnTitles = new ArrayList<String>();
+	private FileNormalizer fileNormalizer;
 	private List<String> selectedColumnTitles = new ArrayList<String>();
 	private List<EapEventType> selectedEventTypes;
 	private ListView<List<String>> headerContainer;
@@ -80,8 +79,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 		this.add(this.layoutForm);
 		// find matching event types
 		final String importTimeName = ExcelEventTypeCreator.GENERATED_TIMESTAMP_COLUMN_NAME;
-		final List<EapEventType> eventTypes = EapEventType.findMatchingEventTypesForNonHierarchicalAttributes(
-				this.columnTitles, importTimeName);
+		final List<EapEventType> eventTypes = EapEventType.findMatchingEventTypesForNonHierarchicalAttributes(this.columnTitles, importTimeName);
 
 		if (!eventTypes.isEmpty()) {
 			this.selectedEventTypes = new ArrayList<EapEventType>(Arrays.asList(eventTypes.get(0)));
@@ -105,9 +103,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 
 		this.layoutForm.add(openExcelEventTypeCreatorButton);
 
-		this.existingTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>(
-				"existingTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this,
-						"selectedEventTypes"), eventTypes);
+		this.existingTypesCheckBoxMultipleChoice = new CheckBoxMultipleChoice<EapEventType>("existingTypesCheckBoxMultipleChoice", new PropertyModel<ArrayList<EapEventType>>(this, "selectedEventTypes"), eventTypes);
 		this.existingTypesCheckBoxMultipleChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 			private static final long serialVersionUID = 1L;
 
@@ -115,8 +111,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 			protected void onUpdate(final AjaxRequestTarget target) {
 				target.add(ExcelEventTypeMatcher.this.eventTypeForPreviewDropDownChoice);
 				if (!ExcelEventTypeMatcher.this.selectedEventTypes.isEmpty()) {
-					ExcelEventTypeMatcher.this.eventTypeForPreview = ExcelEventTypeMatcher.this.selectedEventTypes
-							.get(0);
+					ExcelEventTypeMatcher.this.eventTypeForPreview = ExcelEventTypeMatcher.this.selectedEventTypes.get(0);
 					ExcelEventTypeMatcher.this.updatePreviewTable(target);
 				}
 			}
@@ -124,8 +119,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 
 		this.layoutForm.add(this.existingTypesCheckBoxMultipleChoice);
 
-		this.eventTypeForPreviewDropDownChoice = new DropDownChoice<EapEventType>("eventTypeForPreviewDropDownChoice",
-				new PropertyModel<EapEventType>(this, "eventTypeForPreview"), this.selectedEventTypes);
+		this.eventTypeForPreviewDropDownChoice = new DropDownChoice<EapEventType>("eventTypeForPreviewDropDownChoice", new PropertyModel<EapEventType>(this, "eventTypeForPreview"), this.selectedEventTypes);
 
 		this.eventTypeForPreviewDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
@@ -153,19 +147,16 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 					for (final EapEventType selectedEventType : ExcelEventTypeMatcher.this.selectedEventTypes) {
 						final EapEventType eventType = selectedEventType;
 						final String timestamp = eventType.getTimestampName();
-						final List<EapEvent> events = ExcelEventTypeMatcher.this.fileNormalizer.importEventsFromFile(
-								ExcelEventTypeMatcher.this.filePath, eventType.getRootLevelValueTypes(), timestamp);
+						final List<EapEvent> events = ExcelEventTypeMatcher.this.fileNormalizer.importEventsFromFile(ExcelEventTypeMatcher.this.filePath, eventType.getRootLevelValueTypes(), timestamp);
 						for (final EapEvent event : events) {
 							event.setEventType(selectedEventType);
 						}
 						Broker.getEventImporter().importEvents(events);
 						eventsCount = events.size();
 					}
-					final String selectedEventTypesString = ExcelEventTypeMatcher.this.selectedEventTypes.toString()
-							.substring(1, ExcelEventTypeMatcher.this.selectedEventTypes.toString().length() - 1);
+					final String selectedEventTypesString = ExcelEventTypeMatcher.this.selectedEventTypes.toString().substring(1, ExcelEventTypeMatcher.this.selectedEventTypes.toString().length() - 1);
 					final PageParameters pageParameters = new PageParameters();
-					pageParameters.add("successFeedback", eventsCount + " events have been added to "
-							+ selectedEventTypesString);
+					pageParameters.add("successFeedback", eventsCount + " events have been added to " + selectedEventTypesString);
 					this.setResponsePage(MainPage.class, pageParameters);
 				}
 			}
@@ -181,8 +172,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 
 	private void configurePreviewTable() {
 
-		final List<ImportEvent> events = this.fileNormalizer.importEventsForPreviewFromFile(this.filePath,
-				this.columnTitles);
+		final List<ImportEvent> events = this.fileNormalizer.importEventsForPreviewFromFile(this.filePath, this.columnTitles);
 
 		for (final ImportEvent event : events) {
 			final Map<String, String> eventValues = new HashMap<String, String>();
@@ -237,8 +227,7 @@ public class ExcelEventTypeMatcher extends AbstractEapPage {
 
 					@Override
 					protected void populateItem(final ListItem<String> item) {
-						item.add(new Label("cell", row.get(ExcelEventTypeMatcher.this.selectedColumnTitles
-								.get(this.i++))));
+						item.add(new Label("cell", row.get(ExcelEventTypeMatcher.this.selectedColumnTitles.get(this.i++))));
 
 					}
 				});

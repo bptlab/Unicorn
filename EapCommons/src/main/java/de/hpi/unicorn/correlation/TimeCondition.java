@@ -35,10 +35,9 @@ import de.hpi.unicorn.persistence.Persistable;
 import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
- * 
  * Container object for advanced correlation over time. Used for event
  * correlation. Related to a process.
- * 
+ *
  * @author Micha
  * @author Tsun
  */
@@ -86,18 +85,15 @@ public class TimeCondition extends Persistable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param eventType
-	 * @param timePeriod
-	 *            in minutes
+	 * @param timePeriod             in minutes
 	 * @param isTimePeriodAfterEvent
-	 * @param conditionString
-	 *            Pair(s) of attributes and values that narrow down the choice
-	 *            of events to which events from other types can be related to.
-	 *            These events are called timer events.
+	 * @param conditionString        Pair(s) of attributes and values that narrow down the choice
+	 *                               of events to which events from other types can be related to.
+	 *                               These events are called timer events.
 	 */
-	public TimeCondition(final EapEventType eventType, final int timePeriod, final boolean isTimePeriodAfterEvent,
-			final String conditionString) {
+	public TimeCondition(final EapEventType eventType, final int timePeriod, final boolean isTimePeriodAfterEvent, final String conditionString) {
 		this();
 		this.selectedEventType = eventType;
 		this.timePeriod = timePeriod;
@@ -139,8 +135,7 @@ public class TimeCondition extends Persistable {
 
 	public Set<EapEvent> getTimerEvents() {
 		this.attributeExpressionsAndValues = ConditionParser.extractEventAttributes(this.conditionString);
-		this.timerEvents = new HashSet<EapEvent>(EapEvent.findByEventTypeAndAttributeExpressionsAndValues(
-				this.selectedEventType, this.attributeExpressionsAndValues));
+		this.timerEvents = new HashSet<EapEvent>(EapEvent.findByEventTypeAndAttributeExpressionsAndValues(this.selectedEventType, this.attributeExpressionsAndValues));
 		return this.timerEvents;
 	}
 
@@ -149,11 +144,9 @@ public class TimeCondition extends Persistable {
 	 * events. Timer event and given event must have the same values for the
 	 * given correlation attributes. Timestamp of given event must be in the
 	 * time period related to the timer event.
-	 * 
-	 * @param event
-	 *            the event for which the timer event is searched
-	 * @param correlationAttributes
-	 *            list of single event type attributes
+	 *
+	 * @param event                 the event for which the timer event is searched
+	 * @param correlationAttributes list of single event type attributes
 	 * @return the timer event closest to the given event
 	 */
 	public EapEvent getTimerEventForEvent(final EapEvent event, final List<TypeTreeNode> correlationAttributes) {
@@ -164,8 +157,7 @@ public class TimeCondition extends Persistable {
 		for (final EapEvent timerEvent : this.getTimerEvents()) {
 			boolean processInstanceAndEventMatch = true;
 			for (final TypeTreeNode actualCorrelationAttribute : correlationAttributes) {
-				if (!timerEvent.getValues().get(actualCorrelationAttribute.getAttributeExpression())
-						.equals(event.getValues().get(actualCorrelationAttribute.getAttributeExpression()))) {
+				if (!timerEvent.getValues().get(actualCorrelationAttribute.getAttributeExpression()).equals(event.getValues().get(actualCorrelationAttribute.getAttributeExpression()))) {
 					processInstanceAndEventMatch = false;
 					break;
 				}
@@ -188,9 +180,7 @@ public class TimeCondition extends Persistable {
 		} else {
 			EapEvent closestTimerEvent = null;
 			for (final EapEvent timerEvent : possibleTimerEventsAndTimeDifferences.keySet()) {
-				if (closestTimerEvent == null
-						|| possibleTimerEventsAndTimeDifferences.get(timerEvent) < possibleTimerEventsAndTimeDifferences
-								.get(closestTimerEvent)) {
+				if (closestTimerEvent == null || possibleTimerEventsAndTimeDifferences.get(timerEvent) < possibleTimerEventsAndTimeDifferences.get(closestTimerEvent)) {
 					closestTimerEvent = timerEvent;
 				}
 			}
@@ -203,11 +193,9 @@ public class TimeCondition extends Persistable {
 	 * events. Timer event and given event must have the same values for the
 	 * attributes of the given correlation rules. Timestamp of given event must
 	 * be in the time period related to the timer event.
-	 * 
-	 * @param event
-	 *            the event for which the timer event is searched
-	 * @param correlationRules
-	 *            set of correlation rules
+	 *
+	 * @param event            the event for which the timer event is searched
+	 * @param correlationRules set of correlation rules
 	 * @return the timer event closest to the given event
 	 */
 	public EapEvent getTimerEventForEvent(final EapEvent actualEvent, final Set<CorrelationRule> correlationRules) {
@@ -218,26 +206,18 @@ public class TimeCondition extends Persistable {
 		for (final EapEvent timerEvent : this.getTimerEvents()) {
 			boolean processInstanceAndEventMatch = true;
 			for (final CorrelationRule actualCorrelationRule : correlationRules) {
-				if (actualCorrelationRule.getFirstAttribute().getEventType().equals(timerEvent.getEventType())
-						&& actualCorrelationRule.getSecondAttribute().getEventType().equals(actualEvent.getEventType())) {
-					final String attributeExpressionForTimerEvent = actualCorrelationRule.getFirstAttribute()
-							.getAttributeExpression();
-					final String attributeExpressionForActualEvent = actualCorrelationRule.getSecondAttribute()
-							.getAttributeExpression();
-					if (!timerEvent.getValues().get(attributeExpressionForTimerEvent)
-							.equals(actualEvent.getValues().get(attributeExpressionForActualEvent))) {
+				if (actualCorrelationRule.getFirstAttribute().getEventType().equals(timerEvent.getEventType()) && actualCorrelationRule.getSecondAttribute().getEventType().equals(actualEvent.getEventType())) {
+					final String attributeExpressionForTimerEvent = actualCorrelationRule.getFirstAttribute().getAttributeExpression();
+					final String attributeExpressionForActualEvent = actualCorrelationRule.getSecondAttribute().getAttributeExpression();
+					if (!timerEvent.getValues().get(attributeExpressionForTimerEvent).equals(actualEvent.getValues().get(attributeExpressionForActualEvent))) {
 						processInstanceAndEventMatch = false;
 						break;
 					}
 				}
-				if (actualCorrelationRule.getSecondAttribute().getEventType().equals(timerEvent.getEventType())
-						&& actualCorrelationRule.getFirstAttribute().getEventType().equals(actualEvent.getEventType())) {
-					final String attributeExpressionForTimerEvent = actualCorrelationRule.getSecondAttribute()
-							.getAttributeExpression();
-					final String attributeExpressionForActualEvent = actualCorrelationRule.getFirstAttribute()
-							.getAttributeExpression();
-					if (!timerEvent.getValues().get(attributeExpressionForTimerEvent)
-							.equals(actualEvent.getValues().get(attributeExpressionForActualEvent))) {
+				if (actualCorrelationRule.getSecondAttribute().getEventType().equals(timerEvent.getEventType()) && actualCorrelationRule.getFirstAttribute().getEventType().equals(actualEvent.getEventType())) {
+					final String attributeExpressionForTimerEvent = actualCorrelationRule.getSecondAttribute().getAttributeExpression();
+					final String attributeExpressionForActualEvent = actualCorrelationRule.getFirstAttribute().getAttributeExpression();
+					if (!timerEvent.getValues().get(attributeExpressionForTimerEvent).equals(actualEvent.getValues().get(attributeExpressionForActualEvent))) {
 						processInstanceAndEventMatch = false;
 						break;
 					}
@@ -261,8 +241,7 @@ public class TimeCondition extends Persistable {
 				}
 				for (final TypeTreeNode attribute : relatedAttributes) {
 					final String attributeExpression = attribute.getAttributeExpression();
-					if (!timerEvent.getValues().get(attributeExpression)
-							.equals(actualEvent.getValues().get(attributeExpression))) {
+					if (!timerEvent.getValues().get(attributeExpression).equals(actualEvent.getValues().get(attributeExpression))) {
 						processInstanceAndEventMatch = false;
 					}
 				}
@@ -286,9 +265,7 @@ public class TimeCondition extends Persistable {
 		} else {
 			EapEvent closestTimerEvent = null;
 			for (final EapEvent timerEvent : possibleTimerEventsAndTimeDifferences.keySet()) {
-				if (closestTimerEvent == null
-						|| possibleTimerEventsAndTimeDifferences.get(timerEvent) < possibleTimerEventsAndTimeDifferences
-								.get(closestTimerEvent)) {
+				if (closestTimerEvent == null || possibleTimerEventsAndTimeDifferences.get(timerEvent) < possibleTimerEventsAndTimeDifferences.get(closestTimerEvent)) {
 					closestTimerEvent = timerEvent;
 				}
 			}

@@ -38,20 +38,16 @@ import de.hpi.unicorn.persistence.Persistor;
 public class AttributeTypeTree extends Persistable {
 
 	private static final long serialVersionUID = 4641263893746532464L;
-
+	@Column(name = "Auxiliary")
+	private final String auxiliary = "Auxiliary";
+	@OneToMany(mappedBy = "attributeTree", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+	private final List<TypeTreeNode> rootAttributes;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "AttributeTypeTreeID")
 	protected int ID;
-
-	@Column(name = "Auxiliary")
-	private final String auxiliary = "Auxiliary";
-
 	@OneToOne(mappedBy = "attributes")
 	private EapEventType eventType;
-
-	@OneToMany(mappedBy = "attributeTree", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-	private final List<TypeTreeNode> rootAttributes;
 
 	public AttributeTypeTree() {
 		this.ID = 0;
@@ -69,6 +65,37 @@ public class AttributeTypeTree extends Persistable {
 		assert (rootAttributes != null);
 		assert (!rootAttributes.isEmpty());
 		this.rootAttributes.addAll(rootAttributes);
+	}
+
+	public static List<AttributeTypeTree> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM AttributeTypeTree t");
+		return q.getResultList();
+	}
+
+	/**
+	 * the choochoo train comes and run over all AttributTrees and kills them
+	 * _________ | _ | __ | | | |____\/_ | |_| | \_ | _ | _ _ | |/ \_|_/ \ / \ /
+	 * \_ / \_/ \_ /
+	 */
+	public static void removeAll() {
+		final List<AttributeTypeTree> attributeTrees = AttributeTypeTree.findAll();
+		for (final AttributeTypeTree attributeTree : attributeTrees) {
+			final List<TypeTreeNode> rootAttributes = attributeTree.getRoots();
+			for (final TypeTreeNode attribute : rootAttributes) {
+				attribute.setAttributeTree(null);
+				attribute.remove();
+			}
+		}
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM AttributeTypeTree");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
 	}
 
 	@Override
@@ -181,8 +208,7 @@ public class AttributeTypeTree extends Persistable {
 		return attributeXPaths;
 	}
 
-	private void addAttributeToSet(final TypeTreeNode attribute, final List<TypeTreeNode> attributes,
-			final String attributeName) {
+	private void addAttributeToSet(final TypeTreeNode attribute, final List<TypeTreeNode> attributes, final String attributeName) {
 		for (final TypeTreeNode child : attribute.getChildren()) {
 			if (child.hasChildren()) {
 				this.addAttributeToSet(child, attributes);
@@ -279,11 +305,6 @@ public class AttributeTypeTree extends Persistable {
 		}
 	}
 
-	public static List<AttributeTypeTree> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t FROM AttributeTypeTree t");
-		return q.getResultList();
-	}
-
 	@Override
 	public AttributeTypeTree save() {
 		for (final TypeTreeNode attribute : this.rootAttributes) {
@@ -299,32 +320,6 @@ public class AttributeTypeTree extends Persistable {
 			attribute.remove();
 		}
 		return (AttributeTypeTree) super.remove();
-	}
-
-	/**
-	 * the choochoo train comes and run over all AttributTrees and kills them
-	 * _________ | _ | __ | | | |____\/_ | |_| | \_ | _ | _ _ | |/ \_|_/ \ / \ /
-	 * \_ / \_/ \_ /
-	 */
-	public static void removeAll() {
-		final List<AttributeTypeTree> attributeTrees = AttributeTypeTree.findAll();
-		for (final AttributeTypeTree attributeTree : attributeTrees) {
-			final List<TypeTreeNode> rootAttributes = attributeTree.getRoots();
-			for (final TypeTreeNode attribute : rootAttributes) {
-				attribute.setAttributeTree(null);
-				attribute.remove();
-			}
-		}
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM AttributeTypeTree");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
 	}
 
 	@Override

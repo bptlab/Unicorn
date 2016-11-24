@@ -31,14 +31,14 @@ import de.hpi.unicorn.utils.TempFolderUtil;
 public class UploadPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
-	private ReplayerPage page;
-	private UploadPanel panel;
-	private Form layoutForm;
-	private FileUploadField fileUpload;
 	protected FileType fileType = FileType.CSV;
 	protected String eventTypeName;
 	protected String name;
 	protected String category;
+	private ReplayerPage page;
+	private UploadPanel panel;
+	private Form layoutForm;
+	private FileUploadField fileUpload;
 
 	public UploadPanel(String id, final ReplayerPage page) {
 		super(id);
@@ -67,8 +67,7 @@ public class UploadPanel extends Panel {
 						uploadedFile.writeTo(newFile);
 					} catch (final IOException e) {
 						try {
-							throw new IllegalStateException("Error: File could not be saved under "
-									+ newFile.getCanonicalPath() + ".");
+							throw new IllegalStateException("Error: File could not be saved under " + newFile.getCanonicalPath() + ".");
 						} catch (final IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -79,13 +78,11 @@ public class UploadPanel extends Panel {
 					final String fileExtension = fileName.substring(index + 1, fileName.length());
 
 					if (fileType == FileType.CSV) {
-						ReplayFileBean bean = new ReplayFileBean(name, uploadFolder
-								+ System.getProperty("file.separator") + fileName, eventTypeName, FileType.CSV);
+						ReplayFileBean bean = new ReplayFileBean(name, uploadFolder + System.getProperty("file.separator") + fileName, eventTypeName, FileType.CSV);
 						ReplayerContainer.addFileBean(category, bean);
 						page.getFeedbackPanel().success("Upload of " + fileName + " successful. (CSV)");
 					} else if (fileType == FileType.XML_ZIP) {
-						ReplayFileBean bean = new ReplayFileBean(name, uploadFolder
-								+ System.getProperty("file.separator") + fileName, eventTypeName, FileType.XML_ZIP);
+						ReplayFileBean bean = new ReplayFileBean(name, uploadFolder + System.getProperty("file.separator") + fileName, eventTypeName, FileType.XML_ZIP);
 						ReplayerContainer.addFileBean(category, bean);
 						page.getFeedbackPanel().success("Upload of " + fileName + " successful. (XML (ZIP))");
 					} else {
@@ -140,8 +137,7 @@ public class UploadPanel extends Panel {
 		if (!eventTypes.isEmpty()) {
 			eventTypeName = eventTypes.get(0);
 		}
-		final DropDownChoice<String> eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice",
-				new Model<String>(), eventTypes);
+		final DropDownChoice<String> eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice", new Model<String>(), eventTypes);
 		eventTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
@@ -158,8 +154,7 @@ public class UploadPanel extends Panel {
 	}
 
 	private void addRadioChoiceForFileType() {
-		final RadioChoice<FileType> fileTypeRadioChoice = new RadioChoice<FileType>("fileTypeChoice",
-				new Model<FileType>(), Arrays.asList(FileType.values()));
+		final RadioChoice<FileType> fileTypeRadioChoice = new RadioChoice<FileType>("fileTypeChoice", new Model<FileType>(), Arrays.asList(FileType.values()));
 		fileTypeRadioChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 
 			@Override

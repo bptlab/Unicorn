@@ -33,10 +33,15 @@ import de.hpi.unicorn.utils.TestHelper;
  * creation of queries for this BPMN process and simulates the execution of the
  * process to monitor the execution. Before query creation, the process must be
  * pre-processed and the two end events must be merged.
- * 
+ *
  * @author micha
  */
 public class ProcessWithTwoEndEventsTest extends AbstractQueryCreationTest {
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
 
 	@Before
 	public void setup() {
@@ -55,8 +60,7 @@ public class ProcessWithTwoEndEventsTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "ProcessTwoEnds",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "ProcessTwoEnds", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -99,11 +103,6 @@ public class ProcessWithTwoEndEventsTest extends AbstractQueryCreationTest {
 
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 
 }

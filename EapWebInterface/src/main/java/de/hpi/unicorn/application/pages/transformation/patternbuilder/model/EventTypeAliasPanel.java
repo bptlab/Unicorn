@@ -25,8 +25,7 @@ public class EventTypeAliasPanel extends Panel {
 	private final Form<Void> layoutForm;
 	private final AdvancedTransformationRuleEditorPanel panel;
 
-	public EventTypeAliasPanel(final String id, final EventTypeElement element,
-			final AdvancedTransformationRuleEditorPanel panel) {
+	public EventTypeAliasPanel(final String id, final EventTypeElement element, final AdvancedTransformationRuleEditorPanel panel) {
 		super(id);
 
 		this.element = element;
@@ -40,8 +39,7 @@ public class EventTypeAliasPanel extends Panel {
 	}
 
 	private void buildEventTypeAliasInput() {
-		final TextField<String> eventTypeAliasInput = new TextField<String>("eventTypeAliasInput",
-				new PropertyModel<String>(this, "alias"));
+		final TextField<String> eventTypeAliasInput = new TextField<String>("eventTypeAliasInput", new PropertyModel<String>(this, "alias"));
 		eventTypeAliasInput.setOutputMarkupId(true);
 
 		final OnChangeAjaxBehavior onChangeAjaxBehavior = new OnChangeAjaxBehavior() {

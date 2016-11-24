@@ -55,8 +55,7 @@ public class NotificationEventTest {
 		final EapEvent event = new EapEvent(eventType, new Date(), values);
 		Broker.getInstance().importEvent(event);
 
-		final List<NotificationForEvent> listOfNotifications = NotificationForEvent
-				.findUnseenEventNotificationForUser(user);
+		final List<NotificationForEvent> listOfNotifications = NotificationForEvent.findUnseenEventNotificationForUser(user);
 		Assert.assertTrue(listOfNotifications.size() == 1);
 		final NotificationForEvent notification = listOfNotifications.get(0);
 		notification.setSeen();
@@ -75,8 +74,7 @@ public class NotificationEventTest {
 		final EapUser user = new EapUser("name", "1234", "email");
 		user.save();
 
-		final NotificationRuleForEvent rule = new NotificationRuleForEvent(eventType, new EventCondition(
-				"TestAttribute", "1"), user, NotificationMethod.GUI);
+		final NotificationRuleForEvent rule = new NotificationRuleForEvent(eventType, new EventCondition("TestAttribute", "1"), user, NotificationMethod.GUI);
 		Broker.getInstance().send(rule);
 
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();
@@ -84,9 +82,7 @@ public class NotificationEventTest {
 		final EapEvent event = new EapEvent(eventType, new Date(), values);
 		Broker.getInstance().importEvent(event);
 
-		Assert.assertTrue("should be 1, but was "
-				+ NotificationForEvent.findUnseenEventNotificationForUser(user).size(), NotificationForEvent
-				.findUnseenEventNotificationForUser(user).size() == 1);
+		Assert.assertTrue("should be 1, but was " + NotificationForEvent.findUnseenEventNotificationForUser(user).size(), NotificationForEvent.findUnseenEventNotificationForUser(user).size() == 1);
 
 	}
 
@@ -101,8 +97,7 @@ public class NotificationEventTest {
 		final EapUser user = new EapUser("name", "1234", "email");
 		user.save();
 
-		final NotificationRuleForEvent rule = new NotificationRuleForEvent(eventType, new EventCondition(
-				"TestAttribute", "Wert"), user, NotificationMethod.GUI);
+		final NotificationRuleForEvent rule = new NotificationRuleForEvent(eventType, new EventCondition("TestAttribute", "Wert"), user, NotificationMethod.GUI);
 		Broker.getInstance().send(rule);
 
 		final Map<String, Serializable> values = new HashMap<String, Serializable>();

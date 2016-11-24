@@ -13,14 +13,14 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * This class generates hash values in MD5-format for a given string.
- * 
+ *
  * @author micha
  */
 public class HashUtil {
 
 	/**
 	 * Generates a hashed string in MD5-format for the given string.
-	 * 
+	 *
 	 * @param input
 	 * @return
 	 */

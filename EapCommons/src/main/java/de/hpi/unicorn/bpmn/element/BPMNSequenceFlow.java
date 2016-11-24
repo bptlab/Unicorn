@@ -19,7 +19,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 /**
  * This class represents the sequence flows in a BPMN process between BPMN
  * elements.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -35,11 +35,14 @@ public class BPMNSequenceFlow extends AbstractBPMNElement {
 		super();
 	}
 
-	public BPMNSequenceFlow(final String ID, final String name, final String extractSourceRef,
-			final String extractTargetRef) {
+	public BPMNSequenceFlow(final String ID, final String name, final String extractSourceRef, final String extractTargetRef) {
 		super(ID, name);
 		this.sourceRef = extractSourceRef;
 		this.targetRef = extractTargetRef;
+	}
+
+	public BPMNSequenceFlow(final String ID, final String name, final List<MonitoringPoint> monitoringPoints) {
+		super(ID, name, monitoringPoints);
 	}
 
 	@Override
@@ -61,10 +64,6 @@ public class BPMNSequenceFlow extends AbstractBPMNElement {
 
 	public void setTargetRef(final String targetRef) {
 		this.targetRef = targetRef;
-	}
-
-	public BPMNSequenceFlow(final String ID, final String name, final List<MonitoringPoint> monitoringPoints) {
-		super(ID, name, monitoringPoints);
 	}
 
 	@Override

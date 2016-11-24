@@ -25,20 +25,20 @@ import de.hpi.unicorn.process.CorrelationProcess;
 /**
  * This panel is a {@link BootstrapModal} and allows the creation and deletion
  * of {@link CorrelationProcess}es.
- * 
+ *
  * @author micha
  */
 public class ProcessEditorModal extends BootstrapModal {
 
 	private static final long serialVersionUID = 1L;
+	private static String selectedProcessName = new String();
 	private final ListChoice<String> existingProcessesList;
 	private final List<String> processNames = new ArrayList<String>();
-	private static String selectedProcessName = new String();
 
 	/**
 	 * Constructor for a panel, which is a {@link BootstrapModal} and allows the
 	 * creation and deletion of {@link CorrelationProcess}es.
-	 * 
+	 *
 	 * @param processSelect
 	 * @param window
 	 */
@@ -75,8 +75,7 @@ public class ProcessEditorModal extends BootstrapModal {
 		for (final CorrelationProcess process : CorrelationProcess.findAll()) {
 			this.processNames.add(process.getName());
 		}
-		this.existingProcessesList = new ListChoice<String>("existingProcessSelect", new Model<String>(
-				ProcessEditorModal.selectedProcessName), this.processNames);
+		this.existingProcessesList = new ListChoice<String>("existingProcessSelect", new Model<String>(ProcessEditorModal.selectedProcessName), this.processNames);
 		this.existingProcessesList.setOutputMarkupId(true);
 		processEditForm.add(this.existingProcessesList);
 

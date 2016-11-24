@@ -44,8 +44,7 @@ public class StatementTest {
 	private final StreamProcessingAdapter esper = StreamProcessingAdapter.getInstance();
 
 	private List<EapEvent> createRatingEvents() {
-		final List<String> ratingColumnTitles = this.excelNormalizer
-				.getColumnTitlesFromFile(StatementTest.filePathRating);
+		final List<String> ratingColumnTitles = this.excelNormalizer.getColumnTitlesFromFile(StatementTest.filePathRating);
 		final List<TypeTreeNode> ratingAttributes = TestHelper.createAttributes(ratingColumnTitles);
 		return this.excelNormalizer.importEventsFromFile(StatementTest.filePathRating, ratingAttributes);
 	}
@@ -92,12 +91,7 @@ public class StatementTest {
 		// cepAdm.createEPL("CREATE WINDOW EventWindow.win:keepall() AS SELECT * FROM Event");
 		// cepAdm.createEPL("INSERT INTO EventWindow SELECT * FROM Event");
 
-		final EPStatement transformationStatement = cepAdm.createEPL(""
-				+ "SELECT A.Timestamp.getTime(), B.Timestamp.getTime(), A.values('Location'), A.values('Movie') "
-				+ "FROM EventWindow AS A, EventWindow AS B " + "WHERE " + "B.values('Action')='Ende' AND "
-				+ "A.values('Action')='Start' AND " + "A.values('Location')=B.values('Location') AND "
-				+ "A.values('Movie')=B.values('Movie') AND "
-				+ "(A.Timestamp.getTime()).before(B.Timestamp.getTime(), 0 hours, 3 hours)");
+		final EPStatement transformationStatement = cepAdm.createEPL("" + "SELECT A.Timestamp.getTime(), B.Timestamp.getTime(), A.values('Location'), A.values('Movie') " + "FROM EventWindow AS A, EventWindow AS B " + "WHERE " + "B.values('Action')='Ende' AND " + "A.values('Action')='Start' AND " + "A.values('Location')=B.values('Location') AND " + "A.values('Movie')=B.values('Movie') AND " + "(A.Timestamp.getTime()).before(B.Timestamp.getTime(), 0 hours, 3 hours)");
 
 		transformationStatement.addListener(new CEPListener());
 
@@ -165,14 +159,9 @@ public class StatementTest {
 
 		final EPAdministrator cepAdm = cep.getEPAdministrator();
 
-		cepAdm.createEPL("" + "CREATE CONTEXT NestedContext "
-				+ "CONTEXT SegmentedByLocation PARTITION BY values('Location') FROM Event, "
-				+ "CONTEXT SegmentedByTime INITIATED BY Event(values('Action')='Ende') TERMINATED AFTER 1 hour, "
-				+ "CONTEXT SegmentedByRating PARTITION BY values('Rating') FROM Event");
+		cepAdm.createEPL("" + "CREATE CONTEXT NestedContext " + "CONTEXT SegmentedByLocation PARTITION BY values('Location') FROM Event, " + "CONTEXT SegmentedByTime INITIATED BY Event(values('Action')='Ende') TERMINATED AFTER 1 hour, " + "CONTEXT SegmentedByRating PARTITION BY values('Rating') FROM Event");
 
-		final EPStatement transformationStatement = cepAdm.createEPL("" + "CONTEXT NestedContext "
-				+ "SELECT ID, values('Location'), values('Rating'), count(*) " + "FROM Event "
-				+ "GROUP BY values('Location'), values('Rating') " + "OUTPUT LAST EVERY 30 minute");
+		final EPStatement transformationStatement = cepAdm.createEPL("" + "CONTEXT NestedContext " + "SELECT ID, values('Location'), values('Rating'), count(*) " + "FROM Event " + "GROUP BY values('Location'), values('Rating') " + "OUTPUT LAST EVERY 30 minute");
 
 		transformationStatement.addListener(new CEPListener());
 

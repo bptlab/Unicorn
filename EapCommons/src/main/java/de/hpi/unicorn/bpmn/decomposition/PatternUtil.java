@@ -21,16 +21,15 @@ import de.hpi.unicorn.event.collection.EventTree;
 /**
  * This class searches for bond components in the given tree and tries to assign
  * {@link IPattern} as the {@link BondComponent#setType(IPattern)}.
- * 
+ *
  * @author micha
- * 
  */
 public class PatternUtil {
 
 	/**
 	 * Searches in the given tree for bond components and try to assign
 	 * {@link IPattern} to the components.
-	 * 
+	 *
 	 * @param processDecompositionTree
 	 */
 	public static void determinePatternForTreeComponents(final EventTree<AbstractBPMNElement> processDecompositionTree) {
@@ -47,27 +46,21 @@ public class PatternUtil {
 		}
 	}
 
-	private static void determinePatternForComponent(final BondComponent bond,
-			final List<AbstractBPMNElement> bondChildren, final EventTree<AbstractBPMNElement> processDecompositionTree) {
+	private static void determinePatternForComponent(final BondComponent bond, final List<AbstractBPMNElement> bondChildren, final EventTree<AbstractBPMNElement> processDecompositionTree) {
 		final AbstractBPMNElement sourceElement = bond.getSourceElement();
 		final AbstractBPMNElement sinkElement = bond.getSinkElement();
 
 		// Detection of different patterns
-		if ((sourceElement instanceof BPMNAndGateway || (sourceElement instanceof BPMNEventBasedGateway && ((BPMNEventBasedGateway) sourceElement)
-				.getType().equals(BPMNEventBasedGatewayType.Parallel))) && sourceElement.getPredecessors().size() == 1) {
+		if ((sourceElement instanceof BPMNAndGateway || (sourceElement instanceof BPMNEventBasedGateway && ((BPMNEventBasedGateway) sourceElement).getType().equals(BPMNEventBasedGatewayType.Parallel))) && sourceElement.getPredecessors().size() == 1) {
 			bond.setType(IPattern.AND);
-		} else if ((sourceElement instanceof BPMNXORGateway || (sourceElement instanceof BPMNEventBasedGateway && ((BPMNEventBasedGateway) sourceElement)
-				.getType().equals(BPMNEventBasedGatewayType.Exclusive)))
-				&& sourceElement.getPredecessors().size() == 1
-				|| sinkElement instanceof BPMNXORGateway && sinkElement.getSuccessors().size() == 1) {
+		} else if ((sourceElement instanceof BPMNXORGateway || (sourceElement instanceof BPMNEventBasedGateway && ((BPMNEventBasedGateway) sourceElement).getType().equals(BPMNEventBasedGatewayType.Exclusive))) && sourceElement.getPredecessors().size() == 1 || sinkElement instanceof BPMNXORGateway && sinkElement.getSuccessors().size() == 1) {
 			bond.setType(IPattern.XOR);
 		} else if (sourceElement instanceof BPMNXORGateway && PatternUtil.isCyclic(bond, processDecompositionTree)) {
 			bond.setType(IPattern.LOOP);
 		}
 	}
 
-	private static boolean isCyclic(final BondComponent bond,
-			final EventTree<AbstractBPMNElement> processDecompositionTree) {
+	private static boolean isCyclic(final BondComponent bond, final EventTree<AbstractBPMNElement> processDecompositionTree) {
 		final Set<AbstractBPMNElement> bondChildren = processDecompositionTree.getLeafs(bond);
 		final AbstractBPMNElement sourceElement = bond.getSourceElement();
 		final Set<AbstractBPMNElement> visitedElements = new HashSet<AbstractBPMNElement>();
@@ -78,13 +71,12 @@ public class PatternUtil {
 	/**
 	 * Adds all indirect successors of the startElement to visitedElements, if
 	 * the element is contained in elements.
-	 * 
+	 *
 	 * @param startElement
 	 * @param elements
 	 * @param visitedElements
 	 */
-	private static void visitSuccessors(final AbstractBPMNElement startElement,
-			final Set<AbstractBPMNElement> elements, final Set<AbstractBPMNElement> visitedElements) {
+	private static void visitSuccessors(final AbstractBPMNElement startElement, final Set<AbstractBPMNElement> elements, final Set<AbstractBPMNElement> visitedElements) {
 		if (elements.contains(startElement) && !visitedElements.contains(startElement)) {
 			visitedElements.add(startElement);
 			for (final AbstractBPMNElement successor : startElement.getSuccessors()) {

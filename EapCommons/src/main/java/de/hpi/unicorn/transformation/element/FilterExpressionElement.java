@@ -26,7 +26,7 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
  * expressions consists of two expressions that a connected by a filter
  * expression operator One of the two expressions may be range- or
  * enumeration-based.
- * 
+ *
  * @see FilterExpressionOperatorEnum
  */
 @Entity
@@ -58,11 +58,9 @@ public class FilterExpressionElement extends EventTreeElement<Serializable> impl
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression element
+	 *
+	 * @param id      the identifier
+	 * @param content filter expression element
 	 */
 	public FilterExpressionElement(final int id, final FilterExpressionOperatorEnum content) {
 		super(id, content);
@@ -71,36 +69,27 @@ public class FilterExpressionElement extends EventTreeElement<Serializable> impl
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression element
+	 * @param id      the identifier
+	 * @param content filter expression element
 	 */
-	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id,
-			final FilterExpressionOperatorEnum content) {
+	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id, final FilterExpressionOperatorEnum content) {
 		super(parent, id, content);
 		this.init();
 	}
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression element
-	 * @param leftHandSideExpression
-	 *            expression (reference to the attribute of the parent event
-	 *            type)
-	 * @param rightHandSideExpression
-	 *            expression (e.g. value, calculation, ...)
+	 * @param id                      the identifier
+	 * @param content                 filter expression element
+	 * @param leftHandSideExpression  expression (reference to the attribute of the parent event
+	 *                                type)
+	 * @param rightHandSideExpression expression (e.g. value, calculation, ...)
 	 */
-	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id,
-			final FilterExpressionOperatorEnum content, final String leftHandSideExpression,
-			final String rightHandSideExpression) {
+	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id, final FilterExpressionOperatorEnum content, final String leftHandSideExpression, final String rightHandSideExpression) {
 		super(parent, id, content);
 		this.init();
 		this.leftHandSideExpression = leftHandSideExpression;
@@ -109,21 +98,15 @@ public class FilterExpressionElement extends EventTreeElement<Serializable> impl
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression element
-	 * @param leftHandSideExpression
-	 *            expression (reference to the attribute of the parent event
-	 *            type)
-	 * @param rightHandSideListOfValues
-	 *            enumeration of values as list
+	 * @param id                        the identifier
+	 * @param content                   filter expression element
+	 * @param leftHandSideExpression    expression (reference to the attribute of the parent event
+	 *                                  type)
+	 * @param rightHandSideListOfValues enumeration of values as list
 	 */
-	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id,
-			final FilterExpressionOperatorEnum content, final String leftHandSideExpression,
-			final ArrayList<String> rightHandSideListOfValues) {
+	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id, final FilterExpressionOperatorEnum content, final String leftHandSideExpression, final ArrayList<String> rightHandSideListOfValues) {
 		super(parent, id, content);
 		assert ((content == FilterExpressionOperatorEnum.IN) || (content == FilterExpressionOperatorEnum.NOT_IN));
 		this.leftHandSideExpression = leftHandSideExpression;
@@ -132,21 +115,15 @@ public class FilterExpressionElement extends EventTreeElement<Serializable> impl
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            filter expression element
-	 * @param leftHandSideExpression
-	 *            expression (reference to the attribute of the parent event
-	 *            type)
-	 * @param rightHandSideRangeOfValues
-	 *            range of values
+	 * @param id                         the identifier
+	 * @param content                    filter expression element
+	 * @param leftHandSideExpression     expression (reference to the attribute of the parent event
+	 *                                   type)
+	 * @param rightHandSideRangeOfValues range of values
 	 */
-	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id,
-			final FilterExpressionOperatorEnum content, final String leftHandSideExpression,
-			final RangeElement rightHandSideRangeOfValues) {
+	public FilterExpressionElement(final EventTreeElement<Serializable> parent, final int id, final FilterExpressionOperatorEnum content, final String leftHandSideExpression, final RangeElement rightHandSideRangeOfValues) {
 		super(parent, id, content);
 		assert ((content == FilterExpressionOperatorEnum.IN) || (content == FilterExpressionOperatorEnum.NOT_IN));
 		this.leftHandSideExpression = leftHandSideExpression;

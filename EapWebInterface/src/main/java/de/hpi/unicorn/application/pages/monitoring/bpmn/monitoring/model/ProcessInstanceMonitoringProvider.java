@@ -27,12 +27,10 @@ import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
  * This class is the provider for {@link ProcessInstanceMonitor}s.
- * 
+ *
  * @author micha
- * 
  */
-public class ProcessInstanceMonitoringProvider extends AbstractDataProvider implements
-		ISortableDataProvider<ProcessInstanceMonitor, String>, IFilterStateLocator {
+public class ProcessInstanceMonitoringProvider extends AbstractDataProvider implements ISortableDataProvider<ProcessInstanceMonitor, String>, IFilterStateLocator {
 
 	private static final long serialVersionUID = 1L;
 	private static List<ProcessInstanceMonitor> processInstanceMonitors;
@@ -46,8 +44,7 @@ public class ProcessInstanceMonitoringProvider extends AbstractDataProvider impl
 	 */
 	public ProcessInstanceMonitoringProvider(final CorrelationProcess process) {
 		this.process = process;
-		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor
-				.getInstance().getProcessInstanceMonitors(process), this.processInstanceMonitorFilter);
+		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor.getInstance().getProcessInstanceMonitors(process), this.processInstanceMonitorFilter);
 		ProcessInstanceMonitoringProvider.selectedProcessInstanceMonitors = new ArrayList<ProcessInstanceMonitor>();
 	}
 
@@ -68,9 +65,7 @@ public class ProcessInstanceMonitoringProvider extends AbstractDataProvider impl
 		return data.subList((int) first, (int) Math.min(first + count, data.size())).iterator();
 	}
 
-	private List<ProcessInstanceMonitor> filterProcessInstanceMonitors(
-			final List<ProcessInstanceMonitor> processInstanceMonitorsToFilter,
-			final ProcessInstanceMonitoringFilter processInstanceMonitorFilter) {
+	private List<ProcessInstanceMonitor> filterProcessInstanceMonitors(final List<ProcessInstanceMonitor> processInstanceMonitorsToFilter, final ProcessInstanceMonitoringFilter processInstanceMonitorFilter) {
 		final List<ProcessInstanceMonitor> returnedProcessInstanceMonitors = new ArrayList<ProcessInstanceMonitor>();
 		if (processInstanceMonitorsToFilter != null) {
 			for (final ProcessInstanceMonitor processInstanceMonitor : processInstanceMonitorsToFilter) {
@@ -96,12 +91,12 @@ public class ProcessInstanceMonitoringProvider extends AbstractDataProvider impl
 		return ProcessInstanceMonitoringProvider.processInstanceMonitors;
 	}
 
-	public List<ProcessInstanceMonitor> getSelectedProcessInstanceMonitors() {
-		return ProcessInstanceMonitoringProvider.selectedProcessInstanceMonitors;
-	}
-
 	public static void setProcessInstanceMonitors(final List<ProcessInstanceMonitor> eventList) {
 		ProcessInstanceMonitoringProvider.processInstanceMonitors = eventList;
+	}
+
+	public List<ProcessInstanceMonitor> getSelectedProcessInstanceMonitors() {
+		return ProcessInstanceMonitoringProvider.selectedProcessInstanceMonitors;
 	}
 
 	@Override
@@ -125,8 +120,7 @@ public class ProcessInstanceMonitoringProvider extends AbstractDataProvider impl
 
 	public void setProcessInstanceMonitorFilter(final ProcessInstanceMonitoringFilter processInstanceMonitorFilter) {
 		this.processInstanceMonitorFilter = processInstanceMonitorFilter;
-		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor
-				.getInstance().getProcessInstanceMonitors(this.process), processInstanceMonitorFilter);
+		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor.getInstance().getProcessInstanceMonitors(this.process), processInstanceMonitorFilter);
 	}
 
 	@Override
@@ -172,8 +166,7 @@ public class ProcessInstanceMonitoringProvider extends AbstractDataProvider impl
 
 	public void setProcess(final CorrelationProcess process) {
 		this.process = process;
-		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor
-				.getInstance().getProcessInstanceMonitors(process), this.processInstanceMonitorFilter);
+		ProcessInstanceMonitoringProvider.processInstanceMonitors = this.filterProcessInstanceMonitors(BPMNQueryMonitor.getInstance().getProcessInstanceMonitors(process), this.processInstanceMonitorFilter);
 		ProcessInstanceMonitoringProvider.selectedProcessInstanceMonitors = new ArrayList<ProcessInstanceMonitor>();
 	}
 

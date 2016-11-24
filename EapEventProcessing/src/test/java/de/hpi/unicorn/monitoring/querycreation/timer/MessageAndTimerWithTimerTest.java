@@ -31,10 +31,15 @@ import de.hpi.unicorn.utils.TestHelper;
 /**
  * Tests the boundary intermediate timer event with a waiting time and not
  * sending the message intermediate event that could follow the TimerTask.
- * 
+ *
  * @author micha
  */
 public class MessageAndTimerWithTimerTest extends AbstractQueryCreationTest {
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
 
 	@Before
 	public void setup() {
@@ -53,8 +58,7 @@ public class MessageAndTimerWithTimerTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 		MessageAndTimerTest.afterQueriesTests(this.process);
 	}
 
@@ -98,10 +102,5 @@ public class MessageAndTimerWithTimerTest extends AbstractQueryCreationTest {
 			}
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 }

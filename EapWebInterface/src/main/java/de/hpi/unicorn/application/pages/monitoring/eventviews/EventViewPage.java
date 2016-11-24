@@ -31,17 +31,16 @@ import de.hpi.unicorn.visualisation.EventView;
 @SuppressWarnings("serial")
 public class EventViewPage extends AbstractEapPage {
 
-	private AjaxButton addButton;
 	private final Form<Void> form;
 	public ListView listview;
 	public AddViewModal addViewModal;
-
 	IModel<List<EventView>> views = new LoadableDetachableModel<List<EventView>>() {
 		@Override
 		protected List<EventView> load() {
 			return EventView.findAll();
 		}
 	};
+	private AjaxButton addButton;
 
 	public EventViewPage() {
 		super();
@@ -70,7 +69,7 @@ public class EventViewPage extends AbstractEapPage {
 		return this.addButton;
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({"unchecked"})
 	private void addViews() {
 		this.listview = new ListView("listview", this.views) {
 			@Override

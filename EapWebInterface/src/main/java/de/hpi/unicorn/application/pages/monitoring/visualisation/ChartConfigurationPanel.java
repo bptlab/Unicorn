@@ -42,17 +42,16 @@ import de.hpi.unicorn.visualisation.ChartTypeEnum;
 public class ChartConfigurationPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
-
-	private DropDownChoice<String> eventTypeSelect;
-	private DropDownChoice<TypeTreeNode> attributeSelect;
 	private final EventTypeNamesProvider eventTypeNameProvider = new EventTypeNamesProvider();
-	List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
-	private AttributeChartPage parentPage;
 	private final String selectedEventTypeName = "";
 	private final TypeTreeNode selectedAttribute = null;
 	private final String chartTitle = "";
 	private final List<ChartTypeEnum> chartTypes = Arrays.asList(ChartTypeEnum.values());
 	private final IModel<ChartTypeEnum> chartType = Model.of(ChartTypeEnum.COLUMN);
+	List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
+	private DropDownChoice<String> eventTypeSelect;
+	private DropDownChoice<TypeTreeNode> attributeSelect;
+	private AttributeChartPage parentPage;
 	private TextField<String> chartTitleInput;
 	private DropDownChoice<ChartTypeEnum> chartTypeSelect;
 
@@ -86,7 +85,9 @@ public class ChartConfigurationPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				return ChartConfigurationPanel.this.isSliderVisible();
-			};
+			}
+
+			;
 		};
 		this.sliderContainer.setOutputMarkupPlaceholderTag(true);
 		this.sliderContainer.add(this.addSlider());
@@ -99,7 +100,7 @@ public class ChartConfigurationPanel extends Panel {
 	/**
 	 * creates a slider that defines the size of the integer ranges, that define
 	 * the attribute-value ranges for the distribution chart
-	 * 
+	 *
 	 * @return slider
 	 */
 	private Component addSlider() {
@@ -116,8 +117,7 @@ public class ChartConfigurationPanel extends Panel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void onEvent(final AjaxRequestTarget target, final AjaxSlider slider1, final int value,
-					final int[] values) {
+			public void onEvent(final AjaxRequestTarget target, final AjaxSlider slider1, final int value, final int[] values) {
 				ChartConfigurationPanel.this.sliderValue = value;
 				ChartConfigurationPanel.this.sliderLabel.detach();
 				target.add(ChartConfigurationPanel.this.sliderLabel);
@@ -129,7 +129,7 @@ public class ChartConfigurationPanel extends Panel {
 
 	/**
 	 * creates the label that displays the value of the slider
-	 * 
+	 *
 	 * @return slider label
 	 */
 	private Component addSliderLabel() {
@@ -161,8 +161,7 @@ public class ChartConfigurationPanel extends Panel {
 	}
 
 	public boolean isSliderVisible() {
-		return (this.selectedAttribute != null && this.chartType != null
-				&& this.selectedAttribute.getType() == AttributeTypeEnum.INTEGER && this.chartType.getObject() == ChartTypeEnum.COLUMN);
+		return (this.selectedAttribute != null && this.chartType != null && this.selectedAttribute.getType() == AttributeTypeEnum.INTEGER && this.chartType.getObject() == ChartTypeEnum.COLUMN);
 	}
 
 	public boolean isSliderInvisible() {
@@ -182,16 +181,14 @@ public class ChartConfigurationPanel extends Panel {
 	}
 
 	private Component addEventTypeSelect() {
-		this.eventTypeSelect = new DropDownChoice<String>("eventTypeSelect", new PropertyModel<String>(this,
-				"selectedEventTypeName"), this.eventTypeNameProvider);
+		this.eventTypeSelect = new DropDownChoice<String>("eventTypeSelect", new PropertyModel<String>(this, "selectedEventTypeName"), this.eventTypeNameProvider);
 		this.eventTypeSelect.setOutputMarkupId(true);
 
 		this.eventTypeSelect.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				ChartConfigurationPanel.this.selectedEventType = EapEventType
-						.findByTypeName(ChartConfigurationPanel.this.selectedEventTypeName);
+				ChartConfigurationPanel.this.selectedEventType = EapEventType.findByTypeName(ChartConfigurationPanel.this.selectedEventTypeName);
 				ChartConfigurationPanel.this.updateAttributes();
 				target.add(ChartConfigurationPanel.this.attributeSelect);
 			}
@@ -218,8 +215,7 @@ public class ChartConfigurationPanel extends Panel {
 
 	private Component addAttributeSelect() {
 		this.updateAttributes();
-		this.attributeSelect = new DropDownChoice<TypeTreeNode>("attributeSelect", new PropertyModel<TypeTreeNode>(
-				this, "selectedAttribute"), this.attributes);
+		this.attributeSelect = new DropDownChoice<TypeTreeNode>("attributeSelect", new PropertyModel<TypeTreeNode>(this, "selectedAttribute"), this.attributes);
 		this.attributeSelect.setOutputMarkupId(true);
 		this.attributeSelect.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
@@ -244,17 +240,14 @@ public class ChartConfigurationPanel extends Panel {
 			} else if (this.chartType.getObject() == ChartTypeEnum.COLUMN) {
 				// BarChart only for String, Integer, Float
 				for (final TypeTreeNode attribute : this.selectedEventType.getValueTypes()) {
-					if (attribute.getType() == AttributeTypeEnum.STRING
-							|| attribute.getType() == AttributeTypeEnum.INTEGER
-							|| attribute.getType() == AttributeTypeEnum.FLOAT) {
+					if (attribute.getType() == AttributeTypeEnum.STRING || attribute.getType() == AttributeTypeEnum.INTEGER || attribute.getType() == AttributeTypeEnum.FLOAT) {
 						this.attributes.add(attribute);
 					}
 				}
 			} else if (this.chartType.getObject() == ChartTypeEnum.SPLATTER) {
 				// SplatterChart only Integer, Float
 				for (final TypeTreeNode attribute : this.selectedEventType.getValueTypes()) {
-					if (attribute.getType() == AttributeTypeEnum.INTEGER
-							|| attribute.getType() == AttributeTypeEnum.FLOAT) {
+					if (attribute.getType() == AttributeTypeEnum.INTEGER || attribute.getType() == AttributeTypeEnum.FLOAT) {
 						this.attributes.add(attribute);
 					}
 				}
@@ -303,14 +296,9 @@ public class ChartConfigurationPanel extends Panel {
 
 				if (error == false) {
 					// create new ChartConfiguration
-					final String attributeName = ChartConfigurationPanel.this.selectedAttribute
-							.getAttributeExpression();
+					final String attributeName = ChartConfigurationPanel.this.selectedAttribute.getAttributeExpression();
 					final AttributeTypeEnum attributeType = ChartConfigurationPanel.this.selectedAttribute.getType();
-					final ChartConfiguration newOptions = new ChartConfiguration(
-							ChartConfigurationPanel.this.selectedEventType, attributeName, attributeType,
-							ChartConfigurationPanel.this.chartTitle,
-							ChartConfigurationPanel.this.chartType.getObject(),
-							ChartConfigurationPanel.this.sliderValue);
+					final ChartConfiguration newOptions = new ChartConfiguration(ChartConfigurationPanel.this.selectedEventType, attributeName, attributeType, ChartConfigurationPanel.this.chartTitle, ChartConfigurationPanel.this.chartType.getObject(), ChartConfigurationPanel.this.sliderValue);
 					newOptions.save();
 					final AttributeChartPage visualisation = ChartConfigurationPanel.this.parentPage;
 					visualisation.getOptions().detach();
@@ -319,7 +307,9 @@ public class ChartConfigurationPanel extends Panel {
 					visualisation.addChartModal.close(target);
 				}
 				;
-			};
+			}
+
+			;
 		};
 
 		layoutForm.add(createButton);

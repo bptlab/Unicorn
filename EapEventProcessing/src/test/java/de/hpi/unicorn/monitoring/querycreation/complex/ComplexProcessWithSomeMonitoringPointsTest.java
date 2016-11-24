@@ -34,16 +34,20 @@ import de.hpi.unicorn.utils.TestHelper;
  * structures, the creation of queries for this BPMN process and simulates the
  * execution of the process to monitor the execution. Only some elements of the
  * process have associated monitoring points.
- * 
+ *
  * @author micha
  */
 public class ComplexProcessWithSomeMonitoringPointsTest extends AbstractQueryCreationTest {
 
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
+
 	@Before
 	public void setup() {
 		Persistor.useTestEnviroment();
-		this.filePath = System.getProperty("user.dir")
-				+ "/src/test/resources/bpmn/ComplexProcessTestWithSomeMonitoringPoints.bpmn20.xml";
+		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/ComplexProcessTestWithSomeMonitoringPoints.bpmn20.xml";
 	}
 
 	@Test
@@ -51,16 +55,13 @@ public class ComplexProcessWithSomeMonitoringPointsTest extends AbstractQueryCre
 	public void testImport() throws XMLParsingException {
 		this.BPMNProcess = BPMNParser.generateProcessFromXML(this.filePath);
 		Assert.assertNotNull(this.BPMNProcess);
-		Assert.assertTrue("Number of BPMN elements without sequence flows should be 17 but was "
-				+ this.BPMNProcess.getBPMNElementsWithOutSequenceFlows().size(), this.BPMNProcess
-				.getBPMNElementsWithOutSequenceFlows().size() == 17);
+		Assert.assertTrue("Number of BPMN elements without sequence flows should be 17 but was " + this.BPMNProcess.getBPMNElementsWithOutSequenceFlows().size(), this.BPMNProcess.getBPMNElementsWithOutSequenceFlows().size() == 17);
 	}
 
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "ComplexProcess",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "ComplexProcess", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 	}
 
 	@Override
@@ -107,18 +108,15 @@ public class ComplexProcessWithSomeMonitoringPointsTest extends AbstractQueryCre
 		for (final EapEventType eventType : eventTypes) {
 
 			if (choose == 0) { /* oberer Pfad */
-				if (eventType.getTypeName().equals("Task4") || eventType.getTypeName().equals("Task5")
-						|| eventType.getTypeName().equals("Task6")) {
+				if (eventType.getTypeName().equals("Task4") || eventType.getTypeName().equals("Task5") || eventType.getTypeName().equals("Task6")) {
 					continue;
 				}
 			} else if (choose == 1) { /* mittlerer Pfad */
-				if (eventType.getTypeName().equals("Task2") || eventType.getTypeName().equals("Task3")
-						|| eventType.getTypeName().equals("Task5") || eventType.getTypeName().equals("Task6")) {
+				if (eventType.getTypeName().equals("Task2") || eventType.getTypeName().equals("Task3") || eventType.getTypeName().equals("Task5") || eventType.getTypeName().equals("Task6")) {
 					continue;
 				}
 			} else { /* unterer Pfad */
-				if (eventType.getTypeName().equals("Task2") || eventType.getTypeName().equals("Task3")
-						|| eventType.getTypeName().equals("Task4")) {
+				if (eventType.getTypeName().equals("Task2") || eventType.getTypeName().equals("Task3") || eventType.getTypeName().equals("Task4")) {
 					continue;
 				}
 			}
@@ -126,11 +124,6 @@ public class ComplexProcessWithSomeMonitoringPointsTest extends AbstractQueryCre
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 
 }

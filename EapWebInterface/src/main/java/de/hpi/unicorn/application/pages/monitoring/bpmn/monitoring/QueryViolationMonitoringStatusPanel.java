@@ -29,19 +29,16 @@ public class QueryViolationMonitoringStatusPanel extends Panel {
 	/**
 	 * Constructor for a panel, which contains a label for displaying the
 	 * {@link ViolationStatus} of a {@link PatternQuery}.
-	 * 
+	 *
 	 * @param id
 	 * @param entryId
 	 * @param dataprovider
 	 */
-	public QueryViolationMonitoringStatusPanel(final String id, final int entryId,
-			final AbstractDataProvider dataprovider) {
+	public QueryViolationMonitoringStatusPanel(final String id, final int entryId, final AbstractDataProvider dataprovider) {
 		super(id);
-		final ProcessInstanceMonitoringTreeTableElement treeTableElement = (ProcessInstanceMonitoringTreeTableElement) dataprovider
-				.getEntry(entryId);
+		final ProcessInstanceMonitoringTreeTableElement treeTableElement = (ProcessInstanceMonitoringTreeTableElement) dataprovider.getEntry(entryId);
 		BootStrapTextEmphasisClass textEmphasisClass = BootStrapTextEmphasisClass.Muted;
-		final Set<ViolationStatus> violationStatus = treeTableElement.getProcessInstanceMonitor()
-				.getViolationStatusForQuery(treeTableElement.getQuery());
+		final Set<ViolationStatus> violationStatus = treeTableElement.getProcessInstanceMonitor().getViolationStatusForQuery(treeTableElement.getQuery());
 
 		if (violationStatus != null) {
 			if (violationStatus.isEmpty()) {

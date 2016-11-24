@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.basic.Label;
  * This class provides an extension to the {@link Label} to render the text with
  * Bootstrap text emphasis. The emphasis type must be provided with
  * {@link BootStrapTextEmphasisClass}.
- * 
+ *
  * @author micha
  */
 public class BootStrapLabel extends Label {
@@ -39,7 +39,7 @@ public class BootStrapLabel extends Label {
 
 	/**
 	 * Returns the {@link BootStrapTextEmphasisClass} for the current label.
-	 * 
+	 *
 	 * @return
 	 */
 	public BootStrapTextEmphasisClass getTextEmphasisClass() {
@@ -48,7 +48,7 @@ public class BootStrapLabel extends Label {
 
 	/**
 	 * Sets the {@link BootStrapTextEmphasisClass} for the current label.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setTextEmphasisClass(final BootStrapTextEmphasisClass textEmphasisClass) {

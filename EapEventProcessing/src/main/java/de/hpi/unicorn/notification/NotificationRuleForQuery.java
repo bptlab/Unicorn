@@ -66,6 +66,63 @@ public class NotificationRuleForQuery extends NotificationRule {
 	}
 
 	/**
+	 * Finds all query notification rules from database.
+	 *
+	 * @return all query notification rules
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<NotificationRuleForQuery> findAllQueryNotificationRules() {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE Disc = 'Q' OR Disc = 'R'", NotificationRuleForQuery.class);
+		return q.getResultList();
+	}
+
+	/**
+	 * Finds a query notification rule from database by ID.
+	 *
+	 * @param ID
+	 * @return query notification rule
+	 */
+	public static NotificationRuleForQuery findByID(final int ID) {
+		return Persistor.getEntityManager().find(NotificationRuleForQuery.class, ID);
+	}
+
+	/**
+	 * Finds query notification rules from database that are connected with a
+	 * certain query.
+	 *
+	 * @param query
+	 * @return query notification rules for query
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<NotificationRuleForQuery> findByQuery(final QueryWrapper query) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE QUERY_ID = '" + query.getID() + "'", NotificationRuleForQuery.class);
+		return q.getResultList();
+	}
+
+	// Getter and Setter
+
+	public static NotificationRuleForQuery findByUUID(final String uuid) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE UUID = '" + uuid + "'", NotificationRuleForQuery.class);
+
+		if (q.getResultList().isEmpty()) {
+			return null;
+		} else {
+			return (NotificationRuleForQuery) q.getResultList().get(0);
+		}
+	}
+
+	/**
+	 * Find all notification rules for a user from the database.
+	 *
+	 * @param user
+	 * @return all notification rules for a user
+	 */
+	public static List<NotificationRuleForQuery> findQueriesByUser(final EapUser user) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE Disc = 'Q' AND USER_ID = '" + user.getID() + "'", NotificationRuleForQuery.class);
+		return q.getResultList();
+	}
+
+	/**
 	 * This method creates a new @see NotificationForQuery. It is called when
 	 * the query of this notification rule is triggered.
 	 *
@@ -79,15 +136,14 @@ public class NotificationRuleForQuery extends NotificationRule {
 			notification.save();
 
 			switch (this.priority) {
-			case MAIL:
-				// send mail
-				EmailUtils.sendBP2013Mail(this.user.getMail(), "Notification GET-Events", notification.toString()
-						+ ". The query is " + this.query.getEsperQuery() + " {" + this.query.getSparqlQuery() + "}");
-				break;
-			case QUEUE:
-				// send to queue
-				JMSProvider.sendMessage(JMSProvider.HOST, JMSProvider.PORT, this.getUuid(), event.toString());
-				break;
+				case MAIL:
+					// send mail
+					EmailUtils.sendBP2013Mail(this.user.getMail(), "Notification GET-Events", notification.toString() + ". The query is " + this.query.getEsperQuery() + " {" + this.query.getSparqlQuery() + "}");
+					break;
+				case QUEUE:
+					// send to queue
+					JMSProvider.sendMessage(JMSProvider.HOST, JMSProvider.PORT, this.getUuid(), event.toString());
+					break;
 			}
 			return true;
 		} catch (final UnsupportedJsonTransformation e) {
@@ -115,7 +171,7 @@ public class NotificationRuleForQuery extends NotificationRule {
 		return super.remove();
 	}
 
-	// Getter and Setter
+	// JPA-Methods
 
 	public QueryWrapper getQuery() {
 		return this.query;
@@ -136,69 +192,6 @@ public class NotificationRuleForQuery extends NotificationRule {
 	@Override
 	public Persistable getTriggeringEntity() {
 		return this.getQuery();
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Finds all query notification rules from database.
-	 *
-	 * @return all query notification rules
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<NotificationRuleForQuery> findAllQueryNotificationRules() {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE Disc = 'Q' OR Disc = 'R'", NotificationRuleForQuery.class);
-		return q.getResultList();
-	}
-
-	/**
-	 * Finds a query notification rule from database by ID.
-	 *
-	 * @param ID
-	 * @return query notification rule
-	 */
-	public static NotificationRuleForQuery findByID(final int ID) {
-		return Persistor.getEntityManager().find(NotificationRuleForQuery.class, ID);
-	}
-
-	/**
-	 * Finds query notification rules from database that are connected with a
-	 * certain query.
-	 *
-	 * @param query
-	 * @return query notification rules for query
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<NotificationRuleForQuery> findByQuery(final QueryWrapper query) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE QUERY_ID = '" + query.getID() + "'",
-				NotificationRuleForQuery.class);
-		return q.getResultList();
-	}
-
-	public static NotificationRuleForQuery findByUUID(final String uuid) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE UUID = '" + uuid + "'", NotificationRuleForQuery.class);
-
-		if(q.getResultList().isEmpty()) {
-			return null;
-		} else {
-			return (NotificationRuleForQuery) q.getResultList().get(0);
-		}
-	}
-
-	/**
-	 * Find all notification rules for a user from the database.
-	 *
-	 * @param user
-	 * @return all notification rules for a user
-	 */
-	public static List<NotificationRuleForQuery> findQueriesByUser(final EapUser user) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE Disc = 'Q' AND USER_ID = '" + user.getID() + "'",
-				NotificationRuleForQuery.class);
-		return q.getResultList();
 	}
 
 }

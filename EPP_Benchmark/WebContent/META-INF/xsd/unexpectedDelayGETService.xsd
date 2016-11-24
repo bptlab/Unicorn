@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="unexpectedDelayGETService.xsd" targetNamespace="unexpectedDelayGETService.xsd" elementFormDefault="qualified">
-   <annotation>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="unexpectedDelayGETService.xsd" targetNamespace="unexpectedDelayGETService.xsd"
+           elementFormDefault="qualified">
+    <annotation>
         <appinfo>Important Note</appinfo>
         <documentation xml:lang="en">
             The delay is given in minutes as integer.

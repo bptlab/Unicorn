@@ -35,18 +35,15 @@ import de.hpi.unicorn.transformation.TransformationRule;
 import de.hpi.unicorn.user.EapUser;
 
 /**
- *
  * provides webservice methods registered in
  * src/main/webapp/WEB-INF/services/XMLService/META-INF/services.xml to start
  * webserver run: mvn jetty:run (WSDL is deployed to: <address of
  * tomcat>/EapWebInterface/services/EventProcessingPlatformWebservice?wsdl).
- *
  */
 public class EventProcessingPlatformWebservice {
 
 	// Logger
 	private static final Logger logger = Logger.getLogger(EventProcessingPlatformWebservice.class);
-
 
 
 	/**
@@ -68,8 +65,7 @@ public class EventProcessingPlatformWebservice {
 		for (final EapEvent newEvent : newEvents) {
 			Broker.getEventImporter().importEvent(newEvent);
 		}
-		EventProcessingPlatformWebservice.logger.debug("Import of event took "
-				+ (double) (System.currentTimeMillis() - callStart) / 1000 + " seconds");
+		EventProcessingPlatformWebservice.logger.debug("Import of event took " + (double) (System.currentTimeMillis() - callStart) / 1000 + " seconds");
 	}
 
 	/**
@@ -77,16 +73,14 @@ public class EventProcessingPlatformWebservice {
 	 *
 	 * @param xsd
 	 * @param schemaName
-	 * @param timestampName
-	 *            if the timestamp is not part of the event type description in
-	 *            the XSD file, an additional attribute of type Date with the
-	 *            given timestamp name is created
+	 * @param timestampName if the timestamp is not part of the event type description in
+	 *                      the XSD file, an additional attribute of type Date with the
+	 *                      given timestamp name is created
 	 * @return
 	 * @throws DuplicatedSchemaException
 	 * @throws UnparsableException
 	 */
-	public void registerEventType(final String xsd, final String schemaName, final String timestampName)
-			throws DuplicatedSchemaException, UnparsableException {
+	public void registerEventType(final String xsd, final String schemaName, final String timestampName) throws DuplicatedSchemaException, UnparsableException {
 		// generate input stream from xml for creating the doc
 		// test for already existing
 		if (EapEventType.findBySchemaName(schemaName) != null) {
@@ -113,7 +107,6 @@ public class EventProcessingPlatformWebservice {
 	}
 
 	/**
-	 *
 	 * Returns names of all attributes of given event type.
 	 *
 	 * @param eventTypeName
@@ -135,8 +128,7 @@ public class EventProcessingPlatformWebservice {
 	/**
 	 * Returns XSD string of event type.
 	 *
-	 * @param eventTypeName
-	 *            name of event type
+	 * @param eventTypeName name of event type
 	 * @return event type as XSD string
 	 * @throws EventTypeNotFoundException
 	 */
@@ -154,8 +146,7 @@ public class EventProcessingPlatformWebservice {
 	/**
 	 * Unregisters an event type
 	 *
-	 * @param schemaName
-	 *            name of event type
+	 * @param schemaName name of event type
 	 * @return
 	 */
 	public boolean unregisterEventType(final String schemaName) {
@@ -185,23 +176,19 @@ public class EventProcessingPlatformWebservice {
 	 * @param queryString
 	 * @return queue id
 	 */
-	public String registerQueryForQueue(final String title,
-										final String queryString,
-										final String eMail) throws EPException {
+	public String registerQueryForQueue(final String title, final String queryString, final String eMail) throws EPException {
 		final QueryWrapper query = new QueryWrapper(title, queryString, QueryTypeEnum.LIVE);
 		query.addToEsper();
 		query.save();
 
 		final EapUser user = this.findOrCreateUserByEMail(eMail);
 
-		final NotificationRuleForQuery notificationRule = new NotificationRuleForQuery(query, user,
-				NotificationMethod.QUEUE);
+		final NotificationRuleForQuery notificationRule = new NotificationRuleForQuery(query, user, NotificationMethod.QUEUE);
 		notificationRule.save();
 		return notificationRule.getUuid();
 	}
 
-	public String registerQueryForRest(final String queryString,
-									   final String notificationPath) throws EPException {
+	public String registerQueryForRest(final String queryString, final String notificationPath) throws EPException {
 		final QueryWrapper query = new QueryWrapper("Automatic", queryString, QueryTypeEnum.LIVE);
 		query.addToEsper();
 		query.save();
@@ -214,6 +201,7 @@ public class EventProcessingPlatformWebservice {
 	/**
 	 * Unregisters the query and destroys the corresponding notification rule.
 	 * Also destroys the message queue, if one is used.
+	 *
 	 * @param uuid
 	 */
 	public boolean unregisterQuery(final String uuid) {
@@ -234,8 +222,7 @@ public class EventProcessingPlatformWebservice {
 	/**
 	 * Unregisters all queries of an user by deleting his notification rules.
 	 *
-	 * @param email
-	 *            email of the user
+	 * @param email email of the user
 	 * @return number of deleted notification rules
 	 */
 	public int unregisterQueriesFromQueue(final String email) {
@@ -260,17 +247,13 @@ public class EventProcessingPlatformWebservice {
 	 * Registers an event aggregation rule - unique by ruleName and
 	 * eventTypeName
 	 *
-	 * @param ruleName
-	 *            name of event aggregation rule
-	 * @param eventTypeName
-	 *            name of event type
-	 * @param eventAggregationRule
-	 *            event aggregation rule
+	 * @param ruleName             name of event aggregation rule
+	 * @param eventTypeName        name of event type
+	 * @param eventAggregationRule event aggregation rule
 	 * @return string containing information whether the registration was
-	 *         successful or not
+	 * successful or not
 	 */
-	public String registerEventAggregationRule(final String ruleName, final String eventTypeName,
-			final String eventAggregationRule) {
+	public String registerEventAggregationRule(final String ruleName, final String eventTypeName, final String eventAggregationRule) {
 		String message;
 		try {
 			if (ruleName == null || ruleName.isEmpty()) {
@@ -296,8 +279,7 @@ public class EventProcessingPlatformWebservice {
 					logger.error(message);
 					return message;
 				}
-				final TransformationRule transformationRule = new TransformationRule(eventType, ruleName,
-						eventAggregationRule);
+				final TransformationRule transformationRule = new TransformationRule(eventType, ruleName, eventAggregationRule);
 				Broker.getInstance().register(transformationRule);
 				transformationRule.save();
 				return "Registration of event aggregation rule was successful.";
@@ -312,15 +294,12 @@ public class EventProcessingPlatformWebservice {
 	/**
 	 * Unregisters an event aggregation rule
 	 *
-	 * @param ruleName
-	 *            name of event aggregation rule
-	 * @param eventTypeName
-	 *            name of event type
+	 * @param ruleName      name of event aggregation rule
+	 * @param eventTypeName name of event type
 	 * @return true if deletion was successful
 	 */
 	public boolean unregisterEventAggregationRule(final String ruleName, final String eventTypeName) {
-		final TransformationRule transformationRule = TransformationRule.findByEventTypeAndTitle(eventTypeName,
-				ruleName);
+		final TransformationRule transformationRule = TransformationRule.findByEventTypeAndTitle(eventTypeName, ruleName);
 		if (transformationRule == null) {
 			return false;
 		}
@@ -328,8 +307,7 @@ public class EventProcessingPlatformWebservice {
 		return true;
 	}
 
-	public boolean registerEventCorrelationRule(final String process, final String firstEventType,
-			final String firstAttribute, final String secondEventType, final String secondAttribute) {
+	public boolean registerEventCorrelationRule(final String process, final String firstEventType, final String firstAttribute, final String secondEventType, final String secondAttribute) {
 		// TODO: implement it
 		String message = "Thanks for using our platform! This feature will be implemented in a future version of this webservice!";
 		logger.error(message);

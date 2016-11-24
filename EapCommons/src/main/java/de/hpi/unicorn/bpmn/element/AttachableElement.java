@@ -10,7 +10,7 @@ package de.hpi.unicorn.bpmn.element;
 /**
  * This interface should be implemented from BPMN elements that could have
  * attached intermediate events.
- * 
+ *
  * @author micha
  */
 public interface AttachableElement {

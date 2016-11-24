@@ -36,8 +36,7 @@ public class AdvancedValuesPanel extends Panel {
 	private final WebMarkupContainer valueRuleMarkupContainer;
 	private final List<ValueRule> valueRules;
 	private final ListView<ValueRule> valueRuleListView;
-	private final List<ValueRuleType> valueOptionList = new ArrayList<ValueRuleType>(Arrays.asList(ValueRuleType.EQUAL,
-			ValueRuleType.UNEQUAL));
+	private final List<ValueRuleType> valueOptionList = new ArrayList<ValueRuleType>(Arrays.asList(ValueRuleType.EQUAL, ValueRuleType.UNEQUAL));
 
 	public AdvancedValuesPanel(final String id, final SimulationPanel simulationPanel) {
 		super(id);
@@ -75,8 +74,7 @@ public class AdvancedValuesPanel extends Panel {
 
 				final ValueRule valueRule = item.getModelObject();
 
-				final DropDownChoice<TypeTreeNode> attributeSelect = new DropDownChoice<TypeTreeNode>(
-						"attributeSelect", new Model<TypeTreeNode>(), AdvancedValuesPanel.this.attributeList);
+				final DropDownChoice<TypeTreeNode> attributeSelect = new DropDownChoice<TypeTreeNode>("attributeSelect", new Model<TypeTreeNode>(), AdvancedValuesPanel.this.attributeList);
 				attributeSelect.setOutputMarkupId(true);
 				item.add(attributeSelect);
 				attributeSelect.setModelObject(valueRule.getAttribute());
@@ -92,8 +90,7 @@ public class AdvancedValuesPanel extends Panel {
 					}
 				});
 
-				final DropDownChoice<ValueRuleType> valueSelect = new DropDownChoice<ValueRuleType>("valueSelect",
-						new Model<ValueRuleType>(), AdvancedValuesPanel.this.valueOptionList);
+				final DropDownChoice<ValueRuleType> valueSelect = new DropDownChoice<ValueRuleType>("valueSelect", new Model<ValueRuleType>(), AdvancedValuesPanel.this.valueOptionList);
 				valueSelect.setOutputMarkupId(true);
 				item.add(valueSelect);
 

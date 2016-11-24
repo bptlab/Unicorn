@@ -52,21 +52,6 @@ public class XMLUtils {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
-	public enum XPathConstantsMapping {
-
-		STRING(XPathConstants.STRING), DATE(DatatypeConstants.DATETIME), INTEGER(XPathConstants.NUMBER);
-
-		private final QName qName;
-
-		XPathConstantsMapping(final QName type) {
-			this.qName = type;
-		}
-
-		public QName getQName() {
-			return this.qName;
-		}
-	}
-
 	public static Document stringToDoc(final String xml) {
 		InputStream xsdInputStream;
 		try {
@@ -101,7 +86,7 @@ public class XMLUtils {
 
 	/**
 	 * transforms EapEvent into typed XML-Node.
-	 * 
+	 *
 	 * @return XML Representation of the given EapEvent
 	 */
 	public static Node eventToNode(final EapEvent event) {
@@ -188,6 +173,21 @@ public class XMLUtils {
 			e.printStackTrace();
 		} catch (final TransformerException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public enum XPathConstantsMapping {
+
+		STRING(XPathConstants.STRING), DATE(DatatypeConstants.DATETIME), INTEGER(XPathConstants.NUMBER);
+
+		private final QName qName;
+
+		XPathConstantsMapping(final QName type) {
+			this.qName = type;
+		}
+
+		public QName getQName() {
+			return this.qName;
 		}
 	}
 

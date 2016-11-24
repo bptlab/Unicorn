@@ -37,7 +37,7 @@ import de.hpi.unicorn.query.QueryWrapper;
 public abstract class QueryEditor extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
-
+	protected static String lineBreak = System.getProperty("line.separator");
 	protected List<QueryWrapper> queries;
 	protected Form<Void> layoutForm;
 	protected TextFieldDefaultValues textFieldDefaultValues;
@@ -49,7 +49,6 @@ public abstract class QueryEditor extends AbstractEapPage {
 	protected QueryWrapper selectedQuery;
 	protected String queryResult;
 	protected TextArea<String> queryResultTextArea;
-	protected static String lineBreak = System.getProperty("line.separator");
 	private QueryEditorHelpModal helpModal;
 
 	public QueryEditor() {
@@ -85,8 +84,7 @@ public abstract class QueryEditor extends AbstractEapPage {
 		};
 		this.layoutForm.add(this.helpButton);
 
-		this.queryListChoice = new ListChoice<QueryWrapper>("queryListChoice", new PropertyModel<QueryWrapper>(this,
-				"selectedQuery"), this.queries) {
+		this.queryListChoice = new ListChoice<QueryWrapper>("queryListChoice", new PropertyModel<QueryWrapper>(this, "selectedQuery"), this.queries) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -108,8 +106,7 @@ public abstract class QueryEditor extends AbstractEapPage {
 
 	private void buildEventTypeTree() {
 		final LabelTreeExpansionModel<String> expansionModel = new LabelTreeExpansionModel<String>();
-		final LabelTree<LabelTreeElement<String>> eventTypeTree = new LabelTree<LabelTreeElement<String>>(
-				"eventTypeTree", new LabelTreeProvider<String>(this.generateNodesOfEventTypeTree()), expansionModel);
+		final LabelTree<LabelTreeElement<String>> eventTypeTree = new LabelTree<LabelTreeElement<String>>("eventTypeTree", new LabelTreeProvider<String>(this.generateNodesOfEventTypeTree()), expansionModel);
 		((LabelTreeExpansion<String>) expansionModel.getObject()).collapseAll();
 		this.layoutForm.add(eventTypeTree);
 	}
@@ -129,8 +126,7 @@ public abstract class QueryEditor extends AbstractEapPage {
 	}
 
 	private void buildQueryResultTextArea() {
-		this.queryResultTextArea = new TextArea<String>("queryResultTextArea", new PropertyModel<String>(this,
-				"queryResult"));
+		this.queryResultTextArea = new TextArea<String>("queryResultTextArea", new PropertyModel<String>(this, "queryResult"));
 		this.queryResultTextArea.setOutputMarkupId(true);
 		this.layoutForm.add(this.queryResultTextArea);
 	}
@@ -149,8 +145,7 @@ public abstract class QueryEditor extends AbstractEapPage {
 
 		@Override
 		public String toString() {
-			return "queryNameTextField = '" + this.queryNameTextField + "'; queryTextArea = '"
-					+ QueryEditor.this.queryTextArea + "'";
+			return "queryNameTextField = '" + this.queryNameTextField + "'; queryTextArea = '" + QueryEditor.this.queryTextArea + "'";
 		}
 	}
 }

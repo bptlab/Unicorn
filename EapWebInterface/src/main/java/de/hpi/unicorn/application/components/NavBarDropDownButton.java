@@ -18,19 +18,18 @@ import de.agilecoders.wicket.markup.html.bootstrap.navbar.Navbar;
 /**
  * Subclass of {@link DropDownButton} for a {@link Navbar}. This DropDownButton
  * solves the problem for being displayed correctly after a refresh.
- * 
+ *
  * @author micha
  */
 public class NavBarDropDownButton extends DropDownButton {
 
-	private static final long serialVersionUID = 1L;
 	static final String COMPONENT_ID = "component";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor for the {@link NavBarDropDownButton}.
-	 * 
-	 * @param model
-	 *            the label of this dropdown button
+	 *
+	 * @param model the label of this dropdown button
 	 */
 	public NavBarDropDownButton(final IModel<String> model) {
 		super(NavBarDropDownButton.COMPONENT_ID, model);

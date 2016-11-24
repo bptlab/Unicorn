@@ -57,12 +57,9 @@ public class IndependentUnexpectedEventPanel extends Panel {
 			protected void populateItem(final ListItem<Object> item) {
 				final TextField<String> occurenceInput = new TextField<String>("occurenceInput", new Model<String>());
 				item.add(occurenceInput);
-				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect",
-						new Model<String>(), IndependentUnexpectedEventPanel.this.effectList);
+				final DropDownChoice<String> effectSelect = new DropDownChoice<String>("effectSelect", new Model<String>(), IndependentUnexpectedEventPanel.this.effectList);
 				item.add(effectSelect);
-				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>(
-						"additionalEventTypeSelect", new Model<EapEventType>(),
-						IndependentUnexpectedEventPanel.this.listOfAllEventTypes);
+				final DropDownChoice<EapEventType> additionalEventTypeSelect = new DropDownChoice<EapEventType>("additionalEventTypeSelect", new Model<EapEventType>(), IndependentUnexpectedEventPanel.this.listOfAllEventTypes);
 				item.add(additionalEventTypeSelect);
 			}
 

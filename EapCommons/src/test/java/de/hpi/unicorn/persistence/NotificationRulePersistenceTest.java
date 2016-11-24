@@ -42,11 +42,9 @@ public class NotificationRulePersistenceTest implements PersistenceTest {
 	@Override
 	public void testStoreAndRetrieve() {
 		storeExampleNotificationRules();
-		assertTrue("Value should be 2, but was " + NotificationRuleForEvent.findAll().size(), NotificationRuleForEvent
-				.findAll().size() == 2);
+		assertTrue("Value should be 2, but was " + NotificationRuleForEvent.findAll().size(), NotificationRuleForEvent.findAll().size() == 2);
 		NotificationRuleForEvent.removeAll();
-		assertTrue("Value should be 0, but was " + NotificationRuleForEvent.findAll().size(), NotificationRuleForEvent
-				.findAll().size() == 0);
+		assertTrue("Value should be 0, but was " + NotificationRuleForEvent.findAll().size(), NotificationRuleForEvent.findAll().size() == 0);
 	}
 
 	@Test

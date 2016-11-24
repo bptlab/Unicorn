@@ -25,14 +25,13 @@ import de.hpi.unicorn.event.EapEvent;
  */
 public class PathSimulator {
 
+	private final List<EapEvent> newEvents;
 	private AbstractBPMNElement currentElement;
 	private InstanceSimulator instanceSimulator;
 	private Date currentSimulationDate;
 	private Boolean currentElementIsTraversed;
-	private final List<EapEvent> newEvents;
 
-	public PathSimulator(final AbstractBPMNElement startElement, final InstanceSimulator parentSimulator,
-			final Date currentSimulationDate) {
+	public PathSimulator(final AbstractBPMNElement startElement, final InstanceSimulator parentSimulator, final Date currentSimulationDate) {
 		this.setCurrentElement(startElement);
 		this.setInstanceSimulator(parentSimulator);
 		this.setCurrentSimulationDate(currentSimulationDate);
@@ -65,8 +64,7 @@ public class PathSimulator {
 			}
 		} else {
 			this.addEventFromMonitorinPointBegin();
-			this.setCurrentSimulationDate(new Date(this.getCurrentSimulationDate().getTime()
-					+ this.getInstanceSimulator().getSimulator().getDurationForBPMNElement(this.getCurrentElement())));
+			this.setCurrentSimulationDate(new Date(this.getCurrentSimulationDate().getTime() + this.getInstanceSimulator().getSimulator().getDurationForBPMNElement(this.getCurrentElement())));
 			this.setCurrentElementIsTraversed(true);
 		}
 		return this.newEvents;
@@ -108,18 +106,14 @@ public class PathSimulator {
 					for (final AbstractBPMNElement successor : this.getCurrentElement().getSuccessors()) {
 						// ein Simulator für jede Kante erzeugen
 						if (successor instanceof BPMNAndGateway) {
-							this.getInstanceSimulator().addJoinPredecessorToGateway(this.getCurrentElement(),
-									(BPMNAndGateway) successor);
-							if ((this.getInstanceSimulator()
-									.allPredecessorsOfGatewayVisited((BPMNAndGateway) successor))) {
+							this.getInstanceSimulator().addJoinPredecessorToGateway(this.getCurrentElement(), (BPMNAndGateway) successor);
+							if ((this.getInstanceSimulator().allPredecessorsOfGatewayVisited((BPMNAndGateway) successor))) {
 								this.getInstanceSimulator().resetGateway((BPMNAndGateway) successor);
-								pathSimulator = new PathSimulator(successor, this.getInstanceSimulator(),
-										this.getCurrentSimulationDate());
+								pathSimulator = new PathSimulator(successor, this.getInstanceSimulator(), this.getCurrentSimulationDate());
 								this.getInstanceSimulator().pathSimulators.add(pathSimulator);
 							}
 						}
-						pathSimulator = new PathSimulator(successor, this.getInstanceSimulator(),
-								this.getCurrentSimulationDate());
+						pathSimulator = new PathSimulator(successor, this.getInstanceSimulator(), this.getCurrentSimulationDate());
 						this.getInstanceSimulator().pathSimulators.add(pathSimulator);
 					}
 				}
@@ -128,8 +122,7 @@ public class PathSimulator {
 			else {
 				final AbstractBPMNElement successor = this.getCurrentElement().getSuccessors().iterator().next();
 				if (successor instanceof BPMNAndGateway) {
-					this.getInstanceSimulator().addJoinPredecessorToGateway(this.getCurrentElement(),
-							(BPMNAndGateway) successor);
+					this.getInstanceSimulator().addJoinPredecessorToGateway(this.getCurrentElement(), (BPMNAndGateway) successor);
 					if ((this.getInstanceSimulator().allPredecessorsOfGatewayVisited((BPMNAndGateway) successor))) {
 						this.getInstanceSimulator().resetGateway((BPMNAndGateway) successor);
 
@@ -176,8 +169,7 @@ public class PathSimulator {
 	}
 
 	private void addEventFromMonitorinPoint(final MonitoringPointStateTransition stateTransition) {
-		final MonitoringPoint monitoringPoint = this.getCurrentElement().getMonitoringPointByStateTransitionType(
-				stateTransition);
+		final MonitoringPoint monitoringPoint = this.getCurrentElement().getMonitoringPointByStateTransitionType(stateTransition);
 		if (monitoringPoint != null) {
 			this.newEvents.add(new EapEvent(monitoringPoint.getEventType(), this.getCurrentSimulationDate()));
 		}

@@ -13,7 +13,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
 
 /**
  * This class filters {@link EapEvent}s in the {@link EventPanel}.
- * 
+ *
  * @author micha
  */
 public class EventFilter extends AbstractFilter {
@@ -27,7 +27,7 @@ public class EventFilter extends AbstractFilter {
 	/**
 	 * Constructor for the class, which filters {@link EapEvent} in the
 	 * {@link EventPanel}.
-	 * 
+	 *
 	 * @param filterCriteria
 	 * @param filterCondition
 	 * @param filterValue

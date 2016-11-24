@@ -19,7 +19,7 @@ import de.hpi.unicorn.user.UserProvider;
 
 /**
  * A page to render a register form to register new users.
- * 
+ *
  * @author micha
  */
 public class RegisterPage extends AbstractEapPage {

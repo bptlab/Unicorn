@@ -35,10 +35,9 @@ import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.utils.XMLUtils;
 
 /**
- * 
  * Node for SusiTreeMap. Encapsulate Key/Value pair. Can have childnodes. Knows
  * parent node.
- * 
+ *
  * @param <K>
  * @param <V>
  */
@@ -46,21 +45,17 @@ import de.hpi.unicorn.utils.XMLUtils;
 @Table(name = "EventTransformationElement")
 public class EventTransformationElement<K, V> extends Persistable {
 
+	@Column(name = "MapKey", length = 255)
+	K key;
+	@Column(name = "MapValue", length = 15000)
+	V value;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int ID;
-
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	private EventTransformationElement<K, V> parent;
-
 	@OneToMany(cascade = CascadeType.PERSIST)
 	private List<EventTransformationElement<K, V>> children = new ArrayList<EventTransformationElement<K, V>>();
-
-	@Column(name = "MapKey", length = 255)
-	K key;
-
-	@Column(name = "MapValue", length = 15000)
-	V value;
 
 	public EventTransformationElement() {
 		this.ID = 0;
@@ -80,14 +75,32 @@ public class EventTransformationElement<K, V> extends Persistable {
 		}
 	}
 
+	public static List<TransformationTree> findAll() {
+		final Query q = Persistor.getEntityManager().createQuery("SELECT t from EventTransformationElement t");
+		return q.getResultList();
+	}
+
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM EventTransformationElement");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
 	/**
 	 * use this only if the EventTransformationElement is used as attribute
 	 * name/value mapping
-	 * 
+	 *
 	 * @return attribute name expression (examples: 'ETA' for first level
-	 *         attribute named 'ETA', 'vehicle_information.transport' for second
-	 *         level attribute named 'transport' which is child of
-	 *         'vehicle_information'
+	 * attribute named 'ETA', 'vehicle_information.transport' for second
+	 * level attribute named 'transport' which is child of
+	 * 'vehicle_information'
 	 */
 	public String getAttributeExpression() {
 		if (this.isRootElement()) {
@@ -98,7 +111,7 @@ public class EventTransformationElement<K, V> extends Persistable {
 
 	/**
 	 * converts the tree structure into typed XML nodes
-	 * 
+	 *
 	 * @return
 	 */
 	public Document getNodeWithChildnodes() {
@@ -196,24 +209,6 @@ public class EventTransformationElement<K, V> extends Persistable {
 	@Override
 	public String toString() {
 		return "TreeMapElement: [" + this.key + " -> " + this.value + "]";
-	}
-
-	public static List<TransformationTree> findAll() {
-		final Query q = Persistor.getEntityManager().createQuery("SELECT t from EventTransformationElement t");
-		return q.getResultList();
-	}
-
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM EventTransformationElement");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage());
-		}
 	}
 
 	@Override

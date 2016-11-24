@@ -15,19 +15,16 @@ import org.apache.wicket.model.LoadableDetachableModel;
 /**
  * This model provides a tree of
  * {@link ProcessInstanceMonitoringTreeTableElement}s.
- * 
+ *
  * @author micha
  */
-public class ProcessInstanceMonitoringTreeTableElementModel extends
-		LoadableDetachableModel<ProcessInstanceMonitoringTreeTableElement> {
+public class ProcessInstanceMonitoringTreeTableElementModel extends LoadableDetachableModel<ProcessInstanceMonitoringTreeTableElement> {
 
 	private static final long serialVersionUID = 1L;
 	private final int ID;
 	private final List<ProcessInstanceMonitoringTreeTableElement> treeNodes;
 
-	public ProcessInstanceMonitoringTreeTableElementModel(
-			final List<ProcessInstanceMonitoringTreeTableElement> treeNodes,
-			final ProcessInstanceMonitoringTreeTableElement node) {
+	public ProcessInstanceMonitoringTreeTableElementModel(final List<ProcessInstanceMonitoringTreeTableElement> treeNodes, final ProcessInstanceMonitoringTreeTableElement node) {
 		super(node);
 		this.treeNodes = treeNodes;
 		this.ID = node.getID();
@@ -55,8 +52,7 @@ public class ProcessInstanceMonitoringTreeTableElementModel extends
 		return super.hashCode();
 	}
 
-	private ProcessInstanceMonitoringTreeTableElement findTreeElement(
-			final Collection<ProcessInstanceMonitoringTreeTableElement> treeNodes, final int id) {
+	private ProcessInstanceMonitoringTreeTableElement findTreeElement(final Collection<ProcessInstanceMonitoringTreeTableElement> treeNodes, final int id) {
 		for (final ProcessInstanceMonitoringTreeTableElement treeElement : treeNodes) {
 			if (treeElement.getID() == id) {
 				return treeElement;

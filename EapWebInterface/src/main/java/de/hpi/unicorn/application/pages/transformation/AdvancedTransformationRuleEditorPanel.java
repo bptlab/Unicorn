@@ -44,15 +44,15 @@ import de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledge
 public class AdvancedTransformationRuleEditorPanel extends Panel {
 
 	private static final long serialVersionUID = -3517674159437927655L;
-	private TextField<String> transformationRuleNameTextField;
-	private String transformationRuleNameFromTree;
 	private final Form<Void> layoutForm;
-	private SelectTree<EventTreeElement<String>> transformationRuleTree;
-	private EventTree<String> transformationRuleTreeStructure;
 	private final TransformationPage transformationPage;
 	private final AdvancedTransformationRuleEditorPanel advancedRuleEditorPanel;
 	protected AttributeTreePanel attributeTreePanel;
 	protected PatternBuilderPanel patternBuilderPanel;
+	private TextField<String> transformationRuleNameTextField;
+	private String transformationRuleNameFromTree;
+	private SelectTree<EventTreeElement<String>> transformationRuleTree;
+	private EventTree<String> transformationRuleTreeStructure;
 
 	public AdvancedTransformationRuleEditorPanel(final String id, final TransformationPage transformationPage) {
 		super(id);
@@ -70,8 +70,7 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 	}
 
 	private void buildTextFields() {
-		this.transformationRuleNameTextField = new TextField<String>("transformationRuleNameTextField",
-				new PropertyModel<String>(this, "transformationRuleNameFromTree"));
+		this.transformationRuleNameTextField = new TextField<String>("transformationRuleNameTextField", new PropertyModel<String>(this, "transformationRuleNameFromTree"));
 		this.transformationRuleNameTextField.setOutputMarkupId(true);
 		this.layoutForm.add(this.transformationRuleNameTextField);
 	}
@@ -85,26 +84,16 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 
 				if (AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement() != null) {
-					final String eventTypeNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getParent().getValue().toString();
-					AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getValue().toString();
-					final TransformationRule transformationRule = TransformationRule.findByEventTypeAndTitle(
-							eventTypeNameFromTree,
-							AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree);
-					AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel
-							.setPatternTree(new TransformationPatternTree(transformationRule.getPatternTree()
-									.getElements()));
+					final String eventTypeNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getParent().getValue().toString();
+					AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getValue().toString();
+					final TransformationRule transformationRule = TransformationRule.findByEventTypeAndTitle(eventTypeNameFromTree, AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree);
+					AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel.setPatternTree(new TransformationPatternTree(transformationRule.getPatternTree().getElements()));
 					AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel.updatePatternTreeTable(target);
 					target.add(AdvancedTransformationRuleEditorPanel.this.transformationRuleNameTextField);
 					final EapEventType selectedEventType = transformationRule.getEventType();
-					AdvancedTransformationRuleEditorPanel.this.attributeTreePanel
-							.setSelectedEventType(selectedEventType);
-					target.add(AdvancedTransformationRuleEditorPanel.this.attributeTreePanel
-							.getEventTypeDropDownChoice());
-					AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.updateAttributeTreeTable(target,
-							transformationRule.getAttributeIdentifiersAndExpressions(),
-							transformationRule.getAttributeIdentifiersWithExternalKnowledge());
+					AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.setSelectedEventType(selectedEventType);
+					target.add(AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.getEventTypeDropDownChoice());
+					AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.updateAttributeTreeTable(target, transformationRule.getAttributeIdentifiersAndExpressions(), transformationRule.getAttributeIdentifiersWithExternalKnowledge());
 				}
 			}
 		};
@@ -116,12 +105,9 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				if (AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement() != null) {
-					final String eventTypeNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getParent().getValue().toString();
-					final String transformationRuleNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree
-							.getSelectedElement().getValue().toString();
-					AdvancedTransformationRuleEditorPanel.this.removeTransformationRule(eventTypeNameFromTree,
-							transformationRuleNameFromTree);
+					final String eventTypeNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getParent().getValue().toString();
+					final String transformationRuleNameFromTree = AdvancedTransformationRuleEditorPanel.this.transformationRuleTree.getSelectedElement().getValue().toString();
+					AdvancedTransformationRuleEditorPanel.this.removeTransformationRule(eventTypeNameFromTree, transformationRuleNameFromTree);
 					AdvancedTransformationRuleEditorPanel.this.renderOrUpdateTransformationRuleTree();
 					target.add(AdvancedTransformationRuleEditorPanel.this.transformationRuleTree);
 					AdvancedTransformationRuleEditorPanel.this.clearFields(target);
@@ -135,31 +121,19 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
-				final EapEventType selectedEventType = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel
-						.getSelectedEventType();
-				final Map<String, String> attributeIdentifiersAndExpressions = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel
-						.getAttributeIdentifiersAndExpressions();
-				final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel
-						.getAttributeIdentifiersWithExternalKnowledge();
-				final TransformationPatternTree patternTree = AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel
-						.getPatternTree();
+				final EapEventType selectedEventType = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.getSelectedEventType();
+				final Map<String, String> attributeIdentifiersAndExpressions = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.getAttributeIdentifiersAndExpressions();
+				final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge = AdvancedTransformationRuleEditorPanel.this.attributeTreePanel.getAttributeIdentifiersWithExternalKnowledge();
+				final TransformationPatternTree patternTree = AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel.getPatternTree();
 				try {
-					TransformationRuleLogic.getInstance().checkForValidity(selectedEventType,
-							AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree,
-							attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge, patternTree);
-					AdvancedTransformationRuleEditorPanel.this.saveTransformationRule(target, selectedEventType,
-							AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree,
-							attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge, patternTree);
+					TransformationRuleLogic.getInstance().checkForValidity(selectedEventType, AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree, attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge, patternTree);
+					AdvancedTransformationRuleEditorPanel.this.saveTransformationRule(target, selectedEventType, AdvancedTransformationRuleEditorPanel.this.transformationRuleNameFromTree, attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge, patternTree);
 					AdvancedTransformationRuleEditorPanel.this.clearFields(target);
 				} catch (final EPException e) {
-					AdvancedTransformationRuleEditorPanel.this.transformationPage
-							.getFeedbackPanel()
-							.error("Transformation rule could not be saved. Please check if you have provided the correct attributes for the pattern and in the attribute selection. Full error message: "
-									+ e.getMessage());
+					AdvancedTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error("Transformation rule could not be saved. Please check if you have provided the correct attributes for the pattern and in the attribute selection. Full error message: " + e.getMessage());
 					target.add(AdvancedTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel());
 				} catch (final RuntimeException e) {
-					AdvancedTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(
-							e.getMessage());
+					AdvancedTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel().error(e.getMessage());
 					target.add(AdvancedTransformationRuleEditorPanel.this.transformationPage.getFeedbackPanel());
 				}
 			}
@@ -175,30 +149,19 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 		this.attributeTreePanel.clear(target);
 	}
 
-	private void saveTransformationRule(final AjaxRequestTarget target, final EapEventType selectedEventType,
-			final String transformationRuleName, final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge,
-			final TransformationPatternTree patternTree) {
+	private void saveTransformationRule(final AjaxRequestTarget target, final EapEventType selectedEventType, final String transformationRuleName, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge, final TransformationPatternTree patternTree) {
 		if (TransformationRule.findByEventTypeAndTitle(selectedEventType.getTypeName(), transformationRuleName) != null) {
 			this.removeTransformationRule(selectedEventType.getTypeName(), transformationRuleName);
 		}
-		this.addTransformationRule(selectedEventType, transformationRuleName, attributeIdentifiersAndExpressions,
-				attributeIdentifiersWithExternalKnowledge, patternTree);
+		this.addTransformationRule(selectedEventType, transformationRuleName, attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge, patternTree);
 		this.renderOrUpdateTransformationRuleTree();
 		target.add(this.transformationRuleTree);
-		this.transformationPage.getFeedbackPanel().success(
-				"Saved transformation rule '" + transformationRuleName + "' for event type '"
-						+ selectedEventType.getTypeName() + "'.");
+		this.transformationPage.getFeedbackPanel().success("Saved transformation rule '" + transformationRuleName + "' for event type '" + selectedEventType.getTypeName() + "'.");
 		target.add(this.transformationPage.getFeedbackPanel());
 	}
 
-	protected void addTransformationRule(final EapEventType selectedEventType, final String transformationRuleName,
-			final Map<String, String> attributeIdentifiersAndExpressions,
-			final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge,
-			final TransformationPatternTree patternTree) throws EPException {
-		final TransformationRule transformationRule = TransformationRuleLogic.getInstance().createTransformationRule(
-				selectedEventType, transformationRuleName, patternTree, attributeIdentifiersAndExpressions,
-				attributeIdentifiersWithExternalKnowledge);
+	protected void addTransformationRule(final EapEventType selectedEventType, final String transformationRuleName, final Map<String, String> attributeIdentifiersAndExpressions, final Map<String, ExternalKnowledgeExpressionSet> attributeIdentifiersWithExternalKnowledge, final TransformationPatternTree patternTree) throws EPException {
+		final TransformationRule transformationRule = TransformationRuleLogic.getInstance().createTransformationRule(selectedEventType, transformationRuleName, patternTree, attributeIdentifiersAndExpressions, attributeIdentifiersWithExternalKnowledge);
 		Broker.getInstance().register(transformationRule);
 		transformationRule.save();
 		final String eventTypeName = selectedEventType.getTypeName();
@@ -222,21 +185,18 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 		this.transformationRuleTreeStructure = new EventTree<String>();
 		final List<TransformationRule> transformationRules = TransformationRule.findAll();
 		for (final TransformationRule transformationRule : transformationRules) {
-			this.addTransformationRuleToTreeStructure(transformationRule.getEventType().getTypeName(),
-					transformationRule.getTitle());
+			this.addTransformationRuleToTreeStructure(transformationRule.getEventType().getTypeName(), transformationRule.getTitle());
 		}
 		this.renderOrUpdateTransformationRuleTree();
 	}
 
 	private void renderOrUpdateTransformationRuleTree() {
-		this.transformationRuleTree = new SelectTree<EventTreeElement<String>>("transformationRuleTree",
-				new TreeProvider(this.generateNodesOfTransformationRuleTree()), new TreeExpansionModel()) {
+		this.transformationRuleTree = new SelectTree<EventTreeElement<String>>("transformationRuleTree", new TreeProvider(this.generateNodesOfTransformationRuleTree()), new TreeExpansionModel()) {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void select(final EventTreeElement<String> element,
-					final AbstractTree<EventTreeElement<String>> tree, final AjaxRequestTarget target) {
+			protected void select(final EventTreeElement<String> element, final AbstractTree<EventTreeElement<String>> tree, final AjaxRequestTarget target) {
 				// only the transformation rules are selectable
 				if (element.hasParent()) {
 					super.select(element, tree, target);
@@ -255,20 +215,17 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 			final EventTreeElement<String> rootElement = new EventTreeElement<String>(eventType);
 			treeElements.add(rootElement);
 			if (this.transformationRuleTreeStructure.hasChildren(eventType)) {
-				this.fillTreeLevel(rootElement, this.transformationRuleTreeStructure.getChildren(eventType),
-						this.transformationRuleTreeStructure);
+				this.fillTreeLevel(rootElement, this.transformationRuleTreeStructure.getChildren(eventType), this.transformationRuleTreeStructure);
 			}
 		}
 		return treeElements;
 	}
 
-	private void fillTreeLevel(final EventTreeElement<String> parent, final List<String> children,
-			final EventTree<String> transformationRuleTreeStructure) {
+	private void fillTreeLevel(final EventTreeElement<String> parent, final List<String> children, final EventTree<String> transformationRuleTreeStructure) {
 		for (final String newValue : children) {
 			final EventTreeElement<String> newElement = new EventTreeElement<String>(parent, newValue.toString());
 			if (transformationRuleTreeStructure.hasChildren(newValue)) {
-				this.fillTreeLevel(newElement, transformationRuleTreeStructure.getChildren(newValue),
-						transformationRuleTreeStructure);
+				this.fillTreeLevel(newElement, transformationRuleTreeStructure.getChildren(newValue), transformationRuleTreeStructure);
 			}
 		}
 	}
@@ -278,16 +235,14 @@ public class AdvancedTransformationRuleEditorPanel extends Panel {
 		tabs.add(new AbstractTab(new Model<String>("Build pattern")) {
 			@Override
 			public Panel getPanel(final String panelId) {
-				AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel = new PatternBuilderPanel(panelId,
-						AdvancedTransformationRuleEditorPanel.this.advancedRuleEditorPanel);
+				AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel = new PatternBuilderPanel(panelId, AdvancedTransformationRuleEditorPanel.this.advancedRuleEditorPanel);
 				return AdvancedTransformationRuleEditorPanel.this.patternBuilderPanel;
 			}
 		});
 		tabs.add(new AbstractTab(new Model<String>("Select attribute values")) {
 			@Override
 			public Panel getPanel(final String panelId) {
-				AdvancedTransformationRuleEditorPanel.this.attributeTreePanel = new AttributeTreePanel(panelId,
-						AdvancedTransformationRuleEditorPanel.this.advancedRuleEditorPanel);
+				AdvancedTransformationRuleEditorPanel.this.attributeTreePanel = new AttributeTreePanel(panelId, AdvancedTransformationRuleEditorPanel.this.advancedRuleEditorPanel);
 				return AdvancedTransformationRuleEditorPanel.this.attributeTreePanel;
 			}
 		});

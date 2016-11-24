@@ -35,23 +35,27 @@ import de.hpi.unicorn.utils.TestHelper;
  * This class tests the import of a BPMN process with intermediate events, the
  * creation of queries for this BPMN process and simulates the execution of the
  * process to monitor the execution.
- * 
+ *
  * @author micha
  */
 public class IntermediateTimerTest extends AbstractQueryCreationTest {
-
-	@Before
-	public void setup() {
-		Persistor.useTestEnviroment();
-		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/Pizzalieferung.bpmn20.xml";
-	}
 
 	public static void afterQueriesTests(final CorrelationProcess process) {
 		final BPMNQueryMonitor queryMonitor = BPMNQueryMonitor.getInstance();
 
 		Assert.assertNotNull(queryMonitor.getProcessMonitorForProcess(process));
-		Assert.assertTrue(queryMonitor.getProcessMonitorForProcess(process)
-				.getProcessInstances(ProcessInstanceStatus.Finished).size() == 3);
+		Assert.assertTrue(queryMonitor.getProcessMonitorForProcess(process).getProcessInstances(ProcessInstanceStatus.Finished).size() == 3);
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		AbstractMonitoringTest.resetDatabase();
+	}
+
+	@Before
+	public void setup() {
+		Persistor.useTestEnviroment();
+		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/Pizzalieferung.bpmn20.xml";
 	}
 
 	@Test
@@ -65,8 +69,7 @@ public class IntermediateTimerTest extends AbstractQueryCreationTest {
 	@Test
 	@Override
 	public void testQueryCreation() throws XMLParsingException, RuntimeException {
-		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer",
-				Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
+		this.queryCreationTemplateMethod(this.filePath, "MessageAndTimer", Arrays.asList(new TypeTreeNode("Location", AttributeTypeEnum.INTEGER)));
 		IntermediateTimerTest.afterQueriesTests(this.process);
 	}
 
@@ -119,10 +122,5 @@ public class IntermediateTimerTest extends AbstractQueryCreationTest {
 			}
 			Broker.getInstance().importEvents(TestHelper.createDummyEvents(eventType, 3));
 		}
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		AbstractMonitoringTest.resetDatabase();
 	}
 }

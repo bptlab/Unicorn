@@ -22,8 +22,7 @@ import org.apache.wicket.model.Model;
 import de.hpi.unicorn.application.components.table.model.AbstractDataProvider;
 import de.hpi.unicorn.persistence.Persistable;
 
-public class EapProvider<E extends Persistable> extends AbstractDataProvider implements
-		ISortableDataProvider<E, String> {
+public class EapProvider<E extends Persistable> extends AbstractDataProvider implements ISortableDataProvider<E, String> {
 
 	private static final long serialVersionUID = 1L;
 	protected List<E> entities;
@@ -79,12 +78,12 @@ public class EapProvider<E extends Persistable> extends AbstractDataProvider imp
 		return this.entities;
 	}
 
-	public List<E> getSelectedEntities() {
-		return this.selectedEntities;
-	}
-
 	public void setEntities(final List<E> entityList) {
 		this.entities = entityList;
+	}
+
+	public List<E> getSelectedEntities() {
+		return this.selectedEntities;
 	}
 
 	@Override

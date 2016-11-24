@@ -22,14 +22,14 @@ import de.hpi.unicorn.query.QueryTypeEnum;
 
 /**
  * This factory generates queries for loop components. <br>
- * 
+ *
  * @author micha
  */
 public class LoopQueryFactory extends AbstractPatternQueryFactory {
 
 	/**
 	 * Constructor to create loop queries with a query factory.
-	 * 
+	 *
 	 * @param patternQueryGenerator
 	 */
 	public LoopQueryFactory(final PatternQueryGenerator patternQueryGenerator) {
@@ -37,9 +37,7 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 	}
 
 	@Override
-	protected PatternQuery generateQuery(final AbstractBPMNElement element,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	protected PatternQuery generateQuery(final AbstractBPMNElement element, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		if (element instanceof Component) {
 			final Component component = (Component) element;
 			// Operator: UNTIL
@@ -49,11 +47,9 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 			final List<AbstractBPMNElement> untilConditionElements = this.getSuccessingMonitorableElement(component);
 			// QUERY bauen Elemente der Component (ein Polygon?) UNTIL
 			// (conditionElement1 OR conditionElement2 OR ...)
-			final PatternQuery query = new PatternQuery(this.generateQueryName("LOOP"), null, QueryTypeEnum.LIVE,
-					PatternQueryType.LOOP, this.orderElements(component));
+			final PatternQuery query = new PatternQuery(this.generateQueryName("LOOP"), null, QueryTypeEnum.LIVE, PatternQueryType.LOOP, this.orderElements(component));
 
-			final String queryString = this.generateLoopQueryString(component, untilConditionElements,
-					catchingMonitorableElement, query);
+			final String queryString = this.generateLoopQueryString(component, untilConditionElements, catchingMonitorableElement, query);
 
 			this.addQueryRelationship(parentQuery, query);
 			query.setEsperQuery(queryString);
@@ -78,10 +74,7 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 		}
 	}
 
-	private String generateLoopQueryString(final Component component,
-			final List<AbstractBPMNElement> untilConditionElements,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	private String generateLoopQueryString(final Component component, final List<AbstractBPMNElement> untilConditionElements, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		// EVERY (([1]S0=SmallSequence) UNTIL (EVERY U0=SecondEvent))
 		int elementsWithMonitoringPoints = 0;
 		final StringBuilder sequencePatternQueryString = new StringBuilder();
@@ -92,8 +85,7 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 			// Falls Element Component rekursiv tiefer aufrufen
 			final StringBuilder queryPart = new StringBuilder();
 			if (element instanceof Component) {
-				final PatternQuery subQuery = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(
-						element, catchingMonitorableElement, parentQuery);
+				final PatternQuery subQuery = new PatternQueryFactory(this.patternQueryGenerator).generateQuery(element, catchingMonitorableElement, parentQuery);
 				queryPart.append("[1] S" + elementsWithMonitoringPoints + "=");
 				queryPart.append(subQuery.getTitle());
 			} else {
@@ -127,8 +119,7 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 			sequencePatternQueryString.append(")))]");
 		} else {
 			sequencePatternQueryString.append(") " + EsperPatternOperators.XOR.operator + " EVERY C1=");
-			sequencePatternQueryString.append(catchingMonitorableElement.getMonitoringPoints().get(0).getEventType()
-					.getTypeName());
+			sequencePatternQueryString.append(catchingMonitorableElement.getMonitoringPoints().get(0).getEventType().getTypeName());
 			sequencePatternQueryString.append("))]");
 		}
 
@@ -155,8 +146,7 @@ public class LoopQueryFactory extends AbstractPatternQueryFactory {
 	private List<AbstractBPMNElement> getSuccessingMonitorableElement(final Component component) {
 		final Set<AbstractBPMNElement> successingMonitorableElements = new HashSet<AbstractBPMNElement>();
 		final Set<AbstractBPMNElement> visitedElements = new HashSet<AbstractBPMNElement>();
-		this.traverseSuccessingMonitorableElements(component.getExitPoint(), visitedElements,
-				successingMonitorableElements);
+		this.traverseSuccessingMonitorableElements(component.getExitPoint(), visitedElements, successingMonitorableElements);
 		return new ArrayList<AbstractBPMNElement>(successingMonitorableElements);
 	}
 

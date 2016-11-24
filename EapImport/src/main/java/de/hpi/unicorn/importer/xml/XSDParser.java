@@ -37,14 +37,13 @@ public class XSDParser extends AbstractXMLParser {
 	/**
 	 * Creates a new {@link EapEventType} with the given name from a XSD from
 	 * the given file path.
-	 * 
+	 *
 	 * @param filePath
 	 * @param eventTypeName
 	 * @return
 	 * @throws XMLParsingException
 	 */
-	public static EapEventType generateEventTypeFromXSD(final String filePath, final String eventTypeName)
-			throws XMLParsingException {
+	public static EapEventType generateEventTypeFromXSD(final String filePath, final String eventTypeName) throws XMLParsingException {
 
 		Document doc;
 		String xsd;
@@ -66,7 +65,7 @@ public class XSDParser extends AbstractXMLParser {
 	/**
 	 * Creates a new {@link EapEventType} with the given name from a XSD from
 	 * the given document.
-	 * 
+	 *
 	 * @param doc
 	 * @param schemaName
 	 * @return
@@ -107,15 +106,14 @@ public class XSDParser extends AbstractXMLParser {
 	/**
 	 * Creates a new {@link EapEventType} with the given name from a XSD from
 	 * the given document.
-	 * 
+	 *
 	 * @param xsd
 	 * @param schemaName
 	 * @param timestampName
 	 * @return
 	 * @throws UnparsableException
 	 */
-	public static EapEventType generateEventType(final String xsd, final String schemaName, final String timestampName)
-			throws UnparsableException {
+	public static EapEventType generateEventType(final String xsd, final String schemaName, final String timestampName) throws UnparsableException {
 		final Document doc = XMLParser.XMLStringToDoc(xsd);
 		if (doc == null) {
 			throw new UnparsableException(ParseType.EVENT_TYPE);
@@ -134,14 +132,13 @@ public class XSDParser extends AbstractXMLParser {
 
 	/**
 	 * Creates a {@link AttributeTypeTree} for the given nodes.
-	 * 
+	 *
 	 * @param actualRootElement
 	 * @param realRootElement
 	 * @param realRootAttribute
 	 * @return
 	 */
-	private static AttributeTypeTree addChildElementsFromElement(final Node actualRootElement,
-			final Node realRootElement, final TypeTreeNode realRootAttribute) {
+	private static AttributeTypeTree addChildElementsFromElement(final Node actualRootElement, final Node realRootElement, final TypeTreeNode realRootAttribute) {
 		final NodeList childNodeList = actualRootElement.getChildNodes();
 		for (int i = 0; i < childNodeList.getLength(); i++) {
 			final Node childNode = childNodeList.item(i);
@@ -159,26 +156,18 @@ public class XSDParser extends AbstractXMLParser {
 						// found
 						attributeType = AttributeTypeEnum.STRING;
 					} else {
-						if (xsElementType.toLowerCase().equals("xs:date")
-								|| xsElementType.toLowerCase().equals("xs:datetime")
-								|| xsElementType.toLowerCase().equals("xs:time")) {
+						if (xsElementType.toLowerCase().equals("xs:date") || xsElementType.toLowerCase().equals("xs:datetime") || xsElementType.toLowerCase().equals("xs:time")) {
 							attributeType = AttributeTypeEnum.DATE;
-						} else if (xsElementType.toLowerCase().equals("xs:byte")
-								|| xsElementType.toLowerCase().equals("xs:decimal")
-								|| xsElementType.toLowerCase().equals("xs:int")
-								|| xsElementType.toLowerCase().equals("xs:integer")
-								|| xsElementType.toLowerCase().equals("xs:long")) {
+						} else if (xsElementType.toLowerCase().equals("xs:byte") || xsElementType.toLowerCase().equals("xs:decimal") || xsElementType.toLowerCase().equals("xs:int") || xsElementType.toLowerCase().equals("xs:integer") || xsElementType.toLowerCase().equals("xs:long")) {
 							attributeType = AttributeTypeEnum.INTEGER;
-						} else if (xsElementType.toLowerCase().equals("xs:double")
-								|| xsElementType.toLowerCase().equals("xs:float")) {
+						} else if (xsElementType.toLowerCase().equals("xs:double") || xsElementType.toLowerCase().equals("xs:float")) {
 							attributeType = AttributeTypeEnum.FLOAT;
 						} else {
 							attributeType = AttributeTypeEnum.STRING;
 						}
 					}
 					TypeTreeNode newAttribute;
-					final String attributeName = childNode.getAttributes().getNamedItem("name").getNodeValue().trim()
-							.replaceAll(" +", "_").replaceAll("[^a-zA-Z0-9_]+", "");
+					final String attributeName = childNode.getAttributes().getNamedItem("name").getNodeValue().trim().replaceAll(" +", "_").replaceAll("[^a-zA-Z0-9_]+", "");
 					if (realRootElement == null) {
 						newAttribute = new TypeTreeNode(attributeName, attributeType);
 						XSDParser.eventTree.addRoot(newAttribute);

@@ -55,17 +55,16 @@ import de.hpi.unicorn.transformation.element.PatternOperatorEnum;
 public class PatternBuilderPanel extends Panel {
 
 	private static final long serialVersionUID = -3517674159437927655L;
-	private EapEventType selectedEventType;
 	private final Form<Void> layoutForm;
+	private final TreeTableProvider<Serializable> patternTreeTableProvider;
+	private final PatternBuilderPanel patternBuilderPanel;
+	private final AdvancedTransformationRuleEditorPanel advancedRuleEditorPanel;
+	private EapEventType selectedEventType;
 	private DropDownChoice<PatternOperatorEnum> patternOperatorDropDownChoice;
 	private PatternOperatorEnum selectedPatternOperator;
 	private DropDownChoice<EapEventType> eventTypeDropDownChoice;
-	private final TreeTableProvider<Serializable> patternTreeTableProvider;
 	private PatternElementTreeTable patternTreeTable;
-
 	private TransformationPatternTree patternTree;
-	private final PatternBuilderPanel patternBuilderPanel;
-	private final AdvancedTransformationRuleEditorPanel advancedRuleEditorPanel;
 	private DropDownChoice<FilterExpressionConnectorEnum> filterExpressionConnectorDropDownChoice;
 	private FilterExpressionConnectorEnum filterExpressionConnector;
 
@@ -91,25 +90,20 @@ public class PatternBuilderPanel extends Panel {
 	private void buildEventTypeDropDownChoice() {
 
 		final List<EapEventType> eventTypes = EapEventType.findAll();
-		this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice",
-				new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
+		this.eventTypeDropDownChoice = new DropDownChoice<EapEventType>("eventTypeDropDownChoice", new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
 		this.eventTypeDropDownChoice.setOutputMarkupId(true);
 		this.layoutForm.add(this.eventTypeDropDownChoice);
 	}
 
 	private void buildPatternOperatorDropDownChoice() {
-		this.patternOperatorDropDownChoice = new DropDownChoice<PatternOperatorEnum>("patternOperatorDropDownChoice",
-				new PropertyModel<PatternOperatorEnum>(this, "selectedPatternOperator"),
-				Arrays.asList(PatternOperatorEnum.values()));
+		this.patternOperatorDropDownChoice = new DropDownChoice<PatternOperatorEnum>("patternOperatorDropDownChoice", new PropertyModel<PatternOperatorEnum>(this, "selectedPatternOperator"), Arrays.asList(PatternOperatorEnum.values()));
 		this.patternOperatorDropDownChoice.setOutputMarkupId(true);
 		this.patternOperatorDropDownChoice.setEnabled(false);
 		this.layoutForm.add(this.patternOperatorDropDownChoice);
 	}
 
 	private void buildFilterExpressionConnectorDropDownChoice() {
-		this.filterExpressionConnectorDropDownChoice = new DropDownChoice<FilterExpressionConnectorEnum>(
-				"filterExpressionConnectorDropDownChoice", new PropertyModel<FilterExpressionConnectorEnum>(this,
-						"filterExpressionConnector"), Arrays.asList(FilterExpressionConnectorEnum.values()));
+		this.filterExpressionConnectorDropDownChoice = new DropDownChoice<FilterExpressionConnectorEnum>("filterExpressionConnectorDropDownChoice", new PropertyModel<FilterExpressionConnectorEnum>(this, "filterExpressionConnector"), Arrays.asList(FilterExpressionConnectorEnum.values()));
 		this.filterExpressionConnectorDropDownChoice.setOutputMarkupId(true);
 		this.filterExpressionConnectorDropDownChoice.setEnabled(false);
 		this.layoutForm.add(this.filterExpressionConnectorDropDownChoice);
@@ -124,29 +118,18 @@ public class PatternBuilderPanel extends Panel {
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
 				EventTreeElement<Serializable> newTreeElement;
 				Iterator<EventTreeElement<Serializable>> iterator;
-				if (PatternBuilderPanel.this.eventTypeDropDownChoice.isEnabled()
-						&& PatternBuilderPanel.this.selectedEventType != null) {
-					newTreeElement = new EventTypeElement(
-							PatternBuilderPanel.this.patternTreeTableProvider.getNextID(),
-							PatternBuilderPanel.this.selectedEventType);
+				if (PatternBuilderPanel.this.eventTypeDropDownChoice.isEnabled() && PatternBuilderPanel.this.selectedEventType != null) {
+					newTreeElement = new EventTypeElement(PatternBuilderPanel.this.patternTreeTableProvider.getNextID(), PatternBuilderPanel.this.selectedEventType);
 					if (PatternBuilderPanel.this.patternTreeTable.getSelectedElements().isEmpty()) {
 						PatternBuilderPanel.this.patternTree.addElement(newTreeElement);
-						PatternBuilderPanel.this.patternTreeTableProvider
-								.setRootElements(PatternBuilderPanel.this.patternTree.getRoots());
-						target.add(PatternBuilderPanel.this.advancedRuleEditorPanel.getAttributeTreePanel()
-								.getAttributeTreeTable());
+						PatternBuilderPanel.this.patternTreeTableProvider.setRootElements(PatternBuilderPanel.this.patternTree.getRoots());
+						target.add(PatternBuilderPanel.this.advancedRuleEditorPanel.getAttributeTreePanel().getAttributeTreeTable());
 					}
 				} else {
-					if (PatternBuilderPanel.this.patternOperatorDropDownChoice.isEnabled()
-							&& PatternBuilderPanel.this.selectedPatternOperator != null) {
-						newTreeElement = new PatternOperatorElement(
-								PatternBuilderPanel.this.patternTreeTableProvider.getNextID(),
-								PatternBuilderPanel.this.selectedPatternOperator);
-					} else if (PatternBuilderPanel.this.filterExpressionConnectorDropDownChoice.isEnabled()
-							&& PatternBuilderPanel.this.filterExpressionConnector != null) {
-						newTreeElement = new FilterExpressionConnectorElement(
-								PatternBuilderPanel.this.patternTreeTableProvider.getNextID(),
-								PatternBuilderPanel.this.filterExpressionConnector);
+					if (PatternBuilderPanel.this.patternOperatorDropDownChoice.isEnabled() && PatternBuilderPanel.this.selectedPatternOperator != null) {
+						newTreeElement = new PatternOperatorElement(PatternBuilderPanel.this.patternTreeTableProvider.getNextID(), PatternBuilderPanel.this.selectedPatternOperator);
+					} else if (PatternBuilderPanel.this.filterExpressionConnectorDropDownChoice.isEnabled() && PatternBuilderPanel.this.filterExpressionConnector != null) {
+						newTreeElement = new FilterExpressionConnectorElement(PatternBuilderPanel.this.patternTreeTableProvider.getNextID(), PatternBuilderPanel.this.filterExpressionConnector);
 					} else {
 						return;
 					}
@@ -164,8 +147,7 @@ public class PatternBuilderPanel extends Panel {
 						}
 					}
 					PatternBuilderPanel.this.patternTree.addElement(newTreeElement);
-					PatternBuilderPanel.this.patternTreeTableProvider
-							.setRootElements(PatternBuilderPanel.this.patternTree.getRoots());
+					PatternBuilderPanel.this.patternTreeTableProvider.setRootElements(PatternBuilderPanel.this.patternTree.getRoots());
 				}
 
 				PatternBuilderPanel.this.patternTreeTable.getSelectedElements().clear();
@@ -212,13 +194,11 @@ public class PatternBuilderPanel extends Panel {
 
 		final List<IColumn<EventTreeElement<Serializable>, String>> columns = this.createColumns();
 
-		this.patternTreeTable = new PatternElementTreeTable("patternTreeTable", columns, this.patternTreeTableProvider,
-				Integer.MAX_VALUE, new TreeExpansionModel<Serializable>(), this);
+		this.patternTreeTable = new PatternElementTreeTable("patternTreeTable", columns, this.patternTreeTableProvider, Integer.MAX_VALUE, new TreeExpansionModel<Serializable>(), this);
 
 		this.patternTreeTable.setOutputMarkupId(true);
 		TreeExpansion.get().expandAll();
-		this.patternTreeTable.getTable().addTopToolbar(
-				new HeadersToolbar<String>(this.patternTreeTable.getTable(), this.patternTreeTableProvider));
+		this.patternTreeTable.getTable().addTopToolbar(new HeadersToolbar<String>(this.patternTreeTable.getTable(), this.patternTreeTableProvider));
 
 		this.layoutForm.addOrReplace(this.patternTreeTable);
 	}
@@ -235,8 +215,7 @@ public class PatternBuilderPanel extends Panel {
 				final Object treeTableElement = rowModel.getObject();
 				if (treeTableElement instanceof EventTypeElement) {
 					final EventTypeElement eventTypeElement = (EventTypeElement) treeTableElement;
-					cellItem.add(new EventTypeAliasPanel(componentId, eventTypeElement,
-							PatternBuilderPanel.this.advancedRuleEditorPanel));
+					cellItem.add(new EventTypeAliasPanel(componentId, eventTypeElement, PatternBuilderPanel.this.advancedRuleEditorPanel));
 				} else {
 					cellItem.add(new Label(componentId));
 				}
@@ -250,23 +229,18 @@ public class PatternBuilderPanel extends Panel {
 				final Object treeTableElement = rowModel.getObject();
 				if (treeTableElement instanceof EventTypeElement) {
 					final EventTypeElement eventTypeElement = (EventTypeElement) treeTableElement;
-					cellItem.add(new EventTypeElementOptionsPanel(componentId, eventTypeElement,
-							PatternBuilderPanel.this.patternTree, PatternBuilderPanel.this.patternTreeTableProvider,
-							PatternBuilderPanel.this.patternTreeTable, PatternBuilderPanel.this.patternBuilderPanel));
+					cellItem.add(new EventTypeElementOptionsPanel(componentId, eventTypeElement, PatternBuilderPanel.this.patternTree, PatternBuilderPanel.this.patternTreeTableProvider, PatternBuilderPanel.this.patternTreeTable, PatternBuilderPanel.this.patternBuilderPanel));
 				} else if (treeTableElement instanceof FilterExpressionElement) {
 					final FilterExpressionElement filterExpressionElement = (FilterExpressionElement) treeTableElement;
-					cellItem.add(new FilterExpressionPanel(componentId, filterExpressionElement,
-							PatternBuilderPanel.this.patternBuilderPanel));
+					cellItem.add(new FilterExpressionPanel(componentId, filterExpressionElement, PatternBuilderPanel.this.patternBuilderPanel));
 				} else if (treeTableElement instanceof PatternOperatorElement) {
 					final PatternOperatorElement poElement = (PatternOperatorElement) treeTableElement;
 					if (poElement.getValue() == PatternOperatorEnum.UNTIL) {
 						cellItem.add(new UntilPatternOperatorRangePanel(componentId, poElement));
 					} else if (poElement.getValue() == PatternOperatorEnum.REPEAT) {
-						cellItem.add(new RepeatPatternOperatorRangePanel(componentId, poElement,
-								PatternBuilderPanel.this.advancedRuleEditorPanel));
+						cellItem.add(new RepeatPatternOperatorRangePanel(componentId, poElement, PatternBuilderPanel.this.advancedRuleEditorPanel));
 					} else if (poElement.getValue() == PatternOperatorEnum.EVERY_DISTINCT) {
-						cellItem.add(new EveryDistinctPatternOperatorPanel(componentId, poElement,
-								PatternBuilderPanel.this.advancedRuleEditorPanel));
+						cellItem.add(new EveryDistinctPatternOperatorPanel(componentId, poElement, PatternBuilderPanel.this.advancedRuleEditorPanel));
 					} else {
 						cellItem.add(new Label(componentId));
 					}
@@ -279,10 +253,8 @@ public class PatternBuilderPanel extends Panel {
 		columns.add(new AbstractColumn<EventTreeElement<Serializable>, String>(new Model("")) {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
-				final EventTreeElement<Serializable> treeTableElement = (EventTreeElement<Serializable>) rowModel
-						.getObject();
-				cellItem.add(new ElementOptionsPanel(componentId, treeTableElement,
-						PatternBuilderPanel.this.patternBuilderPanel));
+				final EventTreeElement<Serializable> treeTableElement = (EventTreeElement<Serializable>) rowModel.getObject();
+				cellItem.add(new ElementOptionsPanel(componentId, treeTableElement, PatternBuilderPanel.this.patternBuilderPanel));
 			}
 		});
 
@@ -307,8 +279,7 @@ public class PatternBuilderPanel extends Panel {
 			this.filterExpressionConnectorDropDownChoice.setEnabled(false);
 		} else if (numberOfSelectedElements == 1) {
 			firstSelectedElement = this.patternTreeTable.getSelectedElements().iterator().next();
-			if (firstSelectedElement instanceof FilterExpressionElement
-					|| firstSelectedElement instanceof FilterExpressionConnectorElement) {
+			if (firstSelectedElement instanceof FilterExpressionElement || firstSelectedElement instanceof FilterExpressionConnectorElement) {
 				connectors = FilterExpressionConnectorEnum.getUnaryOperators();
 				this.filterExpressionConnectorDropDownChoice.setChoices(connectors);
 				this.filterExpressionConnectorDropDownChoice.setEnabled(true);
@@ -322,8 +293,7 @@ public class PatternBuilderPanel extends Panel {
 			this.eventTypeDropDownChoice.setEnabled(false);
 		} else if (numberOfSelectedElements == 2) {
 			firstSelectedElement = this.patternTreeTable.getSelectedElements().iterator().next();
-			if (firstSelectedElement instanceof FilterExpressionElement
-					|| firstSelectedElement instanceof FilterExpressionConnectorElement) {
+			if (firstSelectedElement instanceof FilterExpressionElement || firstSelectedElement instanceof FilterExpressionConnectorElement) {
 				connectors = FilterExpressionConnectorEnum.getBinaryOperators();
 				this.filterExpressionConnectorDropDownChoice.setChoices(connectors);
 				this.filterExpressionConnectorDropDownChoice.setEnabled(true);

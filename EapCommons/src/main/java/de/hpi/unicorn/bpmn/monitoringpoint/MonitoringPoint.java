@@ -28,7 +28,7 @@ import de.hpi.unicorn.persistence.Persistor;
  * A monitoring point is a binding between a monitorable
  * {@link AbstractBPMNElement} and a {@link EapEventType} to monitor the
  * execution of a BPMN process with Esper.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -55,11 +55,23 @@ public class MonitoringPoint extends Persistable {
 		this.ID = 0;
 	}
 
-	public MonitoringPoint(final EapEventType eventType, final MonitoringPointStateTransition stateTransitionType,
-			final String condition) {
+	public MonitoringPoint(final EapEventType eventType, final MonitoringPointStateTransition stateTransitionType, final String condition) {
 		this.eventType = eventType;
 		this.monitoringPointstateTransitionType = stateTransitionType;
 		this.condition = condition;
+	}
+
+	/**
+	 * Returns all monitoring points from the database, which belong to the
+	 * given event type.
+	 *
+	 * @param eventType
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<MonitoringPoint> findByEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM MonitoringPoint WHERE EVENTTYPE_ID = '" + eventType.getID() + "'", MonitoringPoint.class);
+		return query.getResultList();
 	}
 
 	public MonitoringPointStateTransition getStateTransitionType() {
@@ -94,21 +106,6 @@ public class MonitoringPoint extends Persistable {
 	@Override
 	public String toString() {
 		return "MonitoringPoint: " + this.getStateTransitionType();
-	}
-
-	/**
-	 * Returns all monitoring points from the database, which belong to the
-	 * given event type.
-	 * 
-	 * @param eventType
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<MonitoringPoint> findByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager()
-				.createNativeQuery("SELECT * FROM MonitoringPoint WHERE EVENTTYPE_ID = '" + eventType.getID() + "'",
-						MonitoringPoint.class);
-		return query.getResultList();
 	}
 
 }

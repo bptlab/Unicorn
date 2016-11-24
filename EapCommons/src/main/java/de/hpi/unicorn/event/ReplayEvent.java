@@ -21,14 +21,10 @@ public class ReplayEvent extends EapEvent {
 		super(eventType, timestamp, values);
 	}
 
-	public void setOffset(Long offset) {
-		this.offset = offset;
-	}
-
 	/**
 	 * Returns the offset of this ReplayEvent. Prints a warning and returns 0 if
 	 * offset was not set before.
-	 * 
+	 *
 	 * @return the offset
 	 */
 	public Long getOffset() {
@@ -40,9 +36,13 @@ public class ReplayEvent extends EapEvent {
 		}
 	}
 
+	public void setOffset(Long offset) {
+		this.offset = offset;
+	}
+
 	/**
 	 * Returns the timestamp of this ReplayEvent as milliseconds
-	 * 
+	 *
 	 * @return Long
 	 */
 	public Long getTime() {

@@ -20,7 +20,7 @@ public enum PatternOperatorEnum {
 	/**
 	 * Method to retrieve possible pattern operators for one event type (unary
 	 * operators).
-	 * 
+	 *
 	 * @return list of unary operators
 	 */
 	public static List<PatternOperatorEnum> getUnaryOperators() {
@@ -30,7 +30,7 @@ public enum PatternOperatorEnum {
 	/**
 	 * Method to retrieve possible pattern operators for two event types (binary
 	 * operators).
-	 * 
+	 *
 	 * @return list of binary operators
 	 */
 	public static List<PatternOperatorEnum> getBinaryOperators() {

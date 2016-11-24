@@ -29,6 +29,15 @@ public class BPMNTreeTableExpansion implements Set<BPMNTreeTableElement>, Serial
 	private final Set<Integer> IDs = new HashSet<Integer>();
 	private boolean inverse;
 
+	public static BPMNTreeTableExpansion get() {
+		BPMNTreeTableExpansion expansion = Session.get().getMetaData(BPMNTreeTableExpansion.KEY);
+		if (expansion == null) {
+			expansion = new BPMNTreeTableExpansion();
+			Session.get().setMetaData(BPMNTreeTableExpansion.KEY, expansion);
+		}
+		return expansion;
+	}
+
 	public void expandAll() {
 		this.IDs.clear();
 		this.inverse = true;
@@ -124,14 +133,5 @@ public class BPMNTreeTableExpansion implements Set<BPMNTreeTableElement>, Serial
 	@Override
 	public void clear() {
 		throw new UnsupportedOperationException();
-	}
-
-	public static BPMNTreeTableExpansion get() {
-		BPMNTreeTableExpansion expansion = Session.get().getMetaData(BPMNTreeTableExpansion.KEY);
-		if (expansion == null) {
-			expansion = new BPMNTreeTableExpansion();
-			Session.get().setMetaData(BPMNTreeTableExpansion.KEY, expansion);
-		}
-		return expansion;
 	}
 }

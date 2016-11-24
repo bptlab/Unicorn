@@ -50,19 +50,6 @@ import de.hpi.unicorn.utils.DateUtils;
 public class CorrelationProcessInstance extends Persistable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue
-	private int ID;
-
-	@ManyToMany(cascade = CascadeType.MERGE)
-	private List<EapEvent> events;
-
-	// @ManyToOne(cascade=CascadeType.ALL)
-	// @JoinColumn(name="MapTreeID")
-	// private TransformationTree<String, Serializable>
-	// correlationAttributesAndValues;
-
 	@ElementCollection
 	@MapKeyColumn(name = "ATTRIBUTE")
 	@Column(name = "VALUE")
@@ -70,7 +57,16 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 	// @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
 	// @MapKeyColumn(name="attributeExpression")
 	protected Map<String, String> correlationAttributesAndValues;
+	@Id
+	@GeneratedValue
+	private int ID;
 
+	// @ManyToOne(cascade=CascadeType.ALL)
+	// @JoinColumn(name="MapTreeID")
+	// private TransformationTree<String, Serializable>
+	// correlationAttributesAndValues;
+	@ManyToMany(cascade = CascadeType.MERGE)
+	private List<EapEvent> events;
 	@OneToOne(cascade = CascadeType.MERGE)
 	private EapEvent timerEvent;
 
@@ -88,143 +84,37 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 
 	/**
 	 * Constructor
-	 * 
-	 * @param correlationAttributesAndValues
-	 *            map of attribute keys and values - key must be the expression
-	 *            of the attribute (e.g. location for a root attribute,
-	 *            vehicle_information.railway for a second level attribute with
-	 *            vehicle_information as parent)
+	 *
+	 * @param correlationAttributesAndValues map of attribute keys and values - key must be the expression
+	 *                                       of the attribute (e.g. location for a root attribute,
+	 *                                       vehicle_information.railway for a second level attribute with
+	 *                                       vehicle_information as parent)
 	 */
 	public CorrelationProcessInstance(final Map<String, Serializable> correlationAttributesAndValues) {
 		this();
-		this.correlationAttributesAndValues = ConversionUtils
-				.getValuesConvertedToString(correlationAttributesAndValues);
-	}
-
-	/**
-	 * Returns the associated {@link EapEvent}s.
-	 * 
-	 * @return
-	 */
-	public List<EapEvent> getEvents() {
-		return this.events;
-	}
-
-	/**
-	 * Sets the associated {@link EapEvent}s.
-	 * 
-	 * @return
-	 */
-	public void setEvents(final List<EapEvent> events) {
-		this.events = events;
-	}
-
-	/**
-	 * Adds an {@link EapEvent} to the associated events.
-	 * 
-	 * @return
-	 */
-	public boolean addEvent(final EapEvent event) {
-		if (!this.events.contains(event)) {
-			return this.events.add(event);
-		}
-		return false;
-	}
-
-	/**
-	 * Removes an {@link EapEvent} from the associated events.
-	 * 
-	 * @return
-	 */
-	public boolean removeEvent(final EapEvent event) {
-		return this.events.remove(event);
-	}
-
-	@Override
-	public int getID() {
-		return this.ID;
-	}
-
-	public void setID(final int iD) {
-		this.ID = iD;
-	}
-
-	/**
-	 * Must not add values to the returned map - use
-	 * addCorrelationAttributeAndValue(...) instead!
-	 * 
-	 * @return
-	 */
-	public Map<String, Serializable> getCorrelationAttributesAndValues() {
-		List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
-		if (this.getProcess().getCorrelationAttributes() != null
-				&& !this.getProcess().getCorrelationAttributes().isEmpty()) {
-			attributes = this.getProcess().getCorrelationAttributes();
-		} else { // using correlation rules
-			for (final CorrelationRule rule : this.getProcess().getCorrelationRules()) {
-				attributes.add(rule.getFirstAttribute());
-				attributes.add(rule.getSecondAttribute());
-			}
-		}
-		return ConversionUtils.getValuesConvertedToSerializable(attributes, this.correlationAttributesAndValues);
-	}
-
-	public void addCorrelationAttributeAndValue(final String correlationAttribute, final Serializable correlationValue) {
-		final Map<String, Serializable> valuesToBeConverted = new HashMap<String, Serializable>();
-		valuesToBeConverted.put(correlationAttribute, correlationValue);
-		final Map<String, String> valuesToBeAdded = ConversionUtils.getValuesConvertedToString(valuesToBeConverted);
-		this.correlationAttributesAndValues.putAll(valuesToBeAdded);
-	}
-
-	public void addCorrelationAttributesAndValues(final Map<String, Serializable> correlationAttributesAndValues) {
-		final Map<String, String> valuesToBeAdded = ConversionUtils
-				.getValuesConvertedToString(correlationAttributesAndValues);
-		this.correlationAttributesAndValues.putAll(valuesToBeAdded);
-	}
-
-	public void setCorrelationAttributesAndValues(final Map<String, Serializable> correlationAttributesAndValues) {
-		this.correlationAttributesAndValues = ConversionUtils
-				.getValuesConvertedToString(correlationAttributesAndValues);
-	}
-
-	/**
-	 * Returns the {@link CorrelationProcess} for this instance of it from the
-	 * database.
-	 * 
-	 * @return
-	 */
-	public CorrelationProcess getProcess() {
-		final List<CorrelationProcess> processes = CorrelationProcess.findByProcessInstanceID(this.ID);
-		if (!processes.isEmpty()) {
-			return CorrelationProcess.findByProcessInstanceID(this.ID).get(0);
-		}
-		return null;
+		this.correlationAttributesAndValues = ConversionUtils.getValuesConvertedToString(correlationAttributesAndValues);
 	}
 
 	/**
 	 * Returns all {@link CorrelationProcessInstance}s from the database.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findAll() {
-		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM ProcessInstance",
-				CorrelationProcessInstance.class);
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM ProcessInstance", CorrelationProcessInstance.class);
 		return q.getResultList();
 	}
 
 	/**
 	 * Returns all {@link CorrelationProcessInstance}s from the database, which
 	 * have the given correlation attribute.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByCorrelationAttribute(final String correlationAttribute) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM ProcessInstance " + "WHERE ID IN "
-						+ "(SELECT PROCESSINSTANCE_ID IN CorrelationValues WHERE " + "ATTRIBUTE = '"
-						+ correlationAttribute + "')", CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM ProcessInstance " + "WHERE ID IN " + "(SELECT PROCESSINSTANCE_ID IN CorrelationValues WHERE " + "ATTRIBUTE = '" + correlationAttribute + "')", CorrelationProcessInstance.class);
 		// "SELECT * " +
 		// "FROM ProcessInstance " +
 		// "WHERE MapTreeID IN (" +
@@ -245,21 +135,17 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 	/**
 	 * Returns all {@link CorrelationProcessInstance}s from the database, which
 	 * have the given correlation attribute and associate value.
-	 * 
+	 *
 	 * @return
 	 */
-	public static List<CorrelationProcessInstance> findByCorrelationAttributeAndValue(
-			final String correlationAttribute, final Serializable correlationValue) {
+	public static List<CorrelationProcessInstance> findByCorrelationAttributeAndValue(final String correlationAttribute, final Serializable correlationValue) {
 		String valueQueryString = new String();
 		if (correlationValue instanceof Date) {
 			valueQueryString = " AND VALUE = '" + DateUtils.getFormatter().format((Date) correlationValue) + "')";
 		} else {
 			valueQueryString = " AND VALUE = '" + correlationValue + "')";
 		}
-		Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM ProcessInstance" + "WHERE ID IN "
-						+ "(SELECT PROCESSINSTANCE_ID IN CorrelationValues WHERE " + "ATTRIBUTE = '"
-						+ correlationAttribute + "'" + valueQueryString, CorrelationProcessInstance.class);
+		Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM ProcessInstance" + "WHERE ID IN " + "(SELECT PROCESSINSTANCE_ID IN CorrelationValues WHERE " + "ATTRIBUTE = '" + correlationAttribute + "'" + valueQueryString, CorrelationProcessInstance.class);
 		// "Select * FROM ProcessInstance " +
 		// "WHERE MapTreeID IN (" +
 		// "SELECT TransformationMapTree_TransformationMapID " +
@@ -287,14 +173,12 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 	/**
 	 * Returns the {@link CorrelationProcessInstance} from the database, which
 	 * has the given ID, if any.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static CorrelationProcessInstance findByID(final int ID) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID = '" + ID + "'",
-				CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID = '" + ID + "'", CorrelationProcessInstance.class);
 		final List<CorrelationProcessInstance> processInstances = query.getResultList();
 		if (!processInstances.isEmpty()) {
 			return processInstances.get(0);
@@ -305,82 +189,50 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByIDGreaterThan(final int ID) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID > '" + ID + "'",
-				CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID > '" + ID + "'", CorrelationProcessInstance.class);
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByIDLessThan(final int ID) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID < '" + ID + "'",
-				CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID < '" + ID + "'", CorrelationProcessInstance.class);
 		return query.getResultList();
 	}
 
 	/**
 	 * Returns all {@link CorrelationProcessInstance}es from the database, which
 	 * contain the given {@link EapEvent}.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByContainedEvent(final EapEvent event) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID IN (" + "Select processInstances_ID "
-						+ "FROM ProcessInstance_Event " + "WHERE events_ID = '" + event.getID() + "')",
-				CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID IN (" + "Select processInstances_ID " + "FROM ProcessInstance_Event " + "WHERE events_ID = '" + event.getID() + "')", CorrelationProcessInstance.class);
 		return query.getResultList();
 	}
 
 	/**
 	 * Returns all {@link CorrelationProcessInstance}es from the database, which
 	 * are associated to the given {@link CorrelationProcess}.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByProcess(final CorrelationProcess process) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM ProcessInstance " + "WHERE ID IN (" + "Select processInstances_ID "
-						+ "FROM Process_ProcessInstance " + "WHERE CorrelationProcess_ID = '" + process.getID() + "')",
-				CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM ProcessInstance " + "WHERE ID IN (" + "Select processInstances_ID " + "FROM Process_ProcessInstance " + "WHERE CorrelationProcess_ID = '" + process.getID() + "')", CorrelationProcessInstance.class);
 		return query.getResultList();
 	}
 
 	/**
 	 * Returns all {@link CorrelationProcessInstance}es from the database, which
 	 * contain the given {@link EapEventType}.
-	 * 
+	 *
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<CorrelationProcessInstance> findByContainedEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID IN (" + "SELECT processInstances_ID "
-						+ "FROM ProcessInstance_Event " + "WHERE events_ID IN (" + "SELECT ID " + "FROM Event "
-						+ "WHERE EVENTTYPE_ID = '" + eventType.getID() + "'))", CorrelationProcessInstance.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM ProcessInstance " + "WHERE ID IN (" + "SELECT processInstances_ID " + "FROM ProcessInstance_Event " + "WHERE events_ID IN (" + "SELECT ID " + "FROM Event " + "WHERE EVENTTYPE_ID = '" + eventType.getID() + "'))", CorrelationProcessInstance.class);
 		return query.getResultList();
-	}
-
-	// @Override
-	// public int hashCode() {
-	// return ID;
-	// }
-	//
-	// @Override
-	// public boolean equals(Object o) {
-	// if (!(o instanceof CorrelationProcessInstance)) {
-	// return false;
-	// }
-	// CorrelationProcessInstance object = (CorrelationProcessInstance) o;
-	// return object.getID() == this.getID();
-	// }
-
-	@Override
-	public CorrelationProcessInstance save() {
-		return (CorrelationProcessInstance) super.save();
 	}
 
 	public static boolean save(final ArrayList<CorrelationProcessInstance> processInstances) {
@@ -399,28 +251,8 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 	}
 
 	/**
-	 * Deletes the specified process instance from the database.
-	 * 
-	 * @return
-	 */
-	@Override
-	public CorrelationProcessInstance remove() {
-		final List<EapEvent> events = EapEvent.findByProcessInstance(this);
-		for (final EapEvent event : events) {
-			event.removeProcessInstance(this);
-			event.merge();
-		}
-		final List<CorrelationProcess> processes = CorrelationProcess.findByProcessInstance(this);
-		for (final CorrelationProcess process : processes) {
-			process.removeProcessInstance(this);
-			process.merge();
-		}
-		return (CorrelationProcessInstance) super.remove();
-	}
-
-	/**
 	 * Deletes the specified eventtypes from the database.
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean remove(final List<CorrelationProcessInstance> processInstances) {
@@ -454,6 +286,142 @@ public class CorrelationProcessInstance extends Persistable implements Serializa
 		} catch (final Exception ex) {
 			System.out.println(ex.getMessage());
 		}
+	}
+
+	/**
+	 * Returns the associated {@link EapEvent}s.
+	 *
+	 * @return
+	 */
+	public List<EapEvent> getEvents() {
+		return this.events;
+	}
+
+	/**
+	 * Sets the associated {@link EapEvent}s.
+	 *
+	 * @return
+	 */
+	public void setEvents(final List<EapEvent> events) {
+		this.events = events;
+	}
+
+	/**
+	 * Adds an {@link EapEvent} to the associated events.
+	 *
+	 * @return
+	 */
+	public boolean addEvent(final EapEvent event) {
+		if (!this.events.contains(event)) {
+			return this.events.add(event);
+		}
+		return false;
+	}
+
+	/**
+	 * Removes an {@link EapEvent} from the associated events.
+	 *
+	 * @return
+	 */
+	public boolean removeEvent(final EapEvent event) {
+		return this.events.remove(event);
+	}
+
+	@Override
+	public int getID() {
+		return this.ID;
+	}
+
+	public void setID(final int iD) {
+		this.ID = iD;
+	}
+
+	/**
+	 * Must not add values to the returned map - use
+	 * addCorrelationAttributeAndValue(...) instead!
+	 *
+	 * @return
+	 */
+	public Map<String, Serializable> getCorrelationAttributesAndValues() {
+		List<TypeTreeNode> attributes = new ArrayList<TypeTreeNode>();
+		if (this.getProcess().getCorrelationAttributes() != null && !this.getProcess().getCorrelationAttributes().isEmpty()) {
+			attributes = this.getProcess().getCorrelationAttributes();
+		} else { // using correlation rules
+			for (final CorrelationRule rule : this.getProcess().getCorrelationRules()) {
+				attributes.add(rule.getFirstAttribute());
+				attributes.add(rule.getSecondAttribute());
+			}
+		}
+		return ConversionUtils.getValuesConvertedToSerializable(attributes, this.correlationAttributesAndValues);
+	}
+
+	public void setCorrelationAttributesAndValues(final Map<String, Serializable> correlationAttributesAndValues) {
+		this.correlationAttributesAndValues = ConversionUtils.getValuesConvertedToString(correlationAttributesAndValues);
+	}
+
+	// @Override
+	// public int hashCode() {
+	// return ID;
+	// }
+	//
+	// @Override
+	// public boolean equals(Object o) {
+	// if (!(o instanceof CorrelationProcessInstance)) {
+	// return false;
+	// }
+	// CorrelationProcessInstance object = (CorrelationProcessInstance) o;
+	// return object.getID() == this.getID();
+	// }
+
+	public void addCorrelationAttributeAndValue(final String correlationAttribute, final Serializable correlationValue) {
+		final Map<String, Serializable> valuesToBeConverted = new HashMap<String, Serializable>();
+		valuesToBeConverted.put(correlationAttribute, correlationValue);
+		final Map<String, String> valuesToBeAdded = ConversionUtils.getValuesConvertedToString(valuesToBeConverted);
+		this.correlationAttributesAndValues.putAll(valuesToBeAdded);
+	}
+
+	public void addCorrelationAttributesAndValues(final Map<String, Serializable> correlationAttributesAndValues) {
+		final Map<String, String> valuesToBeAdded = ConversionUtils.getValuesConvertedToString(correlationAttributesAndValues);
+		this.correlationAttributesAndValues.putAll(valuesToBeAdded);
+	}
+
+	/**
+	 * Returns the {@link CorrelationProcess} for this instance of it from the
+	 * database.
+	 *
+	 * @return
+	 */
+	public CorrelationProcess getProcess() {
+		final List<CorrelationProcess> processes = CorrelationProcess.findByProcessInstanceID(this.ID);
+		if (!processes.isEmpty()) {
+			return CorrelationProcess.findByProcessInstanceID(this.ID).get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public CorrelationProcessInstance save() {
+		return (CorrelationProcessInstance) super.save();
+	}
+
+	/**
+	 * Deletes the specified process instance from the database.
+	 *
+	 * @return
+	 */
+	@Override
+	public CorrelationProcessInstance remove() {
+		final List<EapEvent> events = EapEvent.findByProcessInstance(this);
+		for (final EapEvent event : events) {
+			event.removeProcessInstance(this);
+			event.merge();
+		}
+		final List<CorrelationProcess> processes = CorrelationProcess.findByProcessInstance(this);
+		for (final CorrelationProcess process : processes) {
+			process.removeProcessInstance(this);
+			process.merge();
+		}
+		return (CorrelationProcessInstance) super.remove();
 	}
 
 	public EapEvent getTimerEvent() {

@@ -12,7 +12,7 @@ import de.hpi.unicorn.bpmn.element.BPMNProcess;
 
 /**
  * This class filters {@link BPMNProcess} in the {@link BPMNProcessPanel}.
- * 
+ *
  * @author micha
  */
 public class BPMNProcessFilter extends AbstractFilter {
@@ -26,13 +26,12 @@ public class BPMNProcessFilter extends AbstractFilter {
 	/**
 	 * Constructor for the class, which filters {@link BPMNProcess} in the
 	 * {@link BPMNProcessPanel}.
-	 * 
+	 *
 	 * @param processFilterCriteria
 	 * @param processFilterCondition
 	 * @param filterValue
 	 */
-	public BPMNProcessFilter(final String processFilterCriteria, final String processFilterCondition,
-			final String filterValue) {
+	public BPMNProcessFilter(final String processFilterCriteria, final String processFilterCondition, final String filterValue) {
 		super(processFilterCriteria, processFilterCondition, filterValue);
 	}
 

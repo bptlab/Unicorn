@@ -19,8 +19,7 @@ import org.apache.wicket.model.IModel;
 
 public class SelectableDataTable<T, S> extends DefaultDataTable<T, S> {
 
-	public SelectableDataTable(final String id, final List<? extends IColumn<T, S>> columns,
-			final ISortableDataProvider<T, S> dataProvider, final int rowsPerPage) {
+	public SelectableDataTable(final String id, final List<? extends IColumn<T, S>> columns, final ISortableDataProvider<T, S> dataProvider, final int rowsPerPage) {
 		super(id, columns, dataProvider, rowsPerPage);
 	}
 
@@ -29,15 +28,15 @@ public class SelectableDataTable<T, S> extends DefaultDataTable<T, S> {
 		final Item<T> rowItem = new Item<T>(id, index, model);
 		rowItem.add(
 
-		new AjaxEventBehavior("onclick") {
-			private static final long serialVersionUID = 6720512493017210281L;
+				new AjaxEventBehavior("onclick") {
+					private static final long serialVersionUID = 6720512493017210281L;
 
-			@Override
-			protected void onEvent(final AjaxRequestTarget target) {
-				// callback or do some stuff
-			}
+					@Override
+					protected void onEvent(final AjaxRequestTarget target) {
+						// callback or do some stuff
+					}
 
-		});
+				});
 		return rowItem;
 
 	}

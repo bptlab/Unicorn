@@ -31,9 +31,7 @@ public class EventTypeElementOptionsPanel extends Panel {
 	private final PatternElementTreeTable table;
 	private final PatternBuilderPanel panel;
 
-	public EventTypeElementOptionsPanel(final String id, final EventTypeElement element,
-			final TransformationPatternTree tree, final TreeTableProvider<Serializable> provider,
-			final PatternElementTreeTable table, final PatternBuilderPanel panel) {
+	public EventTypeElementOptionsPanel(final String id, final EventTypeElement element, final TransformationPatternTree tree, final TreeTableProvider<Serializable> provider, final PatternElementTreeTable table, final PatternBuilderPanel panel) {
 		super(id);
 
 		this.element = element;
@@ -56,14 +54,10 @@ public class EventTypeElementOptionsPanel extends Panel {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-				final FilterExpressionElement newFilterExpressionElement = new FilterExpressionElement(
-						((TreeTableProvider<Serializable>) EventTypeElementOptionsPanel.this.table.getProvider())
-								.getNextID(),
-						FilterExpressionOperatorEnum.EQUALS);
+				final FilterExpressionElement newFilterExpressionElement = new FilterExpressionElement(((TreeTableProvider<Serializable>) EventTypeElementOptionsPanel.this.table.getProvider()).getNextID(), FilterExpressionOperatorEnum.EQUALS);
 				newFilterExpressionElement.setParent(EventTypeElementOptionsPanel.this.element);
 				EventTypeElementOptionsPanel.this.tree.addElement(newFilterExpressionElement);
-				EventTypeElementOptionsPanel.this.provider.setRootElements(EventTypeElementOptionsPanel.this.tree
-						.getRoots());
+				EventTypeElementOptionsPanel.this.provider.setRootElements(EventTypeElementOptionsPanel.this.tree.getRoots());
 				EventTypeElementOptionsPanel.this.table.getSelectedElements().clear();
 				target.add(EventTypeElementOptionsPanel.this.table);
 				EventTypeElementOptionsPanel.this.panel.updateOnTreeElementSelection(target);

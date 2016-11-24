@@ -26,17 +26,16 @@ import de.hpi.unicorn.bpmn.element.BPMNProcess;
 /**
  * This class is the provider for {@link BPMNProcess}es. A filter can be
  * specified to return only some BPMN processes.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")
-public class BPMNProcessProvider extends AbstractDataProvider implements ISortableDataProvider<BPMNProcess, String>,
-		IFilterStateLocator {
+public class BPMNProcessProvider extends AbstractDataProvider implements ISortableDataProvider<BPMNProcess, String>, IFilterStateLocator {
 
 	private static List<BPMNProcess> processes;
 	private final ISortState sortState = new SingleSortState();
-	private BPMNProcessFilter processFilter = new BPMNProcessFilter();
 	private final List<BPMNProcess> selectedProcesses;
+	private BPMNProcessFilter processFilter = new BPMNProcessFilter();
 
 	/**
 	 * Constructor for providing {@link BPMNProcess}es.
@@ -44,6 +43,14 @@ public class BPMNProcessProvider extends AbstractDataProvider implements ISortab
 	public BPMNProcessProvider() {
 		BPMNProcessProvider.processes = this.filterBPMNProcesses(BPMNProcess.findAll(), this.processFilter);
 		this.selectedProcesses = new ArrayList<BPMNProcess>();
+	}
+
+	public static List<BPMNProcess> getBPMNProcesses() {
+		return BPMNProcessProvider.processes;
+	}
+
+	public static void setBPMNProcesses(final List<BPMNProcess> processList) {
+		BPMNProcessProvider.processes = processList;
 	}
 
 	@Override
@@ -63,8 +70,7 @@ public class BPMNProcessProvider extends AbstractDataProvider implements ISortab
 		return data.subList((int) first, (int) Math.min(first + count, data.size())).iterator();
 	}
 
-	private List<BPMNProcess> filterBPMNProcesses(final List<BPMNProcess> processesToFilter,
-			final BPMNProcessFilter processFilter) {
+	private List<BPMNProcess> filterBPMNProcesses(final List<BPMNProcess> processesToFilter, final BPMNProcessFilter processFilter) {
 		final List<BPMNProcess> returnedProcesses = new ArrayList<BPMNProcess>();
 		for (final BPMNProcess process : processesToFilter) {
 			if (processFilter.match(process)) {
@@ -82,14 +88,6 @@ public class BPMNProcessProvider extends AbstractDataProvider implements ISortab
 	@Override
 	public long size() {
 		return BPMNProcessProvider.processes.size();
-	}
-
-	public static List<BPMNProcess> getBPMNProcesses() {
-		return BPMNProcessProvider.processes;
-	}
-
-	public static void setBPMNProcesses(final List<BPMNProcess> processList) {
-		BPMNProcessProvider.processes = processList;
 	}
 
 	@Override

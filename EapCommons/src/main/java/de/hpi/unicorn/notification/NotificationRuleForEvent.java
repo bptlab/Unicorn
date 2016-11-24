@@ -51,14 +51,13 @@ public class NotificationRuleForEvent extends NotificationRule {
 
 	/**
 	 * Creates an event notification rule with event type and condition.
-	 * 
+	 *
 	 * @param eventType
 	 * @param condition
 	 * @param user
 	 * @param priority
 	 */
-	public NotificationRuleForEvent(final EapEventType eventType, final EventCondition condition, final EapUser user,
-			final NotificationMethod priority) {
+	public NotificationRuleForEvent(final EapEventType eventType, final EventCondition condition, final EapUser user, final NotificationMethod priority) {
 		this.eventType = eventType;
 		this.condition = condition;
 		this.user = user;
@@ -67,7 +66,7 @@ public class NotificationRuleForEvent extends NotificationRule {
 
 	/**
 	 * Creates an event notification rule for an event type without condition.
-	 * 
+	 *
 	 * @param eventType
 	 * @param user
 	 * @param priority
@@ -80,10 +79,41 @@ public class NotificationRuleForEvent extends NotificationRule {
 	}
 
 	/**
+	 * Finds an event notification rule by ID from database.
+	 *
+	 * @param ID
+	 * @return event notification rule
+	 */
+	public static NotificationRuleForEvent findByID(final int ID) {
+		return Persistor.getEntityManager().find(NotificationRuleForEvent.class, ID);
+	}
+
+	/**
+	 * Finds all event notification rules for an event type
+	 *
+	 * @param eventType
+	 * @return all event notification rules for an event type
+	 */
+	public static List<NotificationRuleForEvent> findByEventType(final EapEventType eventType) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE EVENTTYPE_ID = '" + eventType.getID() + "'", NotificationRuleForEvent.class);
+		return q.getResultList();
+	}
+
+	/**
+	 * Finds all event notification rules from database.
+	 *
+	 * @return all event notification rules
+	 */
+	public static List<NotificationRuleForEvent> findAllEventNotificationRules() {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE Disc = 'E'", NotificationRuleForEvent.class);
+		return q.getResultList();
+	}
+
+	/**
 	 * This method is called, when an event occurs, that matches the event type
 	 * and condition of the notification rule. This will create a new
 	 * notification.
-	 * 
+	 *
 	 * @param event
 	 */
 	public void trigger(final EapEvent event) {
@@ -97,11 +127,13 @@ public class NotificationRuleForEvent extends NotificationRule {
 		}
 	}
 
+	// Getter and Setter
+
 	/**
 	 * Checks whether an event matches the condition of this notification rule.
 	 * Forwards the question whether an event matches the condition to the
 	 * condition itself.
-	 * 
+	 *
 	 * @param event
 	 * @return whether an event matches a condition
 	 */
@@ -129,8 +161,6 @@ public class NotificationRuleForEvent extends NotificationRule {
 		return (this.condition != null && this.condition.getConditionString() != "");
 	}
 
-	// Getter and Setter
-
 	public EapEventType getEventType() {
 		return this.eventType;
 	}
@@ -138,6 +168,8 @@ public class NotificationRuleForEvent extends NotificationRule {
 	public void setEventType(final EapEventType eventType) {
 		this.eventType = eventType;
 	}
+
+	// JPA-Methods
 
 	public EventCondition getCondition() {
 		return this.condition;
@@ -150,42 +182,6 @@ public class NotificationRuleForEvent extends NotificationRule {
 	@Override
 	public Persistable getTriggeringEntity() {
 		return this.getEventType();
-	}
-
-	// JPA-Methods
-
-	/**
-	 * Finds an event notification rule by ID from database.
-	 * 
-	 * @param ID
-	 * @return event notification rule
-	 */
-	public static NotificationRuleForEvent findByID(final int ID) {
-		return Persistor.getEntityManager().find(NotificationRuleForEvent.class, ID);
-	}
-
-	/**
-	 * Finds all event notification rules for an event type
-	 * 
-	 * @param eventType
-	 * @return all event notification rules for an event type
-	 */
-	public static List<NotificationRuleForEvent> findByEventType(final EapEventType eventType) {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE EVENTTYPE_ID = '" + eventType.getID() + "'",
-				NotificationRuleForEvent.class);
-		return q.getResultList();
-	}
-
-	/**
-	 * Finds all event notification rules from database.
-	 * 
-	 * @return all event notification rules
-	 */
-	public static List<NotificationRuleForEvent> findAllEventNotificationRules() {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM NotificationRule WHERE Disc = 'E'", NotificationRuleForEvent.class);
-		return q.getResultList();
 	}
 
 }

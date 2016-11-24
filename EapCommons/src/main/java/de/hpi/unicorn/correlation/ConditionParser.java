@@ -13,9 +13,8 @@ import de.hpi.unicorn.event.collection.TransformationTree;
 
 /**
  * Parses attribute-value pairs of events from a string.
- * 
+ *
  * @author micha
- * 
  */
 public class ConditionParser {
 

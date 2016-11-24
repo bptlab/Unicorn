@@ -49,10 +49,6 @@ public class LabelTreeElement<T> implements Serializable {
 		return this.parent;
 	}
 
-	public boolean hasParent() {
-		return this.parent != null;
-	}
-
 	public void setParent(final LabelTreeElement<T> parent) {
 		this.parent = parent;
 		if (parent != null && !parent.getChildren().contains(this)) {
@@ -60,8 +56,16 @@ public class LabelTreeElement<T> implements Serializable {
 		}
 	}
 
+	public boolean hasParent() {
+		return this.parent != null;
+	}
+
 	public List<LabelTreeElement<T>> getChildren() {
 		return this.children;
+	}
+
+	public void setChildren(final List<LabelTreeElement<T>> children) {
+		this.children = children;
 	}
 
 	public List<T> getChildValues() {
@@ -76,12 +80,7 @@ public class LabelTreeElement<T> implements Serializable {
 		return !this.children.isEmpty();
 	}
 
-	public void setChildren(final List<LabelTreeElement<T>> children) {
-		this.children = children;
-	}
-
 	/**
-	 * 
 	 * @return returns recursive the path to this element as XPath
 	 */
 	public String getXPath() {
@@ -94,7 +93,7 @@ public class LabelTreeElement<T> implements Serializable {
 
 	/**
 	 * root level is 0
-	 * 
+	 *
 	 * @return level of element as int
 	 */
 	public int getLevel() {

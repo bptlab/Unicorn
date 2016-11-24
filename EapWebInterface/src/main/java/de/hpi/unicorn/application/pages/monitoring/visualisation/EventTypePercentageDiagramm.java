@@ -37,19 +37,13 @@ public class EventTypePercentageDiagramm extends Options {
 
 	public EventTypePercentageDiagramm() {
 
-		this.setChartOptions(new ChartOptions().setPlotBackgroundColor(new NullColor()).setPlotBorderWidth(null)
-				.setPlotShadow(Boolean.FALSE));
+		this.setChartOptions(new ChartOptions().setPlotBackgroundColor(new NullColor()).setPlotBorderWidth(null).setPlotShadow(Boolean.FALSE));
 
 		this.setTitle(new Title("Percentage of Events by Event Types"));
 
 		this.setTooltip(new Tooltip().setFormatter(new PercentageFormatter()).setPercentageDecimals(1));
 
-		this.setPlotOptions(new PlotOptionsChoice().setPie(new PlotOptions()
-				.setAllowPointSelect(Boolean.TRUE)
-				.setCursor(Cursor.POINTER)
-				.setDataLabels(
-						new DataLabels().setEnabled(Boolean.TRUE).setColor(new HexColor("#000000"))
-								.setConnectorColor(new HexColor("#000000")).setFormatter(new PercentageFormatter()))));
+		this.setPlotOptions(new PlotOptionsChoice().setPie(new PlotOptions().setAllowPointSelect(Boolean.TRUE).setCursor(Cursor.POINTER).setDataLabels(new DataLabels().setEnabled(Boolean.TRUE).setColor(new HexColor("#000000")).setConnectorColor(new HexColor("#000000")).setFormatter(new PercentageFormatter()))));
 
 		this.addSeries(this.prepareEventSeries());
 
@@ -58,7 +52,7 @@ public class EventTypePercentageDiagramm extends Options {
 	/**
 	 * prepare data for diagram by calculating percentages of events by
 	 * eventtype
-	 * 
+	 *
 	 * @return data series for pie chart
 	 */
 	private Series<Point> prepareEventSeries() {

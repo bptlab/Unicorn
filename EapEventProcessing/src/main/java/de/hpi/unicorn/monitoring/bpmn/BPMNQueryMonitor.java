@@ -20,7 +20,7 @@ import de.hpi.unicorn.query.PatternQuery;
 /**
  * The central instance to get information for monitoring and analysing of the
  * status of BPMN queries.
- * 
+ *
  * @author micha
  */
 public class BPMNQueryMonitor {
@@ -45,6 +45,10 @@ public class BPMNQueryMonitor {
 		return BPMNQueryMonitor.instance;
 	}
 
+	public static void reset() {
+		BPMNQueryMonitor.instance = null;
+	}
+
 	public final ProcessInstanceStatus getStatus(final CorrelationProcessInstance processInstance) {
 		if (processInstance != null) {
 			final ProcessMonitor processMonitor = this.getProcessMonitorForProcess(processInstance.getProcess());
@@ -67,8 +71,7 @@ public class BPMNQueryMonitor {
 		}
 	}
 
-	public final void setQueryFinishedForProcessInstance(final PatternQuery query,
-			final CorrelationProcessInstance processInstance) {
+	public final void setQueryFinishedForProcessInstance(final PatternQuery query, final CorrelationProcessInstance processInstance) {
 		if (query != null && processInstance != null) {
 			final ProcessMonitor processMonitor = this.getProcessMonitorForProcess(processInstance.getProcess());
 			processMonitor.setQueryFinishedForProcessInstance(query, processInstance);
@@ -107,10 +110,6 @@ public class BPMNQueryMonitor {
 
 	public final List<ProcessMonitor> getProcessMonitors() {
 		return new ArrayList<ProcessMonitor>(this.processMonitors);
-	}
-
-	public static void reset() {
-		BPMNQueryMonitor.instance = null;
 	}
 
 	private ProcessInstanceMonitor getProcessInstanceMonitor(final CorrelationProcessInstance processInstance) {

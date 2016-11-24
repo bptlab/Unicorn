@@ -24,8 +24,8 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 public class AttributeTreeProvider extends AbstractDataProvider implements ISortableTreeProvider<TypeTreeNode, String> {
 
 	private static final long serialVersionUID = 1L;
-	private List<TypeTreeNode> treeNodes;
 	private final List<TypeTreeNode> selectedTreeNodes;
+	private List<TypeTreeNode> treeNodes;
 
 	/**
 	 * constructor
@@ -37,10 +37,9 @@ public class AttributeTreeProvider extends AbstractDataProvider implements ISort
 
 	/**
 	 * constructor
-	 * 
-	 * @param list
-	 *            root nodes of the tree, child nodes are accessed by this
-	 *            component automatically
+	 *
+	 * @param list root nodes of the tree, child nodes are accessed by this
+	 *             component automatically
 	 */
 	public AttributeTreeProvider(final List<TypeTreeNode> list) {
 		this();

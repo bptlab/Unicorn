@@ -14,7 +14,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 /**
  * This model provides a tree of {@link ProcessAnalysingTreeTableElement}s.
- * 
+ *
  * @author micha
  */
 public class ProcessAnalysingTreeTableElementModel extends LoadableDetachableModel<ProcessAnalysingTreeTableElement> {
@@ -23,8 +23,7 @@ public class ProcessAnalysingTreeTableElementModel extends LoadableDetachableMod
 	private final int ID;
 	private final List<ProcessAnalysingTreeTableElement> treeNodes;
 
-	public ProcessAnalysingTreeTableElementModel(final List<ProcessAnalysingTreeTableElement> treeNodes,
-			final ProcessAnalysingTreeTableElement node) {
+	public ProcessAnalysingTreeTableElementModel(final List<ProcessAnalysingTreeTableElement> treeNodes, final ProcessAnalysingTreeTableElement node) {
 		super(node);
 		this.treeNodes = treeNodes;
 		this.ID = node.getID();
@@ -52,8 +51,7 @@ public class ProcessAnalysingTreeTableElementModel extends LoadableDetachableMod
 		return super.hashCode();
 	}
 
-	private ProcessAnalysingTreeTableElement findTreeElement(
-			final Collection<ProcessAnalysingTreeTableElement> treeNodes, final int id) {
+	private ProcessAnalysingTreeTableElement findTreeElement(final Collection<ProcessAnalysingTreeTableElement> treeNodes, final int id) {
 		for (final ProcessAnalysingTreeTableElement treeElement : treeNodes) {
 			if (treeElement.getID() == id) {
 				return treeElement;

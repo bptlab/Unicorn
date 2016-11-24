@@ -18,8 +18,7 @@ import de.hpi.unicorn.notification.Notification;
  */
 public class NotificationFilter extends AbstractFilter {
 
-	public NotificationFilter(final String eventFilterCriteria, final String eventFilterCondition,
-			final String filterValue) {
+	public NotificationFilter(final String eventFilterCriteria, final String eventFilterCondition, final String filterValue) {
 		super(eventFilterCriteria, eventFilterCondition, filterValue);
 	}
 
@@ -29,7 +28,7 @@ public class NotificationFilter extends AbstractFilter {
 
 	/**
 	 * checks whether a notification matches a filtercriteria
-	 * 
+	 *
 	 * @param notification
 	 * @return
 	 */

@@ -11,7 +11,7 @@ import java.io.Serializable;
 
 /**
  * This class centralizes methods to filter elements in the EventRepository.
- * 
+ *
  * @author micha
  */
 public abstract class AbstractFilter implements Serializable {
@@ -23,7 +23,7 @@ public abstract class AbstractFilter implements Serializable {
 
 	/**
 	 * Constructor for the filter with the filter values.
-	 * 
+	 *
 	 * @param filterCriteria
 	 * @param filterCondition
 	 * @param filterValue
@@ -37,7 +37,7 @@ public abstract class AbstractFilter implements Serializable {
 
 	/**
 	 * Constructor for the filter without filter values.
-	 * 
+	 *
 	 * @param filterCriteria
 	 * @param filterCondition
 	 * @param filterValue
@@ -49,7 +49,7 @@ public abstract class AbstractFilter implements Serializable {
 	/**
 	 * Returns the filter value, which is a specific value for an attribute of
 	 * the current element.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFilterValue() {
@@ -59,7 +59,7 @@ public abstract class AbstractFilter implements Serializable {
 	/**
 	 * Sets the filter value, which is a specific value for an attribute of the
 	 * current element.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setFilterValue(final String filterValue) {
@@ -69,7 +69,7 @@ public abstract class AbstractFilter implements Serializable {
 	/**
 	 * Returns the filter criteria, which is a specific attribute of the current
 	 * element.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFilterCriteria() {
@@ -79,7 +79,7 @@ public abstract class AbstractFilter implements Serializable {
 	/**
 	 * Sets the filter criteria, which is a specific attribute of the current
 	 * element.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setFilterCriteria(final String filterCriteria) {
@@ -89,7 +89,7 @@ public abstract class AbstractFilter implements Serializable {
 	/**
 	 * Returns the filter condition, which is a comparison operator like =, < or
 	 * >.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFilterCondition() {
@@ -98,7 +98,7 @@ public abstract class AbstractFilter implements Serializable {
 
 	/**
 	 * Sets the filter condition, which is a comparison operator like =, < or >.
-	 * 
+	 *
 	 * @return
 	 */
 	public void setFilterCondition(final String filterCondition) {

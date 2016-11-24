@@ -53,35 +53,27 @@ import de.hpi.unicorn.persistence.Persistor;
 @Table(name = "QueryWrapper")
 public class QueryWrapper extends Persistable {
 
-	private static final long serialVersionUID = 7452081036927643770L;
 	public static final int maxContentSize = 2097152; // 2Mb
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int ID;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	Date timestamp = null;
-
-	@Column(name = "TITLE")
-	protected String title;
-
-	@Lob
-	@Column(name = "QUERY", length = 15000)
-	private String esperQuery;
-
-	@Lob
-	@Column(name = "SPARQLQUERY", length = 15000)
-	private String sparqlQuery;
-
-	@Column(name = "TYPE")
-	@Enumerated(EnumType.STRING)
-	private QueryTypeEnum type;
-
+	private static final long serialVersionUID = 7452081036927643770L;
 	@ElementCollection
 	@Column(name = "QueryLogs", length = 15000)
 	private final List<String> log;
-
+	@Column(name = "TITLE")
+	protected String title;
+	@Temporal(TemporalType.TIMESTAMP)
+	Date timestamp = null;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int ID;
+	@Lob
+	@Column(name = "QUERY", length = 15000)
+	private String esperQuery;
+	@Lob
+	@Column(name = "SPARQLQUERY", length = 15000)
+	private String sparqlQuery;
+	@Column(name = "TYPE")
+	@Enumerated(EnumType.STRING)
+	private QueryTypeEnum type;
 	@Transient
 	private String statementName;
 
@@ -103,13 +95,138 @@ public class QueryWrapper extends Persistable {
 		this.setQuery(queryString);
 	}
 
-	public QueryWrapper(final String title, final String queryString, final QueryTypeEnum type,
-			final Timestamp timestamp) {
+	public QueryWrapper(final String title, final String queryString, final QueryTypeEnum type, final Timestamp timestamp) {
 		this(title, queryString, type);
 		this.timestamp = timestamp;
 	}
 
 	// Getter and Setter
+
+	/**
+	 * search query with the title in the database and returns it
+	 *
+	 * @param title
+	 * @return
+	 */
+	public static QueryWrapper findQueryByTitle(final String title) {
+		final EntityManager em = Persistor.getEntityManager();
+		final Query query = em.createNativeQuery("SELECT * FROM QueryWrapper WHERE Title = '" + title + "'", QueryWrapper.class);
+		try {
+			return (QueryWrapper) query.getResultList().get(0);
+		} catch (final Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Returns all live queries found in the database.
+	 *
+	 * @return
+	 */
+	public static List<QueryWrapper> getAllLiveQueries() {
+		final Query dbQuery = Persistor.getEntityManager().createNativeQuery("SELECT * FROM QueryWrapper WHERE Type='LIVE'", QueryWrapper.class);
+		return dbQuery.getResultList();
+		// List<QueryWrapper> liveQueryList = new ArrayList<QueryWrapper>();
+		// List<QueryWrapper> queryResult = dbQuery.getResultList();
+		// for (int i = 0; i < queryResult.size(); i++) {
+		// QueryWrapper queryWrapper = queryResult.get(i);
+		// if (queryWrapper.isLiveQuery()) {
+		// liveQueryList.add(queryWrapper);
+		// }
+		// }
+		// return liveQueryList;
+	}
+
+	/**
+	 * returns all on-demand queries on the database
+	 *
+	 * @return
+	 */
+	public static List<QueryWrapper> getAllOnDemandQueries() {
+		final EntityManager em = Persistor.getEntityManager();
+		final Query query = em.createNativeQuery("SELECT * FROM QueryWrapper", QueryWrapper.class);
+		final List<QueryWrapper> liveQueryList = new ArrayList<QueryWrapper>();
+		try {
+			for (int i = 0; i < query.getResultList().size(); i++) {
+				final QueryWrapper queryWrapper = (QueryWrapper) query.getResultList().get(i);
+				if (queryWrapper.isOnDemandQuery()) {
+					liveQueryList.add((QueryWrapper) query.getResultList().get(i));
+				}
+			}
+			return liveQueryList;
+		} catch (final Exception e) {
+			return null;
+		}
+	}
+
+	/**
+	 * delete query which has the title
+	 *
+	 * @param title
+	 * @return
+	 */
+	public static QueryWrapper removeQueryWithTitle(final String title) {
+		return QueryWrapper.findQueryByTitle(title).remove();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<String> getAllTitlesOfOnDemandQueries() {
+		final EntityManager em = Persistor.getEntityManager();
+		// System.out.println("select TITLE from QueryWrapper where type = '"+
+		// QueryTypeEnum.ONDEMAND +"'");
+		final Query query = em.createNativeQuery("select TITLE from QueryWrapper where type = '" + QueryTypeEnum.ONDEMAND + "'");
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<String> getAllTitlesOfQueries() {
+		final EntityManager em = Persistor.getEntityManager();
+		final Query query = em.createNativeQuery("select TITLE from QueryWrapper");
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<String> getAllTitlesOfLiveQueries() {
+		final EntityManager em = Persistor.getEntityManager();
+		final Query query = em.createNativeQuery("select TITLE from QueryWrapper where type = 'LIVE'");
+		return query.getResultList();
+	}
+
+	public static ArrayList<QueryWrapper> save(final ArrayList<QueryWrapper> queries) {
+		try {
+			final EntityManager entityManager = Persistor.getEntityManager();
+			entityManager.getTransaction().begin();
+			for (final QueryWrapper query : queries) {
+				entityManager.persist(query);
+			}
+			entityManager.getTransaction().commit();
+			return queries;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static boolean remove(final ArrayList<QueryWrapper> queries) {
+		boolean removed = true;
+		for (final QueryWrapper query : queries) {
+			removed = (query.remove() != null);
+		}
+		return removed;
+	}
+
+	public static void removeAll() {
+		try {
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
+			entr.begin();
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM QueryWrapper");
+			query.executeUpdate();
+			entr.commit();
+			// System.out.println(deleteRecords + " records are deleted.");
+		} catch (final Exception ex) {
+			// System.out.println(ex.getMessage());
+		}
+	}
 
 	@Override
 	public int getID() {
@@ -185,6 +302,8 @@ public class QueryWrapper extends Persistable {
 	public boolean isOnDemandQuery() {
 		return this.type == QueryTypeEnum.ONDEMAND;
 	}
+
+	// JPA-Methods
 
 	public List<String> getLog() {
 		return this.log;
@@ -283,143 +402,23 @@ public class QueryWrapper extends Persistable {
 		StreamProcessingAdapter.getInstance().getEsperRuntime().prepareQuery(this.esperQuery);
 	}
 
-	// JPA-Methods
-
-	/**
-	 * search query with the title in the database and returns it
-	 *
-	 * @param title
-	 * @return
-	 */
-	public static QueryWrapper findQueryByTitle(final String title) {
-		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("SELECT * FROM QueryWrapper WHERE Title = '" + title + "'",
-				QueryWrapper.class);
-		try {
-			return (QueryWrapper) query.getResultList().get(0);
-		} catch (final Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Returns all live queries found in the database.
-	 *
-	 * @return
-	 */
-	public static List<QueryWrapper> getAllLiveQueries() {
-		final Query dbQuery = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM QueryWrapper WHERE Type='LIVE'", QueryWrapper.class);
-		return dbQuery.getResultList();
-		// List<QueryWrapper> liveQueryList = new ArrayList<QueryWrapper>();
-		// List<QueryWrapper> queryResult = dbQuery.getResultList();
-		// for (int i = 0; i < queryResult.size(); i++) {
-		// QueryWrapper queryWrapper = queryResult.get(i);
-		// if (queryWrapper.isLiveQuery()) {
-		// liveQueryList.add(queryWrapper);
-		// }
-		// }
-		// return liveQueryList;
-	}
-
-	/**
-	 * returns all on-demand queries on the database
-	 *
-	 * @return
-	 */
-	public static List<QueryWrapper> getAllOnDemandQueries() {
-		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("SELECT * FROM QueryWrapper", QueryWrapper.class);
-		final List<QueryWrapper> liveQueryList = new ArrayList<QueryWrapper>();
-		try {
-			for (int i = 0; i < query.getResultList().size(); i++) {
-				final QueryWrapper queryWrapper = (QueryWrapper) query.getResultList().get(i);
-				if (queryWrapper.isOnDemandQuery()) {
-					liveQueryList.add((QueryWrapper) query.getResultList().get(i));
-				}
-			}
-			return liveQueryList;
-		} catch (final Exception e) {
-			return null;
-		}
-	}
-
-	/**
-	 * delete query which has the title
-	 *
-	 * @param title
-	 * @return
-	 */
-	public static QueryWrapper removeQueryWithTitle(final String title) {
-		return QueryWrapper.findQueryByTitle(title).remove();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<String> getAllTitlesOfOnDemandQueries() {
-		final EntityManager em = Persistor.getEntityManager();
-		// System.out.println("select TITLE from QueryWrapper where type = '"+
-		// QueryTypeEnum.ONDEMAND +"'");
-		final Query query = em.createNativeQuery("select TITLE from QueryWrapper where type = '"
-				+ QueryTypeEnum.ONDEMAND + "'");
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<String> getAllTitlesOfQueries() {
-		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("select TITLE from QueryWrapper");
-		return query.getResultList();
-	}
-
 	@SuppressWarnings("unchecked")
 	public List<NotificationRuleForQuery> getNotificationRulesForQuery() {
 		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("select * from NotificationRule WHERE Disc = 'Q' AND QUERY_ID = '"
-				+ this.getID() + "'", NotificationRuleForQuery.class);
+		final Query query = em.createNativeQuery("select * from NotificationRule WHERE Disc = 'Q' AND QUERY_ID = '" + this.getID() + "'", NotificationRuleForQuery.class);
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<RestNotificationRule> getRestNotificationRules() {
 		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("select * from NotificationRule WHERE Disc = 'R' AND QUERY_ID = '"
-				+ this.getID() + "'", RestNotificationRule.class);
-		return query.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<String> getAllTitlesOfLiveQueries() {
-		final EntityManager em = Persistor.getEntityManager();
-		final Query query = em.createNativeQuery("select TITLE from QueryWrapper where type = 'LIVE'");
+		final Query query = em.createNativeQuery("select * from NotificationRule WHERE Disc = 'R' AND QUERY_ID = '" + this.getID() + "'", RestNotificationRule.class);
 		return query.getResultList();
 	}
 
 	@Override
 	public QueryWrapper save() {
 		return (QueryWrapper) super.save();
-	}
-
-	public static ArrayList<QueryWrapper> save(final ArrayList<QueryWrapper> queries) {
-		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
-			entityManager.getTransaction().begin();
-			for (final QueryWrapper query : queries) {
-				entityManager.persist(query);
-			}
-			entityManager.getTransaction().commit();
-			return queries;
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static boolean remove(final ArrayList<QueryWrapper> queries) {
-		boolean removed = true;
-		for (final QueryWrapper query : queries) {
-			removed = (query.remove() != null);
-		}
-		return removed;
 	}
 
 	@Override
@@ -436,19 +435,6 @@ public class QueryWrapper extends Persistable {
 		}
 
 		return (QueryWrapper) super.remove();
-	}
-
-	public static void removeAll() {
-		try {
-			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
-			entr.begin();
-			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM QueryWrapper");
-			query.executeUpdate();
-			entr.commit();
-			// System.out.println(deleteRecords + " records are deleted.");
-		} catch (final Exception ex) {
-			// System.out.println(ex.getMessage());
-		}
 	}
 
 }

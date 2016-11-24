@@ -9,6 +9,15 @@ package de.hpi.unicorn.exception;
 
 public class UnparsableException extends Exception {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 7905491060252837546L;
+
+	public UnparsableException(final ParseType type) {
+		super(String.format("Cannot parse %s xml string.", type.getTypeName()));
+	}
+
 	public enum ParseType {
 		EVENT("event"), EVENT_TYPE("event type");
 
@@ -21,15 +30,6 @@ public class UnparsableException extends Exception {
 		public String getTypeName() {
 			return this.typeName;
 		}
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7905491060252837546L;
-
-	public UnparsableException(final ParseType type) {
-		super(String.format("Cannot parse %s xml string.", type.getTypeName()));
 	}
 
 }

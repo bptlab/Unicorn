@@ -19,7 +19,7 @@ import de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint;
 /**
  * This class represents the events in a BPMN process, which are attached to
  * another BPMN element.
- * 
+ *
  * @author micha
  */
 @Entity
@@ -36,8 +36,7 @@ public class BPMNBoundaryEvent extends BPMNIntermediateEvent {
 		super();
 	}
 
-	public BPMNBoundaryEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints,
-			final BPMNEventType intermediateEventType) {
+	public BPMNBoundaryEvent(final String ID, final String name, final List<MonitoringPoint> monitoringPoints, final BPMNEventType intermediateEventType) {
 		super(ID, name, monitoringPoints, intermediateEventType);
 	}
 

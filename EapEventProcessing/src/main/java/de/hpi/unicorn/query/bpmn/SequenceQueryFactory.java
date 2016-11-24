@@ -15,14 +15,14 @@ import de.hpi.unicorn.query.QueryTypeEnum;
 
 /**
  * This query factory creates queries for components with sequential elements.
- * 
+ *
  * @author micha
  */
 public class SequenceQueryFactory extends AbstractPatternQueryFactory {
 
 	/**
 	 * Constructor to create sequential queries with a query factory.
-	 * 
+	 *
 	 * @param patternQueryGenerator
 	 */
 	public SequenceQueryFactory(final PatternQueryGenerator patternQueryGenerator) {
@@ -30,17 +30,13 @@ public class SequenceQueryFactory extends AbstractPatternQueryFactory {
 	}
 
 	@Override
-	protected PatternQuery generateQuery(final AbstractBPMNElement element,
-			final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery)
-			throws QueryGenerationException {
+	protected PatternQuery generateQuery(final AbstractBPMNElement element, final AbstractBPMNElement catchingMonitorableElement, final PatternQuery parentQuery) throws QueryGenerationException {
 		if (element instanceof Component) {
 			final Component component = (Component) element;
 			// Operator: ->
-			final PatternQuery query = new PatternQuery(this.generateQueryName("Sequence"), null, QueryTypeEnum.LIVE,
-					PatternQueryType.SEQUENCE, this.orderElements(component));
+			final PatternQuery query = new PatternQuery(this.generateQueryName("Sequence"), null, QueryTypeEnum.LIVE, PatternQueryType.SEQUENCE, this.orderElements(component));
 
-			final String queryString = this.generateQueryString(component, EsperPatternOperators.SEQUENCE,
-					catchingMonitorableElement, query);
+			final String queryString = this.generateQueryString(component, EsperPatternOperators.SEQUENCE, catchingMonitorableElement, query);
 			query.setEsperQuery(queryString);
 			this.addQueryRelationship(parentQuery, query);
 

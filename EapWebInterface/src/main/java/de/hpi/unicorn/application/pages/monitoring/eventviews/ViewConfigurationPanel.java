@@ -34,20 +34,17 @@ import de.hpi.unicorn.visualisation.TimePeriodEnum;
 public class ViewConfigurationPanel extends Panel {
 
 	private static final long serialVersionUID = 1L;
-
+	private static final List<TimePeriodEnum> TIMEPERIODS = Arrays.asList(TimePeriodEnum.values());
 	private final EventViewPage parentPage;
 	private final ViewConfigurationPanel panel;
-	private NotificationPanel feedbackPanel;
-
 	private final Form<Void> layoutForm;
+	private final ArrayList<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
+	private final IModel<TimePeriodEnum> selectedTimePeriod = Model.of(TimePeriodEnum.INF);
+	private final EapUser selectedUser = null;
+	private NotificationPanel feedbackPanel;
 	private ListMultipleChoice<EapEventType> eventTypeSelect;
 	private DropDownChoice<TimePeriodEnum> timePeriodSelect;
 	private DropDownChoice<EapUser> userSelect;
-
-	private final ArrayList<EapEventType> selectedEventTypes = new ArrayList<EapEventType>();
-	private static final List<TimePeriodEnum> TIMEPERIODS = Arrays.asList(TimePeriodEnum.values());
-	private final IModel<TimePeriodEnum> selectedTimePeriod = Model.of(TimePeriodEnum.INF);
-	private final EapUser selectedUser = null;
 
 	public ViewConfigurationPanel(final String id, final EventViewPage visualisationPanel) {
 		super(id);
@@ -73,22 +70,19 @@ public class ViewConfigurationPanel extends Panel {
 	}
 
 	private Component addEventTypeSelect() {
-		this.eventTypeSelect = new ListMultipleChoice<EapEventType>("eventTypeSelect", new Model(
-				this.selectedEventTypes), EapEventType.findAll());
+		this.eventTypeSelect = new ListMultipleChoice<EapEventType>("eventTypeSelect", new Model(this.selectedEventTypes), EapEventType.findAll());
 		this.eventTypeSelect.setOutputMarkupId(true);
 		return this.eventTypeSelect;
 	}
 
 	private Component addUserSelect() {
-		this.userSelect = new DropDownChoice<EapUser>("userSelect", new PropertyModel<EapUser>(this, "selectedUser"),
-				EapUser.findAll());
+		this.userSelect = new DropDownChoice<EapUser>("userSelect", new PropertyModel<EapUser>(this, "selectedUser"), EapUser.findAll());
 		this.userSelect.setOutputMarkupId(true);
 		return this.userSelect;
 	}
 
 	private Component addTimePeriodSelect() {
-		this.timePeriodSelect = new DropDownChoice<TimePeriodEnum>("timePeriodSelect", this.selectedTimePeriod,
-				ViewConfigurationPanel.TIMEPERIODS);
+		this.timePeriodSelect = new DropDownChoice<TimePeriodEnum>("timePeriodSelect", this.selectedTimePeriod, ViewConfigurationPanel.TIMEPERIODS);
 		this.timePeriodSelect.setOutputMarkupId(true);
 		return this.timePeriodSelect;
 	}
@@ -121,9 +115,7 @@ public class ViewConfigurationPanel extends Panel {
 
 				if (error == false) {
 					// create new EventView configuration
-					final EventView view = new EventView(ViewConfigurationPanel.this.selectedUser,
-							ViewConfigurationPanel.this.selectedEventTypes,
-							ViewConfigurationPanel.this.selectedTimePeriod.getObject());
+					final EventView view = new EventView(ViewConfigurationPanel.this.selectedUser, ViewConfigurationPanel.this.selectedEventTypes, ViewConfigurationPanel.this.selectedTimePeriod.getObject());
 					view.save();
 					final EventViewPage visualisation = ViewConfigurationPanel.this.parentPage;
 					visualisation.views.detach();
@@ -132,7 +124,9 @@ public class ViewConfigurationPanel extends Panel {
 					visualisation.addViewModal.close(target);
 				}
 				;
-			};
+			}
+
+			;
 		};
 
 		layoutForm.add(createButton);

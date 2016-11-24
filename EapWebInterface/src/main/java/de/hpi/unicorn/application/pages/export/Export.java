@@ -43,21 +43,21 @@ import de.hpi.unicorn.importer.xml.XMLExporter;
 /**
  * This class is a page to export {@link EapEvent}s as CSV files. It is possible
  * to specify, which events should be exported with a filter.
- * 
+ *
  * @author micha
  */
 public class Export extends AbstractEapPage {
 
 	private static final long serialVersionUID = 1L;
+	private final Form<Void> layoutForm;
+	private final EventProvider eventProvider;
+	protected String eventTypeNameFromTree;
+	protected Export page;
 	private String selectedEventTypeName;
 	private EapEventType selectedEventType;
-	private final Form<Void> layoutForm;
-	protected String eventTypeNameFromTree;
 	private DropDownChoice<String> eventTypeDropDownChoice;
 	private ArrayList<IColumn<EapEvent, String>> columns;
 	private DefaultDataTable<EapEvent, String> dataTable;
-	private final EventProvider eventProvider;
-	protected Export page;
 	private DropDownChoice<String> eventFilterCriteriaSelect;
 	private ArrayList<String> eventFilterCriteriaList;
 
@@ -83,8 +83,7 @@ public class Export extends AbstractEapPage {
 
 	private void addEventTypeSelect() {
 		final List<String> eventTypes = EapEventType.getAllTypeNames();
-		this.eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice", new PropertyModel<String>(
-				this, "selectedEventTypeName"), eventTypes);
+		this.eventTypeDropDownChoice = new DropDownChoice<String>("eventTypeDropDownChoice", new PropertyModel<String>(this, "selectedEventTypeName"), eventTypes);
 		this.eventTypeDropDownChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			private static final long serialVersionUID = 1L;
 
@@ -98,16 +97,14 @@ public class Export extends AbstractEapPage {
 
 	private void addFilterTools() {
 
-		this.eventFilterCriteriaSelect = new DropDownChoice<String>("eventFilterCriteria", new Model<String>(),
-				new ArrayList<String>());
+		this.eventFilterCriteriaSelect = new DropDownChoice<String>("eventFilterCriteria", new Model<String>(), new ArrayList<String>());
 		this.eventFilterCriteriaSelect.setOutputMarkupId(true);
 		this.layoutForm.add(this.eventFilterCriteriaSelect);
 
-		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[] { "<", "=", ">" }));
+		final List<String> conditions = new ArrayList<String>(Arrays.asList(new String[]{"<", "=", ">"}));
 		final String selectedCondition = "=";
 
-		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("eventFilterCondition",
-				new Model<String>(selectedCondition), conditions);
+		final DropDownChoice<String> eventFilterConditionSelect = new DropDownChoice<String>("eventFilterCondition", new Model<String>(selectedCondition), conditions);
 		this.layoutForm.add(eventFilterConditionSelect);
 
 		final TextField<String> searchValueInput = new TextField<String>("searchValueInput", Model.of(""));
@@ -119,13 +116,10 @@ public class Export extends AbstractEapPage {
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
-				final String eventFilterCriteria = Export.this.eventFilterCriteriaSelect.getChoices().get(
-						Integer.parseInt(Export.this.eventFilterCriteriaSelect.getValue()));
-				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(
-						Integer.parseInt(eventFilterConditionSelect.getValue()));
+				final String eventFilterCriteria = Export.this.eventFilterCriteriaSelect.getChoices().get(Integer.parseInt(Export.this.eventFilterCriteriaSelect.getValue()));
+				final String eventFilterCondition = eventFilterConditionSelect.getChoices().get(Integer.parseInt(eventFilterConditionSelect.getValue()));
 				final String filterValue = searchValueInput.getValue();
-				Export.this.eventProvider.setSecondEventFilter(new EventFilter(eventFilterCriteria,
-						eventFilterCondition, filterValue));
+				Export.this.eventProvider.setSecondEventFilter(new EventFilter(eventFilterCriteria, eventFilterCondition, filterValue));
 				target.add(Export.this.dataTable);
 			}
 		};
@@ -162,11 +156,9 @@ public class Export extends AbstractEapPage {
 		this.selectedEventType = EapEventType.findByTypeName(this.selectedEventTypeName);
 
 		if (this.selectedEventType != null) {
-			this.eventProvider.setEventFilter(new EventFilter("Event Type (ID)", "=", Integer
-					.toString(this.selectedEventType.getID())));
+			this.eventProvider.setEventFilter(new EventFilter("Event Type (ID)", "=", Integer.toString(this.selectedEventType.getID())));
 			target.add(this.dataTable);
-			this.eventFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[] { "ID", "Event Type (ID)",
-					"Process Instance" }));
+			this.eventFilterCriteriaList = new ArrayList<String>(Arrays.asList(new String[]{"ID", "Event Type (ID)", "Process Instance"}));
 			for (final String eventAttribute : this.selectedEventType.getEventAttributes()) {
 				this.eventFilterCriteriaList.add(eventAttribute);
 			}
@@ -184,8 +176,7 @@ public class Export extends AbstractEapPage {
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
 				final CSVExporter csvExporter = new CSVExporter();
-				final List<EapEvent> events = (Export.this.eventProvider.getSelectedEntities().isEmpty()) ? Export.this.eventProvider
-						.getEntities() : Export.this.eventProvider.getSelectedEntities();
+				final List<EapEvent> events = (Export.this.eventProvider.getSelectedEntities().isEmpty()) ? Export.this.eventProvider.getEntities() : Export.this.eventProvider.getSelectedEntities();
 				if (events.isEmpty()) {
 					Export.this.page.getFeedbackPanel().error("No events selected.");
 					target.add(Export.this.page.getFeedbackPanel());
@@ -208,8 +199,7 @@ public class Export extends AbstractEapPage {
 					};
 					Export.this.layoutForm.add(csvDownload);
 					csvDownload.initiate(target);
-					Export.this.page.getFeedbackPanel().success(
-							events.size() + " events have been exported in a CSV file.");
+					Export.this.page.getFeedbackPanel().success(events.size() + " events have been exported in a CSV file.");
 					target.add(Export.this.page.getFeedbackPanel());
 				}
 			}
@@ -223,8 +213,7 @@ public class Export extends AbstractEapPage {
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				final XMLExporter xmlExporter = new XMLExporter();
-				final List<EapEvent> events = (Export.this.eventProvider.getSelectedEntities().isEmpty()) ? Export.this.eventProvider
-						.getEntities() : Export.this.eventProvider.getSelectedEntities();
+				final List<EapEvent> events = (Export.this.eventProvider.getSelectedEntities().isEmpty()) ? Export.this.eventProvider.getEntities() : Export.this.eventProvider.getSelectedEntities();
 				if (events.isEmpty()) {
 					Export.this.page.getFeedbackPanel().error("No events selected.");
 					target.add(Export.this.page.getFeedbackPanel());
@@ -262,8 +251,7 @@ public class Export extends AbstractEapPage {
 					};
 					Export.this.layoutForm.add(zipDownload);
 					zipDownload.initiate(target);
-					Export.this.page.getFeedbackPanel().success(
-							events.size() + " events have been exported as XML files in a ZIP archive.");
+					Export.this.page.getFeedbackPanel().success(events.size() + " events have been exported as XML files in a ZIP archive.");
 					target.add(Export.this.page.getFeedbackPanel());
 				}
 			}
@@ -271,7 +259,7 @@ public class Export extends AbstractEapPage {
 		this.layoutForm.add(xmlExportButton);
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	private void addEventTable() {
 		this.columns = new ArrayList<IColumn<EapEvent, String>>();
 		this.columns.add(new PropertyColumn<EapEvent, String>(Model.of("ID"), "ID"));

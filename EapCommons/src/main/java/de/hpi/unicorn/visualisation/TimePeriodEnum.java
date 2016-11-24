@@ -14,8 +14,7 @@ import java.util.Date;
  * This enumeration encapsulates the possible time periods for event views.
  */
 public enum TimePeriodEnum {
-	ONEHOUR("last hour", 3600), ONEDAY("last day", 86400), ONEMONTH("last month", 2592000), ONEYEAR("last year",
-			31536000), INF("infinite", 0);
+	ONEHOUR("last hour", 3600), ONEDAY("last day", 86400), ONEMONTH("last month", 2592000), ONEYEAR("last year", 31536000), INF("infinite", 0);
 
 	private String type;
 	private int seconds;
@@ -37,7 +36,7 @@ public enum TimePeriodEnum {
 	/**
 	 * Calculates a date that lies as far back from now as the time period.
 	 * Between the returned date and now lies the configured time period.
-	 * 
+	 *
 	 * @return date
 	 */
 	public Date getStartTime() {

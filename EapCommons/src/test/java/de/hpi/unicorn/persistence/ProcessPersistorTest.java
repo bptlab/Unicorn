@@ -28,7 +28,7 @@ import de.hpi.unicorn.process.CorrelationProcess;
 /**
  * This class tests the saving, finding and removing of
  * {@link CorrelationProcess}.
- * 
+ *
  * @author micha
  */
 @FixMethodOrder(MethodSorters.JVM)
@@ -43,11 +43,9 @@ public class ProcessPersistorTest implements PersistenceTest {
 	@Test
 	public void testStoreAndRetrieve() {
 		storeExampleProcesses();
-		assertTrue("Value should be 2, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll()
-				.size() == 2);
+		assertTrue("Value should be 2, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll().size() == 2);
 		CorrelationProcess.removeAll();
-		assertTrue("Value should be 0, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll()
-				.size() == 0);
+		assertTrue("Value should be 0, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll().size() == 0);
 	}
 
 	private void storeExampleProcesses() {
@@ -57,8 +55,7 @@ public class ProcessPersistorTest implements PersistenceTest {
 		CorrelationProcess secondProcess = new CorrelationProcess("GET-Transport");
 		secondProcess.addEventType(new EapEventType("GET-Transport"));
 
-		ArrayList<CorrelationProcess> processes = new ArrayList<CorrelationProcess>(Arrays.asList(firstProcess,
-				secondProcess));
+		ArrayList<CorrelationProcess> processes = new ArrayList<CorrelationProcess>(Arrays.asList(firstProcess, secondProcess));
 		assertTrue(CorrelationProcess.save(processes));
 	}
 
@@ -81,8 +78,7 @@ public class ProcessPersistorTest implements PersistenceTest {
 		storeExampleProcesses();
 		List<CorrelationProcess> processes;
 		processes = CorrelationProcess.findAll();
-		assertTrue("Value should be 2, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll()
-				.size() == 2);
+		assertTrue("Value should be 2, but was " + CorrelationProcess.findAll().size(), CorrelationProcess.findAll().size() == 2);
 
 		CorrelationProcess deleteProcess = processes.get(0);
 		deleteProcess.remove();
@@ -103,8 +99,7 @@ public class ProcessPersistorTest implements PersistenceTest {
 		process.addEventType(testEventType);
 		process.setTimeCondition(timeCondition);
 		process.save();
-		assertTrue("Value should be 1, but was " + CorrelationProcess.findByName("ProcessWithTimeCondition").size(),
-				CorrelationProcess.findByName("ProcessWithTimeCondition").size() == 1);
+		assertTrue("Value should be 1, but was " + CorrelationProcess.findByName("ProcessWithTimeCondition").size(), CorrelationProcess.findByName("ProcessWithTimeCondition").size() == 1);
 		CorrelationProcess processFromDataBase = CorrelationProcess.findByName("ProcessWithTimeCondition").get(0);
 		assertNotNull(processFromDataBase.getTimeCondition());
 		TimeCondition timeConditionFromDatabase = processFromDataBase.getTimeCondition();

@@ -80,13 +80,10 @@ public class EapEvent extends Persistable {
 
 	@Transient
 	protected TransformationTree<String, Serializable> valueTree;
-
-	@ManyToMany(mappedBy = "events")
-	List<CorrelationProcessInstance> processInstances;
-
 	@Basic
 	protected String semanticEventID;
-
+	@ManyToMany(mappedBy = "events")
+	List<CorrelationProcessInstance> processInstances;
 	@Index
 	@ManyToOne
 	private EapEventType eventType;
@@ -105,7 +102,7 @@ public class EapEvent extends Persistable {
 
 	/**
 	 * Creates an event with a timestamp
-	 * 
+	 *
 	 * @param timestamp
 	 */
 	private EapEvent(final Date timestamp) {
@@ -115,7 +112,7 @@ public class EapEvent extends Persistable {
 
 	/**
 	 * Creates an event with event type and timestamp.
-	 * 
+	 *
 	 * @param eventType
 	 * @param timestamp
 	 */
@@ -126,7 +123,7 @@ public class EapEvent extends Persistable {
 
 	/**
 	 * Creates an event with timestamp and attributes.
-	 * 
+	 *
 	 * @param timestamp
 	 * @param values
 	 */
@@ -137,7 +134,7 @@ public class EapEvent extends Persistable {
 
 	/**
 	 * Creates an event with event type, timestamp and attributes.
-	 * 
+	 *
 	 * @param eventType
 	 * @param timestamp
 	 * @param values
@@ -145,6 +142,466 @@ public class EapEvent extends Persistable {
 	public EapEvent(final EapEventType eventType, final Date timestamp, final Map<String, Serializable> values) {
 		this(eventType, timestamp);
 		this.values = ConversionUtils.getValuesConvertedToString(values);
+	}
+
+	/**
+	 * set the Eventtyp of all given Events to the specified Eventtyp
+	 *
+	 * @param events
+	 * @param eventType
+	 * @return
+	 */
+	public static List<EapEvent> setEventType(final List<EapEvent> events, final EapEventType eventType) {
+		for (final EapEvent event : events) {
+			event.setEventType(eventType);
+		}
+		return events;
+	}
+
+	/**
+	 * Method returns events, where the specified column name has the specified
+	 * value.
+	 */
+	private static List<EapEvent> findByAttribute(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM Event " + "WHERE " + columnName + " = '" + value + "'", EapEvent.class);
+		return query.getResultList();
+	}
+
+	public static List<EapEvent> findByEventTypeAndAttributeExpressionsAndValues(final EapEventType eventType, final Map<String, Serializable> attributeExpressionsAndValues) {
+		// StringBuffer sb = new StringBuffer();
+		// sb.append("" +
+		// "SELECT * FROM Event JOIN TransformationMapTree_TransformationMapTreeElements mte "
+		// +
+		// "ON mte.TransformationMapTree_TransformationMapID=Event.MapTreeID " +
+		// "JOIN TransformationMapTree_TransformationMapTreeRootElements mtre "
+		// +
+		// "ON mtre.TransformationMapTree_TransformationMapID = Event.MapTreeID "
+		// +
+		// "JOIN EventTransformationElement me " +
+		// "ON (me.ID = mtre.treeRootElements_ID OR me.ID = mtre.treeRootElements_ID) "
+		// +
+		// "WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
+		// Iterator<String> iterator =
+		// attributeExpressionsAndValues.keySet().iterator();
+		// if (iterator.hasNext()) {
+		// sb.append(" AND ");
+		// }
+		// while (iterator.hasNext()) {
+		// String attributeExpression = iterator.next();
+		// Serializable value =
+		// attributeExpressionsAndValues.get(attributeExpression);
+		// if (value instanceof Date) {
+		// sb.append("(me.MapKey = '" + attributeExpression +
+		// "' AND me.MapValue = {ts '" + (new
+		// SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format((Date) value) +
+		// "'})");
+		// } else {
+		// sb.append("(me.MapKey = '" + attributeExpression +
+		// "' AND me.MapValue = '" + value + "')");
+		// }
+		// if (iterator.hasNext()) {
+		// sb.append(" OR ");
+		// }
+		// }
+		// Query query =
+		// Persistor.getEntityManager().createNativeQuery(sb.toString(),
+		// EapEvent.class);
+		final StringBuffer sb = new StringBuffer();
+		sb.append("SELECT * FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
+		final Iterator<String> iterator = attributeExpressionsAndValues.keySet().iterator();
+		while (iterator.hasNext()) {
+			final String attributeExpression = iterator.next();
+			final Serializable value = attributeExpressionsAndValues.get(attributeExpression);
+			sb.append(" AND ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
+			if (value instanceof Date) {
+				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
+			} else {
+				sb.append(" AND VALUE = '" + value + "')");
+			}
+		}
+		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString(), EapEvent.class);
+		return query.getResultList();
+	}
+
+	public static Serializable findValueByEventTypeAndAttributeExpressionsAndValues(final EapEventType eventType, final String attributeExpressionOfValue, final Map<String, Serializable> attributeExpressionsAndValuesForSearch) {
+		// TODO: multiple events can be found - value of first event is returned
+		final StringBuffer sb = new StringBuffer();
+		sb.append("SELECT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) " + "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '" + attributeExpressionOfValue + "'");
+
+		final Iterator<String> iterator = attributeExpressionsAndValuesForSearch.keySet().iterator();
+		while (iterator.hasNext()) {
+			final String attributeExpression = iterator.next();
+			final Serializable value = attributeExpressionsAndValuesForSearch.get(attributeExpression);
+			sb.append(" AND e.ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
+			if (value instanceof Date) {
+				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
+			} else {
+				sb.append(" AND VALUE = '" + value + "')");
+			}
+		}
+
+		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString());
+		if (query.getResultList().isEmpty()) {
+			return null;
+		} else {
+			final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeExpressionOfValue);
+			final String result = query.getResultList().get(0).toString();
+			if (attribute.getType() != null) {
+				switch (attribute.getType()) {
+					case DATE:
+						return DateUtils.parseDate(result);
+					case FLOAT:
+						return Double.parseDouble(result);
+					case INTEGER:
+						return Long.parseLong(result);
+					default:
+						return result;
+				}
+			} else {
+				return null;
+			}
+
+		}
+	}
+
+	public static List<Serializable> findValuesByEventTypeAndAttributeExpression(final EapEventType eventType, final String attributeExpression) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT DISTINCT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) " + "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '" + attributeExpression + "'");
+		if (query.getResultList().isEmpty()) {
+			return null;
+		} else {
+			final List<String> queryResult = query.getResultList();
+			final List<Serializable> result = new ArrayList<Serializable>();
+			final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeExpression);
+			if (attribute.getType() != null) {
+				switch (attribute.getType()) {
+					case DATE:
+						for (final String value : queryResult) {
+							result.add(DateUtils.parseDate(value));
+						}
+						break;
+					case INTEGER:
+						for (final String value : queryResult) {
+							result.add(Long.parseLong(value));
+						}
+						break;
+					case FLOAT:
+						for (final String value : queryResult) {
+							result.add(Double.valueOf(value));
+						}
+						break;
+					default:
+						for (final String value : queryResult) {
+							result.add(value);
+						}
+						break;
+				}
+			}
+			return result;
+		}
+	}
+
+	private static List<EapEvent> findByAttributeGreaterThan(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM Event " + "WHERE " + columnName + " > '" + value + "'", EapEvent.class);
+		return query.getResultList();
+	}
+
+	private static List<EapEvent> findByAttributeLessThan(final String columnName, final String value) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * FROM Event " + "WHERE " + columnName + " < '" + value + "'", EapEvent.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * returns EapEvents which have the specified attribute/value pair
+	 *
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public static List<EapEvent> findByValue(final String key, final Serializable value) {
+		final Map<String, Serializable> attributesAndValues = new HashMap<String, Serializable>();
+		attributesAndValues.put(key, value);
+		return EapEvent.findByValues(attributesAndValues);
+	}
+
+	/**
+	 * returns EapEvents which have all spezified attribute/value pairs
+	 *
+	 * @param eventAttributes
+	 * @return
+	 */
+	public static List<EapEvent> findByValues(final Map<String, Serializable> attributeExpressionsAndValues) {
+		final StringBuffer sb = new StringBuffer();
+		sb.append("SELECT * FROM Event");
+		final Iterator<String> iterator = attributeExpressionsAndValues.keySet().iterator();
+		if (iterator.hasNext()) {
+			sb.append(" WHERE");
+		}
+		while (iterator.hasNext()) {
+			final String attributeExpression = iterator.next();
+			final Serializable value = attributeExpressionsAndValues.get(attributeExpression);
+			sb.append(" ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
+			if (value instanceof Date) {
+				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
+			} else {
+				sb.append(" AND VALUE = '" + value + "')");
+			}
+			if (iterator.hasNext()) {
+				sb.append(" AND");
+			}
+		}
+		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString(), EapEvent.class);
+		return query.getResultList();
+	}
+
+	// Getter and Setter
+
+	/**
+	 * returns EapEvents from the given EapEventtyp
+	 *
+	 * @param eventType
+	 * @return
+	 */
+	public static List<EapEvent> findByEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'", EapEvent.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * returns EapEvents from the given EapEventtyp and have a timestamp which
+	 * lies maximal "period" in the past
+	 *
+	 * @param eventType
+	 * @param period
+	 * @return
+	 */
+	public static List<EapEvent> findByEventTypeAndTime(final EapEventType eventType, final TimePeriodEnum period) {
+		if (period == TimePeriodEnum.INF) {
+			return EapEvent.findByEventType(eventType);
+		}
+		final Date start = period.getStartTime();
+		return EapEvent.findBetween(start, new Date(), eventType);
+	}
+
+	/**
+	 * returns number EapEvents from the given Eventtyp
+	 *
+	 * @param eventType
+	 * @return
+	 */
+	public static long getNumberOfEventsByEventType(final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT count(*) FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
+		final long value = (Long) query.getSingleResult();
+
+		return value;
+	}
+
+	/**
+	 * Returns the number of events in the database.
+	 *
+	 * @return overall number of EapEvents
+	 */
+	public static long getNumberOfEvents() {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT count(*) FROM Event");
+		final long value = (Long) query.getSingleResult();
+
+		return value;
+	}
+
+	/**
+	 * returns EapEvents which belongs to the specified processInstance
+	 *
+	 * @param processInstance
+	 * @return
+	 */
+	public static List<EapEvent> findByProcessInstance(final CorrelationProcessInstance processInstance) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "Select * " + "FROM Event " + "WHERE ID IN (" + "Select events_ID " + "FROM ProcessInstance_Event " + "WHERE processInstances_ID = '" + processInstance.getID() + "')", EapEvent.class);
+		return query.getResultList();
+	}
+
+	/**
+	 * returns EapEvent with the specified ID
+	 *
+	 * @param ID
+	 * @return
+	 */
+	public static EapEvent findByID(final int ID) {
+		final List<EapEvent> events = EapEvent.findByAttribute("ID", Integer.toString(ID));
+		if (!events.isEmpty()) {
+			return events.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * returns Events which have an ID greater than the given ID
+	 *
+	 * @param ID
+	 * @return
+	 */
+	public static List<EapEvent> findByIDGreaterThan(final int ID) {
+		return EapEvent.findByAttributeGreaterThan("ID", Integer.toString(ID));
+	}
+
+	/**
+	 * returns Events which have an ID less than the given ID
+	 *
+	 * @param ID
+	 * @return
+	 */
+	public static List<EapEvent> findByIDLessThan(final int ID) {
+		return EapEvent.findByAttributeLessThan("ID", Integer.toString(ID));
+	}
+
+	/**
+	 * returns Events which have a timestamp between the given Dates
+	 *
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static List<EapEvent> findBetween(final Date startDate, final Date endDate) {
+		return EapEvent.findBetween(startDate, endDate, null);
+	}
+
+	/**
+	 * returns events from the given event type having a timestamp between the
+	 * given dates
+	 *
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<EapEvent> findBetween(final Date startDate, final Date endDate, final EapEventType eventType) {
+		Query query;
+		if (eventType != null) {
+			query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event WHERE TIMESTAMP BETWEEN '" + DateUtils.getFormatter().format(startDate) + "' AND '" + DateUtils.getFormatter().format(endDate) + "' AND EVENTTYPE_ID ='" + eventType.getID() + "'", EapEvent.class);
+		} else {
+			query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event WHERE TIMESTAMP BETWEEN '" + DateUtils.getFormatter().format(startDate) + "' AND '" + DateUtils.getFormatter().format(endDate) + "'", EapEvent.class);
+		}
+		return query.getResultList();
+	}
+
+	/**
+	 * @return all EapEvents
+	 */
+	public static List<EapEvent> findAll() {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event", EapEvent.class);
+		return q.getResultList();
+	}
+
+	/**
+	 * @return all EapEvents
+	 */
+	public static List<EapEvent> findAllUI() {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event ORDER BY TIMESTAMP DESC LIMIT 0,10000", EapEvent.class);
+		return q.getResultList();
+	}
+
+	// JPA-Methods
+
+	/**
+	 * saves the given EapEvents
+	 *
+	 * @param events
+	 * @return
+	 */
+	public static List<EapEvent> save(final List<EapEvent> events) {
+		try {
+			final EntityManager entityManager = Persistor.getEntityManager();
+			entityManager.getTransaction().begin();
+			for (final EapEvent event : events) {
+				entityManager.persist(event);
+			}
+			entityManager.getTransaction().commit();
+			return events;
+		} catch (final Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	/**
+	 * Deletes the specified events from the database.
+	 *
+	 * @return
+	 */
+	public static boolean remove(final ArrayList<EapEvent> events) {
+		boolean removed = true;
+		for (final EapEvent event : events) {
+			removed = (event.remove() != null);
+		}
+		return removed;
+	}
+
+	/**
+	 * deletes all EapEvents
+	 */
+	public static void removeAll() {
+		for (final EapEvent actualEvent : EapEvent.findAll()) {
+			actualEvent.remove();
+		}
+	}
+
+	public static List<String> findAllEventAttributes() {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT DISTINCT v.ATTRIBUTE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID)");
+		return query.getResultList();
+	}
+
+	/**
+	 * returns distinct values of the given attribute of the given eventtyp
+	 */
+	public static List<String> findDistinctValuesOfAttributeOfType(final String attributeExpression, final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT DISTINCT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) " + "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '" + attributeExpression + "'");
+		return query.getResultList();
+	}
+
+	/**
+	 * return the number of the repetition of the value in the specified
+	 * eventtyp and attribute
+	 */
+	public static long findNumberOfAppearancesByAttributeValue(final String attributeExpression, final String value, final EapEventType eventType) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT count(DISTINCT e.ID) FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) " + "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND " + "v.ATTRIBUTE = '" + attributeExpression + "' AND v.VALUE = '" + value + "'");
+		return (long) query.getSingleResult();
+	}
+
+	/**
+	 * returns minimal value of the given attribute in the specified eventtyp
+	 */
+	@SuppressWarnings("null")
+	public static long getMinOfAttributeValue(final String attribute, final EapEventType eventType) {
+		final List<String> values = EapEvent.findDistinctValuesOfAttributeOfType(attribute, eventType);
+		if (values.size() > 0) {
+			long min = Long.parseLong(values.get(0));
+			for (final String value : values) {
+				final long actual = Long.parseLong(value);
+				if (actual < min) {
+					min = actual;
+				}
+			}
+			return min;
+		}
+		return (Long) null;
+	}
+
+	/**
+	 * returns maximal value of the given attribute in the specified eventtyp
+	 */
+	@SuppressWarnings("null")
+	public static long getMaxOfAttributeValue(final String attribute, final EapEventType eventType) {
+		final List<String> values = EapEvent.findDistinctValuesOfAttributeOfType(attribute, eventType);
+		if (values.size() > 0) {
+			long max = Long.parseLong(values.get(0));
+			for (final String value : values) {
+				final long actual = Long.parseLong(value);
+				if (actual > max) {
+					max = actual;
+				}
+			}
+			return max;
+		}
+		return (Long) null;
 	}
 
 	public boolean addProcessInstance(final CorrelationProcessInstance processInstance) {
@@ -223,34 +680,18 @@ public class EapEvent extends Persistable {
 		return false;
 	}
 
-	/**
-	 * set the Eventtyp of all given Events to the specified Eventtyp
-	 * 
-	 * @param events
-	 * @param eventType
-	 * @return
-	 */
-	public static List<EapEvent> setEventType(final List<EapEvent> events, final EapEventType eventType) {
-		for (final EapEvent event : events) {
-			event.setEventType(eventType);
-		}
-		return events;
-	}
-
-	// Getter and Setter
-
 	public Map<String, Serializable> getValues() {
 		// because values is of type IndirectMap (JPA)
 		// return new HashMap<String, Serializable>(values);
 		return ConversionUtils.getValuesConvertedToSerializable(this.eventType, this.values);
 	}
 
-	public Map<String, String> getValuesForExport() {
-		return this.values;
-	}
-
 	public void setValues(final Map<String, Serializable> values) {
 		this.values = ConversionUtils.getValuesConvertedToString(values);
+	}
+
+	public Map<String, String> getValuesForExport() {
+		return this.values;
 	}
 
 	public void setValuesWithoutConversion(final Map<String, String> values) {
@@ -291,371 +732,6 @@ public class EapEvent extends Persistable {
 		this.processInstances = processInstance;
 	}
 
-	// JPA-Methods
-
-	/**
-	 * Method returns events, where the specified column name has the specified
-	 * value.
-	 */
-	private static List<EapEvent> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM Event " + "WHERE " + columnName + " = '" + value + "'", EapEvent.class);
-		return query.getResultList();
-	}
-
-	public static List<EapEvent> findByEventTypeAndAttributeExpressionsAndValues(final EapEventType eventType,
-			final Map<String, Serializable> attributeExpressionsAndValues) {
-		// StringBuffer sb = new StringBuffer();
-		// sb.append("" +
-		// "SELECT * FROM Event JOIN TransformationMapTree_TransformationMapTreeElements mte "
-		// +
-		// "ON mte.TransformationMapTree_TransformationMapID=Event.MapTreeID " +
-		// "JOIN TransformationMapTree_TransformationMapTreeRootElements mtre "
-		// +
-		// "ON mtre.TransformationMapTree_TransformationMapID = Event.MapTreeID "
-		// +
-		// "JOIN EventTransformationElement me " +
-		// "ON (me.ID = mtre.treeRootElements_ID OR me.ID = mtre.treeRootElements_ID) "
-		// +
-		// "WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
-		// Iterator<String> iterator =
-		// attributeExpressionsAndValues.keySet().iterator();
-		// if (iterator.hasNext()) {
-		// sb.append(" AND ");
-		// }
-		// while (iterator.hasNext()) {
-		// String attributeExpression = iterator.next();
-		// Serializable value =
-		// attributeExpressionsAndValues.get(attributeExpression);
-		// if (value instanceof Date) {
-		// sb.append("(me.MapKey = '" + attributeExpression +
-		// "' AND me.MapValue = {ts '" + (new
-		// SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).format((Date) value) +
-		// "'})");
-		// } else {
-		// sb.append("(me.MapKey = '" + attributeExpression +
-		// "' AND me.MapValue = '" + value + "')");
-		// }
-		// if (iterator.hasNext()) {
-		// sb.append(" OR ");
-		// }
-		// }
-		// Query query =
-		// Persistor.getEntityManager().createNativeQuery(sb.toString(),
-		// EapEvent.class);
-		final StringBuffer sb = new StringBuffer();
-		sb.append("SELECT * FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
-		final Iterator<String> iterator = attributeExpressionsAndValues.keySet().iterator();
-		while (iterator.hasNext()) {
-			final String attributeExpression = iterator.next();
-			final Serializable value = attributeExpressionsAndValues.get(attributeExpression);
-			sb.append(" AND ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
-			if (value instanceof Date) {
-				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
-			} else {
-				sb.append(" AND VALUE = '" + value + "')");
-			}
-		}
-		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString(), EapEvent.class);
-		return query.getResultList();
-	}
-
-	public static Serializable findValueByEventTypeAndAttributeExpressionsAndValues(final EapEventType eventType,
-			final String attributeExpressionOfValue,
-			final Map<String, Serializable> attributeExpressionsAndValuesForSearch) {
-		// TODO: multiple events can be found - value of first event is returned
-		final StringBuffer sb = new StringBuffer();
-		sb.append("SELECT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) "
-				+ "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '" + attributeExpressionOfValue
-				+ "'");
-
-		final Iterator<String> iterator = attributeExpressionsAndValuesForSearch.keySet().iterator();
-		while (iterator.hasNext()) {
-			final String attributeExpression = iterator.next();
-			final Serializable value = attributeExpressionsAndValuesForSearch.get(attributeExpression);
-			sb.append(" AND e.ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
-			if (value instanceof Date) {
-				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
-			} else {
-				sb.append(" AND VALUE = '" + value + "')");
-			}
-		}
-
-		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString());
-		if (query.getResultList().isEmpty()) {
-			return null;
-		} else {
-			final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(
-					attributeExpressionOfValue);
-			final String result = query.getResultList().get(0).toString();
-			if (attribute.getType() != null) {
-				switch (attribute.getType()) {
-				case DATE:
-					return DateUtils.parseDate(result);
-				case FLOAT:
-					return Double.parseDouble(result);
-				case INTEGER:
-					return Long.parseLong(result);
-				default:
-					return result;
-				}
-			} else {
-				return null;
-			}
-
-		}
-	}
-
-	public static List<Serializable> findValuesByEventTypeAndAttributeExpression(final EapEventType eventType,
-			final String attributeExpression) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT DISTINCT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) "
-						+ "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '"
-						+ attributeExpression + "'");
-		if (query.getResultList().isEmpty()) {
-			return null;
-		} else {
-			final List<String> queryResult = query.getResultList();
-			final List<Serializable> result = new ArrayList<Serializable>();
-			final TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeExpression);
-			if (attribute.getType() != null) {
-				switch (attribute.getType()) {
-				case DATE:
-					for (final String value : queryResult) {
-						result.add(DateUtils.parseDate(value));
-					}
-					break;
-				case INTEGER:
-					for (final String value : queryResult) {
-						result.add(Long.parseLong(value));
-					}
-					break;
-				case FLOAT:
-					for (final String value : queryResult) {
-						result.add(Double.valueOf(value));
-					}
-					break;
-				default:
-					for (final String value : queryResult) {
-						result.add(value);
-					}
-					break;
-				}
-			}
-			return result;
-		}
-	}
-
-	private static List<EapEvent> findByAttributeGreaterThan(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM Event " + "WHERE " + columnName + " > '" + value + "'", EapEvent.class);
-		return query.getResultList();
-	}
-
-	private static List<EapEvent> findByAttributeLessThan(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT * FROM Event " + "WHERE " + columnName + " < '" + value + "'", EapEvent.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * returns EapEvents which have the specified attribute/value pair
-	 * 
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public static List<EapEvent> findByValue(final String key, final Serializable value) {
-		final Map<String, Serializable> attributesAndValues = new HashMap<String, Serializable>();
-		attributesAndValues.put(key, value);
-		return EapEvent.findByValues(attributesAndValues);
-	}
-
-	/**
-	 * returns EapEvents which have all spezified attribute/value pairs
-	 * 
-	 * @param eventAttributes
-	 * @return
-	 */
-	public static List<EapEvent> findByValues(final Map<String, Serializable> attributeExpressionsAndValues) {
-		final StringBuffer sb = new StringBuffer();
-		sb.append("SELECT * FROM Event");
-		final Iterator<String> iterator = attributeExpressionsAndValues.keySet().iterator();
-		if (iterator.hasNext()) {
-			sb.append(" WHERE");
-		}
-		while (iterator.hasNext()) {
-			final String attributeExpression = iterator.next();
-			final Serializable value = attributeExpressionsAndValues.get(attributeExpression);
-			sb.append(" ID IN (SELECT EVENT_ID FROM EventValues WHERE ATTRIBUTE = '" + attributeExpression + "'");
-			if (value instanceof Date) {
-				sb.append(" AND VALUE = '" + DateUtils.getFormatter().format((Date) value) + "')");
-			} else {
-				sb.append(" AND VALUE = '" + value + "')");
-			}
-			if (iterator.hasNext()) {
-				sb.append(" AND");
-			}
-		}
-		final Query query = Persistor.getEntityManager().createNativeQuery(sb.toString(), EapEvent.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * returns EapEvents from the given EapEventtyp
-	 * 
-	 * @param eventType
-	 * @return
-	 */
-	public static List<EapEvent> findByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'", EapEvent.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * returns EapEvents from the given EapEventtyp and have a timestamp which
-	 * lies maximal "period" in the past
-	 * 
-	 * @param eventType
-	 * @param period
-	 * @return
-	 */
-	public static List<EapEvent> findByEventTypeAndTime(final EapEventType eventType, final TimePeriodEnum period) {
-		if (period == TimePeriodEnum.INF) {
-			return EapEvent.findByEventType(eventType);
-		}
-		final Date start = period.getStartTime();
-		return EapEvent.findBetween(start, new Date(), eventType);
-	}
-
-	/**
-	 * returns number EapEvents from the given Eventtyp
-	 * 
-	 * @param eventType
-	 * @return
-	 */
-	public static long getNumberOfEventsByEventType(final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"SELECT count(*) FROM Event WHERE EVENTTYPE_ID = '" + eventType.getID() + "'");
-		final long value = (Long) query.getSingleResult();
-
-		return value;
-	}
-
-	/**
-	 * Returns the number of events in the database.
-	 * 
-	 * @return overall number of EapEvents
-	 */
-	public static long getNumberOfEvents() {
-		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT count(*) FROM Event");
-		final long value = (Long) query.getSingleResult();
-
-		return value;
-	}
-
-	/**
-	 * returns EapEvents which belongs to the specified processInstance
-	 * 
-	 * @param processInstance
-	 * @return
-	 */
-	public static List<EapEvent> findByProcessInstance(final CorrelationProcessInstance processInstance) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "Select * " + "FROM Event " + "WHERE ID IN (" + "Select events_ID "
-						+ "FROM ProcessInstance_Event " + "WHERE processInstances_ID = '" + processInstance.getID()
-						+ "')", EapEvent.class);
-		return query.getResultList();
-	}
-
-	/**
-	 * returns EapEvent with the specified ID
-	 * 
-	 * @param ID
-	 * @return
-	 */
-	public static EapEvent findByID(final int ID) {
-		final List<EapEvent> events = EapEvent.findByAttribute("ID", Integer.toString(ID));
-		if (!events.isEmpty()) {
-			return events.get(0);
-		} else {
-			return null;
-		}
-	}
-
-	/**
-	 * returns Events which have an ID greater than the given ID
-	 * 
-	 * @param ID
-	 * @return
-	 */
-	public static List<EapEvent> findByIDGreaterThan(final int ID) {
-		return EapEvent.findByAttributeGreaterThan("ID", Integer.toString(ID));
-	}
-
-	/**
-	 * returns Events which have an ID less than the given ID
-	 * 
-	 * @param ID
-	 * @return
-	 */
-	public static List<EapEvent> findByIDLessThan(final int ID) {
-		return EapEvent.findByAttributeLessThan("ID", Integer.toString(ID));
-	}
-
-	/**
-	 * returns Events which have a timestamp between the given Dates
-	 * 
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	public static List<EapEvent> findBetween(final Date startDate, final Date endDate) {
-		return EapEvent.findBetween(startDate, endDate, null);
-	}
-
-	/**
-	 * returns events from the given event type having a timestamp between the
-	 * given dates
-	 * 
-	 * @param startDate
-	 * @param endDate
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<EapEvent> findBetween(final Date startDate, final Date endDate, final EapEventType eventType) {
-		Query query;
-		if (eventType != null) {
-			query = Persistor.getEntityManager().createNativeQuery(
-					"SELECT * FROM Event WHERE TIMESTAMP BETWEEN '" + DateUtils.getFormatter().format(startDate)
-							+ "' AND '" + DateUtils.getFormatter().format(endDate) + "' AND EVENTTYPE_ID ='"
-							+ eventType.getID() + "'", EapEvent.class);
-		} else {
-			query = Persistor.getEntityManager().createNativeQuery(
-					"SELECT * FROM Event WHERE TIMESTAMP BETWEEN '" + DateUtils.getFormatter().format(startDate)
-							+ "' AND '" + DateUtils.getFormatter().format(endDate) + "'", EapEvent.class);
-		}
-		return query.getResultList();
-	}
-
-	/**
-	 * @return all EapEvents
-	 */
-	public static List<EapEvent> findAll() {
-		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM Event", EapEvent.class);
-		return q.getResultList();
-	}
-
-	/**
-	 * @return all EapEvents
-	 */
-	public static List<EapEvent> findAllUI() {
-		final Query q = Persistor.getEntityManager().createNativeQuery(
-				"SELECT * FROM Event ORDER BY TIMESTAMP DESC LIMIT 0,10000", EapEvent.class);
-		return q.getResultList();
-	}
-
 	@Override
 	public EapEvent save() {
 		return (EapEvent) super.save();
@@ -664,27 +740,6 @@ public class EapEvent extends Persistable {
 	@Override
 	public EapEvent merge() {
 		return (EapEvent) super.merge();
-	}
-
-	/**
-	 * saves the given EapEvents
-	 * 
-	 * @param events
-	 * @return
-	 */
-	public static List<EapEvent> save(final List<EapEvent> events) {
-		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
-			entityManager.getTransaction().begin();
-			for (final EapEvent event : events) {
-				entityManager.persist(event);
-			}
-			entityManager.getTransaction().commit();
-			return events;
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 
 	@Override
@@ -707,97 +762,6 @@ public class EapEvent extends Persistable {
 		}
 
 		return (EapEvent) super.remove();
-	}
-
-	/**
-	 * Deletes the specified events from the database.
-	 * 
-	 * @return
-	 */
-	public static boolean remove(final ArrayList<EapEvent> events) {
-		boolean removed = true;
-		for (final EapEvent event : events) {
-			removed = (event.remove() != null);
-		}
-		return removed;
-	}
-
-	/**
-	 * deletes all EapEvents
-	 */
-	public static void removeAll() {
-		for (final EapEvent actualEvent : EapEvent.findAll()) {
-			actualEvent.remove();
-		}
-	}
-
-	public static List<String> findAllEventAttributes() {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT DISTINCT v.ATTRIBUTE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID)");
-		return query.getResultList();
-	}
-
-	/**
-	 * returns distinct values of the given attribute of the given eventtyp
-	 */
-	public static List<String> findDistinctValuesOfAttributeOfType(final String attributeExpression,
-			final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT DISTINCT v.VALUE FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) "
-						+ "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND v.ATTRIBUTE = '"
-						+ attributeExpression + "'");
-		return query.getResultList();
-	}
-
-	/**
-	 * return the number of the repetition of the value in the specified
-	 * eventtyp and attribute
-	 */
-	public static long findNumberOfAppearancesByAttributeValue(final String attributeExpression, final String value,
-			final EapEventType eventType) {
-		final Query query = Persistor.getEntityManager().createNativeQuery(
-				"" + "SELECT count(DISTINCT e.ID) FROM Event e INNER JOIN EventValues v ON (e.ID = v.EVENT_ID) "
-						+ "WHERE e.EVENTTYPE_ID = '" + eventType.getID() + "' AND " + "v.ATTRIBUTE = '"
-						+ attributeExpression + "' AND v.VALUE = '" + value + "'");
-		return (long) query.getSingleResult();
-	}
-
-	/**
-	 * returns minimal value of the given attribute in the specified eventtyp
-	 */
-	@SuppressWarnings("null")
-	public static long getMinOfAttributeValue(final String attribute, final EapEventType eventType) {
-		final List<String> values = EapEvent.findDistinctValuesOfAttributeOfType(attribute, eventType);
-		if (values.size() > 0) {
-			long min = Long.parseLong(values.get(0));
-			for (final String value : values) {
-				final long actual = Long.parseLong(value);
-				if (actual < min) {
-					min = actual;
-				}
-			}
-			return min;
-		}
-		return (Long) null;
-	}
-
-	/**
-	 * returns maximal value of the given attribute in the specified eventtyp
-	 */
-	@SuppressWarnings("null")
-	public static long getMaxOfAttributeValue(final String attribute, final EapEventType eventType) {
-		final List<String> values = EapEvent.findDistinctValuesOfAttributeOfType(attribute, eventType);
-		if (values.size() > 0) {
-			long max = Long.parseLong(values.get(0));
-			for (final String value : values) {
-				final long actual = Long.parseLong(value);
-				if (actual > max) {
-					max = actual;
-				}
-			}
-			return max;
-		}
-		return (Long) null;
 	}
 
 	public Document getTimestampAsNode() {
@@ -827,8 +791,7 @@ public class EapEvent extends Persistable {
 				parentElement = null;
 				element = null;
 				final Serializable value = this.getValues().get(attributeExpression);
-				final Iterator<String> hierarchicalOrderIterator = Arrays.asList(attributeExpression.split("\\."))
-						.iterator();
+				final Iterator<String> hierarchicalOrderIterator = Arrays.asList(attributeExpression.split("\\.")).iterator();
 				String key = hierarchicalOrderIterator.next();
 				for (final EventTransformationElement<String, Serializable> root : treeRootElements) {
 					if (root.getKey().equals(key)) {
@@ -865,11 +828,11 @@ public class EapEvent extends Persistable {
 		return this.valueTree;
 	}
 
-	public void setSemanticEventID(final String semanticEventID) {
-		this.semanticEventID = semanticEventID;
-	}
-
 	public String getSemanticEventID() {
 		return this.semanticEventID;
+	}
+
+	public void setSemanticEventID(final String semanticEventID) {
+		this.semanticEventID = semanticEventID;
 	}
 }

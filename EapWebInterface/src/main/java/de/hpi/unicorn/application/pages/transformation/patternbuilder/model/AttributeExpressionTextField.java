@@ -27,8 +27,7 @@ public class AttributeExpressionTextField extends AutoCompleteTextField<String> 
 	private static final long serialVersionUID = -565229104833806474L;
 	private final TransformationPatternTree patternTree;
 
-	public AttributeExpressionTextField(final String id, final IModel<String> model,
-			final TransformationPatternTree patternTree) {
+	public AttributeExpressionTextField(final String id, final IModel<String> model, final TransformationPatternTree patternTree) {
 		super(id, model);
 		this.patternTree = patternTree;
 	}
@@ -57,8 +56,7 @@ public class AttributeExpressionTextField extends AutoCompleteTextField<String> 
 					expressionsToAdd.add(eventTypeElement.getAlias() + "." + "Timestamp");
 					expressionsToAdd.add(eventTypeElement.getAlias() + "." + "Timestamp.getTime()");
 					for (final String expressionWithAlias : expressionsToAdd) {
-						if (partialInput == null || partialInput.isEmpty()
-								|| expressionWithAlias.toUpperCase().startsWith(partialInput.toUpperCase())) {
+						if (partialInput == null || partialInput.isEmpty() || expressionWithAlias.toUpperCase().startsWith(partialInput.toUpperCase())) {
 							matchedExpressions.add(expressionWithAlias);
 							if (matchedExpressions.size() >= 10) {
 								break;
@@ -69,12 +67,10 @@ public class AttributeExpressionTextField extends AutoCompleteTextField<String> 
 						expressionsToAdd = new HashSet<String>();
 						expressionsToAdd.add(eventTypeElement.getAlias() + "." + attribute.getAttributeExpression());
 						if (attribute.getType() == AttributeTypeEnum.DATE) {
-							expressionsToAdd.add(eventTypeElement.getAlias() + "." + attribute.getAttributeExpression()
-									+ ".getTime()");
+							expressionsToAdd.add(eventTypeElement.getAlias() + "." + attribute.getAttributeExpression() + ".getTime()");
 						}
 						for (final String expressionWithAlias : expressionsToAdd) {
-							if (partialInput == null || partialInput.isEmpty()
-									|| expressionWithAlias.toUpperCase().startsWith(partialInput.toUpperCase())) {
+							if (partialInput == null || partialInput.isEmpty() || expressionWithAlias.toUpperCase().startsWith(partialInput.toUpperCase())) {
 								matchedExpressions.add(expressionWithAlias);
 								if (matchedExpressions.size() >= 10) {
 									break;

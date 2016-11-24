@@ -25,8 +25,7 @@ public class CSVExporter {
 		if (eventType.isHierarchical()) {
 			return null;
 		}
-		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator")
-				+ eventType.getTypeName() + "export.csv");
+		final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType.getTypeName() + "export.csv");
 		try {
 			final FileWriter writer = new FileWriter(file, false);
 			final List<String> attributeNames = eventType.getNonHierarchicalAttributeExpressionsWithoutTimestamp();

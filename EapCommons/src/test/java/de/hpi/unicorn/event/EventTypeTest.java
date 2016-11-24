@@ -65,8 +65,7 @@ public class EventTypeTest {
 	@Test(expected = RuntimeException.class)
 	public void testForbiddenCharactersInNameThrowException11() {
 		TypeTreeNode rootElement1 = new TypeTreeNode("Root Element 1");
-		TypeTreeNode rootElement1Child1 = new TypeTreeNode(rootElement1, "Root Element 1 Child 1",
-				AttributeTypeEnum.INTEGER);
+		TypeTreeNode rootElement1Child1 = new TypeTreeNode(rootElement1, "Root Element 1 Child 1", AttributeTypeEnum.INTEGER);
 		new TypeTreeNode(rootElement1Child1, "Root Element 1 Child 1 Child 1", AttributeTypeEnum.DATE);
 		new TypeTreeNode(rootElement1Child1, "Root Element 1 Child 1 Child 2", AttributeTypeEnum.FLOAT);
 		TypeTreeNode rootElement2 = new TypeTreeNode("Root Element 2", AttributeTypeEnum.STRING);
@@ -91,7 +90,7 @@ public class EventTypeTest {
 	@SuppressWarnings("unused")
 	@Test
 	public void testAllowedCharacterInNameThrowNoException() {
-		String[] names = { "ab c", "abc", "abc0", "abc_", "abc_s", "abc01_2", "abc-d", "abc-0-1", "___" };
+		String[] names = {"ab c", "abc", "abc0", "abc_", "abc_s", "abc01_2", "abc-d", "abc-0-1", "___"};
 		EapEventType type;
 		String testedName = null;
 		try {

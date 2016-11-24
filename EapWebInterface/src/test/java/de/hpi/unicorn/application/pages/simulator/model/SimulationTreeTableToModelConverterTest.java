@@ -60,8 +60,7 @@ public class SimulationTreeTableToModelConverterTest {
 	public void testConversion() {
 		final SimulationTreeTableToModelConverter converter = new SimulationTreeTableToModelConverter();
 		final BPMNProcess process = converter.convertTreeToModel(this.tree);
-		Assert.assertTrue("Should be 14, but was " + process.getBPMNElementsWithOutSequenceFlows().size(), process
-				.getBPMNElementsWithOutSequenceFlows().size() == 14);
+		Assert.assertTrue("Should be 14, but was " + process.getBPMNElementsWithOutSequenceFlows().size(), process.getBPMNElementsWithOutSequenceFlows().size() == 14);
 		Assert.assertNotNull(process.getStartEvent());
 		final BPMNStartEvent startEvent = process.getStartEvent();
 		Assert.assertTrue(startEvent.getSuccessors().size() == 1);
@@ -75,8 +74,7 @@ public class SimulationTreeTableToModelConverterTest {
 		final BPMNXORGateway xor2 = (BPMNXORGateway) successors.get(0).getSuccessors().iterator().next();
 
 		Assert.assertTrue(xor2.getSuccessors().size() == 1);
-		Assert.assertTrue("Should be BPMNAndGateway, but was " + xor2.getSuccessors().iterator().next(), xor2
-				.getSuccessors().iterator().next() instanceof BPMNAndGateway);
+		Assert.assertTrue("Should be BPMNAndGateway, but was " + xor2.getSuccessors().iterator().next(), xor2.getSuccessors().iterator().next() instanceof BPMNAndGateway);
 		final BPMNAndGateway and1 = (BPMNAndGateway) xor2.getSuccessors().iterator().next();
 		Assert.assertTrue(and1.getSuccessors().size() == 2);
 		successors = SetUtil.asList(and1.getSuccessors());

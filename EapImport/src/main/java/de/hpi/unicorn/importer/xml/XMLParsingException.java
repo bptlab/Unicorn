@@ -9,7 +9,7 @@ package de.hpi.unicorn.importer.xml;
 
 /**
  * A exception for error while parsing XML files.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")

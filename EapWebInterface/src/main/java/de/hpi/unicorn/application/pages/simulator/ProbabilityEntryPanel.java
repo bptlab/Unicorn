@@ -23,13 +23,11 @@ public class ProbabilityEntryPanel extends Panel {
 	private static final long serialVersionUID = 1L;
 	private final TextField<String> textField;
 
-	public ProbabilityEntryPanel(final String id, final int entryId,
-			final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
+	public ProbabilityEntryPanel(final String id, final int entryId, final SimulationTreeTableProvider<Object> simulationTreeTableProvider) {
 		super(id);
 		final Form<Void> form = new Form<Void>("form");
 
-		this.textField = new TextField<String>("textFieldID", Model.of(simulationTreeTableProvider
-				.getProbabilityForEntry(entryId)));
+		this.textField = new TextField<String>("textFieldID", Model.of(simulationTreeTableProvider.getProbabilityForEntry(entryId)));
 		this.textField.setOutputMarkupPlaceholderTag(true);
 		this.textField.setOutputMarkupId(true);
 		this.textField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -39,8 +37,7 @@ public class ProbabilityEntryPanel extends Panel {
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
 
-				simulationTreeTableProvider.setProbabilityForEntry(ProbabilityEntryPanel.this.textField.getValue(),
-						entryId);
+				simulationTreeTableProvider.setProbabilityForEntry(ProbabilityEntryPanel.this.textField.getValue(), entryId);
 			}
 		});
 

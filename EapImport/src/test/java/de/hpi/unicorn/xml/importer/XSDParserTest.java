@@ -22,7 +22,7 @@ import de.hpi.unicorn.importer.xml.XSDParser;
 
 /**
  * This class tests the parsing of a XSD file to generate an event type.
- * 
+ *
  * @author micha
  */
 public class XSDParserTest {
@@ -30,8 +30,7 @@ public class XSDParserTest {
 	private static String filePath = System.getProperty("user.dir") + "/src/test/resources/EventTaxonomy.xsd";
 
 	@Test
-	public void testXSDParsing() throws XPathExpressionException, ParserConfigurationException, SAXException,
-			IOException {
+	public void testXSDParsing() throws XPathExpressionException, ParserConfigurationException, SAXException, IOException {
 		EapEventType eventType = null;
 		try {
 			eventType = XSDParser.generateEventTypeFromXSD(XSDParserTest.filePath, "EventTaxonomy");

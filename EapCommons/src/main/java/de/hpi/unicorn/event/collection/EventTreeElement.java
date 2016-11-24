@@ -25,9 +25,8 @@ import javax.persistence.Table;
 import de.hpi.unicorn.persistence.Persistable;
 
 /**
- * @author micha
- * 
  * @param <T>
+ * @author micha
  */
 @Entity
 @Inheritance
@@ -56,9 +55,8 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * creates a root node
-	 * 
-	 * @param content
-	 *            the content to be stored in the new node
+	 *
+	 * @param content the content to be stored in the new node
 	 */
 	public EventTreeElement(final T value) {
 		this();
@@ -67,10 +65,9 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * creates a node and adds it to its parent
-	 * 
+	 *
 	 * @param parent
-	 * @param content
-	 *            the content to be stored in the node
+	 * @param content the content to be stored in the node
 	 */
 	public EventTreeElement(final EventTreeElement<T> parent, final T value) {
 		this(value);
@@ -82,11 +79,9 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * creates a root node
-	 * 
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            the content to be stored in the new node
+	 *
+	 * @param id      the identifier
+	 * @param content the content to be stored in the new node
 	 */
 	public EventTreeElement(final int id, final T value) {
 		this(value);
@@ -95,12 +90,10 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * creates a root node
-	 * 
+	 *
 	 * @param parent
-	 * @param id
-	 *            the identifier
-	 * @param content
-	 *            the content to be stored in the new node
+	 * @param id      the identifier
+	 * @param content the content to be stored in the new node
 	 */
 	public EventTreeElement(final EventTreeElement<T> parent, final int id, final T value) {
 		this(id, value);
@@ -125,10 +118,6 @@ public class EventTreeElement<T> extends Persistable {
 		return this.parent;
 	}
 
-	public boolean hasParent() {
-		return this.parent != null;
-	}
-
 	public void setParent(final EventTreeElement<T> parent) {
 		this.parent = parent;
 		if (parent != null && !parent.getChildren().contains(this)) {
@@ -136,8 +125,16 @@ public class EventTreeElement<T> extends Persistable {
 		}
 	}
 
+	public boolean hasParent() {
+		return this.parent != null;
+	}
+
 	public List<EventTreeElement<T>> getChildren() {
 		return this.children;
+	}
+
+	public void setChildren(final List<EventTreeElement<T>> children) {
+		this.children = children;
 	}
 
 	public List<T> getChildValues() {
@@ -152,14 +149,10 @@ public class EventTreeElement<T> extends Persistable {
 		return !this.children.isEmpty();
 	}
 
-	public void setChildren(final List<EventTreeElement<T>> children) {
-		this.children = children;
-	}
-
 	/**
 	 * may be used as an alternate identifier for this element since it is
 	 * dependent on its parent(s)
-	 * 
+	 *
 	 * @return XPath expression as String
 	 */
 	public String getXPath() {
@@ -172,7 +165,7 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * root level is 0
-	 * 
+	 *
 	 * @return level of element as int
 	 */
 	public int getLevel() {
@@ -185,7 +178,7 @@ public class EventTreeElement<T> extends Persistable {
 
 	/**
 	 * use removeElement()
-	 * 
+	 *
 	 * @return
 	 */
 	@Override

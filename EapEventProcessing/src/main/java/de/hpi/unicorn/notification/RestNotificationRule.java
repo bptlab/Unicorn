@@ -26,83 +26,80 @@ import net.sf.json.JSONObject;
 @DiscriminatorValue("R")
 public class RestNotificationRule extends NotificationRuleForQuery {
 
-    // Needed for REST Notifications
-    private String notificationPath;
+	// Needed for REST Notifications
+	private String notificationPath;
 
-    /**
-     *
-     * @param query Query which triggers this notification rule
-     * @param notificationPath path to send request to.
-     */
-    public RestNotificationRule(final QueryWrapper query, String notificationPath) {
-        this.priority = NotificationMethod.REST;
-        this.timestamp = new Date();
-        this.uuid = UUID.randomUUID().toString();
-        this.query = query;
-        this.notificationPath = notificationPath;
-        this.user = null;
-    }
+	/**
+	 * @param query            Query which triggers this notification rule
+	 * @param notificationPath path to send request to.
+	 */
+	public RestNotificationRule(final QueryWrapper query, String notificationPath) {
+		this.priority = NotificationMethod.REST;
+		this.timestamp = new Date();
+		this.uuid = UUID.randomUUID().toString();
+		this.query = query;
+		this.notificationPath = notificationPath;
+		this.user = null;
+	}
 
-    /**
-     * Default constructor for JPA
-     */
-    public RestNotificationRule() {
-        this.priority = NotificationMethod.REST;
-        this.timestamp = new Date();
-        this.uuid = UUID.randomUUID().toString();
-        this.query = new QueryWrapper();
-        this.notificationPath = "";
-        this.user = null;
-    }
+	/**
+	 * Default constructor for JPA
+	 */
+	public RestNotificationRule() {
+		this.priority = NotificationMethod.REST;
+		this.timestamp = new Date();
+		this.uuid = UUID.randomUUID().toString();
+		this.query = new QueryWrapper();
+		this.notificationPath = "";
+		this.user = null;
+	}
 
-    @Override
-    public EapUser getUser() {
-        EapUser user = new EapUser();
-        user.setID(-1);
-        user.setMail("");
-        user.setName("");
-        return user;
-    }
+	public static RestNotificationRule findByUUID(final String uuid) {
+		final Query q = Persistor.getEntityManager().createNativeQuery("SELECT * FROM NotificationRule WHERE UUID = '" + uuid + "'", RestNotificationRule.class);
 
-    @Override
-    public Persistable getTriggeringEntity() {
-        return this.query;
-    }
+		if (q.getResultList().isEmpty()) {
+			return null;
+		} else {
+			return (RestNotificationRule) q.getResultList().get(0);
+		}
+	}
 
-    @Override
-    public boolean trigger(final Map<Object, Serializable> eventObject) {
-        try {
-            final JSONObject event = NotificationRuleUtils.toJSON(eventObject);
-            final RestNotificationForQuery notification = new RestNotificationForQuery(event.toString(), this);
-            notification.save();
+	@Override
+	public EapUser getUser() {
+		EapUser user = new EapUser();
+		user.setID(-1);
+		user.setMail("");
+		user.setName("");
+		return user;
+	}
 
-            Client client = ClientBuilder.newClient();
-            WebTarget target = client.target(this.notificationPath);
+	@Override
+	public Persistable getTriggeringEntity() {
+		return this.query;
+	}
 
-            Response response = target.request()
-                    .post(javax.ws.rs.client.Entity.json(event.toString()));
-            return response.getStatus() == 200;
-        } catch (UnsupportedJsonTransformation e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+	@Override
+	public boolean trigger(final Map<Object, Serializable> eventObject) {
+		try {
+			final JSONObject event = NotificationRuleUtils.toJSON(eventObject);
+			final RestNotificationForQuery notification = new RestNotificationForQuery(event.toString(), this);
+			notification.save();
 
-    @Override
-    public String toString() {
-        String representation = "Notification for " + this.query;
-        representation += " for endpoint " + this.notificationPath;
-        return representation;
-    }
+			Client client = ClientBuilder.newClient();
+			WebTarget target = client.target(this.notificationPath);
 
-    public static RestNotificationRule findByUUID(final String uuid) {
-        final Query q = Persistor.getEntityManager().createNativeQuery(
-                "SELECT * FROM NotificationRule WHERE UUID = '" + uuid + "'", RestNotificationRule.class);
+			Response response = target.request().post(javax.ws.rs.client.Entity.json(event.toString()));
+			return response.getStatus() == 200;
+		} catch (UnsupportedJsonTransformation e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
-        if(q.getResultList().isEmpty()) {
-            return null;
-        } else {
-            return (RestNotificationRule) q.getResultList().get(0);
-        }
-    }
+	@Override
+	public String toString() {
+		String representation = "Notification for " + this.query;
+		representation += " for endpoint " + this.notificationPath;
+		return representation;
+	}
 }

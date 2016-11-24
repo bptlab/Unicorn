@@ -35,7 +35,7 @@ import de.hpi.unicorn.process.CorrelationProcessInstance;
  * This panel facilitates the monitoring of running
  * {@link CorrelationProcessInstance}s. The details for a single process
  * instance are visualized with a {@link ProcessInstanceMonitoringStatusPanel}.
- * 
+ *
  * @author micha
  */
 @SuppressWarnings("serial")
@@ -52,7 +52,7 @@ public class BPMNMonitoringPanel extends Panel {
 	/**
 	 * Constructor for a panel, which facilitates the monitoring of running
 	 * {@link CorrelationProcessInstance}s.
-	 * 
+	 *
 	 * @param id
 	 * @param abstractEapPage
 	 */
@@ -74,8 +74,7 @@ public class BPMNMonitoringPanel extends Panel {
 	}
 
 	private void addProcessInstanceTable(final Form<Void> layoutForm) {
-		this.dataTable = new DefaultDataTable<ProcessInstanceMonitor, String>("processInstancesMonitoringTable",
-				this.createColumns(), this.processInstanceMonitoringProvider, 20);
+		this.dataTable = new DefaultDataTable<ProcessInstanceMonitor, String>("processInstancesMonitoringTable", this.createColumns(), this.processInstanceMonitoringProvider, 20);
 		this.dataTable.setOutputMarkupId(true);
 
 		this.add(this.dataTable);
@@ -98,8 +97,7 @@ public class BPMNMonitoringPanel extends Panel {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((ProcessInstanceMonitor) rowModel.getObject()).getID();
-				cellItem.add(new ProcessInstanceMonitoringStatusPanel(componentId, entryId,
-						BPMNMonitoringPanel.this.processInstanceMonitoringProvider));
+				cellItem.add(new ProcessInstanceMonitoringStatusPanel(componentId, entryId, BPMNMonitoringPanel.this.processInstanceMonitoringProvider));
 			}
 		});
 
@@ -107,9 +105,7 @@ public class BPMNMonitoringPanel extends Panel {
 			@Override
 			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
 				final int entryId = ((ProcessInstanceMonitor) rowModel.getObject()).getID();
-				cellItem.add(new ProcessInstanceMonitorEntryDetailsPanel(componentId, entryId,
-						BPMNMonitoringPanel.this.processInstanceMonitoringProvider,
-						BPMNMonitoringPanel.this.processInstanceMonitorModal));
+				cellItem.add(new ProcessInstanceMonitorEntryDetailsPanel(componentId, entryId, BPMNMonitoringPanel.this.processInstanceMonitoringProvider, BPMNMonitoringPanel.this.processInstanceMonitorModal));
 			}
 		});
 
@@ -130,9 +126,7 @@ public class BPMNMonitoringPanel extends Panel {
 
 			@Override
 			protected void onUpdate(final AjaxRequestTarget target) {
-				BPMNMonitoringPanel.this.process = CorrelationProcess.findByName(
-						BPMNMonitoringPanel.this.processSelect.getChoices().get(
-								Integer.parseInt(BPMNMonitoringPanel.this.processSelect.getValue()))).get(0);
+				BPMNMonitoringPanel.this.process = CorrelationProcess.findByName(BPMNMonitoringPanel.this.processSelect.getChoices().get(Integer.parseInt(BPMNMonitoringPanel.this.processSelect.getValue()))).get(0);
 				BPMNMonitoringPanel.this.createProcessInstanceMonitoringProvider();
 				target.add(BPMNMonitoringPanel.this.dataTable);
 			}

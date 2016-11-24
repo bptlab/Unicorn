@@ -16,7 +16,7 @@ import de.hpi.unicorn.event.collection.EventTreeElement;
 
 /**
  * wraps the given tree nodes
- * 
+ *
  * @param <T>
  */
 public class TreeProvider<T> implements ITreeProvider<EventTreeElement<T>> {
@@ -26,10 +26,9 @@ public class TreeProvider<T> implements ITreeProvider<EventTreeElement<T>> {
 
 	/**
 	 * constructor
-	 * 
-	 * @param treeNodes
-	 *            root nodes of the tree, child nodes are accessed by this
-	 *            component automatically
+	 *
+	 * @param treeNodes root nodes of the tree, child nodes are accessed by this
+	 *                  component automatically
 	 */
 	public TreeProvider(final ArrayList<EventTreeElement<T>> treeNodes) {
 		this.treeNodes = treeNodes;
@@ -65,7 +64,7 @@ public class TreeProvider<T> implements ITreeProvider<EventTreeElement<T>> {
 
 	/**
 	 * Returns the next free ID for an new element.
-	 * 
+	 *
 	 * @return
 	 */
 	public int getNextID() {
