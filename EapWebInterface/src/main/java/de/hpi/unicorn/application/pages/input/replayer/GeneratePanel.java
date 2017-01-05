@@ -58,7 +58,8 @@ public class GeneratePanel extends Panel {
             public void onSubmit() {
                 try {
                     int eventCountInt = Integer.parseInt(eventCount);
-                    //EventGenerator.generateEvents(eventCountInt);
+                    EventGenerator eventGenerator = new EventGenerator();
+                    eventGenerator.generateEvents(eventCountInt);
                 } catch (NumberFormatException e) {
                     page.getFeedbackPanel().error("Event Count needs to be an integer.");
                 }
