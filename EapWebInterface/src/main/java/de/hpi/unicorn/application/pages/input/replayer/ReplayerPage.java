@@ -57,6 +57,13 @@ public class ReplayerPage extends AbstractEapPage {
 			}
 		});
 
+		tabs.add(new AbstractTab(new Model<String>("Generate events")) {
+			@Override
+			public Panel getPanel(final String panelId) {
+				return new GeneratePanel(panelId, page);
+			}
+		});
+
 		this.add(new BootstrapTabbedPanel<ITab>("tabs", tabs));
 		setOutputMarkupId(true);
 
