@@ -2,6 +2,7 @@ package de.hpi.unicorn.application.pages.input.replayer;
 
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Array;
 
 public class EventGenerator {
     private Date[] dateOfServiceIntervention;
@@ -42,52 +42,53 @@ public class EventGenerator {
 
     private int eventCount;
     private static Random random = new Random();
+    private static final Logger logger = Logger.getLogger(EventGenerator.class);
 
     public EventGenerator() {
-        Date [] dateOfServiceIntervention = {
+        dateOfServiceIntervention = new Date[]{
                 new Date(2014,11,7,12,0,0),
                 new Date(2014,11,8,12,0,0),
                 new Date(2014,11,9,12,0,0),
                 new Date(2014,11,10,12,0,0)};
-        Date[] dateOfInstallation = {
+        dateOfInstallation = new Date[]{
                 new Date(2013,11,7,12,0,0),
                 new Date(2013,11,8,12,0,0),
                 new Date(2013,11,9,12,0,0),
                 new Date(2013,11,10,12,0,0)};
-        int[] factoryID = {8290};
-        int[] dateOfProduction = {303,305,455,209};
-        int[] counter = {1398,39068,22748,9569};
-        double[] softwareVersion = {4.09,4.05};
-        String[] feedbackOfInstaller = {"Elektrode getauscht",
+        factoryID = new int[]{8290};
+        dateOfProduction = new int[]{303,305,455,209};
+        counter = new int[]{1398,39068,22748,9569};
+        softwareVersion = new double[]{4.09,4.05};
+        feedbackOfInstaller = new String[]{"Elektrode getauscht",
                 "Gasarmatur getauscht",
                 "Luftansaugrohr zur Gasarmatur montiert",
                 "Kabelbaum getauscht"};
-        int[] objecktID = {32835142,20228133,18701976,32842891};
-        int[] locationOfDeviceID = {32835144,32832677,5650483,20343255};
-        long[] modelID = {7716010416l,7716010417l,7716010612l,7716010615l};
-        String[] modelTitle = {"Buderus Logamax plus GB172-14,  EG-E",
+        objectID = new int[]{32835142,20228133,18701976,32842891};
+        locationOfDeviceID = new int[]{32835144,32832677,5650483,20343255};
+        modelID = new long[]{7716010416l,7716010417l,7716010612l,7716010615l};
+        modelTitle = new String[]{"Buderus Logamax plus GB172-14,  EG-E",
                 "Buderus Logamax plus GB172-20, EG-E",
                 "Buderus Logamax plus GB172-24K, G25",
                 "Buderus Logamax plus GB172-24, G25"};
-        int[] codingPlugID = {1116,1117,1118,1119};
-        int[] codingPlugBusID ={154};
-        double[] codingPlugSoftwareVersion ={3.0,5.0,9.0,11.0};
-        String[] errorID = {"6A-227","9L-238","4C-224","0Y-276"};
-        int[] errorFailureTreeID = {39534764,39535998,39534450,39533957};
-        String[] errorDescription = {
+        codingPlugID = new int[]{1116,1117,1118,1119};
+        codingPlugBusID = new int[]{154};
+        codingPlugSoftwareVersion = new double[]{3.0,5.0,9.0,11.0};
+        errorID = new String[]{"6A-227","9L-238","4C-224","0Y-276"};
+        errorFailureTreeID = new int[]{39534764,39535998,39534450,39533957};
+        errorDescription = new String[]{
                 "Kein Ionisationsstrom vorhanden",
                 "Kein Rückmeldesignal beim Test der Gasarmatur",
                 "Sicherheitstemperaturbegrenzer hat ausgelöst",
                 "Temperatur am Vorlauffühler ist größer als 95°C"};
-        int[] causeID = {18205831,6525337,7870808,3089362};
-        String[] causeDescription = {
+        causeID = new int[]{18205831,6525337,7870808,3089362};
+        causeDescription = new String[]{
                 "Ionisationselektrode blockiert das Ionisationssignal",
                 "Gasarmatur defekt",
                 "STB hat Unterbrechung",
                 "Kondenswassersiphon durch Ablagerungen verstopft"};
 
-        long[] replacementPartID = {87182243450l,87181070870l,87160134340l, 87072061960l};
-        String[] replacementPartName = {
+        replacementPartID = new long[]{87182243450l,87181070870l,87160134340l, 87072061960l};
+        replacementPartName = new String[]{
         "Elektrodensatz",
         "Gasarmatur",
         "Zündkabel",
@@ -97,10 +98,11 @@ public class EventGenerator {
         this.eventCount = eventCount;
         List<EapEvent> events = new ArrayList<EapEvent>();
         for(int j = 0; j < eventCount; j++) {
+            logger.info("Durchlauf " + j);
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
             values.put("dateOfInstallation", getRandom(dateOfInstallation));
-            values.put("factoryID", getRandom(factoryID));
+            values.put("factoryID", getRandom(this.factoryID));
             values.put("dateOfProduction", getRandom(dateOfProduction));
             values.put("counter", getRandom(counter));
             values.put("softwareVersion", getRandom(softwareVersion));
@@ -128,11 +130,7 @@ public class EventGenerator {
     }
 
     private static Date getRandom(Date[] examples) {
-        try {
-            int element = random.nextInt(examples.length);
-        } catch (Exception e) {
-
-        }
+        int element = random.nextInt(examples.length);
         return examples[element];
     }
 
