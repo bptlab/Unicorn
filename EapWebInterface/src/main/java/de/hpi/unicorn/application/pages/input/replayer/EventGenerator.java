@@ -46,15 +46,15 @@ public class EventGenerator {
 
     public EventGenerator() {
         dateOfServiceIntervention = new Date[]{
-                new Date(2014,11,7,12,0,0),
-                new Date(2014,11,8,12,0,0),
-                new Date(2014,11,9,12,0,0),
-                new Date(2014,11,10,12,0,0)};
+                new Date(2014 - 1900,11-1,7,12,0,0),
+                new Date(2014 - 1900,11-1,8,12,0,0),
+                new Date(2014 - 1900,11-1,9,12,0,0),
+                new Date(2014 - 1900,11-1,10,12,0,0)};
         dateOfInstallation = new Date[]{
-                new Date(2013,11,7,12,0,0),
-                new Date(2013,11,8,12,0,0),
-                new Date(2013,11,9,12,0,0),
-                new Date(2013,11,10,12,0,0)};
+                new Date(2013 - 1900,11-1,7,12,0,0),
+                new Date(2013 - 1900,11-1,8,12,0,0),
+                new Date(2013 - 1900,11-1,9,12,0,0),
+                new Date(2013 - 1900,11-1,10,12,0,0)};
         factoryID = new int[]{8290};
         dateOfProduction = new int[]{303,305,455,209};
         counter = new int[]{1398,39068,22748,9569};
@@ -98,7 +98,6 @@ public class EventGenerator {
         this.eventCount = eventCount;
         List<EapEvent> events = new ArrayList<EapEvent>();
         for(int j = 0; j < eventCount; j++) {
-            logger.info("Durchlauf " + j);
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
             values.put("dateOfInstallation", getRandom(dateOfInstallation));
@@ -122,7 +121,7 @@ public class EventGenerator {
             values.put("replacementPartID", getRandom(replacementPartID));
             values.put("replacementPartName", getRandom(replacementPartName));
 
-            EapEvent event = new EapEvent(EapEventType.findByTypeName("FeedbackData_v3"), new Date(), values);
+            EapEvent event = new EapEvent(EapEventType.findByTypeName("FeedbackData_v3"), getRandom(dateOfServiceIntervention), values);
             events.add(event);
         }
         EventReplayer eventReplayer = new EventReplayer(events);
