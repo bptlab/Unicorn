@@ -8,6 +8,7 @@
 package de.hpi.unicorn.application.pages.input.replayer;
 
 import de.hpi.unicorn.event.EapEventType;
+import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.utils.TempFolderUtil;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -107,15 +108,16 @@ public class GeneratePanel extends Panel {
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             protected Object load() {
-                return temp.getEventAttributes();
-                //return temp.getValueTypes()
+                //return temp.getEventAttributes();
+                return temp.getValueTypes();
             }
         };
         listview = new ListView("listview", list) {
             protected void populateItem(ListItem item) {
-                item.add(new Label("attribute", item.getModel()));
-                //item.add(new Label("attribute", item.getModel().getName()));
-                //item.add(new Label("attributeType", item.getModel().getType()));
+                TypeTreeNode node = (TypeTreeNode) item.getModelObject();
+                //item.add(new Label("attribute", item.getModel()));
+                item.add(new Label("attribute", node.getName()));
+                item.add(new Label("attributeType", node.getType().getName()));
             }
         };
 
