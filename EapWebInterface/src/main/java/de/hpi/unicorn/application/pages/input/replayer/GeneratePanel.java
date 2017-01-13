@@ -115,7 +115,12 @@ public class GeneratePanel extends Panel {
             protected void populateItem(ListItem item) {
                 TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
                 item.add(new Label("attribute", attribute.getName()));
-                item.add(new Label("attributeType", attribute.getType().getName()));
+                if(attribute.getType() == null) {
+                    item.add(new Label("attributeType", "UNDEFINED"));
+                }
+                else {
+                    item.add(new Label("attributeType", attribute.getType().getName()));
+                }
             }
         };
 
