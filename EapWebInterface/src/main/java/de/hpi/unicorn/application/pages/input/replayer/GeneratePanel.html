@@ -10,12 +10,17 @@
         <div class="form-inline well-small">
             Event type: &nbsp;&nbsp;&nbsp; <select wicket:id="eventTypeField"></select>
         </div>
-        <div wicket:id="theContainer">
-            <span wicket:id="listview">
-                <span wicket:id="attributeType">attributeType</span> &nbsp; : &nbsp;
-                <span wicket:id="attribute">attribute</span><br/>
-            </span>
-        </div>
+        <table wicket:id="theContainer" class="table">
+            <thead>
+                <tr><th>Atribute Type</th><th>Attribute</th></tr>
+            </thead>
+            <tbody wicket:id="listview" class="form-inline well-small">
+                    <tr>
+                        <td><span wicket:id="attributeType">attributeType</span>
+                        </td><td><span wicket:id="attribute">attribute</span></td>
+                    </tr>
+            </tbody>
+        </table>
         <div class="form-inline well-small">
             <input wicket:id="submitButton" type="submit" value="Generate events">
         </div>

@@ -108,16 +108,14 @@ public class GeneratePanel extends Panel {
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             protected Object load() {
-                //return temp.getEventAttributes();
                 return temp.getValueTypes();
             }
         };
         listview = new ListView("listview", list) {
             protected void populateItem(ListItem item) {
-                TypeTreeNode node = (TypeTreeNode) item.getModelObject();
-                //item.add(new Label("attribute", item.getModel()));
-                item.add(new Label("attribute", node.getName()));
-                item.add(new Label("attributeType", node.getType().getName()));
+                TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
+                item.add(new Label("attribute", attribute.getName()));
+                item.add(new Label("attributeType", attribute.getType().getName()));
             }
         };
 
@@ -131,8 +129,6 @@ public class GeneratePanel extends Panel {
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
                 if(temp != null) {
-                    //listContainer.setOutputMarkupId(true);
-                    //listContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
                     target.add(listContainer);
                 }
             }
