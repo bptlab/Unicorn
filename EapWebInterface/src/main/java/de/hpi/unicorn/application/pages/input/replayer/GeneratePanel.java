@@ -58,9 +58,9 @@ public class GeneratePanel extends Panel {
     private Form layoutForm;
     protected String eventTypeName;
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
-    private EapEventType temp = new EapEventType("blah");
-    private EapEventType temp2;
+    private EapEventType temp = new EapEventType("test" );
     private ListView listview;
+    WebMarkupContainer listContainer;
 
     public GeneratePanel(String id, final ReplayerPage page) {
         super(id);
@@ -83,9 +83,7 @@ public class GeneratePanel extends Panel {
         this.add(layoutForm);
 
         addEventCountField();
-        //ListView listView = addEmptyListView();
-        //WebMarkupContainer listContainer = addEmptyListContainer(listView);
-        addEventTypeField();
+        addEventTypeDropDown();
         addSubmitButton();
     }
 
@@ -103,64 +101,37 @@ public class GeneratePanel extends Panel {
         layoutForm.add(eventCountField);
     }
 
-    private void addEventTypeField() {
-       /* List<EapEventType> eventTypes = EapEventType.findAll();
-        IModel listModel=new LoadableDetachableModel() {
-            protected Object load() {
-                return temp.getEventAttributes();
-            }
-        };
-        layoutForm.add(new ListView("listview", listModel) {
-            protected void populateItem(ListItem item) {
-                logger.info("Processing attribute: " + item);
-                item.add(new Label("attribute", item.getModel()));
-            }
-        });
-
-
-        DropDownChoice dropDown = new DropDownChoice("eventTypeField", new PropertyModel( this, "temp" ), eventTypes);
-        layoutForm.add(dropDown);
-
-*/
-
+    private void addEventTypeDropDown() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
 
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             protected Object load() {
                 return temp.getEventAttributes();
+                //return temp.getValueTypes()
             }
         };
-        logger.info("Creating new viewList with attributes: " + temp.getEventAttributes() );
         listview = new ListView("listview", list) {
             protected void populateItem(ListItem item) {
-                logger.info("Processing attribute: " + item);
                 item.add(new Label("attribute", item.getModel()));
+                //item.add(new Label("attribute", item.getModel().getName()));
+                //item.add(new Label("attributeType", item.getModel().getType()));
             }
         };
-        layoutForm.add(listview);
+
+        listContainer = new WebMarkupContainer("theContainer");
+        listContainer.add(listview);
+        layoutForm.add(listContainer);
+        listContainer.setOutputMarkupId(true);
 
         DropDownChoice dropDown = new DropDownChoice("eventTypeField", new PropertyModel( this, "temp" ), eventTypes);
         // Add Ajax Behaviour...
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
                 if(temp != null) {
-
-                    //List<String> list = temp.getEventAttributes();
-
-
-                   /* WebMarkupContainer listContainer = new WebMarkupContainer("theContainer");
-                    listContainer.setOutputMarkupId(true);
+                    //listContainer.setOutputMarkupId(true);
                     //listContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-                    listContainer.add(listview);
-                    //generate a markup-id so the contents can be updated through an AJAX call
-                    listContainer.setOutputMarkupId(true);
-                    //listContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-                    // add the list view to the container
-                    listContainer.add(listview);
-                    // finally add the container to the page*/
-                    listview.setOutputMarkupId(true);
-                    target.add(listview);
+                    target.add(listContainer);
                 }
             }
         });
@@ -170,25 +141,5 @@ public class GeneratePanel extends Panel {
     private void addSubmitButton() {
         final Button submitButton = new Button("submitButton");
         layoutForm.add(submitButton);
-    }
-    private ListView addEmptyListView() {
-        List<String> empty = new ArrayList<String>();
-        ListView listview = new ListView("listview", empty) {
-            protected void populateItem(ListItem item) {
-                item.add(new Label("attribute", item.getModel()));
-            }
-        };
-        return listview;
-    }
-
-    private WebMarkupContainer addEmptyListContainer(ListView listView) {
-
-        WebMarkupContainer listContainer = new WebMarkupContainer("theContainer");
-        listContainer.setOutputMarkupId(true);
-        //listContainer.add(new AjaxSelfUpdatingTimerBehavior(Duration.seconds(5)));
-        listContainer.add(listView);
-        layoutForm.add(listContainer);
-        //layoutForm.add(listview);
-        return listContainer;
     }
 }
