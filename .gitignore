@@ -28,7 +28,7 @@ unicorn.properties
 
 *.iml
 
-.idea/*
+*/.idea/*
 
 out/
 
