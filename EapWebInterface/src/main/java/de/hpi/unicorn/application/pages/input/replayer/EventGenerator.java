@@ -99,7 +99,7 @@ public class EventGenerator {
         List<EapEvent> events = new ArrayList<EapEvent>();
         for(int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
-            values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
+            //values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
             values.put("dateOfInstallation", getRandom(dateOfInstallation));
             values.put("factoryID", getRandom(this.factoryID));
             values.put("dateOfProduction", getRandom(dateOfProduction));
