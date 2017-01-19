@@ -1,21 +1,17 @@
 package de.hpi.unicorn.application.pages.input.replayer;
 
+import com.espertech.esper.client.EventType;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
+import de.hpi.unicorn.event.attribute.AttributeTypeTree;
+import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.log4j.Logger;
 
+import javax.swing.event.DocumentEvent;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.List;
-import java.util.ArrayList;
 
 public class EventGenerator {
     private Date[] dateOfServiceIntervention;
@@ -42,6 +38,7 @@ public class EventGenerator {
     private String[] productFamilyID;
 
     private int eventCount;
+    private int replayScaleFactor = 10000;
     private static Random random = new Random();
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
 
@@ -127,8 +124,67 @@ public class EventGenerator {
             EapEvent event = new EapEvent(EapEventType.findByTypeName("FeedbackData_v4"), getRandom(dateOfServiceIntervention), values);
             events.add(event);
         }
-        EventReplayer eventReplayer = new EventReplayer(events, 10000);
+        EventReplayer eventReplayer = new EventReplayer(events, this.replayScaleFactor);
         eventReplayer.replay();
+    }
+
+    public void generateEvents(int eventCount, EapEventType eventType, Map<String, String> attributeSchemas) {
+        this.eventCount = eventCount;
+        List<EapEvent> events = new ArrayList<EapEvent>();
+        AttributeTypeTree eventAttributeList  = eventType.getValueTypeTree();
+
+        for (int j = 0; j < eventCount; j++) {
+            Map<String, Serializable> values = new HashMap<String, Serializable>();
+            for (Map.Entry<String, String> attributeSchema : attributeSchemas.entrySet()) {
+                switch (eventAttributeList.getAttributeByExpression(attributeSchema.getKey()).getType()) {
+                    case STRING:
+                        values.put(attributeSchema.getKey(), getRandomStringFromInput(attributeSchema.getValue()));
+                        break;
+                    case INTEGER:
+                        values.put(attributeSchema.getKey(), getRandomIntFromInput(attributeSchema.getValue()));
+                        break;
+                    case FLOAT:
+                        values.put(attributeSchema.getKey(), getRandomFloatFromInput(attributeSchema.getValue()));
+                        break;
+                    case DATE:
+                        values.put(attributeSchema.getKey(), getRandom(dateOfServiceIntervention));
+                        break;
+                    default:
+                        values.put(attributeSchema.getKey(), "UNDEFINED");
+                        break;
+                }
+            }
+            EapEvent event = new EapEvent(eventType, getRandom(dateOfServiceIntervention), values);
+            events.add(event);
+        }
+        EventReplayer eventReplayer = new EventReplayer(events, this.replayScaleFactor);
+        eventReplayer.replay();
+    }
+
+    private static String getRandomStringFromInput(String input) {
+        String[] possibleValues = input.split(";");
+        return possibleValues[getRandomIndex(possibleValues)];
+    }
+
+    private static int getRandomIntFromInput(String input) {
+        if(input.contains("-")) {
+            int start = Integer.parseInt(input.split("-")[0]);
+            int end = Integer.parseInt(input.split("-")[1]);
+            return random.nextInt(end - start + 1) + start;
+        }
+        else {
+            String[] possibleValues = input.split(";");
+            return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
+        }
+    }
+
+    private static Float getRandomFloatFromInput(String input) {
+        String[] possibleValues = input.split(";");
+        return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
+    }
+
+    private static int getRandomIndex(Object[] inputArray) {
+        random.nextInt(inputArray.length);
     }
 
     private static Date getRandom(Date[] examples) {
