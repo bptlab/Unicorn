@@ -39,6 +39,7 @@ public class EventGenerator {
     private String[] causeDescription;
     private long[] replacementPartID;
     private String[] replacementPartName;
+    private String[] productFamilyID;
 
     private int eventCount;
     private static Random random = new Random();
@@ -89,10 +90,11 @@ public class EventGenerator {
 
         replacementPartID = new long[]{87182243450l,87181070870l,87160134340l, 87072061960l};
         replacementPartName = new String[]{
-        "Elektrodensatz",
-        "Gasarmatur",
-        "Zündkabel",
-        "Temperaturbegrenzer"};
+                "Elektrodensatz",
+                "Gasarmatur",
+                "Zündkabel",
+                "Temperaturbegrenzer"};
+        productFamilyID = new String[] {"GB172"};
     }
     public void generateEvents(int eventCount) {
         this.eventCount = eventCount;
@@ -101,30 +103,31 @@ public class EventGenerator {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             //values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
             values.put("dateOfInstallation", getRandom(dateOfInstallation));
-            values.put("factoryID", getRandom(this.factoryID));
+            values.put("factoryId", getRandom(this.factoryID));
             values.put("dateOfProduction", getRandom(dateOfProduction));
             values.put("counter", getRandom(counter));
             values.put("softwareVersion", getRandom(softwareVersion));
             values.put("feedbackOfInstaller", getRandom(feedbackOfInstaller));
-            values.put("objectID", getRandom(objectID));
-            values.put("locationOfDeviceID", getRandom(locationOfDeviceID));
-            values.put("modelID", getRandom(modelID));
-            values.put("modelTitle", getRandom(modelTitle));
-            values.put("codingPlugID", getRandom(codingPlugID));
-            values.put("codingPlugBusID", getRandom(codingPlugBusID));
+            values.put("objectId", getRandom(objectID));
+            values.put("locationOfDeviceId", getRandom(locationOfDeviceID));
+            values.put("orderNumber", getRandom(modelID));
+            values.put("productName", getRandom(modelTitle));
+            values.put("codingPlugId", getRandom(codingPlugID));
+            values.put("codingPlugBusId", getRandom(codingPlugBusID));
             values.put("codingPlugSoftwareVersion", getRandom(codingPlugSoftwareVersion));
-            values.put("errorID", getRandom(errorID));
-            values.put("errorFailureTreeID", getRandom(errorFailureTreeID));
+            values.put("errorId", getRandom(errorID));
+            values.put("errorFailureTreeId", getRandom(errorFailureTreeID));
             values.put("errorDescription", getRandom(errorDescription));
-            values.put("causeID", getRandom(causeID));
+            values.put("causeId", getRandom(causeID));
             values.put("causeDescription", getRandom(causeDescription));
-            values.put("replacementPartID", getRandom(replacementPartID));
+            values.put("replacementPartId", getRandom(replacementPartID));
             values.put("replacementPartName", getRandom(replacementPartName));
+            values.put("productFamilyId", getRandom(productFamilyID));
 
-            EapEvent event = new EapEvent(EapEventType.findByTypeName("FeedbackData_v3"), getRandom(dateOfServiceIntervention), values);
+            EapEvent event = new EapEvent(EapEventType.findByTypeName("FeedbackData_v4"), getRandom(dateOfServiceIntervention), values);
             events.add(event);
         }
-        EventReplayer eventReplayer = new EventReplayer(events);
+        EventReplayer eventReplayer = new EventReplayer(events, 10000);
         eventReplayer.replay();
     }
 
