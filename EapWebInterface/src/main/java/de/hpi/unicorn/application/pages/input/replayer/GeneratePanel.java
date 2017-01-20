@@ -9,58 +9,38 @@ package de.hpi.unicorn.application.pages.input.replayer;
 
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import de.hpi.unicorn.utils.TempFolderUtil;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.*;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.IModel;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-
-import de.hpi.unicorn.application.pages.input.replayer.ReplayFileBean.FileType;
-import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.utils.TempFolderUtil;
 
 public class GeneratePanel extends Panel {
 
     private static final long serialVersionUID = 1L;
     private ReplayerPage page;
     private GeneratePanel panel;
-    protected String eventCount;
+    protected Integer eventCount = 10;
     private Form layoutForm;
     protected String eventTypeName;
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
-    private EapEventType temp = new EapEventType("test" );
+    private EapEventType selectedEventType = new EapEventType("test" );
     private ListView listview;
+    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<TypeTreeNode, String>();
     WebMarkupContainer listContainer;
 
     public GeneratePanel(String id, final ReplayerPage page) {
@@ -72,13 +52,8 @@ public class GeneratePanel extends Panel {
 
             @Override
             public void onSubmit() {
-                try {
-                    int eventCountInt = Integer.parseInt(eventCount);
                     EventGenerator eventGenerator = new EventGenerator();
-                    eventGenerator.generateEvents(eventCountInt);
-                } catch (NumberFormatException e) {
-                    page.getFeedbackPanel().error("Event Count needs to be an integer.");
-                }
+                    eventGenerator.generateEvents(eventCount, selectedEventType, attributeInput);
             }
         };
         this.add(layoutForm);
@@ -89,16 +64,7 @@ public class GeneratePanel extends Panel {
     }
 
     private void addEventCountField() {
-        final TextField<String> eventCountField = new TextField<String>("eventCountField", new Model<String>());
-        eventCountField.setOutputMarkupId(true);
-        eventCountField.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected void onUpdate(final AjaxRequestTarget target) {
-                eventCount = eventCountField.getModelObject();
-            }
-        });
+        final TextField<Integer> eventCountField = new TextField<Integer>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         layoutForm.add(eventCountField);
     }
 
@@ -108,12 +74,12 @@ public class GeneratePanel extends Panel {
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             protected Object load() {
-                return temp.getValueTypes();
+                return selectedEventType.getValueTypes();
             }
         };
         listview = new ListView("listview", list) {
             protected void populateItem(ListItem item) {
-                TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
+                final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
                 item.add(new Label("attribute", attribute.getName()));
                 if(attribute.getType() == null) {
                     item.add(new Label("attributeType", "UNDEFINED"));
@@ -121,6 +87,17 @@ public class GeneratePanel extends Panel {
                 else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
                 }
+                IModel attributeInputModel = new Model<String>() {
+                    @Override
+                    public String getObject() {
+                        return attributeInput.get(attribute);
+                    };
+                    @Override
+                    public void setObject(String inputValue) {
+                        attributeInput.put(attribute, inputValue);
+                    };
+                };
+                item.add(new TextField<String>("attributeInput", attributeInputModel));
             }
         };
 
@@ -129,11 +106,11 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        DropDownChoice dropDown = new DropDownChoice("eventTypeField", new PropertyModel( this, "temp" ), eventTypes);
+        DropDownChoice dropDown = new DropDownChoice("eventTypeField", new PropertyModel( this, "selectedEventType" ), eventTypes);
         // Add Ajax Behaviour...
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
-                if(temp != null) {
+                if(selectedEventType != null) {
                     target.add(listContainer);
                 }
             }
