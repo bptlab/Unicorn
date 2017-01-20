@@ -128,6 +128,34 @@ public class EventGenerator {
         eventReplayer.replay();
     }
 
+    public void testGenerateEvents(int eventCount) {
+        EapEventType eventType = EapEventType.findByTypeName("FeedbackData_v4");
+        Map<String, String> values = new HashMap<String, String>();
+        //values.put("dateOfServiceIntervention", getRandom(dateOfServiceIntervention));
+        values.put("dateOfInstallation", "asd");
+        values.put("factoryId", "3-8");
+        values.put("dateOfProduction", "2016;2017;2018");
+        values.put("counter", "1-50");
+        values.put("softwareVersion", "1.1;2.2;3.3");
+        values.put("feedbackOfInstaller", "Feedback1;Feedback2;Feedback3");
+        values.put("objectId", "1;2;3;4;5");
+        values.put("locationOfDeviceId", "1-5");
+        values.put("orderNumber", "100-200");
+        values.put("productName", "Title1;Title2");
+        values.put("codingPlugId", "10;20;30;40");
+        values.put("codingPlugBusId", "11;22;33;44");
+        values.put("codingPlugSoftwareVersion", "4.4;5.5");
+        values.put("errorId", "Error1;Error2");
+        values.put("errorFailureTreeId", "50-70");
+        values.put("errorDescription", "Description1");
+        values.put("causeId", "500-600");
+        values.put("causeDescription", "AnotherDescription");
+        values.put("replacementPartId", "10000-20000");
+        values.put("replacementPartName", "Replace1;Replace2;Replace3");
+        values.put("productFamilyId", "Family1;Family2");
+        generateEvents(eventCount, eventType, values);
+    }
+
     public void generateEvents(int eventCount, EapEventType eventType, Map<String, String> attributeSchemas) {
         this.eventCount = eventCount;
         List<EapEvent> events = new ArrayList<EapEvent>();
@@ -147,6 +175,7 @@ public class EventGenerator {
                         values.put(attributeSchema.getKey(), getRandomFloatFromInput(attributeSchema.getValue()));
                         break;
                     case DATE:
+                        /* TODO: Implement date handling */
                         values.put(attributeSchema.getKey(), getRandom(dateOfServiceIntervention));
                         break;
                     default:
@@ -184,7 +213,7 @@ public class EventGenerator {
     }
 
     private static int getRandomIndex(Object[] inputArray) {
-        random.nextInt(inputArray.length);
+        return random.nextInt(inputArray.length);
     }
 
     private static Date getRandom(Date[] examples) {
