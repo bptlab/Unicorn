@@ -14,20 +14,18 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.*;
 
 import java.util.*;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.validation.validator.PatternValidator;
 
 public class GeneratePanel extends Panel {
 
@@ -97,7 +95,27 @@ public class GeneratePanel extends Panel {
                         attributeInput.put(attribute, inputValue);
                     };
                 };
-                item.add(new TextField<String>("attributeInput", attributeInputModel));
+
+                TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
+                /*switch (attribute.getType()) {
+                    case INTEGER:
+                        inputField.add(new PatternValidator("(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)"));
+                        break;
+                    case STRING:
+                        inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
+                        break;
+                    case FLOAT:
+                        inputField.add(new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
+                        break;
+                    case DATE:
+                        //inputField.add(new PatternValidator(""));
+                        break;
+                    default:
+                        //inputField.add(new PatternValidator(""));
+                        break;
+                }*/
+                item.add(inputField);
+                item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model(attribute))));
             }
         };
 
