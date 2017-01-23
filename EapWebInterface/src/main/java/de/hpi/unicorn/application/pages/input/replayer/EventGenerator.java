@@ -9,9 +9,12 @@ import org.apache.log4j.Logger;
 
 import javax.swing.event.DocumentEvent;
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.text.DateFormat;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class EventGenerator {
     private Date[] dateOfServiceIntervention;
@@ -147,7 +150,7 @@ public class EventGenerator {
                         break;
                     case DATE:
                         /* TODO: Implement date handling */
-                        values.put(attributeSchema.getKey().getName(), getRandom(dateOfServiceIntervention));
+                        values.put(attributeSchema.getKey().getName(), getRandomDateFromInput(attributeSchema.getValue()));
                         break;
                     default:
                         values.put(attributeSchema.getKey().getName(), "UNDEFINED");
@@ -159,6 +162,30 @@ public class EventGenerator {
         }
         EventReplayer eventReplayer = new EventReplayer(events, this.replayScaleFactor);
         eventReplayer.replay();
+    }
+
+    private Date getRandomDateFromInput(String input) {
+        DateFormat formatter = new SimpleDateFormat("yyy/MM/dd'T'HH:mm");
+        Date start = new Date();
+        Date end = new Date();
+        long timestamp;
+        Date date = new Date();
+
+
+        if(input.contains("-")) {
+            try {
+                start = formatter.parse(input.split("-")[0]);
+                end = formatter.parse(input.split("-")[1]);
+            } catch (ParseException e) { e.printStackTrace(); }
+            timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
+            date = new Date(timestamp);
+        }
+        else {
+            try {
+                date = formatter.parse(input);
+            } catch (ParseException e) { e.printStackTrace(); }
+        }
+        return date;
     }
 
     private static String getRandomStringFromInput(String input) {

@@ -81,9 +81,7 @@ public class GeneratePanel extends Panel {
                 item.add(new Label("attribute", attribute.getName()));
                 if(attribute.getType() == null) {
                     item.add(new Label("attributeType", "UNDEFINED"));
-                    item.add(new Label("attributeInputDescription", "UNDEFINDED"));
-                }
-                else {
+                } else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
                     item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model(attribute))));
                 }
@@ -91,11 +89,11 @@ public class GeneratePanel extends Panel {
                     @Override
                     public String getObject() {
                         return attributeInput.get(attribute);
-                    };
+                    }
                     @Override
                     public void setObject(String inputValue) {
                         attributeInput.put(attribute, inputValue);
-                    };
+                    }
                 };
 
                 TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
