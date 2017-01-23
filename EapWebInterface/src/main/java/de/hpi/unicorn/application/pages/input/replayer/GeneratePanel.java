@@ -59,7 +59,7 @@ public class GeneratePanel extends Panel {
         addEventCountField();
         addEventTypeDropDown();
         addSubmitButton();
-    }
+   }
 
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<Integer>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
@@ -81,9 +81,11 @@ public class GeneratePanel extends Panel {
                 item.add(new Label("attribute", attribute.getName()));
                 if(attribute.getType() == null) {
                     item.add(new Label("attributeType", "UNDEFINED"));
+                    item.add(new Label("attributeInputDescription", "UNDEFINDED"));
                 }
                 else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
+                    item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model(attribute))));
                 }
                 IModel attributeInputModel = new Model<String>() {
                     @Override
@@ -115,7 +117,7 @@ public class GeneratePanel extends Panel {
                         break;
                 }*/
                 item.add(inputField);
-                item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model(attribute))));
+
             }
         };
 
