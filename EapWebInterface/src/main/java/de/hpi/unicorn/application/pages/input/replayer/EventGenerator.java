@@ -149,7 +149,6 @@ public class EventGenerator {
                         values.put(attributeSchema.getKey().getName(), getRandomFloatFromInput(attributeSchema.getValue()));
                         break;
                     case DATE:
-                        /* TODO: Implement date handling */
                         values.put(attributeSchema.getKey().getName(), getRandomDateFromInput(attributeSchema.getValue()));
                         break;
                     default:

@@ -50,8 +50,9 @@ public class GeneratePanel extends Panel {
 
             @Override
             public void onSubmit() {
-                    EventGenerator eventGenerator = new EventGenerator();
-                    eventGenerator.generateEvents(eventCount, selectedEventType, attributeInput);
+                EventGenerator eventGenerator = new EventGenerator();
+                eventGenerator.generateEvents(eventCount, selectedEventType, attributeInput);
+                success("Event(s) successfully created");
             }
         };
         this.add(layoutForm);
@@ -97,8 +98,9 @@ public class GeneratePanel extends Panel {
                 };
 
                 TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
-                /*switch (attribute.getType()) {
+                switch (attribute.getType()) {
                     case INTEGER:
+                        //TODO: Replace by own validator
                         inputField.add(new PatternValidator("(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)"));
                         break;
                     case STRING:
@@ -113,11 +115,11 @@ public class GeneratePanel extends Panel {
                     default:
                         //inputField.add(new PatternValidator(""));
                         break;
-                }*/
+                }
                 item.add(inputField);
-
             }
         };
+        listview.setReuseItems(true);
 
         listContainer = new WebMarkupContainer("theContainer");
         listContainer.add(listview);
