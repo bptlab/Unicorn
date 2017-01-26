@@ -16,7 +16,10 @@ import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,7 +28,10 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.validation.ValidationError;
 
 public class GeneratePanel extends Panel {
 
@@ -101,7 +107,7 @@ public class GeneratePanel extends Panel {
                 switch (attribute.getType()) {
                     case INTEGER:
                         //TODO: Replace by own validator
-                        inputField.add(new PatternValidator("(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)"));
+                        inputField.add(new IntegerRangeValidator());
                         break;
                     case STRING:
                         inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
@@ -110,10 +116,10 @@ public class GeneratePanel extends Panel {
                         inputField.add(new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
                         break;
                     case DATE:
-                        //inputField.add(new PatternValidator(""));
+                        inputField.add(new DateRangeValidator());
                         break;
                     default:
-                        //inputField.add(new PatternValidator(""));
+                        inputField.add(new PatternValidator(""));
                         break;
                 }
                 item.add(inputField);
@@ -141,5 +147,74 @@ public class GeneratePanel extends Panel {
     private void addSubmitButton() {
         final Button submitButton = new Button("submitButton");
         layoutForm.add(submitButton);
+    }
+
+    public class IntegerRangeValidator implements IValidator<String> {
+
+        private final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
+        private final Pattern pattern;
+
+        IntegerRangeValidator() {
+            pattern = Pattern.compile(INTEGER_RANGE_PATTERN);
+        }
+
+        @Override
+        public void validate(IValidatable<String> validatable) {
+            //get input from attached component
+            final String input = validatable.getValue();
+            if (pattern.matcher(input).matches() == true) {
+                String[] splits;
+                if (input.contains("-")) {
+                    splits = input.split("-");
+                    if(Integer.parseInt(splits[0]) > Integer.parseInt(splits[1])) error(validatable, "endBeforeStart");
+                }
+            } else {
+                error(validatable,"noIntegerRange");
+            }
+        }
+
+        private void error(IValidatable<String> validatable, String errorKey) {
+            ValidationError error = new ValidationError();
+            error.addKey(getClass().getSimpleName() + "." + errorKey);
+            validatable.error(error);
+        }
+    }
+
+    public class DateRangeValidator implements IValidator<String> {
+
+        private final String DATE = "(\\d{4}\\/\\d{2}\\/\\d{2}T\\d{2}\\:\\d{2})";
+        private final String DATE_RANGE_PATTERN = DATE + "||" + DATE + "-" + DATE;
+        private final Pattern pattern;
+
+        DateRangeValidator() {
+            pattern = Pattern.compile(DATE_RANGE_PATTERN);
+        }
+
+        @Override
+        public void validate(IValidatable<String> validatable) {
+            //get input from attached component
+            final String input = validatable.getValue();
+            if (pattern.matcher(input).matches() == true) {
+                String[] splits;
+                if (input.contains("-")) {
+                    splits = input.split("-");
+                    DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+                    try {
+                        if (formatter.parse(splits[0]).after(formatter.parse(splits[1])))
+                            error(validatable, "endBeforeStart");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                error(validatable,"noIntegerRange");
+            }
+        }
+
+        private void error(IValidatable<String> validatable, String errorKey) {
+            ValidationError error = new ValidationError();
+            error.addKey(getClass().getSimpleName() + "." + errorKey);
+            validatable.error(error);
+        }
     }
 }

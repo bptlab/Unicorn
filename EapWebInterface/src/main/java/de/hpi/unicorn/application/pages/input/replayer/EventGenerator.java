@@ -164,7 +164,7 @@ public class EventGenerator {
     }
 
     private Date getRandomDateFromInput(String input) {
-        DateFormat formatter = new SimpleDateFormat("yyy/MM/dd'T'HH:mm");
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
         Date start = new Date();
         Date end = new Date();
         long timestamp;
