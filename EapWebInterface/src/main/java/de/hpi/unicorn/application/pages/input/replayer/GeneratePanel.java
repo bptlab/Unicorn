@@ -110,7 +110,8 @@ public class GeneratePanel extends Panel {
                         inputField.add(new IntegerRangeValidator());
                         break;
                     case STRING:
-                        inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
+                        //inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
+                        inputField.add(new PatternValidator("\\w+(?:(?:\\s|\\-)\\w+)*(?:;\\w+(?:(?:\\s|\\-)\\w+)*)*"));
                         break;
                     case FLOAT:
                         inputField.add(new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
