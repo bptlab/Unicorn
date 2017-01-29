@@ -111,7 +111,7 @@ public class GeneratePanel extends Panel {
                         break;
                     case STRING:
                         //inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
-                        inputField.add(new PatternValidator("\\w+(?:(?:\\s|\\-)\\w+)*(?:;\\w+(?:(?:\\s|\\-)\\w+)*)*"));
+                        inputField.add(new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*"));
                         break;
                     case FLOAT:
                         inputField.add(new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
