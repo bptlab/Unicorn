@@ -132,7 +132,12 @@ public class EventGenerator {
     }
 
     public void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
+        generateEvents(eventCount, 10000, eventType, attributeSchemas);
+    }
+
+    public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         this.eventCount = eventCount;
+        this.replayScaleFactor = scaleFactor;
         List<EapEvent> events = new ArrayList<EapEvent>();
 
         for (int j = 0; j < eventCount; j++) {

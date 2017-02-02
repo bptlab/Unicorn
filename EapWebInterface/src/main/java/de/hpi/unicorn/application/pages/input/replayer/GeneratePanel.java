@@ -39,6 +39,7 @@ public class GeneratePanel extends Panel {
     private ReplayerPage page;
     private GeneratePanel panel;
     protected Integer eventCount = 10;
+    protected Integer scaleFactor = 10000;
     private Form layoutForm;
     protected String eventTypeName;
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
@@ -57,13 +58,14 @@ public class GeneratePanel extends Panel {
             @Override
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
-                eventGenerator.generateEvents(eventCount, selectedEventType, attributeInput);
+                eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
                 success("Event(s) successfully created");
             }
         };
         this.add(layoutForm);
 
         addEventCountField();
+        addScaleFactorField();
         addEventTypeDropDown();
         addSubmitButton();
    }
@@ -72,6 +74,12 @@ public class GeneratePanel extends Panel {
         final TextField<Integer> eventCountField = new TextField<Integer>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
         layoutForm.add(eventCountField);
+    }
+
+    private void addScaleFactorField() {
+        final TextField<Integer> scaleFactorField = new TextField<Integer>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
+        scaleFactorField.setRequired(true);
+        layoutForm.add(scaleFactorField);
     }
 
     private void addEventTypeDropDown() {
