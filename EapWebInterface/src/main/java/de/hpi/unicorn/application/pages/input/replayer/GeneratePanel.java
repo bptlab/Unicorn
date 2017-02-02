@@ -70,6 +70,7 @@ public class GeneratePanel extends Panel {
 
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<Integer>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
+        eventCountField.setRequired(true);
         layoutForm.add(eventCountField);
     }
 
