@@ -109,6 +109,7 @@ public class GeneratePanel extends Panel {
 
                 TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
                 inputField.setLabel(new Model(attribute.getName()));
+                inputField.setRequired(true);
                 switch (attribute.getType()) {
                     case INTEGER:
                         //TODO: Replace by own validator
