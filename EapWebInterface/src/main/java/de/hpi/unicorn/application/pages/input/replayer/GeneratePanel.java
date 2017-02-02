@@ -104,6 +104,7 @@ public class GeneratePanel extends Panel {
                 };
 
                 TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
+                inputField.setLabel(new Model(attribute.getName()));
                 switch (attribute.getType()) {
                     case INTEGER:
                         //TODO: Replace by own validator
@@ -163,7 +164,7 @@ public class GeneratePanel extends Panel {
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
             final String input = validatable.getValue();
-            if (pattern.matcher(input).matches() == true) {
+            if (pattern.matcher(input).matches()) {
                 String[] splits;
                 if (input.contains("-")) {
                     splits = input.split("-");
@@ -195,7 +196,7 @@ public class GeneratePanel extends Panel {
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
             final String input = validatable.getValue();
-            if (pattern.matcher(input).matches() == true) {
+            if (pattern.matcher(input).matches()) {
                 String[] splits;
                 if (input.contains("-")) {
                     splits = input.split("-");
