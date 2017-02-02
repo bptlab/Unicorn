@@ -40,6 +40,7 @@ public class GeneratePanel extends Panel {
     private GeneratePanel panel;
     protected Integer eventCount = 10;
     protected Integer scaleFactor = 10000;
+    protected String eventTimestamps;
     private Form layoutForm;
     protected String eventTypeName;
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
@@ -58,7 +59,12 @@ public class GeneratePanel extends Panel {
             @Override
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
-                eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
+                if(eventTimestamps == null) {
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
+                }
+                else {
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput, eventTimestamps);
+                }
                 success("Event(s) successfully created");
             }
         };
@@ -66,6 +72,7 @@ public class GeneratePanel extends Panel {
 
         addEventCountField();
         addScaleFactorField();
+        addTimestampField();
         addEventTypeDropDown();
         addSubmitButton();
    }
@@ -80,6 +87,13 @@ public class GeneratePanel extends Panel {
         final TextField<Integer> scaleFactorField = new TextField<Integer>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
         scaleFactorField.setRequired(true);
         layoutForm.add(scaleFactorField);
+    }
+
+    private void addTimestampField() {
+        final TextField<String> timestampField = new TextField<String>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
+        timestampField.setLabel(new Model<String>("Timestamp"));
+        timestampField.add(new DateRangeValidator());
+        layoutForm.add(timestampField);
     }
 
     private void addEventTypeDropDown() {

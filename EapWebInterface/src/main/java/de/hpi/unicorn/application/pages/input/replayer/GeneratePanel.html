@@ -4,16 +4,13 @@
       xmlns="http://www.w3.org/1999/xhtml">
 <wicket:panel>
     <form wicket:id="layoutForm">
-        <div class="form-inline well-small">
-            Event count: &nbsp;&nbsp;&nbsp; <input type="text" wicket:id="eventCountField"/>
-        </div>
-        <div class="form-inline well-small">
-            Scale factor: &nbsp;&nbsp;&nbsp; <input type="text" wicket:id="scaleFactorField"/>
-        </div>
-        <div class="form-inline well-small">
-            Event type: &nbsp;&nbsp;&nbsp; <select wicket:id="eventTypeField"></select>
-        </div>
-        <table wicket:id="theContainer" class="table">
+        <table class="table table-striped table-hover ">
+            <tr><td>Event type:</td><td><select wicket:id="eventTypeField"></select></td></tr>
+            <tr><td>Event count:</td><td><input type="text" wicket:id="eventCountField"/></td></tr>
+            <tr><td>Scale factor:</td><td><input type="text" wicket:id="scaleFactorField"/></td></tr>
+            <tr><td>Timestamp:</td><td><input type="text" wicket:id="timestampField"/></td></tr>
+        </table>
+        <table wicket:id="theContainer" class="table table-striped table-hover ">
             <thead>
                 <tr><th>Attribute Type</th><th>Attribute</th><th>Values</th><th>Input format</th></tr>
             </thead>
