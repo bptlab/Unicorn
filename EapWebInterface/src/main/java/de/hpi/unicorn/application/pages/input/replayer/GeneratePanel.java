@@ -76,6 +76,10 @@ public class GeneratePanel extends Panel {
     private void addEventTypeDropDown() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
 
+        if(!eventTypes.isEmpty()) {
+            selectedEventType = eventTypes.get(0);
+        }
+
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             protected Object load() {
