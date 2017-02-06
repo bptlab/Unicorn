@@ -167,6 +167,7 @@ public class GeneratePanel extends Panel {
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
+                    listview.removeAll();
                     target.add(listContainer);
                 }
             }
