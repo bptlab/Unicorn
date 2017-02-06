@@ -22,19 +22,18 @@ public class EventGenerator {
     private int replayScaleFactor = 10000;
     private static Random random = new Random();
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
+    private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
     public EventGenerator() {
 
     }
 
     public void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
-        //TODO: MAKE IT GENERIC
-        generateEvents(eventCount, this.replayScaleFactor, eventType, attributeSchemas, "2017/02/01T12:00");
+        generateEvents(eventCount, this.replayScaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
 
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
-        //TODO: MAKE IT GENERIC
-        generateEvents(eventCount, scaleFactor, eventType, attributeSchemas, "2017/02/01T12:00");
+        generateEvents(eventCount, scaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
 
 
@@ -73,27 +72,29 @@ public class EventGenerator {
     }
 
     private Date getRandomDateFromInput(String input) {
-        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
         Date start = new Date();
         Date end = new Date();
         long timestamp;
         Date date = new Date();
 
-
         if(input.contains("-")) {
             try {
-                start = formatter.parse(input.split("-")[0]);
-                end = formatter.parse(input.split("-")[1]);
+                start = dateFormatter.parse(input.split("-")[0]);
+                end = dateFormatter.parse(input.split("-")[1]);
             } catch (ParseException e) { e.printStackTrace(); }
             timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
             date = new Date(timestamp);
         }
         else {
             try {
-                date = formatter.parse(input);
+                date = dateFormatter.parse(input);
             } catch (ParseException e) { e.printStackTrace(); }
         }
         return date;
+    }
+
+    private String getCurrentTimestamp() {
+        return dateFormatter.format(new Date());
     }
 
     private static String getRandomStringFromInput(String input) {
