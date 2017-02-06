@@ -88,7 +88,7 @@ public class StreamProcessingAdapter implements Serializable {
 	 */
 	private StreamProcessingAdapter() {
 		this.initializeEsper();
-		// this.loadFromDatabase();
+		this.loadFromDatabase();
 		this.initializeAdapter();
 		if (EapConfiguration.registerPredefinedEventTypes) {
 			this.registerPredefinedEventTypes();
