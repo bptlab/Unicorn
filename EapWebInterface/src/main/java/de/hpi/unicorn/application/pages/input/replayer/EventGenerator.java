@@ -43,6 +43,10 @@ public class EventGenerator {
         this.replayScaleFactor = scaleFactor;
         List<EapEvent> events = new ArrayList<EapEvent>();
 
+        if (eventCount < 0 || scaleFactor < 0 || EapEventType.findByTypeName(eventType.getTypeName()) == null) {
+            throw new IllegalArgumentException();
+        }
+
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
