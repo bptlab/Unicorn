@@ -8,8 +8,8 @@
 package de.hpi.unicorn.application.pages.input.replayer;
 
 import de.hpi.unicorn.event.EapEventType;
+import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.*;
@@ -38,18 +38,17 @@ public class GeneratePanel extends Panel {
     private static final long serialVersionUID = 1L;
     private ReplayerPage page;
     private GeneratePanel panel;
-    protected Integer eventCount = 10;
-    protected Integer scaleFactor = 10000;
-    protected String eventTimestamps;
+    private Integer eventCount = 10;
+    private Integer scaleFactor = 10000;
+    private String eventTimestamps;
     private Form layoutForm;
     protected String eventTypeName;
-    private static final Logger logger = Logger.getLogger(EventGenerator.class);
     private EapEventType selectedEventType = new EapEventType("test" );
-    private ListView listview;
-    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<TypeTreeNode, String>();
-    WebMarkupContainer listContainer;
+    private ListView<TypeTreeNode> listview;
+    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
+    private WebMarkupContainer listContainer;
 
-    public GeneratePanel(String id, final ReplayerPage page) {
+    GeneratePanel(String id, final ReplayerPage page) {
         super(id);
         this.page = page;
         this.panel = this;
@@ -78,19 +77,19 @@ public class GeneratePanel extends Panel {
    }
 
     private void addEventCountField() {
-        final TextField<Integer> eventCountField = new TextField<Integer>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
+        final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
         layoutForm.add(eventCountField);
     }
 
     private void addScaleFactorField() {
-        final TextField<Integer> scaleFactorField = new TextField<Integer>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
+        final TextField<Integer> scaleFactorField = new TextField<>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
         scaleFactorField.setRequired(true);
         layoutForm.add(scaleFactorField);
     }
 
     private void addTimestampField() {
-        final TextField<String> timestampField = new TextField<String>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
+        final TextField<String> timestampField = new TextField<>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
         timestampField.setLabel(new Model<String>("Timestamp"));
         timestampField.add(new DateRangeValidator());
         layoutForm.add(timestampField);
@@ -105,21 +104,25 @@ public class GeneratePanel extends Panel {
 
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
+            @Override
             protected Object load() {
                 return selectedEventType.getValueTypes();
             }
         };
-        listview = new ListView("listview", list) {
+        listview = new ListView<TypeTreeNode>("listview", list) {
+            @Override
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
                 item.add(new Label("attribute", attribute.getName()));
                 if(attribute.getType() == null) {
+                    attribute.setType(AttributeTypeEnum.STRING);
                     item.add(new Label("attributeType", "UNDEFINED"));
+                    item.add(new Label("attributeInputDescription", getString("description.Undefined")));
                 } else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
-                    item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model(attribute))));
+                    item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
                 }
-                IModel attributeInputModel = new Model<String>() {
+                IModel<String> attributeInputModel = new Model<String>() {
                     @Override
                     public String getObject() {
                         return attributeInput.get(attribute);
@@ -130,16 +133,12 @@ public class GeneratePanel extends Panel {
                     }
                 };
 
-                TextField<String> inputField = new TextField<String>("attributeInput", attributeInputModel);
-                inputField.setLabel(new Model(attribute.getName()));
-                inputField.setRequired(true);
+                TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
                 switch (attribute.getType()) {
                     case INTEGER:
-                        //TODO: Replace by own validator
                         inputField.add(new IntegerRangeValidator());
                         break;
                     case STRING:
-                        //inputField.add(new PatternValidator("\\w+(?:;\\w+)*"));
                         inputField.add(new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*"));
                         break;
                     case FLOAT:
@@ -152,6 +151,8 @@ public class GeneratePanel extends Panel {
                         inputField.add(new PatternValidator(""));
                         break;
                 }
+                inputField.setLabel(new Model<String>(attribute.getName()));
+                inputField.setRequired(true);
                 item.add(inputField);
             }
         };
@@ -162,9 +163,10 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        DropDownChoice dropDown = new DropDownChoice("eventTypeField", new PropertyModel( this, "selectedEventType" ), eventTypes);
-        // Add Ajax Behaviour...
+        DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+                eventTypes);
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+            @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
                     listview.removeAll();
@@ -182,7 +184,7 @@ public class GeneratePanel extends Panel {
 
     public class IntegerRangeValidator implements IValidator<String> {
 
-        private final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
+        private static final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
         private final Pattern pattern;
 
         IntegerRangeValidator() {
@@ -193,14 +195,15 @@ public class GeneratePanel extends Panel {
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
             final String input = validatable.getValue();
-            if (pattern.matcher(input).matches()) {
-                String[] splits;
-                if (input.contains("-")) {
-                    splits = input.split("-");
-                    if(Integer.parseInt(splits[0]) > Integer.parseInt(splits[1])) error(validatable, "endBeforeStart");
-                }
-            } else {
+            if (!pattern.matcher(input).matches()) {
                 error(validatable,"noIntegerRange");
+                return;
+            }
+            String[] splits;
+            if (input.contains("-")) {
+                splits = input.split("-");
+                if(Integer.parseInt(splits[0]) > Integer.parseInt(splits[1]))
+                    error(validatable, "endBeforeStart");
             }
         }
 
@@ -213,8 +216,8 @@ public class GeneratePanel extends Panel {
 
     public class DateRangeValidator implements IValidator<String> {
 
-        private final String DATE = "(\\d{4}\\/\\d{2}\\/\\d{2}T\\d{2}\\:\\d{2})";
-        private final String DATE_RANGE_PATTERN = DATE + "||" + DATE + "-" + DATE;
+        private static final String DATE = "(\\d{4}\\/\\d{2}\\/\\d{2}T\\d{2}\\:\\d{2})";
+        private static final String DATE_RANGE_PATTERN = DATE + "||" + DATE + "-" + DATE;
         private final Pattern pattern;
 
         DateRangeValidator() {
@@ -225,20 +228,20 @@ public class GeneratePanel extends Panel {
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
             final String input = validatable.getValue();
-            if (pattern.matcher(input).matches()) {
-                String[] splits;
-                if (input.contains("-")) {
-                    splits = input.split("-");
-                    DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
-                    try {
-                        if (formatter.parse(splits[0]).after(formatter.parse(splits[1])))
-                            error(validatable, "endBeforeStart");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
+            if (!pattern.matcher(input).matches()) {
                 error(validatable,"noIntegerRange");
+                return;
+            }
+            String[] splits;
+            if (input.contains("-")) {
+                splits = input.split("-");
+                DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+                try {
+                    if (formatter.parse(splits[0]).after(formatter.parse(splits[1])))
+                        error(validatable, "endBeforeStart");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
