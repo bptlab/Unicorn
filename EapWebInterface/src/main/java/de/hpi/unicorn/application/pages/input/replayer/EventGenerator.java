@@ -126,29 +126,4 @@ public class EventGenerator {
     private static int getRandomIndex(Object[] inputArray) {
         return random.nextInt(inputArray.length);
     }
-
-    private static Date getRandom(Date[] examples) {
-        int element = random.nextInt(examples.length);
-        return examples[element];
-    }
-
-    private static String getRandom(String[] examples) {
-        int element = random.nextInt(examples.length);
-        return examples[element];
-    }
-
-    private static int getRandom(int[] examples) {
-        int element = random.nextInt(examples.length );
-        return examples[element];
-    }
-
-    private static long getRandom(long[] examples) {
-        int element = random.nextInt(examples.length );
-        return examples[element];
-    }
-
-    private static double getRandom(double[] examples) {
-        int element = random.nextInt(examples.length);
-        return examples[element];
-    }
 }
