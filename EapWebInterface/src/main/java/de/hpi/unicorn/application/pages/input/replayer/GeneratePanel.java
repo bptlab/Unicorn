@@ -32,6 +32,7 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.ValidationError;
+import org.apache.wicket.validation.validator.RangeValidator;
 
 public class GeneratePanel extends Panel {
 
@@ -79,6 +80,7 @@ public class GeneratePanel extends Panel {
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
+        eventCountField.add(new RangeValidator<Integer>(1,100));
         layoutForm.add(eventCountField);
     }
 
