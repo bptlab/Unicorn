@@ -16,6 +16,9 @@ import java.util.List;
 import java.text.DateFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Can generate events and push them to replayer.
+ */
 public class EventGenerator {
 
     private int eventCount;
@@ -102,6 +105,11 @@ public class EventGenerator {
         eventReplayer.replay();
     }
 
+    /**
+     * Find range in input and select random date from this range.
+     *
+     * @param input
+     */
     private Date getRandomDateFromInput(String input) {
         Date start = new Date();
         Date end = new Date();
@@ -128,11 +136,21 @@ public class EventGenerator {
         return dateFormatter.format(new Date());
     }
 
+    /**
+     * Select random String from given list of Strings.
+     *
+     * @param input
+     */
     private static String getRandomStringFromInput(String input) {
         String[] possibleValues = input.split(";");
         return possibleValues[getRandomIndex(possibleValues)];
     }
 
+    /**
+     * Find range in input and select random integer from this range.
+     *
+     * @param input
+     */
     private static int getRandomIntFromInput(String input) {
         if(input.contains("-")) {
             int start = Integer.parseInt(input.split("-")[0]);
@@ -145,6 +163,11 @@ public class EventGenerator {
         }
     }
 
+    /**
+     * Select random Float from given list of Floats.
+     *
+     * @param input
+     */
     private static Float getRandomFloatFromInput(String input) {
         String[] possibleValues = input.split(";");
         return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);

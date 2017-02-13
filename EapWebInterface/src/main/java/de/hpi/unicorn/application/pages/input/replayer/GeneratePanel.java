@@ -34,6 +34,9 @@ import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.RangeValidator;
 
+/**
+ * {@link Panel}, which allows the generation of events.
+ */
 public class GeneratePanel extends Panel {
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +52,13 @@ public class GeneratePanel extends Panel {
     private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
     private WebMarkupContainer listContainer;
 
+    /**
+     * Constructor for the generate panel. The page is initialized in this method,
+     * including the event type dropdown and the according list of input fields.
+     *
+     * @param id
+     * @param page
+     */
     GeneratePanel(String id, final ReplayerPage page) {
         super(id);
         this.page = page;
@@ -97,6 +107,13 @@ public class GeneratePanel extends Panel {
         layoutForm.add(timestampField);
     }
 
+
+    /**
+     * Adds dropdown with existing event types.
+     * When selected, a list is generated that contains the attributes of the selected event types and input fields to fill in values.
+     * Every input field gets a validator.
+     * Additionally a description is provided so that the user knows the format of input that has to be used.
+     */
     private void addEventTypeDropDown() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
 
@@ -184,6 +201,9 @@ public class GeneratePanel extends Panel {
         layoutForm.add(submitButton);
     }
 
+    /**
+     * {@link IValidator}, that checks if input matches integer range pattern
+     */
     public class IntegerRangeValidator implements IValidator<String> {
 
         private static final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
@@ -193,6 +213,11 @@ public class GeneratePanel extends Panel {
             pattern = Pattern.compile(INTEGER_RANGE_PATTERN);
         }
 
+        /**
+         * Checks if given validatable satisfies the integer pattern
+         *
+         * @param validatable
+         */
         @Override
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
@@ -209,6 +234,12 @@ public class GeneratePanel extends Panel {
             }
         }
 
+        /**
+         * Throws error including the name of the field with wrong input.
+         *
+         * @param validatable
+         * @param errorKey
+         */
         private void error(IValidatable<String> validatable, String errorKey) {
             ValidationError error = new ValidationError();
             error.addKey(getClass().getSimpleName() + "." + errorKey);
@@ -216,16 +247,27 @@ public class GeneratePanel extends Panel {
         }
     }
 
+    /**
+     * {@link IValidator}, that checks if input matches date range pattern.
+     */
     public class DateRangeValidator implements IValidator<String> {
 
         private static final String DATE = "(\\d{4}\\/\\d{2}\\/\\d{2}T\\d{2}\\:\\d{2})";
         private static final String DATE_RANGE_PATTERN = DATE + "||" + DATE + "-" + DATE;
         private final Pattern pattern;
 
+        /**
+         * Constructor for the date range validator.
+         */
         DateRangeValidator() {
             pattern = Pattern.compile(DATE_RANGE_PATTERN);
         }
 
+        /**
+         * Checks if given validatable satisfies the date pattern.
+         *
+         * @param validatable
+         */
         @Override
         public void validate(IValidatable<String> validatable) {
             //get input from attached component
@@ -247,6 +289,12 @@ public class GeneratePanel extends Panel {
             }
         }
 
+        /**
+         * Throws error including the name of the field with wrong input.
+         *
+         * @param validatable
+         * @param errorKey
+         */
         private void error(IValidatable<String> validatable, String errorKey) {
             ValidationError error = new ValidationError();
             error.addKey(getClass().getSimpleName() + "." + errorKey);
