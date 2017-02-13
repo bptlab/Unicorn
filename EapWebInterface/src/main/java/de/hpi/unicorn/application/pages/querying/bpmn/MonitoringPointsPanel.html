@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<form wicket:id="monitoringForm">
+			<div style="float:left;">
+				<input wicket:id="initializeButton" type="submit" value="Initialize" class="btn btn-primary" />
+				<input wicket:id="enableButton" type="submit" value="Enable" class="btn btn-primary" />
+				<input wicket:id="beginButton" type="submit" value="Begin" class="btn btn-primary" />
+				<input wicket:id="terminateButton" type="submit" value="Terminate" class="btn btn-primary" />
+				<input wicket:id="skipButton" type="submit" value="Skip" class="btn btn-primary" />
+				<input wicket:id="disruptButton" type="submit" value="Disrupt" class="btn btn-primary" />
+			</div>
+			<div style="clear:both;">
+				<table>
+					<tr>
+						<td>
+							<div wicket:id="enableSelectContainer" class="input-prepend" style="float:left;">
+								<span class="add-on">Enable</span>
+								<select wicket:id="enableSelect" />
+							</div>
+						</td>
+						<td>
+							<input wicket:id="enableDeleteButton" type="submit" value="X" class="btn btn-danger" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<div wicket:id="beginSelectContainer" class="input-prepend" style="float:left;">
+								<span class="add-on">Begin</span>
+								<select wicket:id="beginSelect" />
+							</div>
+						</td>
+						<td>
+							<input wicket:id="beginDeleteButton" type="submit" value="X" class="btn btn-danger" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<div wicket:id="terminateSelectContainer" class="input-prepend" style="float:left;">
+								<span class="add-on">Terminate</span>
+								<select wicket:id="terminateSelect" />
+							</div>
+						</td>
+						<td>
+							<input wicket:id="terminateDeleteButton" type="submit" value="X" class="btn btn-danger" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<div wicket:id="skipSelectContainer" class="input-prepend" style="float:left;">
+								<span class="add-on">Skip</span>
+								<select wicket:id="skipSelect" />
+							</div>
+						</td>
+						<td>
+							<input wicket:id="skipDeleteButton" type="submit" value="X" class="btn btn-danger" />
+						</td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</wicket:panel>
+</html>

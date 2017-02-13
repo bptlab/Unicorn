@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="RoadTraffic.xsd" targetNamespace="RoadTraffic.xsd" elementFormDefault="qualified">
+    <xs:element name="RoadTrafficEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="idAtProvider" type="xs:string"/>
+                <xs:element name="areaCenter">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="longitude" type="xs:double"/>
+                            <xs:element name="latitude" type="xs:double"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="areaPolygon">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="coordinate">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="longitude" type="xs:double"/>
+                                        <xs:element name="latitude" type="xs:double"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+				<xs:element name="startPointLongitude" type="xs:double"/>
+                <xs:element name="startPointLatitude" type="xs:double"/>
+                <xs:element name="endPointLongitude" type="xs:double"/>
+                <xs:element name="endPointLatitude" type="xs:double"/>
+                <xs:element name="timestamp" type="xs:date"/>
+                <xs:element name="type" type="xs:string"/>
+                <xs:element name="magnitude" type="xs:integer"/>
+                <xs:element name="description" type="xs:string"/>
+                <!-- length given in meters -->
+                <xs:element name="length" type="xs:long"/>
+                <!-- delay given in milliseconds -->
+                <xs:element name="delay" type="xs:long"/>
+                <xs:element name="cause" type="xs:string"/>
+                <xs:element name="roadsAffected" type="xs:string"/>
+                <xs:element name="provider" type="xs:string"/>
+                <xs:element name="identifier" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

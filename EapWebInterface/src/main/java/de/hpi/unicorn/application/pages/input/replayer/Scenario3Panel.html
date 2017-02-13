@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<div class="well-small">
+			<form wicket:id="replayerForm">
+				<table style="width:100%">
+					<tr>
+						<td width="50%">
+							<div class="checkbox form-inline well-small">
+								Select files: <br/><br/>
+								<span wicket:id="eventsCheckBoxMultipleChoice" />
+							</div>
+						</td>
+						<td width="50%">
+							<div class="checkbox form-inline well-small">
+								<p>
+									Scale factor: <input type="text" wicket:id="scaleFactorInput" />
+								</p>
+								<p>
+									Use current time : <input wicket:id="useCurrentTimeCheckBox" type="checkbox" />
+								</p>
+								<p>
+									<input wicket:id="replayButton" type="submit" value="Replay" class="btn btn-primary"/>
+								</p>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</wicket:panel>
+</html>

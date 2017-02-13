@@ -1,0 +1,21 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>de.hpi.bpt</groupId>
+		<artifactId>unicorn-parent</artifactId>
+		<version>1.5</version>
+	</parent>
+	<artifactId>unicorn-simulation</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Unicorn Simulation Component</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>unicorn-events</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+</project>

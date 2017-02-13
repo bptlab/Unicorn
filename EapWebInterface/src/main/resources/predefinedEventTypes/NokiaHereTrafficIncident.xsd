@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--   Copyright (c) 2008.  NAVTEQ. All rights reserved.  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="NokiaHereTrafficIncident.xsd" targetNamespace="NokiaHereTrafficIncident.xsd" elementFormDefault="qualified">
+   <xs:element name="NokiaHereTrafficIncident">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="TIMESTAMP" type="xs:date"/>
+				<xs:element name="MID" type="xs:string" />
+				<xs:element name="TRAFFIC_ITEM_ID" type="xs:long" />
+				<xs:element name="ORIGINAL_TRAFFIC_ITEM_ID" type="xs:long" />
+				<xs:element name="TRAFFIC_ITEM_STATUS_SHORT_DESC" type="xs:string" />
+				<xs:element name="TRAFFIC_ITEM_TYPE_DESC" type="xs:string" />
+				<xs:element name="START_TIME" type="xs:string" />
+				<xs:element name="END_TIME" type="xs:string" />
+				<xs:element name="ENTRY_TIME" type="xs:string" />
+				<xs:element name="CRITICALITY">
+				<xs:complexType>
+				   <xs:sequence>
+					  <xs:element name="ID" type="xs:string" />
+					  <xs:element name="DESCRIPTION" type="xs:string" />
+				   </xs:sequence>
+				</xs:complexType>
+				</xs:element>
+				<xs:element name="VERIFIED" type="xs:boolean" />
+				<xs:element name="PARENT_ITEM_ID" type="xs:long" minOccurs="0" />
+				<xs:element name="ABBREVIATION" minOccurs="0">
+				<xs:complexType>
+				   <xs:sequence>
+					  <xs:element name="SHORT_DESC" type="xs:string" />
+					  <xs:element name="DESCRIPTION" type="xs:string" />
+				   </xs:sequence>
+				</xs:complexType>
+				</xs:element>
+				<xs:element name="COMMENTS" type="xs:string" minOccurs="0" />
+				<xs:element name="RDS-TMC_LOCATIONS" minOccurs="0">
+				<xs:complexType>
+				   <xs:sequence>
+					  <xs:element name="RDS-TMC" maxOccurs="unbounded">
+						 <xs:complexType>
+							<xs:sequence>
+							   <xs:element name="ORIGIN">
+									<xs:complexType>
+									  <xs:sequence>
+										 <xs:element name="EBU_COUNTRY_CODE" type="xs:string" />
+										 <xs:element name="TABLE_ID" type="xs:int" />
+										 <xs:element name="LOCATION_ID" type="xs:string" />
+										 <!--<xs:element name="EDGE" type="EDGE" minOccurs="0" />-->
+										 <xs:element name="LOCATION_DESC" type="xs:string" />
+										 <xs:element name="RDS_DIRECTION" type="xs:string" />
+									  </xs:sequence>
+									</xs:complexType>
+							   </xs:element>
+							   <xs:element name="TO" minOccurs="0">
+									<xs:complexType>
+									  <xs:sequence>
+										 <xs:element name="EBU_COUNTRY_CODE" type="xs:string" />
+										 <xs:element name="TABLE_ID" type="xs:int" />
+										 <xs:element name="LOCATION_ID" type="xs:string" />
+										 <!--<xs:element name="EDGE" type="EDGE" minOccurs="0" />-->
+										 <xs:element name="LOCATION_DESC" type="xs:string" />
+										 <xs:element name="RDS_DIRECTION" type="xs:string" />
+									  </xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							   <xs:element name="DIRECTION" type="xs:string" />
+							   <xs:element name="ALERTC" minOccurs="0">
+									<xs:complexType>
+									  <xs:sequence>
+										 <xs:element name="TRAFFIC_CODE" type="xs:long" />
+										 <xs:element name="ALERTC_Q" type="xs:string" minOccurs="0" />
+										 <xs:element name="ALERTC_Q_BINARY" type="xs:string" minOccurs="0" />
+										 <xs:element name="QUANTIFIERS" type="xs:int" minOccurs="0" />
+										 <xs:element name="DESCRIPTION" type="xs:string" minOccurs="0" />
+										 <xs:element name="NATURE" type="xs:string" minOccurs="0" />
+										 <xs:element name="ALERTC_DURATION" type="xs:string" minOccurs="0" />
+										 <xs:element name="ALERTC_DIRECTION" type="xs:int" minOccurs="0" />
+										 <xs:element name="URGENCY" type="xs:string" minOccurs="0" />
+										 <xs:element name="UPDATE_CLASS" type="xs:int" minOccurs="0" />
+										 <xs:element name="PHRASE_CODE" type="xs:string" minOccurs="0" />
+										 <xs:element name="EXTENT" type="xs:string" minOccurs="0" />
+										 <xs:element name="DURATION" type="xs:int" minOccurs="0" />
+									  </xs:sequence>
+									</xs:complexType>
+							   </xs:element>
+							   <xs:element name="PRIMARY_OFFSET" type="xs:float" />
+							   <xs:element name="LENGTH" type="xs:float" />
+							</xs:sequence>
+						 </xs:complexType>
+					  </xs:element>
+				   </xs:sequence>
+				</xs:complexType>
+				</xs:element>
+				<xs:element name="LOCATION">
+					<xs:complexType>
+					  <xs:sequence>
+							<xs:element name="DEFINED">
+							   <xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="ORIGIN">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROADWAY">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="POINT">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="DIRECTION">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="PROXIMITY">
+													<xs:complexType>
+													   <xs:sequence>
+														  <xs:element name="ID" type="xs:string" />
+														  <xs:element name="DESCRIPTION" type="xs:string" />
+													   </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="BETWEEN" minOccurs="0">
+													<xs:complexType>
+													    <xs:sequence>
+														    <xs:element name="ROADWAY">
+																<xs:complexType>
+																<xs:sequence>
+																  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+																  <xs:element name="ID" type="xs:long" use="required" />
+																</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="POINT">
+																<xs:complexType>
+																  <xs:sequence>
+																	  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+																	  <xs:element name="ID" type="xs:long" use="required" />
+																  </xs:sequence>
+																</xs:complexType>
+															</xs:element>
+													    </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+									   </xs:complexType>
+									 </xs:element>
+									 <xs:element name="TO" minOccurs="0">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="ROADWAY">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="POINT">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="DIRECTION">
+													<xs:complexType>
+													  <xs:sequence>
+														  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+														  <xs:element name="ID" type="xs:long" use="required" />
+													  </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="PROXIMITY">
+													<xs:complexType>
+													   <xs:sequence>
+														  <xs:element name="ID" type="xs:string" />
+														  <xs:element name="DESCRIPTION" type="xs:string" />
+													   </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="BETWEEN" minOccurs="0">
+													<xs:complexType>
+													   <xs:sequence>
+														    <xs:element name="ROADWAY">
+																<xs:complexType>
+																  <xs:sequence>
+																	  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+																	  <xs:element name="ID" type="xs:long" use="required" />
+																  </xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="POINT">
+																<xs:complexType>
+																  <xs:sequence>
+																	  <xs:element name="DESCRIPTION" type="DESCRIPTION_TYPE" maxOccurs="unbounded" />
+																	  <xs:element name="ID" type="xs:long" use="required" />
+																  </xs:sequence>
+																</xs:complexType>
+															</xs:element>
+													    </xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+									   </xs:complexType>
+									 </xs:element>
+								  </xs:sequence>
+							   </xs:complexType>
+							</xs:element>
+							<xs:element name="INTERSECTION">
+							   <xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="ORIGIN" type="INTERSECTION_TYPE">
+										<xs:complexType>
+										  <xs:sequence>
+											 <xs:element name="ID" type="xs:string" />
+											 <xs:element name="STREET1">
+												<xs:complexType>
+												  <xs:sequence>
+													 <xs:element name="ADDRESS1" type="xs:string" />
+													 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+												  </xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="STREET2">
+												<xs:complexType>
+												  <xs:sequence>
+													 <xs:element name="ADDRESS1" type="xs:string" />
+													 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+												  </xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											 <xs:element name="CITY" type="xs:string" minOccurs="0" />
+											 <xs:element name="COUNTY" type="xs:string" />
+											 <xs:element name="STATE" type="xs:string" />
+											 <xs:element name="ZIP" type="xs:string" minOccurs="0" />
+											 <xs:element name="ALIAS" type="xs:string" minOccurs="0" />
+											 <xs:element name="PROXIMITY">
+												<xs:complexType>
+												   <xs:sequence>
+													  <xs:element name="ID" type="xs:string" />
+													  <xs:element name="DESCRIPTION" type="xs:string" />
+												   </xs:sequence>
+												</xs:complexType>
+											 </xs:element>
+										  </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+									 <xs:element name="TO" type="INTERSECTION_TYPE" minOccurs="0">
+										<xs:complexType>
+										  <xs:sequence>
+											 <xs:element name="ID" type="xs:string" />
+											 <xs:element name="STREET1">
+												<xs:complexType>
+												  <xs:sequence>
+													 <xs:element name="ADDRESS1" type="xs:string" />
+													 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+												  </xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="STREET2">
+												<xs:complexType>
+												  <xs:sequence>
+													 <xs:element name="ADDRESS1" type="xs:string" />
+													 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+												  </xs:sequence>
+												</xs:complexType>
+											</xs:element>
+											 <xs:element name="CITY" type="xs:string" minOccurs="0" />
+											 <xs:element name="COUNTY" type="xs:string" />
+											 <xs:element name="STATE" type="xs:string" />
+											 <xs:element name="ZIP" type="xs:string" minOccurs="0" />
+											 <xs:element name="ALIAS" type="xs:string" minOccurs="0" />
+											 <xs:element name="PROXIMITY">
+												<xs:complexType>
+												   <xs:sequence>
+													  <xs:element name="ID" type="xs:string" />
+													  <xs:element name="DESCRIPTION" type="xs:string" />
+												   </xs:sequence>
+												</xs:complexType>
+											 </xs:element>
+										  </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+								  </xs:sequence>
+							   </xs:complexType>
+							</xs:element>
+							<xs:element name="ADDRESS">
+							   <xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="ORIGIN" type="ADDRESS_TYPE">
+										<xs:complexType>
+										  <xs:sequence>
+											 <xs:element name="ID" type="xs:string" />
+											 <xs:element name="HOUSE_NO" type="xs:string" />
+											 <xs:element name="ADDRESS1" type="xs:string" />
+											 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+											 <xs:element name="CITY" type="xs:string" minOccurs="0" />
+											 <xs:element name="STATE" type="xs:string" />
+											 <xs:element name="COUNTY" type="xs:string" />
+											 <xs:element name="ZIP" type="xs:string" minOccurs="0" />
+											 <xs:element name="ALIAS" type="xs:string" minOccurs="0" />
+											 <xs:element name="PROXIMITY">
+												<xs:complexType>
+												   <xs:sequence>
+													  <xs:element name="ID" type="xs:string" />
+													  <xs:element name="DESCRIPTION" type="xs:string" />
+												   </xs:sequence>
+												</xs:complexType>
+											 </xs:element>
+										  </xs:sequence>
+										</xs:complexType>
+									</xs:element>
+									 <xs:element name="TO" type="ADDRESS_TYPE" minOccurs="0">
+										<xs:complexType>
+										  <xs:sequence>
+											 <xs:element name="ID" type="xs:string" />
+											 <xs:element name="HOUSE_NO" type="xs:string" />
+											 <xs:element name="ADDRESS1" type="xs:string" />
+											 <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+											 <xs:element name="CITY" type="xs:string" minOccurs="0" />
+											 <xs:element name="STATE" type="xs:string" />
+											 <xs:element name="COUNTY" type="xs:string" />
+											 <xs:element name="ZIP" type="xs:string" minOccurs="0" />
+											 <xs:element name="ALIAS" type="xs:string" minOccurs="0" />
+											 <xs:element name="PROXIMITY">
+												<xs:complexType>
+												   <xs:sequence>
+													  <xs:element name="ID" type="xs:string" />
+													  <xs:element name="DESCRIPTION" type="xs:string" />
+												   </xs:sequence>
+												</xs:complexType>
+											 </xs:element>
+										  </xs:sequence>
+										</xs:complexType>
+									</xs:element>							
+								  </xs:sequence>
+							   </xs:complexType>
+							</xs:element>
+							<xs:element name="UNDEFINED_LOCATION">
+							   <xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="DESCRIPTION" type="xs:string" />
+								  </xs:sequence>
+							   </xs:complexType>
+							</xs:element>
+						 <xs:element name="GEOLOC">
+							<xs:complexType>
+							   <xs:sequence>
+								  <xs:element name="ORIGIN" type="GEOLOC_TYPE">
+									<xs:complexType>
+									  <xs:sequence>
+										 <xs:element name="LATITUDE" type="xs:double" />
+										 <xs:element name="LONGITUDE" type="xs:double" />
+									  </xs:sequence>
+									</xs:complexType>
+								  </xs:element>
+								  <xs:element name="TO" type="GEOLOC_TYPE" minOccurs="0" maxOccurs="unbounded">
+									<xs:complexType>
+									  <xs:sequence>
+										 <xs:element name="LATITUDE" type="xs:double" />
+										 <xs:element name="LONGITUDE" type="xs:double" />
+									  </xs:sequence>
+									</xs:complexType>
+								  </xs:element>
+							   </xs:sequence>
+							</xs:complexType>
+						 </xs:element>
+						 <xs:element name="POLITICAL_BOUNDARY" minOccurs="0">
+							<xs:complexType>
+							   <xs:sequence>
+								  <xs:element name="METRO_AREA">
+									 <xs:complexType>
+										<xs:simpleContent>
+										   <xs:extension base="xs:string">
+											  <xs:element name="ID" type="xs:integer" use="required" />
+										   </xs:extension>
+										</xs:simpleContent>
+									 </xs:complexType>
+								  </xs:element>
+								  <xs:element name="STATE" type="xs:string" minOccurs="0" />
+								  <xs:element name="COUNTY" type="xs:string" minOccurs="0" />
+								  <xs:element name="MUNICIPALITY" minOccurs="0">
+									 <xs:complexType>
+										<xs:sequence>
+										   <xs:element name="NAME" type="xs:string" />
+										   <xs:element name="ALIAS" type="xs:string" minOccurs="0" />
+										</xs:sequence>
+									 </xs:complexType>
+								  </xs:element>
+							   </xs:sequence>
+							</xs:complexType>
+						 </xs:element>
+						 <xs:element name="NAVTECH">
+							<xs:complexType>
+							  <xs:sequence>
+								<xs:element name="EDGE">
+									<xs:complexType>
+									  <xs:sequence maxOccurs="unbounded">
+										 <xs:element name="EDGE_ID" type="xs:string" />
+									  </xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="VERSION_ID" type="xs:string" />
+							  </xs:sequence>
+							</xs:complexType>
+						 </xs:element>
+					  </xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TRAFFIC_ITEM_DETAIL">
+					<xs:complexType>
+					  <xs:sequence>
+						 <xs:element name="ROAD_CLOSED" type="xs:boolean" />
+						 <xs:element name="DETOUR_DESC" type="xs:string" minOccurs="0" />
+						 <xs:element name="LANES_BLOCKED" minOccurs="0">
+							<xs:complexType>
+								  <xs:element name="LANE" minOccurs="0" maxOccurs="unbounded">
+									 <xs:complexType>
+										<xs:sequence>
+										   <xs:element name="DESCRIPTION" type="xs:string" />
+										   <xs:element name="NUM_BLOCKED" type="xs:int" />
+										</xs:sequence>
+									 </xs:complexType>
+								  </xs:element>
+								  <xs:element name="ALL_LANES" type="xs:string" minOccurs="0" />
+							</xs:complexType>
+						 </xs:element>
+						 <xs:element name="LANES_CLEAR_DESC" type="xs:string" minOccurs="0" />
+							<xs:element name="EVENT">
+								<xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="EVENT_ITEM_CANCELLED" type="xs:boolean" />
+										<xs:element name="PLANNED_EVENT">
+										   <xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="PLANNED_EVENT_TYPE_DESC" type="xs:string" minOccurs="0" />
+												 <xs:element name="PLANNED_EVENT_DESC" type="xs:string" minOccurs="0" />
+											  </xs:sequence>
+										   </xs:complexType>
+										</xs:element>
+										<xs:element name="SCHEDULED_CONSTRUCTION_EVENT">
+										   <xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="SCHEDULED_CONSTRUCTION_TYPE_DESC" type="xs:string" />
+												 <xs:element name="SCHEDULED_CONSTRUCTION_DETAIL" type="xs:string" minOccurs="0" />
+											  </xs:sequence>
+										   </xs:complexType>
+										</xs:element>
+								  </xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="INCIDENT">
+								<xs:complexType>
+								  <xs:sequence>
+									 <xs:element name="RESPONSE_VEHICLES" type="xs:boolean" />
+									 <xs:element name="ROAD_HAZARD_INCIDENT" minOccurs="0">
+										<xs:complexType>
+										   <xs:sequence>
+											  <xs:element name="ROAD_HAZARD_TYPE_DESC" type="xs:string" minOccurs="0" />
+										   </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+									 <xs:element name="TRAVEL_TIMES">
+										<xs:complexType>
+										  <xs:sequence>
+											 <xs:element name="LANE_TYPE">
+												<xs:complexType>
+												   <xs:sequence>
+													  <xs:element name="TRAVEL_TIME" maxOccurs="unbounded">
+														 <xs:complexType>
+															<xs:simpleContent>
+															   <xs:extension base="xs:double">
+																  <xs:element name="DIGITAL" type="xs:boolean" use="required" />
+																  <xs:element name="TYPE" type="xs:string" use="required" />
+															   </xs:extension>
+															</xs:simpleContent>
+														 </xs:complexType>
+													  </xs:element>
+												   </xs:sequence>
+												   <xs:element name="TYPE" type="xs:string" use="required" />
+												</xs:complexType>
+											 </xs:element>
+										  </xs:sequence>
+										</xs:complexType>
+									</xs:element>
+										<xs:element name="ACCIDENT_INCIDENT">
+											<xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="CAR_COUNT" type="xs:int" minOccurs="0" />
+												 <xs:element name="TRUCK_COUNT" type="xs:int" minOccurs="0" />
+												 <xs:element name="TRACTOR_TRAILER_COUNT" type="xs:int" minOccurs="0" />
+												 <xs:element name="MOTORCYCLE_COUNT" type="xs:int" minOccurs="0" />
+												 <xs:element name="OTHER_VEHICLE_COUNT" type="xs:int" minOccurs="0" />
+											  </xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="CONGESTION_INCIDENT">
+											<xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="CONGESTION_TYPE_DESC" type="xs:string" minOccurs="0" />
+												 <xs:element name="CONGESTION_FACTOR" type="xs:int" minOccurs="0" />
+											  </xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="UNSCHEDULED_CONSTRUCTION_INCIDENT">
+											<xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="UNSCHED_CONST_TYPE_DESC" type="xs:string" minOccurs="0" />
+												 <xs:element name="UNSCHED_CONST_DETAIL" type="xs:string" minOccurs="0" />
+											  </xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="DISABLED_VEHICLE_INCIDENT">
+											<xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="DISABLED_ITEM_TYPE_DESC" type="xs:string" minOccurs="0" />
+												 <xs:element name="INTEGER_OF_VEHICLES" type="xs:int" minOccurs="0" />
+											  </xs:sequence>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="MISCELLANEOUS_INCIDENT">
+											<xs:complexType>
+											  <xs:sequence>
+												 <xs:element name="MISCELLANEOUS_TYPE_DESC" type="xs:string" minOccurs="0" />
+											  </xs:sequence>
+											</xs:complexType>
+										</xs:element>
+								  </xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="NEWS_TYPE">
+								<xs:complexType>
+									 <xs:element name="ALERT_NEWS">
+										<xs:complexType>
+										   <xs:sequence>
+											  <xs:element name="ALERT_TYPE" type="xs:string" minOccurs="0" />
+											  <xs:element name="ALERT_TYPE_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="ALERT_SOURCE_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="ALERT_SOURCE_COMMENTS" type="xs:string" minOccurs="0" />
+										   </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+									 <xs:element name="MASS_TRANSIT_NEWS">
+										<xs:complexType>
+										   <xs:sequence>
+											  <xs:element name="DETAIL_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="LINE_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="TYPE_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="DIRECTION_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="SERVICE_DESC" type="xs:string" minOccurs="0" />
+										   </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+									 <xs:element name="OTHER_NEWS">
+										<xs:complexType>
+										   <xs:sequence>
+											  <xs:element name="SENSITIVITY_DESC" type="xs:string" minOccurs="0" />
+											  <xs:element name="NEWS_DESC" type="xs:string" minOccurs="0" />
+										   </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+									 <xs:element name="WEATHER_NEWS">
+										<xs:complexType>
+										   <xs:sequence>
+											  <xs:element name="WEATHER_TYPE_DESC" type="xs:string" minOccurs="0" />
+										   </xs:sequence>
+										</xs:complexType>
+									 </xs:element>
+								</xs:complexType>
+							</xs:element>
+					  </xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TRAFFIC_ITEM_DESCRIPTION_short" type="xs:string" />
+				<xs:element name="TRAFFIC_ITEM_DESCRIPTION_desc" type="xs:string" />
+				<xs:element name="TRAFFIC_ITEM_DESCRIPTION_noexit" type="xs:string" />				
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

@@ -1,0 +1,384 @@
+echo "#########EPP Installer##########"
+echo "###Please select an action!#####"
+
+text='Do you wish to check prerequisites (p), install (i), deploy (d) or redeploy (r) the event platform, configure a developer platform (c), or copy dependencies to repository (s)?'
+read -p "$text" action
+
+##### silencing program outputs from here on #####
+exec 3>&1
+out() {
+	echo "$@" >&3
+}
+exec &> epp.log
+
+function test {
+    "$@"
+    status=$?
+    if [ $status -ne 0 ]; then
+        echo "error with $1, see epp.log for details"
+    fi
+    return $status
+}
+
+##### installing epp #####
+if [ "$action" == "i" ]; then
+
+	out "Checking install prerequisites ..."
+
+	maven='mvn --version | grep -e "Apache Maven 3\."'
+	if [[ "$maven" == *"Apache Maven"* ]]; then
+        	out "mvn 	OK	found $maven"
+	else
+		error=true
+        	out "mvn 	ERROR	please install maven 3 or above"
+	fi
+
+	if [ "$MAVEN_OPTS" == "-Dfile.encoding=UTF-8 -Xmx512M" ]; then
+                out "mvn	OK	MAVEN_OPTS is set to $MAVEN_OPTS"
+       else
+                out "mvn	WARNING   please set MAVEN_OPTS variable to -Dfile.encoding=UTF-8 -Xmx512M"
+       fi
+	   
+	java -version 2> jvcTemp
+	java='grep "java" jvcTemp'
+        if [[ "$java"==*"java version 1.7"* ]]; then
+                out "java       OK      found $java"
+        else
+                error=true
+                out "java       ERROR   please install java 1.7"
+        fi
+	rm jvcTemp
+	
+	unzip='unzip -version | grep -e "UnZip"'
+	if [[ "$unzip" == *"UnZip"* ]]; then
+        	out "unzip 	OK	found $unzip"
+	else
+		error=true
+        	out "unzip 	ERROR please install UnZip"
+	fi
+
+	if [ $error ]; then
+		out "found errors, installation halt..."
+		exit -1
+	fi
+
+	out "Installing ..."
+	out "This may take a while, see "epp.log" for details"
+
+	text='Enter MySQL user: '
+	out "$text"
+	read -p "$text" mysqlUser
+	text='Enter MySQL password: '
+	out "$text"
+       read —s p "$text" mysqlPassword
+	text='Clear database on startup(y/n): '
+	out "$text"
+       read -p "$text" cleardatabase
+	text='Enter Tomcat user: '
+	out "$text"
+       read -p "$text" tomcatUser
+	text='Enter Tomcat Password: '
+	out "$text"
+       read —s p "$text" tomcatPassword
+	text='Enter Tomcat host and port (e.g. localhost:8888): '
+	out "$text"
+       read -p "$text" tomcatPath
+	text='Enter path for triplestore: '
+	out "$text"
+       read -p "$text" triplestorepath
+	text='Clear triplestore on startup(y/n): '
+	out "$text"
+       read -p "$text" cleartriplestore
+
+	sep="s"
+	###### configure pom.xml for EapWebInterface #####
+	cp EapWebInterface/pom-default.xml EapWebInterface/pom.xml
+	tomcatLine=$(sed -n "/tomcat-maven-plugin/ =" EapWebInterface/pom.xml)
+	tomcatLastLine=$(($tomcatLine + 10))
+	sed -i "$tomcatLine,$tomcatLastLine$sep%<url>.*</url>%<url>$tomcatPath</url>%" EapWebInterface/pom.xml
+	sed -i "$tomcatLine,$tomcatLastLine$sep%<username>.*</username>%<username>$tomcatUser</username>%" EapWebInterface/pom.xml
+	sed -i "$tomcatLine,$tomcatLastLine$sep%<password>.*</password>%<password>$tomcatPassword</password>%" EapWebInterface/pom.xml
+
+	###### configure persistence.xml #####
+	cp EapCommons/src/main/resources/META-INF/persistence_template.xml EapCommons/src/main/resources/META-INF/persistence.xml
+    sep="s"
+    eapDevelopmentLine=$(sed -n "/persistence-unit.*eap_development/ =" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    eapTestLine=$(sed -n "/persistence-unit.*eap_testing/ =" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    eapLastLine=$(wc -l < EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLURLLine=$(sed -n "$eapDevelopmentLine,$eapTestLine {/javax\.persistence\.jdbc\.url/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLUserLine=$(sed -n "$eapDevelopmentLine,$eapTestLine {/javax\.persistence\.jdbc\.user/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLPasswordLine=$(sed -n "$eapDevelopmentLine,$eapTestLine {/javax\.persistence\.jdbc\.password/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    sed -i "$mySQLURLLine,$mySQLURLLine$sep%.*%<property name=\"javax.persistence.jdbc.url\" value=\"jdbc:mysql://localhost:3306/eap_development\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+    sed -i "$mySQLUserLine,$mySQLUserLine$sep%.*%<property name=\"javax.persistence.jdbc.user\" value=\"$mysqlUser\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+    sed -i "$mySQLPasswordLine,$mySQLPasswordLine$sep%.*%<property name=\"javax.persistence.jdbc.password\" value=\"$mysqlPassword\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+    mySQLURLLine=$(sed -n "$eapTestLine,$eapLastLine {/javax\.persistence\.jdbc\.url/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLUserLine=$(sed -n "$eapTestLine,$eapLastLine {/javax\.persistence\.jdbc\.user/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLPasswordLine=$(sed -n "$eapTestLine,$eapLastLine {/javax\.persistence\.jdbc\.password/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    mySQLGenerationLine=$(sed -n "$eapTestLine,$eapLastLine {/eclipselink\.ddl\-generation/ =}" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+    sed -i "$mySQLURLLine,$mySQLURLLine$sep%.*%<property name=\"javax.persistence.jdbc.url\" value=\"jdbc:mysql://localhost:3306/eap_testing\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+    sed -i "$mySQLUserLine,$mySQLUserLine$sep%.*%<property name=\"javax.persistence.jdbc.user\" value=\"$mysqlUser\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+    sed -i "$mySQLPasswordLine,$mySQLPasswordLine$sep%.*%<property name=\"javax.persistence.jdbc.password\" value=\"$mysqlPassword\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+if [[ "$cleardatabase" == *"y"* ]]; then
+	out "Database ..."
+    		sed -i "$mySQLGenerationLine,$mySQLGenerationLine$sep%.*%<property name=\"eclipselink\.ddl-generation\" value=\"drop-and-create-tables\" />%" EapCommons/src/main/resources/META-INF/persistence.xml
+		out "$mySQLGenerationLine,$mySQLGenerationLine$sep%.*%<property name=\"eclipselink\.ddl-generation\" value=\"drop-and-create-tables\" />%"
+	fi
+	
+	##### configure semantic database (triplestore) #####
+	cp EapSemantic/pom-default.xml EapSemantic/pom.xml
+		
+	##### install #####
+	test unzip -o jbpt.zip
+	test mvn -f jbpt/pom.xml clean install -DskipTests
+	test mvn -f jbpt/jbpt-core/pom.xml clean install -DskipTests
+	test mvn -f jbpt/jbpt-deco/pom.xml clean install -DskipTests
+	test mvn -f Esper/pom.xml clean install -DskipTests
+	
+	out "installing finished, checking system prerequisites now..."
+	
+	goto="p"
+fi
+
+##### checking prerequisites #####
+if [[ "$action" == "p" || "$goto" == "p" ]]; then
+
+	echo "Checking deploy prerequisites..."
+	
+	java -version 2> jvcTemp
+	java='grep "java" jvcTemp'
+        if [[ "$java"==*"java version 1.7"* ]]; then
+                out "java       OK      found $java"
+        else
+                error=true
+                out "java       ERROR   please install java 1.7"
+        fi
+	rm jvcTemp
+
+	maven='mvn --version | grep -e "Apache Maven 3\."'
+	if [[ "$maven"==*"Apache Maven"* ]]; then
+        	out "mvn 	OK	found $maven"
+	else
+			error=true
+        	out "mvn 	ERROR	please install maven 3 or above"
+	fi
+
+	if [ "$MAVEN_OPTS" == "-Dfile.encoding=UTF-8 -Xmx512M" ]; then
+                out "mvn	OK	MAVEN_OPTS is set to $MAVEN_OPTS"
+        else
+                out "mvn	WARNING   please set MAVEN_OPTS variable to -Dfile.encoding=UTF-8 -Xmx512M"
+        fi
+
+	for file in 'find -L $M2_HOME/conf -type f -name "settings.xml"'; do
+		settingsFile=$file	
+	done
+
+	if [[ "$settingsFile" == *"settings.xml"* ]]; then
+		out "mvn	OK	found $settingsFile"
+	else
+		error=true
+		out "mvn	ERROR	settings.xml not found, did you set path variable M2_HOME? You may run 'mvn -version' to identify the path of maven, find it for example under /usr/local/apache-maven-3.1.1.; see M2_HOME/conf/settings.xml."
+	fi
+
+	if git --version | grep -e "git version"; then
+        out "git 	OK"
+	else
+		error=true
+        out "git 	ERROR"
+	fi
+
+	for directory in 'find -L /usr/local/ -type d -name "*tomcat-7*"'; do
+		tomcat=$directory
+	done	
+
+	if [ tomcat ]; then
+        	out "tomcat 	OK	found in $tomcat"
+	else
+		error=true
+        out "tomcat 	ERROR	please install tomcat 7 or above under /usr/local/"
+	fi
+
+	if grep -R '<role rolename="manager-script"/>' "$tomcat/conf/tomcat-users.xml"; then
+		out "tomcat	OK	manager-script role configured in tomcat" 
+	else
+		error=true
+		out "tomcat 	ERROR 	role manager-script not defined in $tomcat/conf/tomcat-users.xml"
+	fi
+
+	line=$(sed -n "/.*<server>\(.*\)<.server>.*/ =" EapWebInterface/pom.xml)
+	end=$(($line + 5))
+	serverUserName=$(sed -n "$line,$end s/.*<username>\(.*\)<.username>.*/\1/p" EapWebInterface/pom.xml)
+	serverPassword=$(sed -n "$line,$end s/.*<password>\(.*\)<.password>.*/\1/p" EapWebInterface/pom.xml)
+	serverURL=$(sed -n "$line,$end s/.*<url>\(.*\)<.url>.*/\1/p" EapWebInterface/pom.xml)
+	tomcatResponse=$(curl -u "$serverUserName:$serverPassword" "$serverURL/list")
+        if [[ "$tomcatResponse" == "OK"* ]]; then
+            out "tomcat	OK      server running on localhost:8080, login succeded"
+        else
+		error=true
+            out "tomcat	ERROR   server is not running or EapWebInterface/pom.xml is misconfigured"
+			out "	found user:$serverUserName, pw:$serverPassword, url:$serverURL"
+        fi
+
+        if [ -f EapCommons/src/main/resources/META-INF/persistence.xml ]; then
+            out "EPP      OK      found persistence.xml"
+        else
+            out "EPP      ERROR   please provide EapCommons/src/main/resources/META_INF/persistence.xml"
+			error=true
+        fi
+	
+	sep="s"
+	eapDevelopmentLine=$(sed -n "/persistence-unit.*eap_development/ =" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+        eapTestLine=$(sed -n "/persistence-unit.*eap_testing/ =" EapCommons/src/main/resources/META-INF/persistence_template.xml)
+        sqlUserName=$(sed -n "$eapDevelopmentLine,$eapTestLine$sep/.*javax\.persistence\.jdbc\.user.*value=\"\(.*\)\".*/\1/p" EapCommons/src/main/resources/META-INF/persistence.xml)
+        sqlpassword=$(sed -n "$eapDevelopmentLine,$eapTestLine$sep/.*javax\.persistence\.jdbc\.password.*value=\"\(.*\)\".*/\1/p" EapCommons/src/main/resources/META-INF/persistence.xml)
+        sqlURL=$(sed -n "$eapDevelopmentLine,$eapTestLine$sep/.*javax\.persistence\.jdbc\.url.*value=\"\(.*\)\".*/\1/p" EapCommons/src/main/resources/META-INF/persistence.xml)
+
+	mysqlout='mysqlshow -u$sqlUserName -p$sqlpassword eap_testing | grep -e "Database"'
+	if [[ "$mysqlout" == *"Database"* ]]; then
+		out "EPP	OK	found database eap_testing"
+	else
+		out "EPP	ERROR	database eap_testing not found"
+		error=true
+	fi
+
+	mysqlout='mysqlshow -u$sqlUserName -p$sqlpassword eap_development | grep -e "Database"'
+	if [[ "$mysqlout" == *"Database"* ]]; then
+		out "EPP	OK	found database eap_development"
+	else
+		out "EPP	ERROR	database eap_development not found"
+		error=true
+	fi
+	
+	if [ $error ]; then
+		text='There were errors, do you still want me to try deploy (d)? '
+		out "$text"
+		read -p "$text" action
+	else
+		text='There were no errors, do you want me to continue deploy (d)? '
+		out "$text"
+		read -p "$text" action
+	fi
+fi
+
+##### deploying epp #####
+if [[ "$action" == "d" || "$goto" == "d" ]]; then
+	test mvn -f EapCommons/pom.xml clean install -DskipTests
+	test mvn -f EapImport/pom.xml clean install -DskipTests
+	test mvn -f EapSemantic/pom.xml clean install -DskipTests
+	test mvn -f EapEventProcessing/pom.xml clean install -DskipTests
+	test mvn -f EapSimulation/pom.xml clean install -DskipTests
+	test mvn -f EapWebInterface/pom.xml clean install tomcat:deploy -DskipTests
+fi
+
+##### copy dependencies to repository from settings.xml #####
+if [[ "$action" == "s" || "$goto" == "s" ]]; then
+	out "Checking dependencies prerequisites ..."
+
+	maven='mvn --version | grep -e "Apache Maven 3\."'
+	if [[ "$maven" == *"Apache Maven"* ]]; then
+        	out "mvn 	OK	found $maven"
+	else
+		error=true
+        	out "mvn 	ERROR	please install maven 3 or above"
+	fi
+
+	for file in 'find -L $M2_HOME/conf -type f -name "settings.xml"'; do
+		settingsFile=$file	
+	done
+
+	if [[ "$settingsFile" == *"settings.xml"* ]]; then
+		out "mvn	OK	found $settingsFile"
+	else
+		error=true
+		out "mvn	ERROR	settings.xml not found, did you set path variable M2_HOME? You may run 'mvn -version' to identify the path of maven, find it for example under /usr/local/apache-maven-3.1.1.; see M2_HOME/conf/settings.xml. "
+	fi
+	if [ $error ]; then
+		out "found errors, copy dependencies to repository from settings.xml halt..."
+		exit -1
+	fi
+	
+	out "Copy dependencies..."
+	out "This may take a while, see "epp.log" for details"
+
+	test mvn -f Esper/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "1/7"
+	test mvn -f EapCommons/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "2/7"
+	test mvn -f EapImport/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "3/7"
+	test mvn -f EapSemantic/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "4/7"
+	test mvn -f EapEventProcessing/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "5/7"
+	test mvn -f EapWebInterface/pom.xml dependency:copy-dependencies -s $M2_HOME/conf/settings.xml -DuseRepositoryLayout=true
+	out "7/7"
+fi
+
+##### redeploying epp #####
+if [[ "$action" == "r" || $goto == "r" ]]; then
+	test mvn -f EapCommons/pom.xml clean install -DskipTests
+	test mvn -f EapImport/pom.xml clean install -DskipTests
+	test mvn -f EapSemantic/pom.xml clean install -DskipTests
+	test mvn -f EapEventProcessing/pom.xml clean install -DskipTests
+	test mvn -f EapSimulation/pom.xml clean install -DskipTests
+	test mvn -f EapWebInterface/pom.xml clean install tomcat:redeploy -DskipTests
+fi
+
+##### install developer machine #####
+if [[ "$action" == "c" || "$goto" == "c" ]]; then
+	out "Checking development prerequisites ..."
+
+	maven='mvn --version | grep -e "Apache Maven 3\."'
+	if [[ "$maven" == *"Apache Maven"* ]]; then
+        	out "mvn 	OK	found $maven"
+	else
+		error=true
+        	out "mvn 	ERROR	please install maven 3 or above"
+	fi
+
+	if [ "$MAVEN_OPTS" == "-Dfile.encoding=UTF-8 -Xmx512M" ]; then
+                out "mvn	OK	MAVEN_OPTS is set to $MAVEN_OPTS"
+       else
+                out "mvn	WARNING   please set MAVEN_OPTS variable to -Dfile.encoding=UTF-8 -Xmx512M"
+       fi
+	
+	unzip='unzip -version | grep -e "UnZip"'
+	if [[ "$unzip" == *"UnZip"* ]]; then
+        	out "unzip 	OK	found $unzip"
+	else
+		error=true
+        	out "unzip 	ERROR	please install UnZip"
+	fi
+
+	if [ $error ]; then
+		out "found errors, installation halt..."
+		exit -1
+	fi
+	
+	out "Installing ..."
+	out "This may take a while, see "epp.log" for details"
+
+	test unzip -o jbpt.zip
+	test mvn -f Esper/pom.xml clean install -DskipTests
+	out "1/10"
+	test mvn -f jbpt/pom.xml clean install -DskipTests
+	out "2/10"
+	test mvn -f jbpt/jbpt-core/pom.xml clean install -DskipTests
+	out "3/10"
+	test mvn -f jbpt/jbpt-deco/pom.xml clean install -DskipTests
+	out "4/10"
+	test mvn -f EapCommons/pom.xml clean install -DskipTests
+	out "5/10"
+	test mvn -f EapImport/pom.xml clean install -DskipTests
+	out "6/10"
+	test mvn -f EapSemantic/pom.xml clean install -DskipTests
+	out "7/10"
+	test mvn -f EapEventProcessing/pom.xml clean install -DskipTests
+	out "8/10"
+	test mvn -f EapSimulation/pom.xml clean install -DskipTests
+	out "9/10"
+	test mvn -f EapWebInterface/pom.xml clean install -DskipTests
+	out "10/10"
+	rm -r jbpt
+
+	out "Installation finished you may re-run the developer installation progress anytime to compile your your projects, but you may also do this step directly from your Eclipse installation..."
+fi

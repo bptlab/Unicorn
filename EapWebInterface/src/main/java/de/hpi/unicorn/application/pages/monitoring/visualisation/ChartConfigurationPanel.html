@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+	
+		<form wicket:id="layoutForm">
+			<div wicket:id="feedback"></div>
+		
+			<table>
+				<tr>
+					<td>
+						<div class="well-small">
+							New chart: 
+							<input type="text" wicket:id="chartTitleInput" />
+						</div>
+					</td>
+					<td>
+						<div class="well-small">
+							Choose chart type: <br/>
+							<select wicket:id="chartTypeSelect"></select>
+						</div>
+					</td>
+
+				</tr>
+				<tr>
+					<td>
+						<div class="well-small">
+							Choose an event type: <br/>
+							<select wicket:id="eventTypeSelect"></select>
+						</div>
+					</td>
+					<td>
+						<div class="well-small">
+							Choose an attribute, that shall be visualized: <br/>
+							<select wicket:id="attributeSelect"></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>	
+						<div class="well-small" wicket:id="sliderDiv">
+							Choose a clustering size: <span wicket:id="sliderLabel" style="width: 50px"/><br/>
+							<div wicket:id="slider"/>
+						</div>
+					</td>
+					<td>
+						<div class="well-small">
+							<input wicket:id="createButton" type="submit" value="Create" class="btn btn-primary" /> 
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</wicket:panel>	
+</html>

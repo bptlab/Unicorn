@@ -1,0 +1,12 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="Testaaa.xsd" targetNamespace="Testaaa.xsd" >
+    <xs:element name="Testaaa">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element type="xs:Integer" name="a"/>
+                <xs:element type="xs:String" name="b"/>
+                <xs:element type="xs:dateTime" name="c"/>
+                <xs:element type="xs:Integer" name="d"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

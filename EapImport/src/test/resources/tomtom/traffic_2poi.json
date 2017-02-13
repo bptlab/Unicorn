@@ -1,0 +1,117 @@
+{
+    "tm": {
+        "@id": "1366119864256",
+        "poi": [{
+                "id": "europe_CLUSTER_11_-138156611",
+                "p": {
+                    "x": 13.077687,
+                    "y": 52.389951
+                },
+                "ic": 6,
+                "ty": 2,
+                "cbl": {
+                    "x": 13.067601,
+                    "y": 52.384322
+                },
+                "ctr": {
+                    "x": 13.087773,
+                    "y": 52.395579
+                },
+                "cs": 5,
+                "cpoi": [{
+                        "id": "europe_HD_DE_TTL2183630",
+                        "p": {
+                            "x": 13.085924,
+                            "y": 52.395579
+                        },
+                        "ic": 6,
+                        "ty": 3,
+                        "cs": 0,
+                        "d": "stationary traffic",
+                        "f": "Rudolf-Breitscheid-Straße \/ Alt Nowawes",
+                        "t": "Berliner Straße",
+                        "l": 1500,
+                        "dl": 954,
+                        "r": "B1"
+                    }, {
+                        "id": "europe_HD_DE_TTL2282707",
+                        "p": {
+                            "x": 13.077812,
+                            "y": 52.384322
+                        },
+                        "ic": 6,
+                        "ty": 2,
+                        "cs": 0,
+                        "d": "queuing traffic",
+                        "f": "Horstweg \/ Waldstraße",
+                        "t": "Friedrich-Engels-Straße (B2)",
+                        "l": 900,
+                        "dl": 303,
+                        "r": "L78"
+                    }, {
+                        "id": "europe_HD_DE_TTL2261087",
+                        "p": {
+                            "x": 13.067601,
+                            "y": 52.391616
+                        },
+                        "ic": 6,
+                        "ty": 2,
+                        "cs": 0,
+                        "d": "queuing traffic",
+                        "f": "Heinrich-Mann-Allee (L78) \/ Friedrich-Engels-Straße",
+                        "t": "Dortustraße (B1) \/ Hoffbauerstraße",
+                        "l": 1370,
+                        "dl": 407,
+                        "r": "B2"
+                    }, {
+                        "id": "europe_HD_DE_TTL2283276",
+                        "p": {
+                            "x": 13.07344,
+                            "y": 52.393814
+                        },
+                        "ic": 6,
+                        "ty": 3,
+                        "cs": 0,
+                        "d": "stationary traffic",
+                        "f": "Lotte-Pulewka-Straße",
+                        "t": "Heinrich-Mann-Allee (B2) \/ Lange Brücke (B2)",
+                        "l": 710,
+                        "dl": 769,
+                        "r": "B1"
+                    }, {
+                        "id": "europe_HD_DE_TTL2267539",
+                        "p": {
+                            "x": 13.087773,
+                            "y": 52.390442
+                        },
+                        "ic": 6,
+                        "ty": 3,
+                        "cs": 0,
+                        "d": "stationary traffic",
+                        "f": "Neuendorfer Anger",
+                        "t": "B1",
+                        "l": 750,
+                        "dl": 504,
+                        "r": "L40"
+                    }
+                ],
+                "l": 5230
+            }, {
+                "id": "europe_HD_DE_TTL2290453",
+                "p": {
+                    "x": 13.102613,
+                    "y": 52.411688
+                },
+                "ic": 6,
+                "ty": 2,
+                "cs": 0,
+                "d": "slow traffic",
+                "f": "Berliner Straße",
+                "t": "Chausseestraße",
+                "l": 1470,
+                "dl": 221,
+                "r": "B1"
+            }
+        ]
+    }
+}

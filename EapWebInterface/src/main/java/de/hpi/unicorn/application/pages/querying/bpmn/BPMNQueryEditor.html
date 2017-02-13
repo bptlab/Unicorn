@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<head>
+		<title>
+			BPMN Query Editor
+		</title>
+	</head>
+	<body>
+		<wicket:extend>
+			<div wicket:id="helpModal"></div>
+			<form wicket:id="layoutForm">
+				<fieldset>	
+					<legend>BPMN Query Editor</legend>		
+				</fieldset>
+				<div class="well-small">
+					Select a BPMN process:
+					<select wicket:id="bpmnProcessSelect" />
+					<input wicket:id="createQueries" type="submit" value="Create Queries" class="btn btn-primary" />
+					<a wicket:id="showHelpModal" class="btn btn-primary">Help</a>
+				</div>
+				<div class="well-small">
+					<div wicket:id="bpmnComponentTreeTable"/> 
+				</div>
+			</form>
+		</wicket:extend>
+	</body>
+</html>

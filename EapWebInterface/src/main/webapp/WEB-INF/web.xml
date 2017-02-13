@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<display-name>GETWP6Core</display-name>
+	<description>WP6 Event Aggregation Engine Interface</description>
+	<filter>
+		<filter-name>GETWP6UI</filter-name>
+		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>de.hpi.unicorn.application.UNICORNApplication</param-value>
+		</init-param>
+		<init-param>
+			<param-name>configuration</param-name>
+			<param-value>development</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>GETWP6UI</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>AxisServlet</servlet-name>
+		<servlet-class>org.apache.axis2.transport.http.AxisServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>de.hpi.unicorn.application</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Jersey Web Application</servlet-name>
+		<url-pattern>/webapi/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+
+	<!--
+	<servlet>
+      <servlet-name>MessageServlet</servlet-name>
+      <servlet-class>org.apache.activemq.web.MessageServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+ 	</servlet>
+	<servlet-mapping>
+      <servlet-name>MessageServlet</servlet-name>
+      <url-pattern>/message/*</url-pattern>
+	</servlet-mapping>
+
+	<context-param>
+	    <param-name>org.apache.activemq.brokerURL</param-name>
+	    <param-value>tcp://bpt.hpi.uni-potsdam.de:61616</param-value>
+	</context-param>
+	-->
+
+</web-app>

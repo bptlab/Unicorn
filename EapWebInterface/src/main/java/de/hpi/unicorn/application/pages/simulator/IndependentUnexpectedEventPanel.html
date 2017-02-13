@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<div class="well-small">
+			<form wicket:id="form">
+				<input wicket:id="addButton" type="submit" value="Add unexpected event" class="btn btn-inverse" />
+    			<div wicket:id="unexpectedEventMarkupContainer">
+					<div wicket:id="unexpectedEventListView">
+						<hr/>
+						<div style="float:left;">
+							Occurs every
+							<input wicket:id="occurenceInput" type="text" class="input-small"/>
+							hours
+						</div>
+			    		<div class="well-small" style="float:left;">
+			    			with effect
+			    			<select wicket:id="effectSelect" />
+			    		</div>
+			    		<div class="well-small" style="float:left;">
+			    			and additional event from type
+			    			<select wicket:id="additionalEventTypeSelect" />
+			    		</div>
+						<br/>
+					</div>
+				</div>
+			</form>
+		</div>
+	</wicket:panel>
+</html>

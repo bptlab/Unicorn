@@ -1,0 +1,32 @@
+.checkbox { 
+	display:inline; 
+}
+
+div.wicket-aa {
+  		background-color:white;
+  		border:1px solid #CCCCCC;
+  		color:black;
+}
+div.wicket-aa ul {
+			list-style-image:none;
+ 			list-style-position:outside;
+			list-style-type:none;
+			margin:0pt;
+ 			padding:5px;
+}
+div.wicket-aa ul li.selected {
+ 			background-color:#CCCCCC;
+}
+
+.brand {
+	color: #000000 !important;
+	background: transparent url(../resources/unicorn_v18.png) center left no-repeat;
+	background-size: 150px 30px;
+	padding: 20px 90px !important;
+	margin-top: 4px !important;
+	margin-left: 0px !important;
+}
+
+.navbar-inner {
+	border-radius: 0px !important;
+}

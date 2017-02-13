@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<div class="well-small">
+			<fieldset>	
+				<legend>Simulate a BPMN process</legend>		
+			</fieldset>
+		</div>
+		<form wicket:id="outerLayoutForm" class="well-small">
+			<div wicket:id="bpmnProcessUploadPanel"></div>
+			<div class="well-small" style="clear:both;">
+				<div wicket:id="monitoringPointTree"></div>
+			</div>
+			<div wicket:id="collapsible" style="vertical-align:top;"></div>
+			<div class="well-small" style="clear:both;">
+				Simulate <input wicket:id="instanceNumberInput" type="text" class="input-small" /> instances
+				spread over <input wicket:id="daysNumberInput" type="text" class="input-small" /> days.
+				<input wicket:id="simulateButton" type="submit" value="Start" class="btn btn-primary" />
+			</div>
+		</form>
+	</wicket:panel>
+</html>

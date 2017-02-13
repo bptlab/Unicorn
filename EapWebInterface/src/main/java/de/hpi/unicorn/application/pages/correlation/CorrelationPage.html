@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<wicket:extend>
+	<div wicket:id="warning"></div>
+	<div wicket:id="processEditorModal"></div>
+	<div class="well-small">
+		<fieldset>	
+			<legend>Event Correlation</legend>		
+		</fieldset>
+	</div>
+	<form wicket:id="layoutForm">
+		<table style="width:100%">
+			<tr>
+				<td valign="top">
+					<div class="form-inline well-small">
+						Select process: <br/><br/>
+						<select wicket:id="processSelect" /> &nbsp;
+						<a wicket:id="showProcessEditModal" class="btn btn-inverse">Edit process</a>
+					</div>
+					<br/>
+					<div class="form-inline well-small">
+						Select <!-- simple -->correlation type: <br/>
+						<div wicket:id="simpleCorrelationWithRulesRadioChoice" style="float:left; line-height: 0px;" class="form-inline well-small" />
+					</div>
+					<br/>
+					<div class="form-inline well-small" align="right">
+						<input wicket:id="applyButton" type="submit" value="Apply" class="btn btn-primary" /> &nbsp;
+					</div>
+				</td>
+				<td valign="top">
+					<div class="form-inline well-small">
+						Configure correlation: <br/><br/>
+						<div wicket:id="collapsible" style="vertical-align:top;"></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</wicket:extend>
+</html>

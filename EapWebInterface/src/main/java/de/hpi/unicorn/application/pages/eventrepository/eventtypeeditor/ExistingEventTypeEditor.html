@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<form wicket:id="layoutForm">
+			<table>
+				<tr>
+					<td>
+						<div class="well-small">
+							Event type name: <br/>
+							<input wicket:id="eventTypeInput" type="text" class="input-medium"/>
+						</div>
+					</td>
+					<td>
+						Condition:
+						<div wicket:id="conditionInput"></div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="well-small">
+							Existing event types: <br/>
+							<div class="checkbox form-inline well-small">
+									<span wicket:id="eventTypesCheckBoxMultipleChoice" />
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="well-small">
+							Choose the relevant columns: <br/>
+							<span wicket:id="relevantEventTypePalette"></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<div class="well-small">
+							<input wicket:id="clearButton" type="submit" value="Clear" class="btn" /> 
+							<input wicket:id="deleteButton" type="submit"  value="Delete" class="btn btn-danger" /> 
+							<input wicket:id="createButton" type="submit" value="Create" class="btn btn-primary" /> 
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</wicket:panel>	
+</html>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<head>
+		<style>
+			label {display:inline;}
+		</style>
+	</head>
+	<body>
+		<wicket:panel>
+			<div class="well-small">
+				<form wicket:id="advancedCorrelationForm">
+					<fieldset>
+						<table>
+							<tr>
+								<td colspan="2">
+									<div style="float:left" class="well-small; form-inline">
+										<input type="checkbox" wicket:id="timeCheckBox" /> &nbsp;&nbsp;<font size="4"><b>Time correlation</b></font> - One process instance will be created per event of the chosen event type &amp; condition(s).
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Event type:
+								</td>
+								<td>
+									<div style="float:left" class="well-small">
+										<select wicket:id="timeEventTypeSelect" /> &nbsp;&nbsp;
+										<input wicket:id="timeMinutesInput" type="text" class="input-mini" /> minutes
+									</div>
+									<div wicket:id="afterOrBeforeRadioGroup" style="float:left;" class="well-small">
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<hr/>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Single condition:
+								</td>
+								<td>
+									<div wicket:id="conditionInput"></div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									Multiple conditions:
+								</td>
+								<td>
+									<div style="float:left" class="well-small">
+										<input wicket:id="multipleConditionsTextField" type="text" /> &nbsp;&nbsp;&nbsp;(example: Attribute=Value, to be separated with semi-colons)
+									</div>
+								</td>
+							</tr>
+						</table>
+					</fieldset>
+				</form>
+			</div>
+		</wicket:panel>
+	</body>
+</html>

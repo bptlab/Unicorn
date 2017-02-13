@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"  elementFormDefault="qualified"  attributeFormDefault="unqualified" >
+         <!-- XML Schema Generated from XML Document on Thu Apr 11 2013 09:58:39 GMT+0200 (Mitteleuropäische Sommerzeit) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="env:unEdifact" >
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="parsererror" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="h3"  type="xs:string" />
+                                             <xs:element name="div"  type="xs:string" >
+                                                   <xs:complexType>
+                                                         <xs:attribute name="style"  type="xs:string" />
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="h3"  type="xs:string" />
+                                       </xs:sequence>
+                                       <xs:attribute name="style"  type="xs:string" />
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="env:UNB" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:syntaxIdentifier" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                               <xs:element name="env:versionNum"  type="xs:int" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:sender" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:recipient" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:dateTime" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:date"  type="xs:int" />
+                                                               <xs:element name="env:time"  type="xs:int" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:controlRef"  type="xs:string" />
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="env:interchangeMessage" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:UNH" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:messageRefNum"  type="xs:string" />
+                                                               <xs:element name="env:messageIdentifier" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="env:id"  type="xs:string" />
+                                                                                 <xs:element name="env:versionNum"  type="xs:string" />
+                                                                                 <xs:element name="env:releaseNum"  type="xs:string" />
+                                                                                 <xs:element name="env:controllingAgencyCode"  type="xs:string" />
+                                                                                 <xs:element name="env:associationAssignedCode"  type="xs:string" />
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="coprar:COPRAR" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="coprar:BGM" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="c:C002" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e1001"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="c:e1004"  type="xs:string" />
+                                                                                 <xs:element name="c:e1225"  type="xs:int" />
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="coprar:RFF" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="c:C506" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e1153"  type="xs:string" />
+                                                                                                   <xs:element name="c:e1154"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="coprar:Segment_group_1" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="coprar:TDT" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e8051"  type="xs:int" />
+                                                                                                   <xs:element name="c:e8028"  type="xs:string" />
+                                                                                                   <xs:element name="c:C220" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e8067"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="c:C040" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e3127"  type="xs:string" />
+                                                                                                                     <xs:element name="c:e1131"  type="xs:int" />
+                                                                                                                     <xs:element name="c:e3055"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="coprar:RFF"  maxOccurs="unbounded" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:C506" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e1153"  type="xs:string" />
+                                                                                                                     <xs:element name="c:e1154"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="coprar:LOC" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e3227"  type="xs:int" />
+                                                                                                   <xs:element name="c:C517" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e3225"  type="xs:string" />
+                                                                                                                     <xs:element name="c:e1131"  type="xs:int" />
+                                                                                                                     <xs:element name="c:e3055"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="c:C519" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e3223"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="coprar:Segment_group_2"  maxOccurs="unbounded" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="coprar:NAD" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e3035"  type="xs:string" />
+                                                                                                   <xs:element name="c:C082" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e3039"  type="xs:int" />
+                                                                                                                     <xs:element name="c:e1131"  type="xs:int" />
+                                                                                                                     <xs:element name="c:e3055"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="coprar:Segment_group_3"  maxOccurs="unbounded" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="coprar:EQD" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e8053"  type="xs:string" />
+                                                                                                   <xs:element name="c:C237" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e8260"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="c:e8169"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="coprar:RFF" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:C506" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e1153"  type="xs:string" />
+                                                                                                                     <xs:element name="c:e1154"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="coprar:MEA" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e6311"  type="xs:string" />
+                                                                                                   <xs:element name="c:C502" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e6313"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="c:C174" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="c:e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="c:e6314"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="coprar:CNT" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="c:C270" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="c:e6069"  type="xs:int" />
+                                                                                                   <xs:element name="c:e6066"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:UNT" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:segmentCount"  type="xs:int" />
+                                                               <xs:element name="env:messageRefNum"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                       </xs:sequence>
+                                       <xs:attribute name="xmlns:c"  type="xs:string" />
+                                       <xs:attribute name="xmlns:coprar"  type="xs:string" />
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="env:UNZ" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:controlCount"  type="xs:int" />
+                                             <xs:element name="env:controlRef"  type="xs:string" />
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                     </xs:sequence>
+                     <xs:attribute name="xmlns:env"  type="xs:string" />
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>

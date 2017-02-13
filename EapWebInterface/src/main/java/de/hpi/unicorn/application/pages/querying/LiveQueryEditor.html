@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<wicket:extend>
+	<div wicket:id="helpModal"></div>
+	<form wicket:id="layoutForm" class="well-small">
+		<fieldset>	
+			<legend>Live Query Editor</legend>		
+		    <table>
+				<tr>
+					<td>
+						<p>
+							Query name: 
+							<input type="text" wicket:id="queryNameTextField" />
+						</p>
+					</td>
+					<td>
+						<div align="right">
+							<input wicket:id="deleteQueriesWithoutNotificationRuleButton" type="submit" value="Delete all queries without notification rule" class="btn btn-danger"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<p>
+							Query statement: 
+							<textarea wicket:id="queryTextArea" rows="6"></textarea>
+						</p>
+					</td>
+					<td>
+						<p>
+							Saved queries: <br/>
+							<select wicket:id="queryListChoice" style="width: 500px" />
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div align="right">
+							<input wicket:id="helpButton" type="submit" value="Help" class="btn" />
+							<input wicket:id="saveQueryButton" type="submit" value="Create" class="btn btn-primary"/>
+						</div>
+					</td>
+					<td>
+						<div align="right">
+							<input wicket:id="editQueryButton" type="submit" value="Show" class="btn btn-inverse"/>
+							<input wicket:id="deleteQueryButton" type="submit" value="Delete" class="btn btn-danger"/>
+							<input wicket:id="showQueryLogButton" type="submit" value="Show Log" class="btn btn-primary"/>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div wicket:id="eventTypeTree" class="my-tree"></div>
+					</td>
+					<td>
+						<textarea wicket:id="queryResultTextArea"></textarea>
+					</td>
+				</tr>
+			</table>
+			<p>Note: Names of event attributes are case-sensitive.</p>
+		</fieldset>
+	</form>
+</wicket:extend>
+</html>

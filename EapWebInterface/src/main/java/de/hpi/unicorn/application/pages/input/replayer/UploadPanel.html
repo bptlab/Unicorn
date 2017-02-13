@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<wicket:panel>
+	<form wicket:id="layoutForm">
+		<table style="width:100%">
+			<tr>
+				<td valign="top">
+					<div class="form-inline well-small">
+						Category: &nbsp;&nbsp;&nbsp; <input type="text" wicket:id="categoryTextField" />
+					</div>
+				</td>
+				<td valign="top">
+					<div class="form-inline well-small">
+						Name: &nbsp;&nbsp;&nbsp; <input type="text" wicket:id="nameTextField" />
+					</div>
+				</td>
+				<td valign="top">
+					<div class="form-inline well-small">
+						Event type: &nbsp;&nbsp;&nbsp;<select wicket:id="eventTypeDropDownChoice" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td valign="top">
+					<div class="well-small">
+						<label>Select file: </label> 
+						<input wicket:id="fileUpload" size="40" type="file" class="btn"/>
+					</div>
+				</td>
+				<td valign="bottom">
+					File type: <br/>
+					<div wicket:id="fileTypeChoice" style="float:left; line-height: 0px;" class="form-inline well-small" />
+				</td>
+				<td valign="center">
+					<input type="submit" value="Upload file" class="btn btn-primary"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+</wicket:panel>
+</html>

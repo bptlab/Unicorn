@@ -1,0 +1,212 @@
+swagger: '2.0'
+info:
+  title: Unicorn REST API
+  description: REST API for Events, Event Types and Event Queries.
+  version: 1.0.0
+schemes:
+  - http
+basePath: /webapi/REST
+produces:
+  - application/json
+paths:
+  /Event:
+    post:
+      summary: Creates an event
+      description: |
+        Takes an event xml string and creates an EapEvent which is then saved to the database.
+      tags:
+        - Event
+      responses:
+        '200':
+          description: The EapEvent ID
+        '400':
+          description: Event could not be parsed.
+        '500':
+          description: Unexpected error
+  /EventQuery/Queue:
+    post:
+      summary: Creates a new event query with a message queue for notification
+      description: |
+        Stores a new EventQuery on the Server. Also returns a Uuid for the Message Queue receiving
+        notifications about events filtered by the query.
+      parameters:
+        - name: queryJson
+          in: body
+          description: The event query JSON object.
+          required: true
+          schema:
+            $ref: '#/definitions/EventQueryJsonForQueue'
+      tags:
+        - EventQuery
+      responses:
+        '200':
+          description: The UUID of the notifying message queue.
+        '500':
+          description: Event Query could not be parsed.
+  /EventQuery/Queue/{uuid}:
+      delete:
+            summary: Deletes an event query.
+            description: |
+              This endpoint deletes an event query, unregisters a Message Queue
+              and removes a Notification Rule from the Unicorn database based on the given UUID.
+            parameters:
+              - name: uuid
+                in: path
+                description: The uuid belonging to the Notification Rule.
+                required: true
+                type: string
+            tags:
+              - EventQuery
+            responses:
+              '200':
+                description: Empty if the deletion was succesfull.
+              '500':
+                description: Unexpected error
+  /EventQuery/REST/{uuid}:
+        delete:
+              summary: Deletes an event query.
+              description: |
+                This endpoint deletes an event query and removes
+                a Notification Rule from the Unicorn database based on the given UUID.
+              parameters:
+                - name: uuid
+                  in: path
+                  description: The uuid belonging to the Notification Rule.
+                  required: true
+                  type: string
+              tags:
+                - EventQuery
+              responses:
+                '200':
+                  description: Empty if the deletion was succesfull.
+                '500':
+                  description: Unexpected error
+  /EventQuery/REST:
+      post:
+        summary: Creates a new event query with a REST call notification
+        description: |
+          Stores a new EventQuery on the Server. The events filtered by the query
+          will be sent via REST.
+        parameters:
+          - name: queryJsonRest
+            in: body
+            description: The event query JSON object.
+            required: true
+            schema:
+              $ref: '#/definitions/EventQueryJsonForRest'
+        tags:
+          - EventQuery
+        responses:
+          '200':
+            description: The UUID of the notifying message queue.
+          '500':
+            description: Event Query could not be parsed.
+  /EventQuery/{uuid}:
+    get:
+      summary: Returns an event query.
+      description: |
+        This endpoint returns a query string based on the given UUID.
+      parameters:
+        - name: uuid
+          in: path
+          description: The uuid belonging to the query.
+          required: true
+          type: string
+      tags:
+        - EventQuery
+      responses:
+        '200':
+          description: The query string.
+
+        '500':
+          description: Unexpected error
+  /EventType:
+    post:
+      summary: Creates a new EventType and saves it in the database.
+      description: |
+        This endpoint takes an event type object, creates a new event type from it and saves it to the database.
+      parameters:
+        - name: eventTypeJson
+          in: body
+          description: The event type JSON object.
+          required: true
+          schema:
+            $ref: '#/definitions/EventTypeJson'
+      tags:
+        - EventType
+      responses:
+        '200':
+          description: Empty if the registration was successful.
+        '500':
+          description: Unexpected error
+  /EventType/{schemaName}:
+    get:
+      summary: Returns the XSD definition of the event type.
+      description: |
+        Returns a string containing the event type xsd.
+      parameters:
+        - name: schemaName
+          in: path
+          description: Find the event type by name.
+          required: true
+          type: string
+          format: string
+      tags:
+      - EventType
+      responses:
+        '200':
+          description: The event type xsd string.
+        '500':
+          description: Unexpected error
+    delete:
+      summary: Deletes an event type from the database.
+      description: |
+        This endpoint deletes an event type based on the event type name.
+      parameters:
+        - name: schemaName
+          in: path
+          description: Delete the event type by name.
+          required: true
+          type: string
+      tags:
+        - EventType
+      responses:
+        '200':
+          description: Empty if the deletion was successful.
+        '500':
+          description: Unexpected error
+          
+definitions:
+  EventQueryJsonForQueue:
+    type: object
+    properties:
+      title:
+        type: string
+        description: 'The title of the query'
+      email:
+        type: string
+        description: 'Email address required for the Message Queue'
+      queryString:
+        type: string
+        description: 'The actual event query'
+  EventQueryJsonForRest:
+      type: object
+      properties:
+        notificationPath:
+          type: string
+          description: 'Identifier of the endpoint receiving the notification'
+        queryString:
+          type: string
+          description: 'The actual event query'
+  EventTypeJson:
+        type: object
+        properties:
+          xsd:
+            type: string
+            description: 'The xsd string of the event type'
+          schemaName:
+            type: string
+            description: 'The name of the event type'
+          timestampName:
+            type: string
+            description: 'The name of the timestamp attribute in the schema'

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Testaaa xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="Testaaa.xsd">
+	<a>3</a>
+	<a>4</a>
+	<b>auto</b>
+	<b>Bahn</b>
+   <c>2014-09-05T20:05:32.000+0200</c>
+   <d>1</d>
+	<d>2</d>
+</Testaaa>

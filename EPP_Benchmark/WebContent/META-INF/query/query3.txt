@@ -1,0 +1,1 @@
+Select addressmatch.coordinate.latitude as latitude, speed as speedvalue, property as property FROM traceNEW

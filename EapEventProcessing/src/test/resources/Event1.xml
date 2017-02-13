@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Event xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Users/Ben/Dropbox/BA-Projekt/GET/EventTaxonomy.xsd">
+	<ID>1234567</ID>
+	<timestamp >24.12.2013 20:25</timestamp>
+	<event_type/>
+	<sender>DHL</sender>
+	<location>
+		<area>Sachsen</area>
+	</location>
+	<vehicle_information>
+		<vehicle_identifier>404</vehicle_identifier>
+		<ETA>24.12.2013 20:25</ETA>
+		<transport>road</transport>
+		<phase>while_transport</phase>
+	</vehicle_information>
+	<incident>
+		<type>accident</type>
+		<code>4711</code>
+		<scope>vehicle</scope>
+	</incident>
+</Event>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<form wicket:id="layoutForm">
+			<input wicket:id="addDistinctAttributeButton" type="submit" value="Add distinct attribute" class="btn btn-primary" /> - at least one
+				<div wicket:id="distinctAttributesMarkupContainer">
+					<div wicket:id="distinctAttributesListView">
+						<br/>
+						<input wicket:id="distinctAttributeInput" type="text"/>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input wicket:id="removeDistinctAttributeButton" type="submit" value="Remove distinct attribute" class="btn btn-danger" />
+					</div>
+				</div>
+		</form>
+	</wicket:panel>
+</html>

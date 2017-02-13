@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:sushi="http://bp2012w1srv1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-8837dce6-4e8f-4e9f-a654-2b0db2fbaa49" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-61536f33-971b-4b8b-b828-fb577f479ffd" isExecutable="false">
+      <task completionQuantity="1" id="sid-CCF41765-B87C-43AF-BFBD-3818C296298A" isForCompensation="false" name="Kinofilm zeigen" startQuantity="1">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+            <sushi:transition regularExpression="values('Action')='Start'" type="begin"/>
+            <sushi:transition regularExpression="values('Action')='Ende'" type="terminate"/>
+         </extensionElements>
+         <incoming>sid-DC2903F2-2EA0-4C6E-9262-39C12B2C4220</incoming>
+         <outgoing>sid-61910C18-51DB-40C2-9C47-587EE4C4B478</outgoing>
+      </task>
+      <startEvent id="sid-BE63955F-FBE5-49EF-ABFB-4BACC3568358" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <outgoing>sid-DC2903F2-2EA0-4C6E-9262-39C12B2C4220</outgoing>
+      </startEvent>
+      <subProcess completionQuantity="1" id="sid-B72210ED-615F-4367-AF0C-B7B3E31E55B7" isForCompensation="false" name="" startQuantity="1" triggeredByEvent="false">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+            <sushi:transition regularExpression="enableRegularExpression" type="enable"/>
+            <sushi:transition regularExpression="beginRegularExpression" type="begin"/>
+            <sushi:transition regularExpression="terminateRegularExpression" type="terminate"/>
+            <sushi:transition regularExpression="skipRegularExpression" type="skip"/>
+         </extensionElements>
+         <incoming>sid-61910C18-51DB-40C2-9C47-587EE4C4B478</incoming>
+         <task completionQuantity="1" id="sid-2EA22060-85C4-4543-AFA7-41B992E3CB93" isForCompensation="false" name="Kinofilm bewerten" startQuantity="1">
+            <extensionElements>
+               <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffcc"/>
+               <sushi:transition regularExpression="enableRegularExpression" type="enable"/>
+               <sushi:transition regularExpression="beginRegularExpression" type="begin"/>
+               <sushi:transition regularExpression="terminateRegularExpression" type="terminate"/>
+               <sushi:transition regularExpression="skipRegularExpression" type="skip"/>
+            </extensionElements>
+            <multiInstanceLoopCharacteristics behavior="All" id="sid-d2fdf141-968f-4193-b0a5-fb4f89c3cc03" isSequential="true"/>
+         </task>
+      </subProcess>
+      <boundaryEvent attachedToRef="sid-B72210ED-615F-4367-AF0C-B7B3E31E55B7" cancelActivity="true" id="sid-B8BD5D43-4076-4F97-9563-C46520E6CC25" name="" parallelMultiple="false">
+         <outgoing>sid-6927F6C1-832B-4569-87EA-99327355E7AD</outgoing>
+         <timerEventDefinition id="sid-1e5e4360-d195-4f77-9d92-9dff0d7f1008">
+            <timeDuration id="sid-476fe384-44d4-4523-87a9-47b1a9a46d4a" xsi:type="tFormalExpression">30</timeDuration>
+         </timerEventDefinition>
+      </boundaryEvent>
+      <endEvent id="sid-0CE7D93E-DA6F-4387-A673-3336484DFFF5" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+         <incoming>sid-6927F6C1-832B-4569-87EA-99327355E7AD</incoming>
+      </endEvent>
+      <sequenceFlow id="sid-DC2903F2-2EA0-4C6E-9262-39C12B2C4220" name="" sourceRef="sid-BE63955F-FBE5-49EF-ABFB-4BACC3568358" targetRef="sid-CCF41765-B87C-43AF-BFBD-3818C296298A"/>
+      <sequenceFlow id="sid-61910C18-51DB-40C2-9C47-587EE4C4B478" name="" sourceRef="sid-CCF41765-B87C-43AF-BFBD-3818C296298A" targetRef="sid-B72210ED-615F-4367-AF0C-B7B3E31E55B7"/>
+      <sequenceFlow id="sid-6927F6C1-832B-4569-87EA-99327355E7AD" name="" sourceRef="sid-B8BD5D43-4076-4F97-9563-C46520E6CC25" targetRef="sid-0CE7D93E-DA6F-4387-A673-3336484DFFF5"/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-6ef8bb45-369a-474a-b678-505e46447109">
+      <bpmndi:BPMNPlane bpmnElement="sid-61536f33-971b-4b8b-b828-fb577f479ffd" id="sid-ea3b13f9-39ed-4b9a-9d86-26fa9aaef406">
+         <bpmndi:BPMNShape bpmnElement="sid-CCF41765-B87C-43AF-BFBD-3818C296298A" id="sid-CCF41765-B87C-43AF-BFBD-3818C296298A_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="142.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-BE63955F-FBE5-49EF-ABFB-4BACC3568358" id="sid-BE63955F-FBE5-49EF-ABFB-4BACC3568358_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="167.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-B72210ED-615F-4367-AF0C-B7B3E31E55B7" id="sid-B72210ED-615F-4367-AF0C-B7B3E31E55B7_gui" isExpanded="true">
+            <omgdc:Bounds height="150.0" width="177.0" x="435.0" y="107.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-2EA22060-85C4-4543-AFA7-41B992E3CB93" id="sid-2EA22060-85C4-4543-AFA7-41B992E3CB93_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="465.0" y="137.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-B8BD5D43-4076-4F97-9563-C46520E6CC25" id="sid-B8BD5D43-4076-4F97-9563-C46520E6CC25_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="597.2149947340296" y="156.2466673049661"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="sid-0CE7D93E-DA6F-4387-A673-3336484DFFF5" id="sid-0CE7D93E-DA6F-4387-A673-3336484DFFF5_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="705.0" y="157.2466673049661"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="sid-61910C18-51DB-40C2-9C47-587EE4C4B478" id="sid-61910C18-51DB-40C2-9C47-587EE4C4B478_gui">
+            <omgdi:waypoint x="355.0" y="182.0"/>
+            <omgdi:waypoint x="435.0" y="182.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-6927F6C1-832B-4569-87EA-99327355E7AD" id="sid-6927F6C1-832B-4569-87EA-99327355E7AD_gui">
+            <omgdi:waypoint x="627.0" y="171.0"/>
+            <omgdi:waypoint x="705.0" y="171.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="sid-DC2903F2-2EA0-4C6E-9262-39C12B2C4220" id="sid-DC2903F2-2EA0-4C6E-9262-39C12B2C4220_gui">
+            <omgdi:waypoint x="150.0" y="182.0"/>
+            <omgdi:waypoint x="255.0" y="182.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

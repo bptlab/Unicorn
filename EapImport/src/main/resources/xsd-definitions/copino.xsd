@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"  elementFormDefault="qualified"  attributeFormDefault="unqualified" >
+         <!-- XML Schema Generated from XML Document on Sun Apr 14 2013 21:06:53 GMT+0200 (Mitteleuropäische Sommerzeit) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="env:unEdifact" >
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="env:UNB" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:syntaxIdentifier" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                               <xs:element name="env:versionNum"  type="xs:int" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:sender" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:recipient" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:id"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:dateTime" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:date"  type="xs:int" />
+                                                               <xs:element name="env:time"  type="xs:int" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:controlRef"  type="xs:string" />
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="env:interchangeMessage" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:UNH" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:messageRefNum"  type="xs:string" />
+                                                               <xs:element name="env:messageIdentifier" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="env:id"  type="xs:string" />
+                                                                                 <xs:element name="env:versionNum"  type="xs:string" />
+                                                                                 <xs:element name="env:releaseNum"  type="xs:string" />
+                                                                                 <xs:element name="env:controllingAgencyCode"  type="xs:string" />
+                                                                                 <xs:element name="env:associationAssignedCode"  type="xs:string" />
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="COPINO" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="Beginning_of_message" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="C002" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e1001"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="e1004"  type="xs:string" />
+                                                                                 <xs:element name="e1225"  type="xs:int" />
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Segment_group_1" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="Details_of_transport" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e8051"  type="xs:int" />
+                                                                                                   <xs:element name="e8028" />
+                                                                                                   <xs:element name="C220" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e8067"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="C228" />
+                                                                                                   <xs:element name="C040" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3127"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Place_location_identification" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e3227"  type="xs:int" />
+                                                                                                   <xs:element name="C517" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3225"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="C519" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3223"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Date_time_period" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="C507" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e2005"  type="xs:int" />
+                                                                                                                     <xs:element name="e2380"  type="xs:int" />
+                                                                                                                     <xs:element name="e2379"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Segment_group_2" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="Name_and_address" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e3035"  type="xs:string" />
+                                                                                                   <xs:element name="C082" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3039"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Contact_information" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e3139"  type="xs:string" />
+                                                                                                   <xs:element name="C056" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3413" />
+                                                                                                                     <xs:element name="e3412"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Segment_group_2_nad_" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="Name_and_address" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e3035"  type="xs:string" />
+                                                                                                   <xs:element name="C082" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e3039"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Segment_group_3" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="Goods_item_details" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e1496"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Range_details" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6167"  type="xs:int" />
+                                                                                                   <xs:element name="C280" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6162"  type="xs:int" />
+                                                                                                                     <xs:element name="e6152"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Segment_group_5" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="Dangerous_goods" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e8273"  type="xs:string" />
+                                                                                                                     <xs:element name="C205" >
+                                                                                                                           <xs:complexType>
+                                                                                                                                 <xs:sequence>
+                                                                                                                                       <xs:element name="e8351"  type="xs:int" />
+                                                                                                                                 </xs:sequence>
+                                                                                                                           </xs:complexType>
+                                                                                                                     </xs:element>
+                                                                                                                     <xs:element name="C234" >
+                                                                                                                           <xs:complexType>
+                                                                                                                                 <xs:sequence>
+                                                                                                                                       <xs:element name="e7124"  type="xs:int" />
+                                                                                                                                 </xs:sequence>
+                                                                                                                           </xs:complexType>
+                                                                                                                     </xs:element>
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="Free_Text_Dangerous_Goods_Technical_name" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e4451"  type="xs:string" />
+                                                                                                                     <xs:element name="e4453" />
+                                                                                                                     <xs:element name="C107" />
+                                                                                                                     <xs:element name="C108" >
+                                                                                                                           <xs:complexType>
+                                                                                                                                 <xs:sequence>
+                                                                                                                                       <xs:element name="e4440_-_-1"  type="xs:string" />
+                                                                                                                                 </xs:sequence>
+                                                                                                                           </xs:complexType>
+                                                                                                                     </xs:element>
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Segment_group_6" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="Equipment_details" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e8053"  type="xs:string" />
+                                                                                                   <xs:element name="C237" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e8260"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="C224" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e8155"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="e8077" />
+                                                                                                   <xs:element name="e8249"  type="xs:int" />
+                                                                                                   <xs:element name="e8169"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Reference_Release_Order" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="C506" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e1153"  type="xs:string" />
+                                                                                                                     <xs:element name="e1154"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Measurements_Gross_Weight" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6311"  type="xs:string" />
+                                                                                                   <xs:element name="C502" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6313"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                                   <xs:element name="C174" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6314"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Dimensions_Front" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6145"  type="xs:int" />
+                                                                                                   <xs:element name="C211" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6168"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Dimensions_Back" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6145"  type="xs:int" />
+                                                                                                   <xs:element name="C211" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6168"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Dimensions_Right" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6145"  type="xs:int" />
+                                                                                                   <xs:element name="C211" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6168" />
+                                                                                                                     <xs:element name="e6140"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Dimensions_Left" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6145"  type="xs:int" />
+                                                                                                   <xs:element name="C211" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6168" />
+                                                                                                                     <xs:element name="e6140"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Dimensions_Height" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6145"  type="xs:int" />
+                                                                                                   <xs:element name="C211" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e6411"  type="xs:string" />
+                                                                                                                     <xs:element name="e6168" />
+                                                                                                                     <xs:element name="e6140" />
+                                                                                                                     <xs:element name="e6008"  type="xs:int" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Seal_number_Carrier" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e9308"  type="xs:string" />
+                                                                                                   <xs:element name="C215" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e9303"  type="xs:string" />
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                                 <xs:element name="Segment_group_7" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="Details_of_transport" >
+                                                                                                         <xs:complexType>
+                                                                                                               <xs:sequence>
+                                                                                                                     <xs:element name="e8051"  type="xs:int" />
+                                                                                                                     <xs:element name="e8028" />
+                                                                                                                     <xs:element name="C220" >
+                                                                                                                           <xs:complexType>
+                                                                                                                                 <xs:sequence>
+                                                                                                                                       <xs:element name="e8067"  type="xs:int" />
+                                                                                                                                 </xs:sequence>
+                                                                                                                           </xs:complexType>
+                                                                                                                     </xs:element>
+                                                                                                                     <xs:element name="C228" />
+                                                                                                                     <xs:element name="C040" >
+                                                                                                                           <xs:complexType>
+                                                                                                                                 <xs:sequence>
+                                                                                                                                       <xs:element name="e3127"  type="xs:string" />
+                                                                                                                                       <xs:element name="e1131" />
+                                                                                                                                       <xs:element name="e3055" />
+                                                                                                                                       <xs:element name="e3128"  type="xs:string" />
+                                                                                                                                 </xs:sequence>
+                                                                                                                           </xs:complexType>
+                                                                                                                     </xs:element>
+                                                                                                               </xs:sequence>
+                                                                                                         </xs:complexType>
+                                                                                                   </xs:element>
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                               <xs:element name="Control_total" >
+                                                                     <xs:complexType>
+                                                                           <xs:sequence>
+                                                                                 <xs:element name="C270" >
+                                                                                       <xs:complexType>
+                                                                                             <xs:sequence>
+                                                                                                   <xs:element name="e6069"  type="xs:int" />
+                                                                                                   <xs:element name="e6066"  type="xs:int" />
+                                                                                             </xs:sequence>
+                                                                                       </xs:complexType>
+                                                                                 </xs:element>
+                                                                           </xs:sequence>
+                                                                     </xs:complexType>
+                                                               </xs:element>
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                             <xs:element name="env:UNT" >
+                                                   <xs:complexType>
+                                                         <xs:sequence>
+                                                               <xs:element name="env:segmentCount"  type="xs:int" />
+                                                               <xs:element name="env:messageRefNum"  type="xs:string" />
+                                                         </xs:sequence>
+                                                   </xs:complexType>
+                                             </xs:element>
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                           <xs:element name="env:UNZ" >
+                                 <xs:complexType>
+                                       <xs:sequence>
+                                             <xs:element name="env:controlCount"  type="xs:int" />
+                                             <xs:element name="env:controlRef"  type="xs:string" />
+                                       </xs:sequence>
+                                 </xs:complexType>
+                           </xs:element>
+                     </xs:sequence>
+                     <xs:attribute name="xmlns:env"  type="xs:string" />
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>

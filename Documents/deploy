@@ -1,0 +1,10 @@
+mvn -f Esper/pom.xml clean install
+mvn -f jbpt/pom.xml clean install
+mvn -f jbpt/jbpt-core/pom.xml clean install
+mvn -f jbpt/jbpt-deco/pom.xml clean install
+mvn -f SushiCommon/pom.xml clean install
+mvn -f SushiImport/pom.xml clean install
+mvn -f SushiSemantic/pom.xml clean install
+mvn -f SushiEsper/pom.xml clean install
+mvn -f SushiSimulation/pom.xml clean install
+mvn -f SushiWicket/pom.xml clean install

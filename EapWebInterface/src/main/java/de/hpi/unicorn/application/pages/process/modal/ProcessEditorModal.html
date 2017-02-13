@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+    <wicket:extend>
+    	<form wicket:id="processEditForm">
+    		<table>
+    			<tr>
+    				<td>
+   						New process: <br/>
+						<div class="form-inline well-small">
+							<input wicket:id="processNameInput" type="text"/>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    						<input wicket:id="addProcessButton" type="submit" value="Add" class="btn btn-primary" />
+    					</div>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td>
+   						Existing processes: <br/>
+   						<div class="form-inline well-small">
+							<select wicket:id="existingProcessSelect"></select>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    						<input wicket:id="removeProcessButton" type="submit" value="Remove" class="btn btn-danger" />
+    					</div>
+    				</td>
+    			</tr>
+    		</table>
+		</form>	
+    </wicket:extend>
+</html>

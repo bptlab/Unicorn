@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<head>
+	<title>Visualisation</title>
+</head>
+<body>
+	<wicket:extend>
+		<div wicket:id="addChartModal"></div>
+		<div class="well-small">
+			<div wicket:id="eventTypeChart"/></div>
+		
+		<form wicket:id="form" class="well-small">
+			<input wicket:id="addChartButton" type="submit" value="Add Chart" class="btn btn-primary" />
+		</form>	
+		<div class="well-small" wicket:id="listview">
+			<div wicket:id="chart"></div>
+			<form wicket:id="form">
+				<input wicket:id="removeChartButton" type="submit" value="Remove Chart" class="btn btn-danger" style="float:right"/>
+			</form>	
+		</div>
+	</wicket:extend>
+</body>
+</html>

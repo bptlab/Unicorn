@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<div class="well-small">
+			<fieldset>	
+			<legend>Simulate a sequence</legend>		
+			</fieldset>
+		</div>
+		<form wicket:id="layoutForm" class="well-small">
+	    	<div class="form-inline">
+	    		<div class="input-prepend">
+					<span class="add-on">Process</span>
+					<select wicket:id="processSelect" />
+				</div>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	    		<div class="input-prepend">
+					<span class="add-on">Event type</span>
+					<select wicket:id="eventTypeSelect" />
+				</div>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   				<input wicket:id="addButton" type="submit" value="Add" class="btn btn-primary" />
+   				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   				<div style="float:right;">
+	   				<input wicket:id="editButton" type="submit" value="Edit" class="btn btn-inverse" />
+	   				<input wicket:id="deleteButton" type="submit" value="Delete" class="btn btn-danger" />
+	   				&nbsp;
+   				</div>
+	    	</div>
+	    	<div class="well-small" style="clear:both;">
+				<div wicket:id="sequenceTree"></div>
+			</div>
+			<div wicket:id="collapsible" style="vertical-align:top;"></div>
+			<div class="form-inline">
+				Simulate <input wicket:id="instanceNumberInput" type="text" class="input-small"/> instances
+				spread over <input wicket:id="daysNumberInput" type="text" class="input-small" /> days.
+				<div style="float:right;">
+					<input wicket:id="simulateButton" type="submit" value="Start" class="btn btn-primary" />
+					&nbsp;
+				</div>
+			</div>
+	    </form>
+	</wicket:panel>
+</html>

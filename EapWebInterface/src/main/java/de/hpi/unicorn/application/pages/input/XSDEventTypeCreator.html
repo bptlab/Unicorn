@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<head>
+		<title>XSD Event Type Creator</title>
+	</head>
+	<body>
+		<wicket:extend>
+		<form wicket:id="layoutForm">
+			<p>
+				New event type: 
+				<input type="text" wicket:id="eventTypeNameTextField" />
+			</p>
+			<p>
+				Choose column for timestamp: 
+				<select wicket:id="timestampDropDownChoice" /> 
+				or use import time <input type="checkbox" wicket:id="importTimeCheckBox" />
+			</p>
+			<p>
+				<input wicket:id="selectAllButton" type="submit" value="Select all" class="btn btn-inverse" /> 
+				<input wicket:id="unselectAllButton" type="submit" value="Unselect all" class="btn btn-inverse" /> 
+				<input wicket:id="confirmButton" type="submit" value="Confirm" class="btn btn-primary" />
+			</p>
+			<div wicket:id="eventTypeTree"></div>
+		</form>
+		</wicket:extend>
+	</body>
+</html>

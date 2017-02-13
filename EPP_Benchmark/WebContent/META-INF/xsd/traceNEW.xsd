@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="traceNEW.xsd" targetNamespace="traceNEW.xsd" elementFormDefault="qualified">
+    <xs:element name="trace">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="type" type="xs:integer"/>
+                <xs:element name="source" type="xs:integer"/>
+                <xs:element name="time" type="xs:date"/>
+                <xs:element name="mileage" type="xs:integer"/>
+                <xs:element name="heading" type="xs:integer"/>
+                <xs:element name="speed" type="xs:integer"/>
+                <xs:element name="property">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="key" type="xs:string"/>
+                            <xs:element name="value" type="xs:integer"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="addressmatch">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="coordinate">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="latitude" type="xs:string"/>
+                                        <xs:element name="longitude" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="address">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="street" type="xs:string"/>
+                                        <xs:element name="city" type="xs:string"/>
+                                        <xs:element name="zipcode" type="xs:integer"/>
+                                        <xs:element name="area" type="xs:string"/>
+                                        <xs:element name="country" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="quality" type="xs:decimal"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

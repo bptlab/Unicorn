@@ -1,0 +1,16 @@
+echo "manually deleting tomcat cache"
+service tomcat7 stop
+tomcatFolder="/var/lib/tomcat7/work/Catalina/localhost"
+directory=$(ls $tomcatFolder)
+for i in $directory
+do
+:
+if [[ $i = Sushi* ]] ;
+then
+folder="$tomcatFolder/$i"
+echo "Expunge: $folder"
+rm -r $folder
+mkdir $folder
+fi
+done
+service tomcat7 start

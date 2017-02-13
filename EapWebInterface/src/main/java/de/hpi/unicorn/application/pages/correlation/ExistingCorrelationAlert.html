@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<a wicket:id="close" class="close" data-dismiss="alert" href="#">&times;</a>
+		<h4 wicket:id="block" class="alert-heading">Warning!</h4>
+		<strong wicket:id="inline"></strong>
+		<form wicket:id="message">
+			<h4 class="alert-heading">Warning!</h4>
+			<p>
+				<span wicket:id="messageText"></span>
+			</p>
+			<p>
+				<a wicket:id="correlateButton" class="btn btn-warning">Correlate</a>
+				<a wicket:id="abortButton">Abort</a>
+			</p>
+		</form>
+	</wicket:panel>
+</html>

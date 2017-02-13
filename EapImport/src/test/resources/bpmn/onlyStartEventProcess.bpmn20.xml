@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:sushi="http://bp2012w1srv1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-b07d525c-46f1-4a9b-9ffe-c8809a6fa361" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-3d1a898b-f635-4d23-a607-6d90e5b0bfb2" isExecutable="false">
+      <startEvent id="sid-9FF3E20C-DAD0-4CC6-89FA-92E89F97A383" name="">
+         <extensionElements>
+            <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
+         </extensionElements>
+      </startEvent>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-5f840c00-5fbd-47e4-a2c0-eefd1baa9d0d">
+      <bpmndi:BPMNPlane bpmnElement="sid-3d1a898b-f635-4d23-a607-6d90e5b0bfb2" id="sid-9a52c21a-7193-45c8-9b42-2401c76a9c90">
+         <bpmndi:BPMNShape bpmnElement="sid-9FF3E20C-DAD0-4CC6-89FA-92E89F97A383" id="sid-9FF3E20C-DAD0-4CC6-89FA-92E89F97A383_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="224.0" y="141.0"/>
+         </bpmndi:BPMNShape>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

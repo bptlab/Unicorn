@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<oryxmodel>
+<description></description>
+<type>BPMN 2.0</type>
+<json-representation><![CDATA[{"resourceId":"canvas","properties":{"orientation":"horizontal","monitoring":"","modificationdate":"","namespaces":"","creationdate":"","version":"","author":"","targetnamespace":"http://www.signavio.com/bpmn20","name":"","documentation":"","language":"English","auditing":"","expressionlanguage":"http://www.w3.org/1999/XPath","typelanguage":"http://www.w3.org/2001/XMLSchema",},"stencil":{"id":"BPMNDiagram"}, "childShapes":[],"bounds":{"lowerRight":{"x":1485.0,"y":1050.0},"upperLeft":{"x":0.0,"y":0.0}}, "stencilset":{"url":"/signaviocore/editor/stencilsets//bpmn2.0/bpmn2.0.json", "namespace":"http://b3mn.org/stencilset/bpmn2.0#"}, "ssextensions":["http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#"]}]]></json-representation>
+</oryxmodel>

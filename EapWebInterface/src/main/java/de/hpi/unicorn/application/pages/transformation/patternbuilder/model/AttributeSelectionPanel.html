@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<form wicket:id="layoutForm">
+			<div class="form-inline">
+				<div class="input-prepend">
+				    <span style="width:120px;" class="add-on">Event type (alias)</span>
+				    <select wicket:id="eventTypeElementDropDownChoice" />
+				</div>
+				<div class="input-prepend">
+				    <span style="width:120px;" class="add-on">Attribute</span>
+				    <select wicket:id="attributeDropDownChoice" />
+				</div>
+				<br/>
+				<div class="input-prepend">
+				    <span style="width:120px;" class="add-on">Expression</span>
+					<input wicket:id="expressionInput" type="text"/>
+				</div>
+				<div class="input-prepend">
+				    <span wicket:id="arrayElementIndexLabel" style="width:120px;" class="add-on" />				    
+				    <input wicket:id="arrayElementIndexInput" type="text"/>
+				</div>
+				<input wicket:id="useExternalKnowledgeButton" type="submit" value="Use external knowledge" class="btn btn-inverse" />
+			    <span wicket:id="currentDateUsedLabel" style="width:120px;" />
+				<input wicket:id="currentDateUsedCheckbox" type="checkbox" />
+			</div>
+		</form>
+	</wicket:panel>
+</html>

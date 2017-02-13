@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<form wicket:id="layoutForm">
+			<table style="width: 100%;">
+				<tr>
+					<td colspan="2">
+						<input wicket:id="leftHandSideExpressionInput" type="text"/>
+						<select wicket:id="filterExpressionOperatorDropDownChoice" />
+						<input wicket:id="rightHandSideExpressionInput" type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div wicket:id="typeOfValuesRadioChoice" style="float:left; line-height: 0px;" class="form-inline"></div>
+					</td>
+					<td>
+						<div wicket:id="filterExpressionListView" class="form-inline">
+							<input wicket:id="filterExpressionInput" type="text"/>
+							<input wicket:id="deleteButton" type="submit" value="Delete" class="btn btn-danger" />
+							<input wicket:id="saveButton" type="submit" value="Save" class="btn btn-primary" />
+						</div>
+						<div class="form-inline">
+							<div class="input-prepend">
+							    <span wicket:id="leftEndpointInputLabel" class="add-on" />
+							    <input wicket:id="leftEndpointInput" type="text"/>
+							</div>
+							<input wicket:id="leftEndpointOpenCheckbox" type="checkbox" />
+							<span wicket:id="leftEndpointOpenLabel" />
+						</div>
+						<div class="form-inline">
+							<div class="input-prepend">
+							    <span wicket:id="rightEndpointInputLabel" class="add-on" />
+							    <input wicket:id="rightEndpointInput" type="text"/>
+							</div>
+							<input wicket:id="rightEndpointOpenCheckbox" type="checkbox" />
+							<span wicket:id="rightEndpointOpenLabel"/>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</wicket:panel>
+</html>

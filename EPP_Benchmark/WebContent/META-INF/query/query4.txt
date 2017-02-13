@@ -1,0 +1,1 @@
+Select mileage as distance, speed as velocity FROM traceGETService

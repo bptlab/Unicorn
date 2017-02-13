@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mit XMLSpy v2013 sp1 (x64) (http://www.altova.com) von Benjamin Ulm (HPI) bearbeitet -->
+<!-- edited with XMLSpy v2013 sp1 (http://www.altova.com) by Benjamin Ulm (HPI) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Event">
+		<xs:annotation>
+			<xs:documentation>  </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="ID" type="xs:int"/>
+				<xs:element name="timestamp" type="xs:date">
+					<xs:annotation>
+						<xs:documentation> time of occurence </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="duration" type="xs:date">
+					<xs:annotation>
+						<xs:documentation> valid until </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="sender" type="xs:string">
+					<xs:annotation>
+						<xs:documentation> carrier, weather station,... </xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="location">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="timestamp" type="xs:date"/>
+							<xs:element name="area" type="xs:string"/>
+							<xs:element name="coordinates">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="latitude" type="xs:string"/>
+										<xs:element name="longitude" type="xs:string"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="vehicle_information" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="vehicle_identifier" type="xs:string"/>
+							<xs:element name="ETA" type="xs:date"/>
+							<xs:element name="transport">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="road"/>
+										<xs:enumeration value="railway"/>
+										<xs:enumeration value="sea"/>
+										<xs:enumeration value="air"/>
+										<xs:enumeration value="pipeline"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="goods" minOccurs="0" maxOccurs="unbounded">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="hazardous"/>
+										<xs:enumeration value="with_restrictions"/>
+										<xs:enumeration value="temperature_sensitive"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="phase">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="before_transport"/>
+										<xs:enumeration value="while_transport"/>
+										<xs:enumeration value="after_transport"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="incident" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="type">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="change_of_capacity"/>
+										<xs:enumeration value="delay_in_production"/>
+										<xs:enumeration value="congestion"/>
+										<xs:enumeration value="infrastructure"/>
+										<xs:enumeration value="disposition"/>
+										<xs:enumeration value="customs"/>
+										<xs:enumeration value="weather"/>
+										<xs:enumeration value="accident"/>
+										<xs:enumeration value="goods"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="code" type="xs:int">
+								<xs:annotation>
+									<xs:documentation> disposition: berths blocked, limited storage, lack in means of transport | goods: damaged, rejected </xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="scope">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="routing"/>
+										<xs:enumeration value="vehicle"/>
+										<xs:enumeration value="container"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

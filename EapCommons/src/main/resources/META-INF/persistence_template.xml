@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+  version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="development" transaction-type="RESOURCE_LOCAL">
+
+		<!-- comment out to use the default provider <provider>oracle.eclipselink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
+
+		<class>de.hpi.unicorn.event.EapEvent</class>
+		<class>de.hpi.unicorn.event.EapEventType</class>
+		<class>de.hpi.unicorn.event.EventTypeRule</class>
+		<class>de.hpi.unicorn.process.CorrelationProcess</class>
+		<class>de.hpi.unicorn.process.CorrelationProcessInstance</class>
+		<class>de.hpi.unicorn.correlation.CorrelationRule</class>
+		<class>de.hpi.unicorn.correlation.TimeCondition</class>
+		<class>de.hpi.unicorn.query.QueryWrapper</class>
+		<class>de.hpi.unicorn.notification.NotificationForQuery</class>
+		<class>de.hpi.unicorn.notification.NotificationRuleForQuery</class>
+		<class>de.hpi.unicorn.notification.RestNotificationForQuery</class>
+		<class>de.hpi.unicorn.notification.RestNotificationRule</class>
+		<class>de.hpi.unicorn.event.attribute.TypeTreeNode</class>
+		<class>de.hpi.unicorn.event.attribute.AttributeTypeTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTreeElement</class>
+		<class>de.hpi.unicorn.event.collection.TransformationTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTransformationElement</class>
+		<class>de.hpi.unicorn.bpmn.element.AbstractBPMNElement</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNAndGateway</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNBoundaryEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNEndEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNEventBasedGateway</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNIntermediateEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNProcess</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNSequenceFlow</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNStartEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNSubProcess</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNTask</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNXORGateway</class>
+		<class>de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint</class>
+		<class>de.hpi.unicorn.user.EapUser</class>
+		<class>de.hpi.unicorn.visualisation.ChartConfiguration</class>
+		<class>de.hpi.unicorn.visualisation.EventView</class>
+		<class>de.hpi.unicorn.notification.Notification</class>
+		<class>de.hpi.unicorn.notification.NotificationForEvent</class>
+		<class>de.hpi.unicorn.notification.EventCondition</class>
+		<class>de.hpi.unicorn.notification.NotificationRule</class>
+		<class>de.hpi.unicorn.notification.NotificationRuleForEvent</class>
+		<class>de.hpi.unicorn.transformation.TransformationRule</class>
+		<class>de.hpi.unicorn.transformation.collection.TransformationPatternTree</class>
+		<class>de.hpi.unicorn.transformation.element.EventTypeElement</class>
+		<class>de.hpi.unicorn.transformation.element.FilterExpressionConnectorElement</class>
+		<class>de.hpi.unicorn.transformation.element.FilterExpressionElement</class>
+		<class>de.hpi.unicorn.transformation.element.PatternOperatorElement</class>
+		<class>de.hpi.unicorn.transformation.element.RangeElement</class>
+		<class>de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledgeExpression</class>
+		<class>de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledgeExpressionSet</class>
+		<class>de.hpi.unicorn.monitoring.QueryMonitoringPoint</class>
+		<class>de.hpi.unicorn.semantic.EventMapping</class>
+				
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url" value="${db.dev.url}" />
+			<property name="javax.persistence.jdbc.user" value="${db.user}" />
+			<property name="javax.persistence.jdbc.password" value="${db.passw}" />
+			<property name="eclipselink.ddl-generation" value="create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode"
+				value="database" />
+		</properties>
+	</persistence-unit>
+	
+	<persistence-unit name="testing" transaction-type="RESOURCE_LOCAL">
+
+		<!-- comment out to use the default provider <provider>oracle.eclipselink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
+
+		<class>de.hpi.unicorn.event.EapEvent</class>
+		<class>de.hpi.unicorn.event.EapEventType</class>
+		<class>de.hpi.unicorn.event.EventTypeRule</class>
+		<class>de.hpi.unicorn.process.CorrelationProcess</class>
+		<class>de.hpi.unicorn.process.CorrelationProcessInstance</class>
+		<class>de.hpi.unicorn.correlation.CorrelationRule</class>
+		<class>de.hpi.unicorn.correlation.TimeCondition</class>
+		<class>de.hpi.unicorn.query.QueryWrapper</class>
+		<class>de.hpi.unicorn.notification.NotificationForQuery</class>
+		<class>de.hpi.unicorn.notification.NotificationRuleForQuery</class>
+		<class>de.hpi.unicorn.notification.RestNotificationForQuery</class>
+		<class>de.hpi.unicorn.notification.RestNotificationRule</class>
+		<class>de.hpi.unicorn.event.attribute.TypeTreeNode</class>
+		<class>de.hpi.unicorn.event.attribute.AttributeTypeTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTreeElement</class>
+		<class>de.hpi.unicorn.event.collection.TransformationTree</class>
+		<class>de.hpi.unicorn.event.collection.EventTransformationElement</class>
+		<class>de.hpi.unicorn.bpmn.element.AbstractBPMNElement</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNAndGateway</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNBoundaryEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNEndEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNEventBasedGateway</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNIntermediateEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNProcess</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNSequenceFlow</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNStartEvent</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNSubProcess</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNTask</class>
+		<class>de.hpi.unicorn.bpmn.element.BPMNXORGateway</class>
+		<class>de.hpi.unicorn.bpmn.monitoringpoint.MonitoringPoint</class>
+		<class>de.hpi.unicorn.user.EapUser</class>
+		<class>de.hpi.unicorn.visualisation.ChartConfiguration</class>
+		<class>de.hpi.unicorn.visualisation.EventView</class>
+		<class>de.hpi.unicorn.notification.Notification</class>
+		<class>de.hpi.unicorn.notification.NotificationForEvent</class>
+		<class>de.hpi.unicorn.notification.EventCondition</class>
+		<class>de.hpi.unicorn.notification.NotificationRule</class>
+		<class>de.hpi.unicorn.notification.NotificationRuleForEvent</class>
+		<class>de.hpi.unicorn.transformation.TransformationRule</class>
+		<class>de.hpi.unicorn.transformation.collection.TransformationPatternTree</class>
+		<class>de.hpi.unicorn.transformation.element.EventTypeElement</class>
+		<class>de.hpi.unicorn.transformation.element.FilterExpressionConnectorElement</class>
+		<class>de.hpi.unicorn.transformation.element.FilterExpressionElement</class>
+		<class>de.hpi.unicorn.transformation.element.PatternOperatorElement</class>
+		<class>de.hpi.unicorn.transformation.element.RangeElement</class>
+		<class>de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledgeExpression</class>
+		<class>de.hpi.unicorn.transformation.element.externalknowledge.ExternalKnowledgeExpressionSet</class>
+		<class>de.hpi.unicorn.monitoring.QueryMonitoringPoint</class>
+		<class>de.hpi.unicorn.semantic.EventMapping</class>
+		
+		<properties>
+			<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url" value="${db.test.url}" />
+			<property name="javax.persistence.jdbc.user" value="${db.user}" />
+			<property name="javax.persistence.jdbc.password" value="${db.passw}" />
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode"
+				value="database" />
+		</properties>
+	</persistence-unit>
+</persistence>

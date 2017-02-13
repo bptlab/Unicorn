@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+    <wicket:extend>
+    	<h4>Event Types</h4>
+    	In the first step, create event types for the monitoring points in the BPMN process model.
+    	Event types can be created in the Event Repository.
+    	<h4>Process</h4>
+    	Every BPMN process needs a standard process as connection, therefore one has to be created. 
+    	It is possible to create a process in the Event Repository or during the upload of a BPMN process in the fourth step.
+    	<h4>Correlation</h4>
+    	The correlation assigns every relevant event to a process instance which is necessary for the BPMN query execution.
+    	It is required to determine a correlation for the created process with the created event types.
+    	<h4>BPMN process</h4>
+    	Before creating the queries, import a BPMN process. 
+    	The BPMN file should have the *bpmn20.xml format and should be linked to the created process at the BPMN process upload.
+    	<h4>BPMN queries</h4>
+    	In order to create the queries from the BPMN process for process monitoring, click the "Create Queries"-button on this page.
+    </wicket:extend>
+</html>

@@ -1,0 +1,1 @@
+Select addressmatch as address, speed as speedvalue, property as property FROM traceNEW

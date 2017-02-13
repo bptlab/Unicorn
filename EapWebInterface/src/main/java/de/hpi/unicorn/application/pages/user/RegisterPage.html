@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<head>
+		<title>
+			Login
+		</title>
+	</head>
+	<body>
+		<wicket:extend>
+		    <form class="form-horizontal" wicket:id="layoutForm" style="width: 800px; margin: 0 auto;">
+			    <div class="control-group">
+				    <label class="control-label" for="inputEmail">Email</label>
+				    <div class="controls">
+				    	<input wicket:id="mailInput" type="text" id="inputUser" placeholder="Email">
+				    </div>
+			    </div>
+			    <div class="control-group">
+				    <label class="control-label" for="inputName">Name</label>
+				    <div class="controls">
+				    	<input wicket:id="nameInput" type="text" id="inputUser" placeholder="Name">
+				    </div>
+			    </div>
+			    <div class="control-group">
+				    <label class="control-label" for="inputPassword">Password</label>
+				    <div class="controls">
+				   		<input wicket:id="passwordInput" type="password" id="inputPassword" placeholder="Password">
+				    </div>
+			    </div>
+			    <div class="control-group">
+				    <label class="control-label" for="inputPassword">Repeat password</label>
+				    <div class="controls">
+				   		<input wicket:id="repeatPasswordInput" type="password" id="inputRepeatPassword" placeholder="Repeat password">
+				    </div>
+			    </div>
+			    <div class="control-group">
+				    <div class="controls">
+			    		<input wicket:id="registerButton" type="submit" value="Register" class="btn btn-primary" /> 
+				    </div>
+			    </div>
+		    </form>
+		</wicket:extend>
+	</body>
+</html>

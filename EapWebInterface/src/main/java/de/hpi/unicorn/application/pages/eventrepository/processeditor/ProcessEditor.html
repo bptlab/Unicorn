@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<head>
+		<title>Event Type Editor</title>
+	</head>
+	<body>
+		<wicket:extend>
+			<h3>Process Editor</h3>
+    		<form wicket:id="processEditForm">
+    		<table>
+    			<tr>
+    				<td>
+   						<label>New process: </label><br/>
+						<input wicket:id="processNameInput" type="text" class="input-large"  />
+    				</td>
+    				<td>
+    					<div class="well-small">
+    						<input wicket:id="addProcessButton" type="submit" value="Add" class="btn btn-primary" />
+    					</div>
+    				</td>
+    			</tr>
+    			<tr>
+    				<td>
+   						<label>Existing processes: </label><br/>
+						<select wicket:id="existingProcessSelect"></select>
+    				</td>
+    				<td>
+    					<div class="well-small">
+    						<input wicket:id="removeProcessButton" type="submit" value="Remove" class="btn btn-danger" />
+    					</div>
+    				</td>
+    			</tr>
+    		</table>
+			</form>	
+		</wicket:extend>	
+	</body>
+</html>

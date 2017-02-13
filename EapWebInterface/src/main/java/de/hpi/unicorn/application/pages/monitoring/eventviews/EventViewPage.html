@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<head>
+	<title>Event View</title>
+</head>
+<body>
+	<wicket:extend>
+		<div wicket:id="addViewModal"></div>
+
+		<form wicket:id="form" class="well-small">
+			<input wicket:id="addViewButton" type="submit" value="Add View" class="btn btn-primary" />
+		</form>	
+		<div class="well-small" wicket:id="listview">
+			<div wicket:id="view">
+				<div wicket:id="view"></div>
+				<div wicket:id="sub"></div>	
+			</div>
+			<form wicket:id="removeform">
+				<input wicket:id="removeViewButton" type="submit" value="Remove View" class="btn btn-danger" style="float:right"/>
+			</form>	
+		</div>
+	</wicket:extend>
+</body>
+</html>

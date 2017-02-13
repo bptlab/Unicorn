@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xmlns:sushi="http://bp2012w1srv1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="" expressionLanguage="http://www.w3.org/1999/XPath" id="sid-72b27b14-3457-440f-a74d-789bf73fb04d" targetNamespace="http://www.signavio.com/bpmn20" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+   <process id="sid-d4c08fca-5980-4bf7-82f9-753651771dec" isExecutable="false">
+      <sequenceFlow id="sid-033162AD-B75D-4A52-9E90-4B5368854D57" name=""/>
+   </process>
+   <bpmndi:BPMNDiagram id="sid-85986602-2d19-4b3b-8f82-8ace1f15a1b5">
+      <bpmndi:BPMNPlane id="sid-9c5bfd8e-35c6-4f1c-9ae3-ee872d3a3b9c">
+         <bpmndi:BPMNEdge bpmnElement="sid-033162AD-B75D-4A52-9E90-4B5368854D57" id="sid-033162AD-B75D-4A52-9E90-4B5368854D57_gui">
+            <omgdi:waypoint x="225.0" y="168.0"/>
+            <omgdi:waypoint x="425.0" y="168.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

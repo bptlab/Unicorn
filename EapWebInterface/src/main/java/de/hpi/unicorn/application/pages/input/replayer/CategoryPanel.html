@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+	<wicket:panel>
+		<div class="well-small">
+			<form wicket:id="replayerForm">
+				<table style="width:100%">
+					<tr>
+						<td width="17%" valign="top">
+						
+							<div class="form-inline well-small">
+							Select files:<br/><br/>
+							</div>
+						</td>
+						<td width="17%" valign="top">
+						
+							<div class="form-inline well-small">
+							Time mode:<br/>
+							</div>
+						</td>
+						<td width="33%" valign="top">
+						
+							<div class="form-inline well-small">
+							[For time modes UNCHANGED and ALIGNED]<br/>
+							</div>
+						</td>
+						<td width="33%" valign="top">
+						
+							<div class="form-inline well-small">
+							[For time mode ALIGNED]<br/>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td width="17%" valign="top">
+							<span wicket:id="eventsCheckBoxMultipleChoice" /><br/><br/>
+							<input wicket:id="selectAllFilesButton" type="submit" value="Select all files" class="btn btn-inverse"/><br/><br/>
+							<input wicket:id="removeCategoryButton" type="submit" value="Remove category" class="btn btn-danger"/>
+						</td>
+						<td width="17%" valign="top">
+							<div wicket:id="timeModeChoice" style="float:left; line-height: 0px;" class="form-inline well-small" />
+						</td>
+						<td width="33%" valign="top">
+							<div class="form-inline well-small">
+								Scale factor<br/>
+								<input type="text" wicket:id="scaleFactorInput" /><br/><br/>
+								Fixed offset<br/>
+								* In milliseconds<br/>
+								* Below zero: Maintain offsets from events<br/>
+								<input type="text" wicket:id="fixedOffsetInput" />
+							</div>
+						</td>
+						<td width="33%" valign="top">
+							<div class="form-inline well-small">
+								Simulation time<br/>
+								* Format: YYYY-MM-DD hh:mm:ss<br/>
+								<input type="text" wicket:id="alignedTimeInput" />
+								<br/><br/><br/>
+								<input wicket:id="replayButton" type="submit" value="Replay" class="btn btn-primary"/>
+							</div>
+						</td>
+					</tr>
+					<!-- <tr>
+						<td width="17%">
+						</td>
+						<td width="17%">
+						</td>
+						<td width="33%">
+						</td>
+						<td width="33%" valign="top">
+							<div class="form-inline well-small">
+							</div>
+						</td>
+					</tr> -->
+				</table>
+			</form>
+		</div>
+	</wicket:panel>
+</html>

@@ -1,0 +1,1 @@
+export MAVEN_OPTS="-Dfile.encoding=UTF-8 -Xmx512M"

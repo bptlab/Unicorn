@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master">
+<wicket:extend>	
+	<div class="well-small">
+		<fieldset>	
+			<legend>Event Export</legend>		
+		</fieldset>
+	</div>
+	<form wicket:id="layoutForm">
+		<div class="well-small">
+			<label>Select event type for exportable events:</label>
+			<select wicket:id="eventTypeDropDownChoice" />
+		</div>
+		<div class="well-small">
+			Filter <select wicket:id="eventFilterCriteria"></select>
+			Condition <select wicket:id="eventFilterCondition"></select>
+			<input wicket:id="searchValueInput" type="text" size="30" />
+			<input wicket:id="filterButton" type="submit" value="Filter" class="btn btn-primary" /> 
+			<input wicket:id="resetButton" type="submit" value="Reset" class="btn btn-inverse" /> 
+			<input wicket:id="csvExportButton" type="submit" value="Export as CSV" class="btn btn-primary" />
+			<input wicket:id="xmlExportButton" type="submit" value="Export as XML" class="btn btn-primary" />
+			<input wicket:id="selectAllButton" type="submit" value="Select All" class="btn" />
+		</div>
+	</form>
+	<div class="well-small">
+		<table wicket:id="events" class="table table-striped"></table>
+	</div>
+</wicket:extend>
+</html>
