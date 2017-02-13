@@ -24,19 +24,46 @@ public class EventGenerator {
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
+    /**
+     * Creates a new EventGenerator
+     */
     public EventGenerator() {
 
     }
-
+    /**
+     * Generates (eventCount many) events with given event type and random selection of input values for attribute values
+     * and replays them
+     *
+     * @param eventCount
+     * @param eventType
+     * @param attributeSchemas
+     */
     public void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, this.replayScaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
-
+    /**
+     * Generates (eventCount many) events with given event type and random selection of input values for attribute values
+     * and replays them with given scale factor
+     *
+     * @param eventCount
+     * @param scaleFactor
+     * @param eventType
+     * @param attributeSchemas
+     */
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, scaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
 
-
+    /**
+     * Generates (eventCount many) events with given event type and random selection of input values for attribute values
+     * and replays them with given scale factor and given timestamp
+     *
+     * @param eventCount
+     * @param scaleFactor
+     * @param eventType
+     * @param attributeSchemas
+     * @param eventTimestamps
+     */
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas, String
             eventTimestamps) {
         this.eventCount = eventCount;
