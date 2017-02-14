@@ -10,6 +10,8 @@ package de.hpi.unicorn.correlation;
 import javax.persistence.*;
 import de.hpi.unicorn.persistence.Persistable;
 
+import java.util.Map;
+
 /**
  * This class represents the dependent attribute values for one event type.
  * You can specify that one particular attribute value determines particular attribute values of another attribute.
@@ -37,7 +39,16 @@ public class AttributeValueDependency extends Persistable {
     private String dependentAttributeValues;
 
     public AttributeValueDependency() {
+        this.ID = 0;
     }
+
+    public AttributeValueDependency(AttributeDependency dependencyRule, String leadingAttributeValue, String dependentAttributeValues) {
+        this();
+        this.dependencyRule = dependencyRule;
+        this.leadingAttributeValue = leadingAttributeValue;
+        this.dependentAttributeValues = dependentAttributeValues;
+    }
+    // TODO: Constructor for more than one entry?
 
     @Override
     public int getID() {

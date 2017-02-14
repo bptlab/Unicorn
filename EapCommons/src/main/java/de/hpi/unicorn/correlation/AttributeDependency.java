@@ -42,6 +42,13 @@ public class AttributeDependency extends Persistable {
     private TypeTreeNode dependentAttribute;
 
     public AttributeDependency() {
+        this.ID = 0;
+    }
+    public AttributeDependency(EapEventType eventType, TypeTreeNode leadingAttribute, TypeTreeNode dependentAttribute) {
+        this();
+        this.eventType = eventType;
+        this.leadingAttribute = leadingAttribute;
+        this.dependentAttribute = dependentAttribute;
     }
 
     @Override
