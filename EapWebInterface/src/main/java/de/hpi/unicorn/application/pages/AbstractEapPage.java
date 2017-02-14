@@ -30,6 +30,7 @@ import de.hpi.unicorn.application.pages.input.AdapterPage;
 import de.hpi.unicorn.application.pages.input.FileUploader;
 import de.hpi.unicorn.application.pages.input.bpmn.BPMNProcessUpload;
 import de.hpi.unicorn.application.pages.input.replayer.ReplayerPage;
+import de.hpi.unicorn.application.pages.input.generator.GeneratorPage;
 import de.hpi.unicorn.application.pages.main.MainPage;
 import de.hpi.unicorn.application.pages.monitoring.bpmn.BPMNMonitoringPage;
 import de.hpi.unicorn.application.pages.monitoring.eventviews.EventViewPage;
@@ -96,7 +97,12 @@ public abstract class AbstractEapPage extends WebPage {
 	}
 
 	private Component newImportDropDownButton() {
-		return new NavBarDropDownButton(Model.of("Import")).addButton(new MenuBookmarkablePageLink<FileUploader>(FileUploader.class, Model.of("XML / XLS / XSD")).setIconType(IconType.upload)).addButton(new MenuBookmarkablePageLink<BPMNProcessUpload>(BPMNProcessUpload.class, Model.of("BPMN")).setIconType(IconType.leaf)).addButton(new MenuBookmarkablePageLink<ReplayerPage>(ReplayerPage.class, Model.of("Replayer")).setIconType(IconType.play)).addButton(new MenuBookmarkablePageLink<AdapterPage>(AdapterPage.class, Model.of("Adapter")).setIconType(IconType.upload)).setIconType(IconType.cog).add(new DropDownAutoOpen());
+		return new NavBarDropDownButton(Model.of("Import")).addButton(new MenuBookmarkablePageLink<FileUploader>(FileUploader.class, Model.of("XML " +
+				"/ XLS / XSD")).setIconType(IconType.upload)).addButton(new MenuBookmarkablePageLink<BPMNProcessUpload>(BPMNProcessUpload.class,
+				Model.of("BPMN")).setIconType(IconType.leaf)).addButton(new MenuBookmarkablePageLink<ReplayerPage>(ReplayerPage.class, Model.of
+				("Replayer")).setIconType(IconType.play)).addButton(new MenuBookmarkablePageLink<GeneratorPage>(GeneratorPage.class, Model.of
+				("Generator")).setIconType(IconType.random)).addButton(new MenuBookmarkablePageLink<AdapterPage>(AdapterPage.class, Model.of
+				("Adapter")).setIconType(IconType.upload)).setIconType(IconType.cog).add(new DropDownAutoOpen());
 
 	}
 
