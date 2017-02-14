@@ -212,6 +212,58 @@ public class EventTypePanel extends Panel {
 				}
 			}
 		});
+		this.columns.add(new AbstractColumn<EapEventType, String>(new Model("Export Json")) {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void populateItem(final Item cellItem, final String componentId, final IModel rowModel) {
+				final EapEventType eventType = ((EapEventType) rowModel.getObject());
+				if (eventType.getJsonString() != null && !eventType.getJsonString().isEmpty()) {
+					final AjaxButton exportButton = new AjaxButton("button", buttonForm) {
+						private static final long serialVersionUID = 1L;
+
+						@Override
+						public void onSubmit(final AjaxRequestTarget target, final Form form) {
+							final AJAXDownload jsonDownload = new AJAXDownload() {
+
+								@Override
+								protected IResourceStream getResourceStream() {
+									final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType.getTypeName() + ".json");
+									try {
+										final FileWriter writer = new FileWriter(file, false);
+										writer.write(eventType.getJsonString());
+										writer.flush();
+										writer.close();
+									} catch (final IOException e1) {
+										e1.printStackTrace();
+									}
+									return new FileResourceStream(new org.apache.wicket.util.file.File(file));
+								}
+
+								@Override
+								protected String getFileName() {
+									return eventType.getTypeName() + ".json";
+								}
+							};
+							buttonForm.add(jsonDownload);
+							jsonDownload.initiate(target);
+						}
+					};
+
+					WebMarkupContainer buttonPanel = new WebMarkupContainer(componentId);
+					try {
+						buttonPanel = new DataTableButtonPanel(componentId, exportButton);
+					} catch (final Exception e) {
+						e.printStackTrace();
+					}
+					buttonPanel.setOutputMarkupId(true);
+					cellItem.add(buttonPanel);
+				} else {
+					cellItem.add(new Label(componentId, "n/a"));
+				}
+			}
+		});
 		this.columns.add(new AbstractColumn<EapEventType, String>(new Model("Select")) {
 
 			private static final long serialVersionUID = 1L;
