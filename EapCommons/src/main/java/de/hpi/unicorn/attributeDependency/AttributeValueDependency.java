@@ -5,12 +5,12 @@
  * All Rights Reserved.
  *
  *******************************************************************************/
-package de.hpi.unicorn.correlation;
+package de.hpi.unicorn.attributeDependency;
 
 import javax.persistence.*;
-import de.hpi.unicorn.persistence.Persistable;
 
-import java.util.Map;
+import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.persistence.Persistable;
 
 /**
  * This class represents the dependent attribute values for one event type.
@@ -32,8 +32,8 @@ public class AttributeValueDependency extends Persistable {
     @JoinColumn(name = "DependencyRule")
     private AttributeDependency dependencyRule;
 
-    @Column(name = "LeadingAttributeValue")
-    private String leadingAttributeValue;
+    @Column(name = "BaseAttributeValue")
+    private String baseAttributeValue;
 
     @Column(name = "DependentAttributeValues")
     private String dependentAttributeValues;
@@ -42,13 +42,12 @@ public class AttributeValueDependency extends Persistable {
         this.ID = 0;
     }
 
-    public AttributeValueDependency(AttributeDependency dependencyRule, String leadingAttributeValue, String dependentAttributeValues) {
+    public AttributeValueDependency(AttributeDependency dependencyRule, String baseAttributeValue, String dependentAttributeValues) {
         this();
         this.dependencyRule = dependencyRule;
-        this.leadingAttributeValue = leadingAttributeValue;
+        this.baseAttributeValue = baseAttributeValue;
         this.dependentAttributeValues = dependentAttributeValues;
     }
-    // TODO: Constructor for more than one entry?
 
     @Override
     public int getID() {

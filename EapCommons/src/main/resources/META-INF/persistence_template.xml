@@ -13,8 +13,8 @@
         <class>de.hpi.unicorn.process.CorrelationProcessInstance</class>
         <class>de.hpi.unicorn.correlation.CorrelationRule</class>
         <class>de.hpi.unicorn.correlation.TimeCondition</class>
-        <class>de.hpi.unicorn.correlation.AttributeDependency</class>
-        <class>de.hpi.unicorn.correlation.AttributeValueDependency</class>
+        <class>de.hpi.unicorn.attributeDependency.AttributeDependency</class>
+        <class>de.hpi.unicorn.attributeDependency.AttributeValueDependency</class>
         <class>de.hpi.unicorn.query.QueryWrapper</class>
         <class>de.hpi.unicorn.notification.NotificationForQuery</class>
         <class>de.hpi.unicorn.notification.NotificationRuleForQuery</class>

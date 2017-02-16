@@ -5,13 +5,15 @@
  * All Rights Reserved.
  *
  *******************************************************************************/
-package de.hpi.unicorn.correlation;
+package de.hpi.unicorn.attributeDependency;
 
 import javax.persistence.*;
 
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.persistence.Persistable;
+
+import java.util.HashMap;
 
 /**
  * This class represents the dependencies between attributes of one event type.
@@ -34,8 +36,8 @@ public class AttributeDependency extends Persistable {
     private EapEventType eventType;
 
     @ManyToOne
-    @JoinColumn(name = "LeadingAttribute")
-    private TypeTreeNode leadingAttribute;
+    @JoinColumn(name = "BaseAttribute")
+    private TypeTreeNode baseAttribute;
 
     @ManyToOne
     @JoinColumn(name = "DependentAttribute")
@@ -44,10 +46,11 @@ public class AttributeDependency extends Persistable {
     public AttributeDependency() {
         this.ID = 0;
     }
-    public AttributeDependency(EapEventType eventType, TypeTreeNode leadingAttribute, TypeTreeNode dependentAttribute) {
+
+    public AttributeDependency(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode dependentAttribute) {
         this();
         this.eventType = eventType;
-        this.leadingAttribute = leadingAttribute;
+        this.baseAttribute = baseAttribute;
         this.dependentAttribute = dependentAttribute;
     }
 
@@ -56,4 +59,14 @@ public class AttributeDependency extends Persistable {
         return this.ID;
     }
 
+    public boolean addDependencyValues(HashMap<String, String> values) {
+        try {
+            for (HashMap.Entry entry : values.entrySet()) {
+                new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }
