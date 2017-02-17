@@ -8,6 +8,7 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.event.EapEventType;
+import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * {@link Panel}, which allows the generation of events.
+ * {@link Panel}, which allows the insertion of dependencies between event type attributes.
  */
 public class DependenciesPanel extends Panel {
 
@@ -38,8 +39,8 @@ public class DependenciesPanel extends Panel {
     private Form layoutForm;
     protected String eventTypeName;
     private EapEventType selectedEventType = new EapEventType("test" );
-    private String selectedBaseAttribute = "";
-    private String selectedDependentAttribute = "";
+    private TypeTreeNode selectedBaseAttribute;
+    private TypeTreeNode selectedDependentAttribute;
     private String currentBaseAttributeInput = "";
     private String currentDependentAttributeInput = "";
 
@@ -49,13 +50,9 @@ public class DependenciesPanel extends Panel {
 
     private static final Logger logger = Logger.getLogger(DependenciesPanel.class);
 
-   /* private ListView<TypeTreeNode> listview;
-    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
-    private WebMarkupContainer listContainer;
-    */
     /**
-     * Constructor for the generate panel. The page is initialized in this method,
-     * including the event type dropdown and the according list of input fields.
+     * Constructor for the dependencies panel. The page is initialized in this method,
+     * including the event type dropdown and the according event type attributes dropdowns.
      *
      * @param id
      * @param page
@@ -85,30 +82,26 @@ public class DependenciesPanel extends Panel {
             selectedEventType = eventTypes.get(0);
         }
 
-        final DropDownChoice<String> baseDropDown = new DropDownChoice<>("baseAttributeField", new PropertyModel<String>( this,
+        final DropDownChoice<TypeTreeNode> baseDropDown = new DropDownChoice<>("baseAttributeField", new PropertyModel<TypeTreeNode>( this,
                 "selectedBaseAttribute" ),
-                selectedEventType.getEventAttributes());
-        final DropDownChoice<String> dependentDropDown = new DropDownChoice<>("dependentAttributeField", new PropertyModel<String>( this,
+                selectedEventType.getValueTypes());
+        final DropDownChoice<TypeTreeNode> dependentDropDown = new DropDownChoice<>("dependentAttributeField", new PropertyModel<TypeTreeNode>( this,
                 "selectedDependentAttribute" ),
-                selectedEventType.getEventAttributes());
+                selectedEventType.getValueTypes());
 
         baseDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                if(selectedEventType != null) {
-                    if(selectedEventType.getEventAttributes().size() >= 2) {
-                        ArrayList<String> attributesWithoutBaseAttribute = selectedEventType.getEventAttributes();
-                        try {
-                            attributesWithoutBaseAttribute.remove(selectedBaseAttribute);
-                        }
-                        finally {
-                            ;
-                        }
-                        dependentDropDown.setChoices(attributesWithoutBaseAttribute);
-                        target.add(dependentDropDown);
-                        listview.removeAll();
-                        target.add(listContainer);
+                if(selectedEventType != null && selectedEventType.getEventAttributes().size() >= 2) {
+                    List<TypeTreeNode> attributesWithoutBaseAttribute = selectedEventType.getValueTypes();
+                    try {
+                        attributesWithoutBaseAttribute.remove(selectedBaseAttribute);
                     }
+                    finally {}
+                    dependentDropDown.setChoices(attributesWithoutBaseAttribute);
+                    target.add(dependentDropDown);
+                    listview.removeAll();
+                    target.add(listContainer);
                 }
             }
         });
@@ -125,23 +118,28 @@ public class DependenciesPanel extends Panel {
         baseDropDown.setOutputMarkupId(true);
         dependentDropDown.setOutputMarkupId(true);
 
-        DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+        DropDownChoice<EapEventType> eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
                 eventTypes);
-        dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
-                    baseDropDown.setChoices(selectedEventType.getEventAttributes());
-                    dependentDropDown.setChoices(selectedEventType.getEventAttributes());
+                    baseDropDown.setChoices(selectedEventType.getValueTypes());
+                    dependentDropDown.setChoices(selectedEventType.getValueTypes());
                     target.add(baseDropDown);
                     target.add(dependentDropDown);
                 }
             }
         });
-        layoutForm.add(dropDown);
+        layoutForm.add(eventTypeDropDown);
 
         layoutForm.add(baseDropDown);
         layoutForm.add(dependentDropDown);
+
+        layoutForm.add(new Label("selectedBaseAttributeType", new PropertyModel<String>(selectedBaseAttribute, "name")).setOutputMarkupId(true));
+        layoutForm.add(new Label("selectedDependentAttributeType", new PropertyModel<String>(selectedDependentAttribute, "name"))
+                .setOutputMarkupId(true));
+
     }
 
     private void addDependencyValuesInputs() {
@@ -149,7 +147,6 @@ public class DependenciesPanel extends Panel {
                 "currentBaseAttributeInput"));
         TextField<String> dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
                 "currentDependentAttributeInput"));
-
         baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
         baseAttributeInputField.setRequired(true);
         dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
@@ -204,11 +201,8 @@ public class DependenciesPanel extends Panel {
                 target.add(listContainer);
             }
         };
-
         this.layoutForm.add(addDependencyButton);
     }
-
-
 
     private void addSubmitButton() {
         final AjaxButton submitButton = new AjaxButton("submitButton", this.layoutForm) {

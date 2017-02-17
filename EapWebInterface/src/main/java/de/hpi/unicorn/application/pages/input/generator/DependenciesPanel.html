@@ -11,13 +11,29 @@
                 <td></td>
             </tr>
             <tr>
-                <td><select wicket:id="baseAttributeField"></select></td>
-                <td>defines value of</td>
-                <td><select wicket:id="dependentAttributeField"></select></td>
+                <td>The values of:</td>
+                <td>defines values of:</td>
+                <td></td>
             </tr>
             <tr>
-                <td><input wicket:id="baseAttributeInput" type="text"></input></td>
-                <td><input wicket:id="dependentAttributeInput" type="text"></input></td>
+                <td><select wicket:id="baseAttributeField"></select></td>
+                <td><select wicket:id="dependentAttributeField"></select></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Add dependency:</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>
+                    <input wicket:id="baseAttributeInput" type="text"></input>
+                    <span wicket:id="selectedBaseAttributeType">selectedBaseAttrType</span>
+                </td>
+                <td>
+                    <input wicket:id="dependentAttributeInput" type="text"></input>
+                    <span wicket:id="selectedDependentAttributeType">selectedDependentAttrType</span>
+                </td>
                 <td><input wicket:id="addDependencyButton" type="submit" value="Add dependency" class="btn btn-primary"></td>
             </tr>
         </table>
@@ -36,7 +52,7 @@
             </tbody>
         </table>
         <div class="form-inline well-small">
-            <input wicket:id="submitButton" type="submit" value="Generate events" class="btn btn-primary btn-lg btn-block">
+            <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg btn-block">
         </div>
 
     </form>
