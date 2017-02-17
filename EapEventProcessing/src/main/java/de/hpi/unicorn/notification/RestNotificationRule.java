@@ -79,11 +79,17 @@ public class RestNotificationRule extends NotificationRuleForQuery {
 	}
 
 	@Override
+	/*
+	 * No longer persisting RestNotificationForQuery 
+	 */
 	public boolean trigger(final Map<Object, Serializable> eventObject) {
 		try {
 			final JSONObject event = NotificationRuleUtils.toJSON(eventObject);
-			final RestNotificationForQuery notification = new RestNotificationForQuery(event.toString(), this);
-			notification.save();
+			//final RestNotificationForQuery notification = new RestNotificationForQuery(event.toString(), this);
+			// no longer storing the notifications, as they were causing errors with JPA
+			// probably because the entity was configured incorrectly. However, as no one
+			// ever looks them up again, we should stop persisting these anyway.
+			//notification.save();
 
 			Client client = ClientBuilder.newClient();
 			WebTarget target = client.target(this.notificationPath);
