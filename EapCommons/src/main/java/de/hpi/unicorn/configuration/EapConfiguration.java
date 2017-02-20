@@ -87,7 +87,7 @@ public class EapConfiguration {
 	public static Properties getProperties() {
 		Reader reader;
 		Properties props;
-		System.out.println("Working directory is " + System.getProperty("user.dir"));
+		System.err.println("Working directory is " + System.getProperty("user.dir"));
 		try {
 			reader = new FileReader(".." + File.separator + "unicorn.properties");
 			props = new Properties();
