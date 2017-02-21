@@ -23,6 +23,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
+import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +39,7 @@ public class DependenciesPanel extends Panel {
     private GeneratorPage page;
     private DependenciesPanel panel;
 
-    private Form layoutForm;
+    private Form dependencyForm;
     protected String eventTypeName;
     private EapEventType selectedEventType = new EapEventType("test" );
     private TypeTreeNode selectedBaseAttribute = new TypeTreeNode("base attribute");
@@ -52,7 +54,11 @@ public class DependenciesPanel extends Panel {
     private TextField<String> baseAttributeInputField;
     private TextField<String> dependentAttributeInputField;
 
+    private Label selectedBaseAttributeTypeLabel;
+    private Label selectedDependentAttributeTypeLabel;
+
     private AjaxButton addDependencyButton;
+    private AjaxButton addDependencyValueButton;
     private AjaxButton submitButton;
 
     private HashMap<String, String> dependenciesInput = new HashMap<>();
@@ -70,14 +76,17 @@ public class DependenciesPanel extends Panel {
         super(id);
         this.page = page;
         this.panel = this;
-        layoutForm = new Form("layoutForm");
-        this.add(layoutForm);
+        dependencyForm = new Form("dependencyForm");
+        this.add(dependencyForm);
+
+
         addDropDowns();
-        addDependencyValuesInputs();
-        addListOfDependencies();
         addAddDependencyButton();
+        addDependencyValuesInputs();
+        addAddDependencyValuesButton();
+        addListOfDependencies();
         addSubmitButton();
-   }
+    }
 
     /**
      * Adds dropdown with existing event types.
@@ -100,9 +109,9 @@ public class DependenciesPanel extends Panel {
                 "selectedDependentAttribute" ),
                 getDependentAttributeChoiceList(), new ChoiceRenderer<>("name", "name"));
 
-        final Label selectedBaseAttributeTypeLabel = new Label("selectedBaseAttributeType", new PropertyModel<String>(this,
+        selectedBaseAttributeTypeLabel = new Label("selectedBaseAttributeType", new PropertyModel<String>(this,
                 "selectedBaseAttribute.type"));
-        final Label selectedDependentAttributeTypeLabel = new Label("selectedDependentAttributeType", new PropertyModel<String>(this,
+        selectedDependentAttributeTypeLabel = new Label("selectedDependentAttributeType", new PropertyModel<String>(this,
                 "selectedDependentAttribute.type"));
 
         eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
@@ -127,10 +136,7 @@ public class DependenciesPanel extends Panel {
                         selectedDependentAttribute = dependentDropDown.getChoices().get(0);
                     }
                     target.add(dependentDropDown);
-                    target.add(selectedBaseAttributeTypeLabel);
-                    target.add(selectedDependentAttributeTypeLabel);
-                    listview.removeAll();
-                    target.add(listContainer);
+                    updateLabelsAndList(target);
                 }
             }
         });
@@ -138,10 +144,7 @@ public class DependenciesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
-                    target.add(selectedBaseAttributeTypeLabel);
-                    target.add(selectedDependentAttributeTypeLabel);
-                    listview.removeAll();
-                    target.add(listContainer);
+                    updateLabelsAndList(target);
                 }
             }
         });
@@ -153,26 +156,61 @@ public class DependenciesPanel extends Panel {
                     setFirstAttributes();
                     baseDropDown.setChoices(selectedEventType.getValueTypes());
                     dependentDropDown.setChoices(getDependentAttributeChoiceList());
-                    setEnablementForSubmitButtons();
-                    target.add(addDependencyButton);
-                    target.add(submitButton);
-                    target.add(selectedBaseAttributeTypeLabel);
-                    target.add(selectedDependentAttributeTypeLabel);
                     target.add(baseDropDown);
                     target.add(dependentDropDown);
-                    target.add(selectedBaseAttributeTypeLabel);
-                    target.add(selectedDependentAttributeTypeLabel);
-                    target.add(listContainer);
+                    updateLabelsAndList(target);
                 }
             }
         });
 
-        layoutForm.add(eventTypeDropDown);
-        layoutForm.add(baseDropDown);
-        layoutForm.add(dependentDropDown);
-        layoutForm.add(selectedBaseAttributeTypeLabel);
-        layoutForm.add(selectedDependentAttributeTypeLabel);
+        dependencyForm.add(eventTypeDropDown);
+        dependencyForm.add(baseDropDown);
+        dependencyForm.add(dependentDropDown);
+        dependencyForm.add(selectedBaseAttributeTypeLabel);
+        dependencyForm.add(selectedDependentAttributeTypeLabel);
+    }
 
+    private void addAddDependencyButton() {
+        addDependencyButton = new AjaxButton("addDependencyButton", this.dependencyForm) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void onSubmit(final AjaxRequestTarget target, final Form form) {
+                if(selectedBaseAttribute == selectedDependentAttribute) {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("An attribute can't depend on itself.");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                    return;
+                }
+
+                //DISABLE DEPENDENCY FORM
+                disableDropDowns();
+                addDependencyButton.setVisible(false);
+                target.add(eventTypeDropDown);
+                target.add(baseDropDown);
+                target.add(dependentDropDown);
+                target.add(addDependencyButton);
+
+                //ENABLE DEPENDENCY-VALUES FORM
+                baseAttributeInputField.setEnabled(true);
+                dependentAttributeInputField.setEnabled(true);
+                addDependencyValueButton.setEnabled(true);
+                submitButton.setEnabled(true);
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
+                target.add(addDependencyValueButton);
+                target.add(submitButton);
+
+                //ADD VALIDATORS FOR VALUE-INPUTS
+                setValidatorsForInputFields(target);
+
+                listview.removeAll();
+                target.add(listContainer);
+
+                //SUCCESS HINT
+                DependenciesPanel.this.page.getFeedbackPanel().success("Please insert values for the dependency.");
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+            }
+        };
+        dependencyForm.add(addDependencyButton);
     }
 
     private void addDependencyValuesInputs() {
@@ -182,10 +220,44 @@ public class DependenciesPanel extends Panel {
                 "currentDependentAttributeInput"));
         baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
         baseAttributeInputField.setOutputMarkupId(true);
+        baseAttributeInputField.setEnabled(false);
         dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
         dependentAttributeInputField.setOutputMarkupId(true);
-        layoutForm.add(baseAttributeInputField);
-        layoutForm.add(dependentAttributeInputField);
+        dependentAttributeInputField.setEnabled(false);
+        dependencyForm.add(baseAttributeInputField);
+        dependencyForm.add(dependentAttributeInputField);
+    }
+
+    private void addAddDependencyValuesButton() {
+        addDependencyValueButton = new AjaxButton("addDependencyValueButton", this.dependencyForm) {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void onSubmit(final AjaxRequestTarget target, final Form form) {
+                if(currentBaseAttributeInput == null || currentDependentAttributeInput == null ||
+                        currentBaseAttributeInput.isEmpty() || currentDependentAttributeInput.isEmpty()) {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("You must provide an input!");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                    return;
+                }
+                if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("This value is already registered!");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                    return;
+                }
+                dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
+                DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                currentBaseAttributeInput = "";
+                currentDependentAttributeInput = "";
+
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
+                listview.removeAll();
+                target.add(listContainer);
+            }
+        };
+        addDependencyValueButton.setEnabled(false);
+        dependencyForm.add(addDependencyValueButton);
     }
 
     private void addListOfDependencies() {
@@ -211,45 +283,11 @@ public class DependenciesPanel extends Panel {
                 .setOutputMarkupId(true));
         listContainer.add(listview);
         listContainer.setOutputMarkupId(true);
-        layoutForm.add(listContainer);
-    }
-
-    private void addAddDependencyButton() {
-       addDependencyButton = new AjaxButton("addDependencyButton", this.layoutForm) {
-            private static final long serialVersionUID = 1L;
-            @Override
-            public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                if(currentBaseAttributeInput == null || currentDependentAttributeInput == null ||
-                        currentBaseAttributeInput.isEmpty() || currentDependentAttributeInput.isEmpty()) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("You must provide an input!");
-                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    return;
-                }
-                if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("This value is already registered!");
-                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    return;
-                }
-                dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
-                DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
-                target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                currentBaseAttributeInput = "";
-                currentDependentAttributeInput = "";
-                disableDropDowns();
-                target.add(eventTypeDropDown);
-                target.add(baseDropDown);
-                target.add(dependentDropDown);
-                target.add(baseAttributeInputField);
-                target.add(dependentAttributeInputField);
-                listview.removeAll();
-                target.add(listContainer);
-            }
-        };
-        this.layoutForm.add(addDependencyButton);
+        dependencyForm.add(listContainer);
     }
 
     private void addSubmitButton() {
-        submitButton = new AjaxButton("submitButton", this.layoutForm) {
+        submitButton = new AjaxButton("submitButton", this.dependencyForm) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
@@ -272,25 +310,14 @@ public class DependenciesPanel extends Panel {
                 target.add(dependentDropDown);
             }
         };
-        this.layoutForm.add(submitButton);
-        setEnablementForSubmitButtons();
+        submitButton.setEnabled(false);
+        dependencyForm.add(submitButton);
     }
 
     private void setFirstAttributes() {
         if(selectedEventType.getValueTypes().size() >= 2) {
             selectedBaseAttribute = selectedEventType.getValueTypes().get(0);
             selectedDependentAttribute = selectedEventType.getValueTypes().get(1);
-        }
-    }
-
-    private void setEnablementForSubmitButtons() {
-        if(selectedEventType.getValueTypes().size() <= 1) {
-            addDependencyButton.setEnabled(false);
-            submitButton.setEnabled(false);
-        }
-        else {
-            addDependencyButton.setEnabled(true);
-            submitButton.setEnabled(true);
         }
     }
 
@@ -310,5 +337,34 @@ public class DependenciesPanel extends Panel {
         }
         finally {}
         return attributesWithoutBaseAttribute;
+    }
+
+    private void updateLabelsAndList(AjaxRequestTarget target) {
+        listview.removeAll();
+        target.add(selectedBaseAttributeTypeLabel);
+        target.add(selectedDependentAttributeTypeLabel);
+        target.add(listContainer);
+    }
+
+    private void setValidatorsForInputFields(AjaxRequestTarget target) {
+        baseAttributeInputField.add(getValidatorForAttribute(selectedBaseAttribute));
+        dependentAttributeInputField.add(getValidatorForAttribute(selectedDependentAttribute));
+        target.add(baseAttributeInputField);
+        target.add(dependentAttributeInputField);
+    }
+
+    private IValidator<String> getValidatorForAttribute(TypeTreeNode attribute) {
+        switch (attribute.getType()) {
+            case INTEGER:
+                return new IntegerRangeValidator();
+            case STRING:
+                return new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*");
+            case FLOAT:
+                return new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*");
+            case DATE:
+                return new DateRangeValidator();
+            default:
+                return new PatternValidator("");
+        }
     }
 }
