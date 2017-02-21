@@ -180,10 +180,8 @@ public class DependenciesPanel extends Panel {
         dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
                 "currentDependentAttributeInput"));
         baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
-        baseAttributeInputField.setRequired(true);
         baseAttributeInputField.setOutputMarkupId(true);
         dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
-        dependentAttributeInputField.setRequired(true);
         dependentAttributeInputField.setOutputMarkupId(true);
         layoutForm.add(baseAttributeInputField);
         layoutForm.add(dependentAttributeInputField);
@@ -220,7 +218,8 @@ public class DependenciesPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                if(currentBaseAttributeInput == "" || currentDependentAttributeInput == "") {
+                if(currentBaseAttributeInput == null || currentDependentAttributeInput == null ||
+                        currentBaseAttributeInput.isEmpty() || currentDependentAttributeInput.isEmpty()) {
                     DependenciesPanel.this.page.getFeedbackPanel().error("You must provide an input!");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
                     return;
@@ -259,8 +258,6 @@ public class DependenciesPanel extends Panel {
             @Override
             public void onAfterSubmit(final AjaxRequestTarget target, final Form form) {
                 dependenciesInput = new HashMap<>();
-                form.clearInput();
-                form.modelChanged();
                 currentBaseAttributeInput = "";
                 currentDependentAttributeInput = "";
                 setEnablementForDropDowns(true);
@@ -269,8 +266,6 @@ public class DependenciesPanel extends Panel {
                 target.add(eventTypeDropDown);
                 target.add(baseDropDown);
                 target.add(dependentDropDown);
-
-                target.add(form);
             }
         };
         this.layoutForm.add(submitButton);
