@@ -26,39 +26,19 @@ public class GeneratorPage extends AbstractEapPage {
 		super();
 		this.page = this;
 
-		// if (!EapConfiguration.persistEvents) {
-		// ReplayPage.this.getFeedbackPanel().info("Storage of new incoming events has been disabled.");
-		// }
-
-		// select event type
-		// select category ("scenario 3")
-		// take filename as identifier
-
 		final List<ITab> tabs = new ArrayList<ITab>();
-		/*tabs.add(new AbstractTab(new Model<String>("Upload files")) {
-			@Override
-			public Panel getPanel(final String panelId) {
-				return new UploadPanel(panelId, page);
-			}
-		});
-
-		tabs.add(new AbstractTab(new Model<String>("Replay events")) {
-			@Override
-			public Panel getPanel(final String panelId) {
-				return new FilesPanel(panelId, page);
-			}
-		});
-
-		tabs.add(new AbstractTab(new Model<String>("See progress")) {
-			@Override
-			public Panel getPanel(final String panelId) {
-				return new ProgressPanel(panelId, page);
-			}
-		});*/
 
 		tabs.add(new AbstractTab(new Model<String>("Generate events")) {
 			@Override
-			public Panel getPanel(final String panelId) { return new GeneratePanel(panelId, page); }
+			public Panel getPanel(final String panelId) {
+				return new GeneratePanel(panelId, page);
+			}
+		});
+		tabs.add(new AbstractTab(new Model<String>("Create dependencies")) {
+			@Override
+			public Panel getPanel(final String panelId) {
+				return new DependenciesPanel(panelId, page);
+			}
 		});
 
 		this.add(new BootstrapTabbedPanel<ITab>("tabs", tabs));
