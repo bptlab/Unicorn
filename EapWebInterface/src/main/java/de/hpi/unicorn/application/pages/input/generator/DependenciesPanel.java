@@ -7,6 +7,7 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -252,8 +253,11 @@ public class DependenciesPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                    DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
-                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                dependency.save();
+                dependency.addDependencyValues(dependenciesInput);
+                DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
             }
             @Override
             public void onAfterSubmit(final AjaxRequestTarget target, final Form form) {

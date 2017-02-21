@@ -62,7 +62,8 @@ public class AttributeDependency extends Persistable {
     public boolean addDependencyValues(HashMap<String, String> values) {
         try {
             for (HashMap.Entry entry : values.entrySet()) {
-                new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
+                AttributeValueDependency value = new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
+                value.save();
             }
         } catch (Exception e) {
             return false;
