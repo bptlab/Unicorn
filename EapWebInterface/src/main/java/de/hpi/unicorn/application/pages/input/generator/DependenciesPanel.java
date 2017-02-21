@@ -44,6 +44,13 @@ public class DependenciesPanel extends Panel {
     private String currentBaseAttributeInput = "";
     private String currentDependentAttributeInput = "";
 
+    private DropDownChoice<TypeTreeNode> baseDropDown;
+    private DropDownChoice<TypeTreeNode> dependentDropDown;
+    private DropDownChoice<EapEventType> eventTypeDropDown;
+
+    private AjaxButton addDependencyButton;
+    private AjaxButton submitButton;
+
     private HashMap<String, String> dependeciesInput = new HashMap<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
@@ -81,11 +88,11 @@ public class DependenciesPanel extends Panel {
             setFirstAttributes();
         }
 
-        final DropDownChoice<TypeTreeNode> baseDropDown = new DropDownChoice<>("baseAttributeField", new PropertyModel<TypeTreeNode>( this,
+        baseDropDown = new DropDownChoice<>("baseAttributeField", new PropertyModel<TypeTreeNode>( this,
                 "selectedBaseAttribute" ),
                 selectedEventType.getValueTypes(), new ChoiceRenderer<>("name", "name"));
 
-        final DropDownChoice<TypeTreeNode> dependentDropDown = new DropDownChoice<>("dependentAttributeField", new PropertyModel<TypeTreeNode>( this,
+        dependentDropDown = new DropDownChoice<>("dependentAttributeField", new PropertyModel<TypeTreeNode>( this,
                 "selectedDependentAttribute" ),
                 getDependentAttributeChoiceList(), new ChoiceRenderer<>("name", "name"));
 
@@ -94,7 +101,7 @@ public class DependenciesPanel extends Panel {
         final Label selectedDependentAttributeTypeLabel = new Label("selectedDependentAttributeType", new PropertyModel<String>(this,
                 "selectedDependentAttribute.type"));
 
-        DropDownChoice<EapEventType> eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+        eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
                 eventTypes);
 
         selectedBaseAttributeTypeLabel.setOutputMarkupId(true);
@@ -135,6 +142,9 @@ public class DependenciesPanel extends Panel {
                     setFirstAttributes();
                     baseDropDown.setChoices(selectedEventType.getValueTypes());
                     dependentDropDown.setChoices(getDependentAttributeChoiceList());
+                    setEnablementForSubmitButtons();
+                    target.add(addDependencyButton);
+                    target.add(submitButton);
                     target.add(selectedBaseAttributeTypeLabel);
                     target.add(selectedDependentAttributeTypeLabel);
                     target.add(baseDropDown);
@@ -194,7 +204,7 @@ public class DependenciesPanel extends Panel {
     }
 
     private void addAddDependencyButton() {
-       final AjaxButton addDependencyButton = new AjaxButton("addDependencyButton", this.layoutForm) {
+       addDependencyButton = new AjaxButton("addDependencyButton", this.layoutForm) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
@@ -210,6 +220,12 @@ public class DependenciesPanel extends Panel {
                 }
                 DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
                 target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                eventTypeDropDown.setEnabled(false);
+                baseDropDown.setEnabled(false);
+                dependentDropDown.setEnabled(false);
+                target.add(eventTypeDropDown);
+                target.add(baseDropDown);
+                target.add(dependentDropDown);
                 dependeciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 listview.removeAll();
                 target.add(listContainer);
@@ -219,7 +235,7 @@ public class DependenciesPanel extends Panel {
     }
 
     private void addSubmitButton() {
-        final AjaxButton submitButton = new AjaxButton("submitButton", this.layoutForm) {
+        submitButton = new AjaxButton("submitButton", this.layoutForm) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
@@ -228,12 +244,24 @@ public class DependenciesPanel extends Panel {
             }
         };
         this.layoutForm.add(submitButton);
+        setEnablementForSubmitButtons();
     }
 
     private void setFirstAttributes() {
         if(selectedEventType.getValueTypes().size() >= 2) {
             selectedBaseAttribute = selectedEventType.getValueTypes().get(0);
             selectedDependentAttribute = selectedEventType.getValueTypes().get(1);
+        }
+    }
+
+    private void setEnablementForSubmitButtons() {
+        if(selectedEventType.getValueTypes().size() <= 1) {
+            addDependencyButton.setEnabled(false);
+            submitButton.setEnabled(false);
+        }
+        else {
+            addDependencyButton.setEnabled(true);
+            submitButton.setEnabled(true);
         }
     }
 
