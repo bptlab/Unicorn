@@ -87,7 +87,7 @@ public class DependenciesPanel extends Panel {
 
         final DropDownChoice<TypeTreeNode> dependentDropDown = new DropDownChoice<>("dependentAttributeField", new PropertyModel<TypeTreeNode>( this,
                 "selectedDependentAttribute" ),
-                selectedEventType.getValueTypes(), new ChoiceRenderer<>("name", "name"));
+                getDependentAttributeChoiceList(), new ChoiceRenderer<>("name", "name"));
 
         final Label selectedBaseAttributeTypeLabel = new Label("selectedBaseAttributeType", new PropertyModel<String>(this,
                 "selectedBaseAttribute.type"));
@@ -107,12 +107,7 @@ public class DependenciesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null && selectedEventType.getEventAttributes().size() >= 2) {
-                    List<TypeTreeNode> attributesWithoutBaseAttribute = selectedEventType.getValueTypes();
-                    try {
-                        attributesWithoutBaseAttribute.remove(selectedBaseAttribute);
-                    }
-                    finally {}
-                    dependentDropDown.setChoices(attributesWithoutBaseAttribute);
+                    dependentDropDown.setChoices(getDependentAttributeChoiceList());
                     target.add(dependentDropDown);
                     listview.removeAll();
                     target.add(selectedBaseAttributeTypeLabel);
@@ -139,7 +134,7 @@ public class DependenciesPanel extends Panel {
                 if(selectedEventType != null) {
                     setFirstAttributes();
                     baseDropDown.setChoices(selectedEventType.getValueTypes());
-                    dependentDropDown.setChoices(selectedEventType.getValueTypes());
+                    dependentDropDown.setChoices(getDependentAttributeChoiceList());
                     target.add(selectedBaseAttributeTypeLabel);
                     target.add(selectedDependentAttributeTypeLabel);
                     target.add(baseDropDown);
@@ -240,5 +235,14 @@ public class DependenciesPanel extends Panel {
             selectedBaseAttribute = selectedEventType.getValueTypes().get(0);
             selectedDependentAttribute = selectedEventType.getValueTypes().get(1);
         }
+    }
+
+    private List<TypeTreeNode> getDependentAttributeChoiceList() {
+        List<TypeTreeNode> attributesWithoutBaseAttribute = selectedEventType.getValueTypes();
+        try {
+            attributesWithoutBaseAttribute.remove(selectedBaseAttribute);
+        }
+        finally {}
+        return attributesWithoutBaseAttribute;
     }
 }
