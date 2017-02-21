@@ -78,6 +78,7 @@ public class DependenciesPanel extends Panel {
 
         if(!eventTypes.isEmpty()) {
             selectedEventType = eventTypes.get(0);
+            setFirstAttributes();
         }
 
         final DropDownChoice<TypeTreeNode> baseDropDown = new DropDownChoice<>("baseAttributeField", new PropertyModel<TypeTreeNode>( this,
@@ -136,12 +137,16 @@ public class DependenciesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
+                    setFirstAttributes();
                     baseDropDown.setChoices(selectedEventType.getValueTypes());
                     dependentDropDown.setChoices(selectedEventType.getValueTypes());
                     target.add(selectedBaseAttributeTypeLabel);
                     target.add(selectedDependentAttributeTypeLabel);
                     target.add(baseDropDown);
                     target.add(dependentDropDown);
+                    target.add(selectedBaseAttributeTypeLabel);
+                    target.add(selectedDependentAttributeTypeLabel);
+                    target.add(listContainer);
                 }
             }
         });
@@ -223,11 +228,17 @@ public class DependenciesPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                    DependenciesPanel.this.page.getFeedbackPanel().success("SUBMITTED");
+                    DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
             }
         };
-
         this.layoutForm.add(submitButton);
+    }
+
+    private void setFirstAttributes() {
+        if(selectedEventType.getValueTypes().size() >= 2) {
+            selectedBaseAttribute = selectedEventType.getValueTypes().get(0);
+            selectedDependentAttribute = selectedEventType.getValueTypes().get(1);
+        }
     }
 }

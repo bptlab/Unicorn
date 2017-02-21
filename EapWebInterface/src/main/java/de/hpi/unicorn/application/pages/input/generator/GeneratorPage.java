@@ -34,7 +34,7 @@ public class GeneratorPage extends AbstractEapPage {
 				return new GeneratePanel(panelId, page);
 			}
 		});
-		tabs.add(new AbstractTab(new Model<String>("Generate events")) {
+		tabs.add(new AbstractTab(new Model<String>("Create dependencies")) {
 			@Override
 			public Panel getPanel(final String panelId) {
 				return new DependenciesPanel(panelId, page);
