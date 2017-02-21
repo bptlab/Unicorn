@@ -51,7 +51,7 @@ public class DependenciesPanel extends Panel {
     private AjaxButton addDependencyButton;
     private AjaxButton submitButton;
 
-    private HashMap<String, String> dependeciesInput = new HashMap<>();
+    private HashMap<String, String> dependenciesInput = new HashMap<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
 
@@ -68,7 +68,7 @@ public class DependenciesPanel extends Panel {
         this.panel = this;
         layoutForm = new Form("layoutForm");
         this.add(layoutForm);
-        addEventTypeDropDown();
+        addDropDowns();
         addDependencyValuesInputs();
         addListOfDependencies();
         addAddDependencyButton();
@@ -80,7 +80,7 @@ public class DependenciesPanel extends Panel {
      * When selected, the two dropdowns containing the attributes of the choosen event type will be updated.
      * Using the two dropdowns the base and dependent attribute can be selected.
      */
-    private void addEventTypeDropDown() {
+    private void addDropDowns() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
 
         if(!eventTypes.isEmpty()) {
@@ -107,18 +107,25 @@ public class DependenciesPanel extends Panel {
         selectedBaseAttributeTypeLabel.setOutputMarkupId(true);
         selectedDependentAttributeTypeLabel.setOutputMarkupId(true);
 
+        baseDropDown.setRequired(true);
         baseDropDown.setOutputMarkupId(true);
+        dependentDropDown.setRequired(true);
         dependentDropDown.setOutputMarkupId(true);
+        eventTypeDropDown.setRequired(true);
+        eventTypeDropDown.setOutputMarkupId(true);
 
         baseDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                if(selectedEventType != null && selectedEventType.getEventAttributes().size() >= 2) {
+                if(selectedEventType != null) {
                     dependentDropDown.setChoices(getDependentAttributeChoiceList());
+                    if(selectedBaseAttribute == selectedDependentAttribute) {
+                        selectedDependentAttribute = dependentDropDown.getChoices().get(0);
+                    }
                     target.add(dependentDropDown);
-                    listview.removeAll();
                     target.add(selectedBaseAttributeTypeLabel);
                     target.add(selectedDependentAttributeTypeLabel);
+                    listview.removeAll();
                     target.add(listContainer);
                 }
             }
@@ -182,7 +189,7 @@ public class DependenciesPanel extends Panel {
         {
             @Override
             protected Object load() {
-                return new ArrayList<String>(dependeciesInput.keySet());
+                return new ArrayList<String>(dependenciesInput.keySet());
             }
         };
         listview = new ListView<String>("dependenciesListview", list) {
@@ -190,7 +197,7 @@ public class DependenciesPanel extends Panel {
             protected void populateItem(ListItem item) {
                 final String key = (String) item.getModelObject();
                 item.add(new Label("baseAttributeValue", key));
-                item.add(new Label("dependentAttributeValue", dependeciesInput.get(key)));
+                item.add(new Label("dependentAttributeValue", dependenciesInput.get(key)));
             }
         };
         listContainer = new WebMarkupContainer("dependenciesContainer");
@@ -213,20 +220,18 @@ public class DependenciesPanel extends Panel {
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
                     return;
                 }
-                if(dependeciesInput.containsKey(currentBaseAttributeInput)) {
+                if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
                     DependenciesPanel.this.page.getFeedbackPanel().error("This value is already registered!");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
                     return;
                 }
+                dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
                 target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                eventTypeDropDown.setEnabled(false);
-                baseDropDown.setEnabled(false);
-                dependentDropDown.setEnabled(false);
+                disableDropDowns();
                 target.add(eventTypeDropDown);
                 target.add(baseDropDown);
                 target.add(dependentDropDown);
-                dependeciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 listview.removeAll();
                 target.add(listContainer);
             }
@@ -241,6 +246,13 @@ public class DependenciesPanel extends Panel {
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
                     DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
+            }
+            @Override
+            public void onAfterSubmit(final AjaxRequestTarget target, final Form form) {
+                dependenciesInput = new HashMap<>();
+                form.clearInput();
+                form.modelChanged();
+                target.add(form);
             }
         };
         this.layoutForm.add(submitButton);
@@ -263,6 +275,12 @@ public class DependenciesPanel extends Panel {
             addDependencyButton.setEnabled(true);
             submitButton.setEnabled(true);
         }
+    }
+
+    private void disableDropDowns() {
+        eventTypeDropDown.setEnabled(false);
+        baseDropDown.setEnabled(false);
+        dependentDropDown.setEnabled(false);
     }
 
     private List<TypeTreeNode> getDependentAttributeChoiceList() {
