@@ -48,6 +48,9 @@ public class DependenciesPanel extends Panel {
     private DropDownChoice<TypeTreeNode> dependentDropDown;
     private DropDownChoice<EapEventType> eventTypeDropDown;
 
+    private TextField<String> baseAttributeInputField;
+    private TextField<String> dependentAttributeInputField;
+
     private AjaxButton addDependencyButton;
     private AjaxButton submitButton;
 
@@ -172,14 +175,16 @@ public class DependenciesPanel extends Panel {
     }
 
     private void addDependencyValuesInputs() {
-        TextField<String> baseAttributeInputField = new TextField<String>("baseAttributeInput", new PropertyModel<String>(this,
+        baseAttributeInputField = new TextField<String>("baseAttributeInput", new PropertyModel<String>(this,
                 "currentBaseAttributeInput"));
-        TextField<String> dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
+        dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
                 "currentDependentAttributeInput"));
         baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
         baseAttributeInputField.setRequired(true);
+        baseAttributeInputField.setOutputMarkupId(true);
         dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
         dependentAttributeInputField.setRequired(true);
+        dependentAttributeInputField.setOutputMarkupId(true);
         layoutForm.add(baseAttributeInputField);
         layoutForm.add(dependentAttributeInputField);
     }
@@ -228,10 +233,14 @@ public class DependenciesPanel extends Panel {
                 dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
                 target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                currentBaseAttributeInput = "";
+                currentDependentAttributeInput = "";
                 disableDropDowns();
                 target.add(eventTypeDropDown);
                 target.add(baseDropDown);
                 target.add(dependentDropDown);
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
                 listview.removeAll();
                 target.add(listContainer);
             }
@@ -252,6 +261,15 @@ public class DependenciesPanel extends Panel {
                 dependenciesInput = new HashMap<>();
                 form.clearInput();
                 form.modelChanged();
+                currentBaseAttributeInput = "";
+                currentDependentAttributeInput = "";
+                setEnablementForDropDowns(true);
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
+                target.add(eventTypeDropDown);
+                target.add(baseDropDown);
+                target.add(dependentDropDown);
+
                 target.add(form);
             }
         };
@@ -278,9 +296,12 @@ public class DependenciesPanel extends Panel {
     }
 
     private void disableDropDowns() {
-        eventTypeDropDown.setEnabled(false);
-        baseDropDown.setEnabled(false);
-        dependentDropDown.setEnabled(false);
+        setEnablementForDropDowns(false);
+    }
+    private void setEnablementForDropDowns(Boolean enabled) {
+        eventTypeDropDown.setEnabled(enabled);
+        baseDropDown.setEnabled(enabled);
+        dependentDropDown.setEnabled(enabled);
     }
 
     private List<TypeTreeNode> getDependentAttributeChoiceList() {
