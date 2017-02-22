@@ -293,9 +293,14 @@ public class DependenciesPanel extends Panel {
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
                 AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 dependency.save();
-                dependency.addDependencyValues(dependenciesInput);
-                DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
-                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                if(dependency.addDependencyValues(dependenciesInput)) {
+                    DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                }
+                else {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while saving dependencies. Please try again.");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                }
             }
             @Override
             public void onAfterSubmit(final AjaxRequestTarget target, final Form form) {

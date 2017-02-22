@@ -12,8 +12,10 @@ import javax.persistence.*;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.persistence.Persistable;
+import de.hpi.unicorn.persistence.Persistor;
 
-import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
 
 /**
  * This class represents the dependencies between attributes of one event type.
@@ -59,9 +61,14 @@ public class AttributeDependency extends Persistable {
         return this.ID;
     }
 
-    public boolean addDependencyValues(HashMap<String, String> values) {
+    public TypeTreeNode getBaseAttribute() { return this.baseAttribute; }
+
+    public TypeTreeNode getDependentAttribute() { return this.dependentAttribute; }
+
+
+    public boolean addDependencyValues(Map<String, String> values) {
         try {
-            for (HashMap.Entry entry : values.entrySet()) {
+            for (Map.Entry entry : values.entrySet()) {
                 AttributeValueDependency value = new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
                 value.save();
             }
@@ -69,5 +76,11 @@ public class AttributeDependency extends Persistable {
             return false;
         }
         return true;
+    }
+
+    public static List<AttributeDependency> getAttributeDependenciesWithEventType(EapEventType eventType) {
+        final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM AttributeDependency WHERE EventType = " + eventType.getID
+                (), AttributeDependency.class);
+        return query.getResultList();
     }
 }
