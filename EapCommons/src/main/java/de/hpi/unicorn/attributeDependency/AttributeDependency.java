@@ -79,8 +79,8 @@ public class AttributeDependency extends Persistable {
     }
 
     public static List<AttributeDependency> getAttributeDependenciesWithEventType(EapEventType eventType) {
-        final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM AttributeDependency WHERE EventType = " + eventType.getID
-                (), AttributeDependency.class);
+        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType",
+                AttributeDependency.class).setParameter("eventType", eventType);
         return query.getResultList();
     }
 }

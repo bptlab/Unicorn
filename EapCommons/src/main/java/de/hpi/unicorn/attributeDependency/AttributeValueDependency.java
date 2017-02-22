@@ -7,10 +7,15 @@
  *******************************************************************************/
 package de.hpi.unicorn.attributeDependency;
 
+import javax.management.Attribute;
 import javax.persistence.*;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.persistence.Persistable;
+import de.hpi.unicorn.persistence.Persistor;
+
+import java.util.List;
 
 /**
  * This class represents the dependent attribute values for one event type.
@@ -47,6 +52,12 @@ public class AttributeValueDependency extends Persistable {
         this.dependencyRule = dependencyRule;
         this.baseAttributeValue = baseAttributeValue;
         this.dependentAttributeValues = dependentAttributeValues;
+    }
+
+    public static List<AttributeValueDependency> getAttributeValueDependenciesForAttributeDependency(AttributeDependency attributeDependency) {
+        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeValueDependency a WHERE a.dependencyRule = " +
+                ":depRule", AttributeValueDependency.class).setParameter("depRule",attributeDependency);
+        return query.getResultList();
     }
 
     @Override
