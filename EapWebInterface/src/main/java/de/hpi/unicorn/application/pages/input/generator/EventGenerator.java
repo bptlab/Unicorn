@@ -2,10 +2,10 @@ package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.application.pages.input.replayer.EventReplayer;
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -23,7 +23,6 @@ public class EventGenerator {
     private int eventCount;
     private int replayScaleFactor = 10000;
     private static Random random = new Random();
-    private static final Logger logger = Logger.getLogger(EventGenerator.class);
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
     private List<AttributeDependency> attributeDependencies;
@@ -83,28 +82,15 @@ public class EventGenerator {
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
-                if(isDependentAttribute(attributeSchema.getKey())) {
-                    values.put(attributeSchema.getKey().getName(), "");
-                    logger.info("Skipping " + attributeSchema.getKey().getName() + " because of dep.");
+                //Check if current attribute has a dependency, if so we shouldn't touch its value as it will be filled later together with its base
+                // attribute
+                if(isDependentAttributeInDependency(attributeSchema.getKey())) {
                     continue;
                 }
-                switch (attributeSchema.getKey().getType()) {
-                    case STRING:
-                        values.put(attributeSchema.getKey().getName(), getRandomStringFromInput(attributeSchema.getValue()));
-                        break;
-                    case INTEGER:
-                        values.put(attributeSchema.getKey().getName(), getRandomIntFromInput(attributeSchema.getValue()));
-                        break;
-                    case FLOAT:
-                        values.put(attributeSchema.getKey().getName(), getRandomFloatFromInput(attributeSchema.getValue()));
-                        break;
-                    case DATE:
-                        values.put(attributeSchema.getKey().getName(), getRandomDateFromInput(attributeSchema.getValue()));
-                        break;
-                    default:
-                        values.put(attributeSchema.getKey().getName(), "UNDEFINED");
-                        break;
-                }
+                //Set a value for the current attribute
+                setValueForAttribute(attributeSchema.getKey(), attributeSchema.getValue(), values);
+                //Check if current attribute is a base attribute in a dependency and set dependent attribute values
+                tryToFillDependentAttributes(attributeSchema.getKey(), values);
             }
             EapEvent event = new EapEvent(eventType, getRandomDateFromInput(eventTimestamps), values);
             events.add(event);
@@ -116,15 +102,85 @@ public class EventGenerator {
     /**
      * Checks whether a dependency was configured so that this attribute is dependent of another.
      *
-     * @param attribute Attribute to be checked
+     * @param attribute Attribute to be checked to be a dependent attribute
      */
-    private boolean isDependentAttribute(TypeTreeNode attribute) {
+    private boolean isDependentAttributeInDependency(TypeTreeNode attribute) {
         for(AttributeDependency attributeDependency : attributeDependencies) {
             if(attributeDependency.getDependentAttribute().equals(attribute)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Checks whether a dependency was configured so that this attribute defines the value of another attribute.
+     *
+     * @param attribute Attribute to be checked to be a base attribute
+     */
+    private boolean isBaseAttributeInDependency(TypeTreeNode attribute) {
+        for(AttributeDependency attributeDependency : attributeDependencies) {
+            if(attributeDependency.getBaseAttribute().equals(attribute)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If the given attribute can be found as a base attribute in a dependency, this function will set dependency-compliant values for dependent
+     * attributes
+     *
+     * @param baseAttribute the attribute to be handled as a base attribute
+     * @param eventValues a map containing already set values, will set the new values in here too. (Value for base attribute has to be set already!)
+     */
+    private void tryToFillDependentAttributes(TypeTreeNode baseAttribute, Map<String, Serializable> eventValues) {
+        if(!isBaseAttributeInDependency(baseAttribute)) {
+            return;
+        }
+
+        String baseAttributeInput = (String) eventValues.get(baseAttribute.getName());
+
+        for(AttributeDependency attributeDependency : AttributeDependency.getAttributeDependenciesForAttribute(baseAttribute)) {
+            TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
+            List<String> possibleDependentValues = new ArrayList<>();
+            for(AttributeValueDependency attributeValueDependency : AttributeValueDependency.getAttributeValueDependenciesForAttributeDependency
+                    (attributeDependency)) {
+                if(baseAttributeInput.equals(attributeValueDependency.getBaseAttributeValue())) {
+                    possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());
+                }
+            }
+            if(!possibleDependentValues.isEmpty()) {
+                setValueForAttribute(dependentAttribute, possibleDependentValues.get(getRandomIndex(possibleDependentValues)), eventValues);
+            }
+        }
+    }
+
+    /**
+     * Chooses a random value from the given values and sets it in the given map for the given attribute.
+     *
+     * @param attribute the attribute a value should be set for
+     * @param possibleValues a string containing the possible values which can be extracted by the "getRandom[attributeType]FromInput"-function
+     * @param eventValues the map containing already set values will be altered by reference
+     */
+    private void setValueForAttribute(TypeTreeNode attribute, String possibleValues, Map<String, Serializable> eventValues) {
+        switch (attribute.getType()) {
+            case STRING:
+                eventValues.put(attribute.getName(), getRandomStringFromInput(possibleValues));
+                break;
+            case INTEGER:
+                eventValues.put(attribute.getName(), getRandomIntFromInput(possibleValues));
+                break;
+            case FLOAT:
+                eventValues.put(attribute.getName(), getRandomFloatFromInput(possibleValues));
+                break;
+            case DATE:
+                eventValues.put(attribute.getName(), getRandomDateFromInput(possibleValues));
+                break;
+            default:
+                eventValues.put(attribute.getName(), "UNDEFINED");
+                break;
+        }
     }
 
     /**
@@ -198,4 +254,5 @@ public class EventGenerator {
     private static int getRandomIndex(Object[] inputArray) {
         return random.nextInt(inputArray.length);
     }
+    private static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
 }
