@@ -260,8 +260,9 @@ public class DependenciesPanel extends Panel {
                 AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 dependency.save();
                 dependency.addDependencyValues(dependenciesInput);
-                List<Integer[]> list = AttributeDependency.getAttributeDependenciesWithEventType(selectedEventType);
-                logger.info("First DBValue: " + list.get(0)[0]);
+                List<AttributeDependency> list = AttributeDependency.getAttributeDependenciesWithEventType(selectedEventType);
+                logger.info("First DBValue: " + list.get(0).getBaseAttribute().getName() + " from type " + list.get(0).getBaseAttribute().getType());
+                logger.info("First DBValue: " + list.get(1).getBaseAttribute().getName() + " from type " + list.get(1).getBaseAttribute().getType());
                 DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
                 target.add(DependenciesPanel.this.page.getFeedbackPanel());
             }
