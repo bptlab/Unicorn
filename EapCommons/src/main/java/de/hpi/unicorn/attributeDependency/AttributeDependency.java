@@ -83,4 +83,11 @@ public class AttributeDependency extends Persistable {
                 AttributeDependency.class).setParameter("eventType", eventType);
         return query.getResultList();
     }
+
+    public static List<AttributeDependency> getAttributeDependenciesForAttribute(TypeTreeNode baseAttribute) {
+        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND a" +
+                        ".baseAttribute = :baseAttribute",
+                AttributeDependency.class).setParameter("eventType", baseAttribute.getEventType()).setParameter("baseAttribute", baseAttribute);
+        return query.getResultList();
+    }
 }
