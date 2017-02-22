@@ -24,8 +24,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,8 +58,6 @@ public class DependenciesPanel extends Panel {
     private HashMap<String, String> dependenciesInput = new HashMap<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
-
-    private static final Logger logger = Logger.getLogger(DependenciesPanel.class);
 
     /**
      * Constructor for the dependencies panel. The page is initialized in this method,
@@ -259,12 +255,14 @@ public class DependenciesPanel extends Panel {
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
                 AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 dependency.save();
-                dependency.addDependencyValues(dependenciesInput);
-                List<AttributeDependency> list = AttributeDependency.getAttributeDependenciesWithEventType(selectedEventType);
-                logger.info("First DBValue: " + list.get(0).getBaseAttribute().getName() + " from type " + list.get(0).getBaseAttribute().getType());
-                logger.info("First DBValue: " + list.get(1).getBaseAttribute().getName() + " from type " + list.get(1).getBaseAttribute().getType());
-                DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
-                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                if(dependency.addDependencyValues(dependenciesInput)) {
+                    DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                }
+                else {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while saving dependencies. Please try again.");
+                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                }
             }
             @Override
             public void onAfterSubmit(final AjaxRequestTarget target, final Form form) {
