@@ -1,6 +1,7 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.application.pages.input.replayer.EventReplayer;
+import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
@@ -24,6 +25,8 @@ public class EventGenerator {
     private static Random random = new Random();
     private static final Logger logger = Logger.getLogger(EventGenerator.class);
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+
+    private List<AttributeDependency> attributeDependencies;
 
     /**
      * Creates a new EventGenerator
@@ -75,9 +78,16 @@ public class EventGenerator {
             throw new IllegalArgumentException();
         }
 
+        attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
+
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
+                if(isDependentAttribute(attributeSchema.getKey())) {
+                    values.put(attributeSchema.getKey().getName(), "");
+                    logger.info("Skipping " + attributeSchema.getKey().getName() + " because of dep.");
+                    continue;
+                }
                 switch (attributeSchema.getKey().getType()) {
                     case STRING:
                         values.put(attributeSchema.getKey().getName(), getRandomStringFromInput(attributeSchema.getValue()));
@@ -101,6 +111,20 @@ public class EventGenerator {
         }
         EventReplayer eventReplayer = new EventReplayer(events, this.replayScaleFactor);
         eventReplayer.replay();
+    }
+
+    /**
+     * Checks whether a dependency was configured so that this attribute is dependent of another.
+     *
+     * @param attribute Attribute to be checked
+     */
+    private boolean isDependentAttribute(TypeTreeNode attribute) {
+        for(AttributeDependency attributeDependency : attributeDependencies) {
+            if(attributeDependency.getDependentAttribute().equals(attribute)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
