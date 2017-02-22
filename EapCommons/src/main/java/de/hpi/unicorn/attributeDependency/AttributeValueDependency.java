@@ -53,4 +53,9 @@ public class AttributeValueDependency extends Persistable {
     public int getID() {
         return this.ID;
     }
+
+    public String getBaseAttributeValue() { return this.baseAttributeValue; }
+
+    public String getDependentAttributeValues() { return this.dependentAttributeValues; }
+
 }
