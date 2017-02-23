@@ -8,6 +8,7 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -25,7 +26,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
+import org.w3c.dom.Attr;
 
+import javax.management.Attribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -136,6 +139,7 @@ public class DependenciesPanel extends Panel {
                         selectedDependentAttribute = dependentDropDown.getChoices().get(0);
                     }
                     target.add(dependentDropDown);
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -144,6 +148,7 @@ public class DependenciesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -158,6 +163,7 @@ public class DependenciesPanel extends Panel {
                     dependentDropDown.setChoices(getDependentAttributeChoiceList());
                     target.add(baseDropDown);
                     target.add(dependentDropDown);
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -349,6 +355,17 @@ public class DependenciesPanel extends Panel {
         target.add(selectedBaseAttributeTypeLabel);
         target.add(selectedDependentAttributeTypeLabel);
         target.add(listContainer);
+    }
+
+    private void updateDependenciesMapForCurrentSelection() {
+        dependenciesInput = new HashMap<>();
+        AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyBetweenTwoAttributes(selectedBaseAttribute, selectedDependentAttribute);
+        if(attributeDependency != null) {
+            for(AttributeValueDependency attributeValueDependency : AttributeValueDependency.getAttributeValueDependenciesForAttributeDependency
+                    (attributeDependency)) {
+                dependenciesInput.put(attributeValueDependency.getBaseAttributeValue(), attributeValueDependency.getDependentAttributeValues());
+            }
+        }
     }
 
     private void setValidatorsForInputFields(AjaxRequestTarget target) {
