@@ -7,6 +7,7 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
@@ -51,6 +52,8 @@ public class GeneratePanel extends Panel {
     private ListView<TypeTreeNode> listview;
     private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
     private WebMarkupContainer listContainer;
+    private AttributeDependencyManager attributeDependencyManager;
+    private final List<EapEventType> eventTypes = EapEventType.findAll();
 
     /**
      * Constructor for the generate panel. The page is initialized in this method,
@@ -79,6 +82,14 @@ public class GeneratePanel extends Panel {
             }
         };
         this.add(layoutForm);
+
+        if(eventTypes.isEmpty()) {
+            selectedEventType = new EapEventType("test");
+        }
+        else {
+            selectedEventType = eventTypes.get(0);
+        }
+        attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
 
         addEventCountField();
         addScaleFactorField();
@@ -115,12 +126,6 @@ public class GeneratePanel extends Panel {
      * Additionally a description is provided so that the user knows the format of input that has to be used.
      */
     private void addEventTypeDropDown() {
-        final List<EapEventType> eventTypes = EapEventType.findAll();
-
-        if(!eventTypes.isEmpty()) {
-            selectedEventType = eventTypes.get(0);
-        }
-
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             @Override
@@ -173,6 +178,7 @@ public class GeneratePanel extends Panel {
                 inputField.setLabel(new Model<String>(attribute.getName()));
                 inputField.setRequired(true);
                 item.add(inputField);
+                item.add(new Label("attributeInputWarning", "").setVisible(attributeDependencyManager.isDependentAttributeInDependency(attribute)));
             }
         };
         listview.setReuseItems(true);
@@ -188,6 +194,7 @@ public class GeneratePanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
+                    attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
                     listview.removeAll();
                     target.add(listContainer);
                 }
