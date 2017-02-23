@@ -2,6 +2,7 @@ package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.application.pages.input.replayer.EventReplayer;
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
@@ -25,7 +26,7 @@ public class EventGenerator {
     private static Random random = new Random();
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
-    private List<AttributeDependency> attributeDependencies;
+    private AttributeDependencyManager attributeDependencyManager;
 
     /**
      * Creates a new EventGenerator
@@ -77,14 +78,14 @@ public class EventGenerator {
             throw new IllegalArgumentException();
         }
 
-        attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
+        attributeDependencyManager = new AttributeDependencyManager(eventType);
 
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
                 //Check if current attribute has a dependency, if so we shouldn't touch its value as it will be filled later together with its base
                 // attribute
-                if(isDependentAttributeInDependency(attributeSchema.getKey())) {
+                if(attributeDependencyManager.isDependentAttributeInDependency(attributeSchema.getKey())) {
                     continue;
                 }
                 //Set a value for the current attribute
@@ -100,34 +101,6 @@ public class EventGenerator {
     }
 
     /**
-     * Checks whether a dependency was configured so that this attribute is dependent of another.
-     *
-     * @param attribute Attribute to be checked to be a dependent attribute
-     */
-    private boolean isDependentAttributeInDependency(TypeTreeNode attribute) {
-        for(AttributeDependency attributeDependency : attributeDependencies) {
-            if(attributeDependency.getDependentAttribute().equals(attribute)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks whether a dependency was configured so that this attribute defines the value of another attribute.
-     *
-     * @param attribute Attribute to be checked to be a base attribute
-     */
-    private boolean isBaseAttributeInDependency(TypeTreeNode attribute) {
-        for(AttributeDependency attributeDependency : attributeDependencies) {
-            if(attributeDependency.getBaseAttribute().equals(attribute)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * If the given attribute can be found as a base attribute in a dependency, this function will set dependency-compliant values for dependent
      * attributes
      *
@@ -135,7 +108,7 @@ public class EventGenerator {
      * @param eventValues a map containing already set values, will set the new values in here too. (Value for base attribute has to be set already!)
      */
     private void tryToFillDependentAttributes(TypeTreeNode baseAttribute, Map<String, Serializable> eventValues) {
-        if(!isBaseAttributeInDependency(baseAttribute)) {
+        if(!attributeDependencyManager.isBaseAttributeInDependency(baseAttribute)) {
             return;
         }
 
