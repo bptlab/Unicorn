@@ -21,6 +21,11 @@ import java.util.List;
  * This class represents the dependencies between attributes of one event type.
  * You can specify that one attribute determines the values of another attribute.
  * See @AttributeValueDependency for the actual dependent values.
+ *
+ *
+ * If you are placing many requests towards the static methods of this class, please consider using the @AttributeDependencyManager. It will "cache"
+ * the results for you and reduce the amount of direct database requests.
+ *
  */
 @Entity
 @Table(name = "AttributeDependency")
