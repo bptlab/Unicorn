@@ -40,6 +40,12 @@ public class GeneratorPage extends AbstractEapPage {
 				return new DependenciesPanel(panelId, page);
 			}
 		});
+		tabs.add(new AbstractTab(new Model<String>("Export/import dependencies")) {
+			@Override
+			public Panel getPanel(final String panelId) {
+				return new ExportImportDependenciesPanel(panelId, page);
+			}
+		});
 
 		this.add(new BootstrapTabbedPanel<ITab>("tabs", tabs));
 		setOutputMarkupId(true);

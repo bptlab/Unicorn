@@ -38,6 +38,15 @@ public class AttributeDependencyManager {
 	}
 
 	/**
+	 * Returns a List with all dependencies.
+	 *
+	 * @return a list with attribute dependencies
+	 */
+	public List<AttributeDependency> getAttributeDependencies() {
+		return this.attributeDependencies;
+	}
+
+	/**
 	 * Returns a List with all dependencies where the given attribute is set as base attribute.
 	 *
 	 * @param baseAttribute the attribute all dependencies should be returned for
