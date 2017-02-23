@@ -224,10 +224,10 @@ public class DependenciesPanel extends Panel {
                 "currentBaseAttributeInput"));
         dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
                 "currentDependentAttributeInput"));
-        baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
+        baseAttributeInputField.setLabel(new Model<String>("Input for base attribute"));
         baseAttributeInputField.setOutputMarkupId(true);
         baseAttributeInputField.setEnabled(false);
-        dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
+        dependentAttributeInputField.setLabel(new Model<String>("Input for dependent attribute"));
         dependentAttributeInputField.setOutputMarkupId(true);
         dependentAttributeInputField.setEnabled(false);
         dependencyForm.add(baseAttributeInputField);
@@ -260,6 +260,10 @@ public class DependenciesPanel extends Panel {
                 target.add(dependentAttributeInputField);
                 listview.removeAll();
                 target.add(listContainer);
+            }
+            @Override
+            public void onError(AjaxRequestTarget target, Form form) {
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
             }
         };
         addDependencyValueButton.setEnabled(false);
