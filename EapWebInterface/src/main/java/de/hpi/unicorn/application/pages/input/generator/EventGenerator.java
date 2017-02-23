@@ -6,6 +6,7 @@ import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
+import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 
 import java.io.Serializable;
@@ -112,14 +113,20 @@ public class EventGenerator {
             return;
         }
 
-        String baseAttributeInput = (String) eventValues.get(baseAttribute.getName());
+        String baseAttributeInput;
+        if (baseAttribute.getType() == AttributeTypeEnum.DATE) {
+            baseAttributeInput = dateFormatter.format(eventValues.get(baseAttribute.getName()));
+        }
+        else {
+            baseAttributeInput = String.valueOf(eventValues.get(baseAttribute.getName()));
+        }
 
         for(AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependenciesForAttribute(baseAttribute)) {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<String> possibleDependentValues = new ArrayList<>();
             for(AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependenciesForAttributeDependency
                     (attributeDependency)) {
-                if(baseAttributeInput.equals(attributeValueDependency.getBaseAttributeValue())) {
+                if(isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
                     possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());
                 }
             }
@@ -153,6 +160,119 @@ public class EventGenerator {
             default:
                 eventValues.put(attribute.getName(), "UNDEFINED");
                 break;
+        }
+    }
+
+    /**
+     * Returns the value of a "isInRange" function corresponding to the given type.
+     * This "class of functions" in general return a boolean indicating if the given input lies within a given range.
+     *
+     * @param input the input value to be tested to be in a range
+     * @param range the range the input value should be in
+     * @param type the type of the range (corresponds to the attribute type the value is conceived for)
+     * @return a boolean indicating if the input is within the range
+     */
+    private boolean isInRange(String input, String range, AttributeTypeEnum type) {
+        switch (type) {
+            case STRING:
+                return isInStringRange(input, range);
+            case INTEGER:
+                return isInIntegerRange(input, range);
+            case FLOAT:
+                return isInFloatRange(input, range);
+            case DATE:
+                return isInDateRange(input, range);
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * Implements the "isInRange" function for a string range
+     *
+     * @param input
+     * @param range
+     * @return
+     */
+    private boolean isInStringRange(String input, String range) {
+        String[] possibleValues = range.split(";");
+        for(String possibleValue : possibleValues) {
+            if(possibleValue.equals(input)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Implements the "isInRange" function for an integer range
+     *
+     * @param input
+     * @param range
+     * @return
+     */
+    private boolean isInIntegerRange(String input, String range) {
+        int formattedInput = Integer.parseInt(input);
+        if(range.contains("-")) {
+            int start = Integer.parseInt(range.split("-")[0]);
+            int end = Integer.parseInt(range.split("-")[1]);
+            return (formattedInput >= start) && (formattedInput <= end);
+        }
+        else {
+            return isInStringRange(input, range);
+        }
+    }
+
+    /**
+     * Implements the "isInRange" function for a float range.
+     * Defaults to the "isInRange" function for strings as they currently use the same schema.
+     *
+     * @param input
+     * @param range
+     * @return
+     */
+    private boolean isInFloatRange(String input, String range) {
+        return isInStringRange(input, range);
+    }
+
+    /**
+     * Implements the "isInRange" function for a date range
+     *
+     * @param input
+     * @param range
+     * @return
+     */
+    private boolean isInDateRange(String input, String range) {
+        Date start;
+        Date end;
+        Date inputDate = new Date();
+
+        try {
+            inputDate = dateFormatter.parse(input);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        if(range.contains("-")) {
+            try {
+                start = dateFormatter.parse(range.split("-")[0]);
+                end = dateFormatter.parse(range.split("-")[1]);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
+        }
+        else {
+            try {
+                start = dateFormatter.parse(range);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return inputDate.equals(start);
         }
     }
 
