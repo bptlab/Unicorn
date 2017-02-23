@@ -30,4 +30,13 @@ public enum AttributeTypeEnum {
 		final String s = super.toString();
 		return s.substring(0, 1) + s.substring(1).toLowerCase();
 	}
+
+	public static AttributeTypeEnum fromString(String text) {
+		for (AttributeTypeEnum b : AttributeTypeEnum.values()) {
+			if (b.type.equalsIgnoreCase(text)) {
+				return b;
+			}
+		}
+		return null;
+	}
 }

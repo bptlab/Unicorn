@@ -17,6 +17,7 @@ import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.AttributeTypeTree;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.persistence.Persistable;
@@ -346,6 +347,13 @@ public class EapEventType extends Persistable {
 	 */
 	public boolean containsValue(final String attributeName) {
 		return this.attributes.contains(attributeName);
+	}
+
+	/**
+	 * checks if EapEventtyp contains the given attribute name with corresponding type
+	 */
+	public boolean containsValue(final String attributeName, final AttributeTypeEnum type) {
+		return this.attributes.contains(attributeName, type);
 	}
 
 	/**

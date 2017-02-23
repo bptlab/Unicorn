@@ -341,6 +341,11 @@ public class TypeTreeNode extends Persistable {
 		return bool1 && bool2;
 	}
 
+	public static List<TypeTreeNode> findByName(String name) {
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM TypeTreeNode WHERE Name = '" + name + "'", TypeTreeNode.class);
+		return query.getResultList();
+	}
+
 	/**
 	 * attributes have the same hashcode if their types and names are equal and
 	 * if they belong to the same attribute tree (-> event type)

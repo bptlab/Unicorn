@@ -1,11 +1,15 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
+import com.google.common.io.Files;
 import de.hpi.unicorn.application.pages.export.AJAXDownload;
 import de.hpi.unicorn.application.pages.export.Export;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
+import de.hpi.unicorn.importer.FileUtils;
 import de.hpi.unicorn.importer.json.JsonExporter;
+import de.hpi.unicorn.importer.json.JsonImporter;
 import de.hpi.unicorn.importer.xml.XMLExporter;
+import de.hpi.unicorn.utils.TempFolderUtil;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -19,6 +23,8 @@ import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 
@@ -32,7 +38,7 @@ public class ExportImportDependenciesPanel extends Panel {
     private DropDownChoice<EapEventType> eventTypeDropDown;
     private FileUploadField uploadField;
     private EapEventType selectedEventType;
-    private Logger logger = Logger.getLogger(ExportImportDependenciesPanel.class);
+    private static Logger logger = Logger.getLogger(ExportImportDependenciesPanel.class);
 
     /**
      * Constructor for the dependencies panel. The page is initialized in this method,
@@ -47,9 +53,52 @@ public class ExportImportDependenciesPanel extends Panel {
         this.panel = this;
         exportForm = new Form("exportForm");
         this.add(exportForm);
+        importForm = new Form("importForm") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void onSubmit() {
+                final FileUpload uploadedFile = uploadField.getFileUpload();
+                if (uploadedFile != null) {
+                    final String uploadFolder = TempFolderUtil.getFolder();
+                    final String fileName = uploadedFile.getClientFileName();
+                    final File newFile = new File(uploadFolder + System.getProperty("file.separator") + fileName);
+
+                    if (newFile.exists()) {
+                        newFile.delete();
+                    }
+
+                    try {
+                        newFile.createNewFile();
+                        uploadedFile.writeTo(newFile);
+                    } catch (final IOException e) {
+                        try {
+                            throw new IllegalStateException("Error: File could not be saved under " + newFile.getCanonicalPath() + ".");
+                        } catch (final IOException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                        }
+                    }
+                    //if (uploadedFile.getContentType().equals("application/json")) {
+
+                        try {
+                            String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
+                            JsonImporter.generateAttributeDependencyFromString(fileContent);
+                        } catch (Exception e) {
+                        }
+                    //}
+                } else {
+                    this.error("File not found.");
+                }
+            }
+        };
+        importForm.setMultiPart(true);
+        this.add(importForm);
 
         this.addEventTypeDropDownExport();
         this.addExportButton();
+        this.addEventTypeDropDownImport();
+        this.addImportField();
     }
 
     private void addEventTypeDropDownExport() {
@@ -91,5 +140,22 @@ public class ExportImportDependenciesPanel extends Panel {
                 }
             };
             exportForm.add(exportButton);
+    }
+
+    private void addEventTypeDropDownImport() {
+        final List<EapEventType> eventTypes = EapEventType.findAll();
+
+        if(!eventTypes.isEmpty()) {
+            selectedEventType = eventTypes.get(0);
+        }
+
+        eventTypeDropDown = new DropDownChoice<>("eventTypeFieldImport", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+                eventTypes);
+        importForm.add(eventTypeDropDown);
+    }
+
+    private void addImportField() {
+        uploadField = new FileUploadField("uploadField");
+        importForm.add(uploadField);
     }
 }

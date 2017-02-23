@@ -278,6 +278,16 @@ public class AttributeTypeTree extends Persistable {
 		return false;
 	}
 
+	public boolean contains(final String attributeExpression, final AttributeTypeEnum type) {
+		final List<TypeTreeNode> attributes = this.getAttributes();
+		for (final TypeTreeNode attribute : attributes) {
+			if (attribute.getAttributeExpression().equals(attributeExpression) && attribute.getType().equals(type)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public boolean hasChildren(final String attributeExpression) {
 		final TypeTreeNode attribute = this.getAttributeByExpression(attributeExpression);
 		return attribute.hasChildren();

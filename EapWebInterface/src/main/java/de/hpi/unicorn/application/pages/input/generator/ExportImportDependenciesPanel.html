@@ -18,6 +18,22 @@
                 </div>
             </div>
         </form>
+        <form wicket:id="importForm">
+            <div class="row">
+                <h3>Import dependencies:</h3>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <td>Event type:</td>
+                            <td><select wicket:id="eventTypeFieldImport"></select></td>
+                            <td>Dependency Json:</td>
+                            <td><input wicket:id="uploadField" size="40" type="file" class="btn"/></td>
+                            <td><input type="submit" value="Import" class="btn btn-primary"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
     </div>
 </wicket:panel>
 </html>
