@@ -189,7 +189,7 @@ public class DependenciesPanel extends Panel {
 
                 //DISABLE DEPENDENCY FORM
                 disableDropDowns();
-                addDependencyButton.setVisible(false);
+                addDependencyButton.setEnabled(false);
                 target.add(eventTypeDropDown);
                 target.add(baseDropDown);
                 target.add(dependentDropDown);
@@ -313,7 +313,18 @@ public class DependenciesPanel extends Panel {
                 dependenciesInput = new HashMap<>();
                 currentBaseAttributeInput = "";
                 currentDependentAttributeInput = "";
+                baseAttributeInputField.setEnabled(false);
+                dependentAttributeInputField.setEnabled(false);
+                addDependencyValueButton.setEnabled(false);
+                submitButton.setEnabled(false);
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
+                target.add(addDependencyValueButton);
+                target.add(submitButton);
+
                 setEnablementForDropDowns(true);
+                addDependencyButton.setEnabled(true);
+                target.add(addDependencyButton);
                 target.add(baseAttributeInputField);
                 target.add(dependentAttributeInputField);
                 target.add(eventTypeDropDown);
