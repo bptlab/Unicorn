@@ -8,6 +8,7 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
@@ -27,9 +28,7 @@ import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.w3c.dom.Attr;
 
-import javax.management.Attribute;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -281,6 +280,7 @@ public class DependenciesPanel extends Panel {
     }
 
     private void addListOfDependencies() {
+        updateDependenciesMapForCurrentSelection();
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             @Override
@@ -311,8 +311,7 @@ public class DependenciesPanel extends Panel {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
-                dependency.save();
+                AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 if(dependency.addDependencyValues(dependenciesInput)) {
                     DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
@@ -384,9 +383,10 @@ public class DependenciesPanel extends Panel {
 
     private void updateDependenciesMapForCurrentSelection() {
         dependenciesInput = new HashMap<>();
-        AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyBetweenTwoAttributes(selectedBaseAttribute, selectedDependentAttribute);
+        AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute,
+                selectedDependentAttribute);
         if(attributeDependency != null) {
-            for(AttributeValueDependency attributeValueDependency : AttributeValueDependency.getAttributeValueDependenciesForAttributeDependency
+            for(AttributeValueDependency attributeValueDependency : AttributeValueDependency.getAttributeValueDependenciesFor
                     (attributeDependency)) {
                 dependenciesInput.put(attributeValueDependency.getBaseAttributeValue(), attributeValueDependency.getDependentAttributeValues());
             }

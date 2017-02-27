@@ -33,7 +33,7 @@ public class AttributeDependencyManager implements Serializable {
 		this.eventType = eventType;
 		this.attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
 		for(AttributeDependency attributeDependency : attributeDependencies) {
-			attributeValueDependencies.put(attributeDependency, AttributeValueDependency.getAttributeValueDependenciesForAttributeDependency
+			attributeValueDependencies.put(attributeDependency, AttributeValueDependency.getAttributeValueDependenciesFor
 					(attributeDependency));
 		}
 	}
@@ -100,5 +100,14 @@ public class AttributeDependencyManager implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	public static AttributeDependency getAttributeDependency(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode dependentAttribute) {
+		AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAttribute, dependentAttribute);
+		if(attributeDependency == null) {
+			attributeDependency = new AttributeDependency(eventType, baseAttribute, dependentAttribute);
+			attributeDependency.save();
+		}
+		return attributeDependency;
 	}
 }

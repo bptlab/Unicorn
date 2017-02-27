@@ -23,7 +23,8 @@ import java.util.List;
  * Which attribute that is, is specified in @AttributeDependency.
  */
 @Entity
-@Table(name = "AttributeValueDependency")
+@Table(name = "AttributeValueDependency",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"DependencyRule", "BaseAttributeValue"}))
 public class AttributeValueDependency extends Persistable {
 
     private static final long serialVersionUID = 1L;
@@ -54,7 +55,7 @@ public class AttributeValueDependency extends Persistable {
         this.dependentAttributeValues = dependentAttributeValues;
     }
 
-    public static List<AttributeValueDependency> getAttributeValueDependenciesForAttributeDependency(AttributeDependency attributeDependency) {
+    public static List<AttributeValueDependency> getAttributeValueDependenciesFor(AttributeDependency attributeDependency) {
         final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeValueDependency a WHERE a.dependencyRule = " +
                 ":depRule", AttributeValueDependency.class).setParameter("depRule",attributeDependency);
         return query.getResultList();
@@ -68,5 +69,11 @@ public class AttributeValueDependency extends Persistable {
     public String getBaseAttributeValue() { return this.baseAttributeValue; }
 
     public String getDependentAttributeValues() { return this.dependentAttributeValues; }
+
+    public void setDependentAttributeValues(String dependentAttributeValues) {
+        this.dependentAttributeValues = dependentAttributeValues;
+    }
+
+    public AttributeDependency getDependencyRule() { return this.dependencyRule; }
 
 }
