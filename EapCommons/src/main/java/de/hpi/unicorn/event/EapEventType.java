@@ -350,10 +350,14 @@ public class EapEventType extends Persistable {
 	}
 
 	/**
-	 * checks if EapEventtyp contains the given attribute name with corresponding type
+	 * Checks if EapEventType contains the given attribute name with corresponding type.
+	 *
+	 * @param attributeName
+	 * @param attributeType
+	 * @return true if there is an attribute with given name and type
 	 */
-	public boolean containsValue(final String attributeName, final AttributeTypeEnum type) {
-		return this.attributes.contains(attributeName, type);
+	public boolean containsValue(final String attributeName, final AttributeTypeEnum attributeType) {
+		return this.attributes.contains(attributeName, attributeType);
 	}
 
 	/**

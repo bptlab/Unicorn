@@ -31,10 +31,16 @@ public enum AttributeTypeEnum {
 		return s.substring(0, 1) + s.substring(1).toLowerCase();
 	}
 
-	public static AttributeTypeEnum fromString(String text) {
-		for (AttributeTypeEnum b : AttributeTypeEnum.values()) {
-			if (b.type.equalsIgnoreCase(text)) {
-				return b;
+	/**
+	 * Retruns a AttributeTypeEnum that corresponds to the given String.
+	 *
+	 * @param typeString
+	 * @return Corresponding AttributeTypeEnum
+	 */
+	public static AttributeTypeEnum fromString(String typeString) {
+		for (AttributeTypeEnum typeEnum : AttributeTypeEnum.values()) {
+			if (typeEnum.type.equalsIgnoreCase(typeString)) {
+				return typeEnum;
 			}
 		}
 		return null;

@@ -278,10 +278,17 @@ public class AttributeTypeTree extends Persistable {
 		return false;
 	}
 
-	public boolean contains(final String attributeExpression, final AttributeTypeEnum type) {
+	/**
+	 * Checks if type tree contains the given attribute name with corresponding type.
+	 *
+	 * @param attributeExpression the name of the attribute
+	 * @param attributeType
+	 * @return true if there is an attribute with given name and type
+	 */
+	public boolean contains(final String attributeExpression, final AttributeTypeEnum attributeType) {
 		final List<TypeTreeNode> attributes = this.getAttributes();
 		for (final TypeTreeNode attribute : attributes) {
-			if (attribute.getAttributeExpression().equals(attributeExpression) && attribute.getType().equals(type)) {
+			if (attribute.getAttributeExpression().equals(attributeExpression) && attribute.getType().equals(attributeType)) {
 				return true;
 			}
 		}

@@ -341,6 +341,12 @@ public class TypeTreeNode extends Persistable {
 		return bool1 && bool2;
 	}
 
+	/**
+	 * Searches database for TypeTreeNodes with the given name.
+	 *
+	 * @param name
+	 * @return List of TypeTreeNodes htat match the given name
+	 */
 	public static List<TypeTreeNode> findByName(String name) {
 		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM TypeTreeNode WHERE Name = '" + name + "'", TypeTreeNode.class);
 		return query.getResultList();
