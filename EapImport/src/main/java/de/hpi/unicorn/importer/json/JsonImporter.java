@@ -4,6 +4,7 @@ import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class JsonImporter {
+    private static Logger logger = Logger.getLogger(JsonImporter.class);
     public static boolean generateAttributeDependenciesFromString(String dependenciesString) {
         try {
             JSONObject dependenciesJson = new JSONObject(dependenciesString);
@@ -20,9 +22,11 @@ public class JsonImporter {
             if (!eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName")) || eventType == null) {
                 return false;
             }
+            // add every dependency
             JSONArray eventTypeDependenciesJson = eventTypeJson.getJSONArray("dependencies");
             for (int i = 0; i < eventTypeDependenciesJson.length(); i++) {
                 JSONObject dependencyJson = eventTypeDependenciesJson.getJSONObject(i);
+
                 // check if corresponding event type exists with correct attributes
                 JSONObject baseJson = dependencyJson.getJSONObject("base");
                 boolean baseAttIncluded = eventType.containsValue(baseJson.getString("name"),
@@ -33,22 +37,27 @@ public class JsonImporter {
                 if (!baseAttIncluded || !dependentAttIncluded) {
                     return false;
                 }
-                // create dependencies
-                AttributeDependency dep = new AttributeDependency(eventType,
-                        TypeTreeNode.findByName(baseJson.getString("name")).get(0),
-                        TypeTreeNode.findByName(dependentJson.getString("name")).get(0));
 
-                if(dep.save() == null) {
-                    return false;
+                // check if dependency rule is already stored and create accordingly
+                TypeTreeNode baseAtt = TypeTreeNode.findByName(baseJson.getString("name")).get(0);
+                TypeTreeNode dependentAtt = TypeTreeNode.findByName(dependentJson.getString("name")).get(0);
+                AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAtt, dependentAtt);
+                if (dependency == null) {
+                    dependency = new AttributeDependency(eventType, baseAtt, dependentAtt);
+                    if(dependency.save() == null) {
+                        return false;
+                    }
                 }
+
                 // create dependency values
+                //TODO: Validate inputs
                 JSONObject valuesJson = dependencyJson.getJSONObject("values");
                 Map<String, String> values = new HashMap<>();
                 for (int j = 0; j < valuesJson.names().length(); j++) {
                     String baseValue = (String) valuesJson.names().get(j);
                     values.put(baseValue, valuesJson.getString(baseValue));
                 }
-                if (!dep.addDependencyValues(values)) {
+                if (!dependency.addDependencyValues(values)) {
                     return false;
                 }
             }
