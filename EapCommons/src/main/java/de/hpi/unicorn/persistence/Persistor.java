@@ -11,41 +11,60 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.log4j.Logger;
+
 /**
  * This class is the controller for the database access and to get a connection
  * to the EntityManager.
  */
 public class Persistor {
 
-	private static String PERSISTENCE_UNIT_NAME = PersistenceUnit.DEVELOPMENT.getName();
-	private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(Persistor.PERSISTENCE_UNIT_NAME);
+	private static Logger logger = Logger.getLogger(Persistor.class);
 
-	public static EntityManagerFactory getEntityManagerFactory() {
-		return Persistor.entityManagerFactory;
+	private static EntityManagerFactory entityManagerFactory;
+
+	public Persistor() {
+		entityManagerFactory = getEntityManagerFactory(false);
 	}
 
-	public static void setEntityManagerFactory(final EntityManagerFactory entityManagerFactory) {
-		Persistor.entityManagerFactory = entityManagerFactory;
+	public Persistor(boolean testMode) {
+		entityManagerFactory = getEntityManagerFactory(testMode);
 	}
 
-	public static EntityManager getEntityManager() {
-		return Persistor.entityManagerFactory.createEntityManager();
+	public static EntityManagerFactory getEntityManagerFactory(boolean testMode) {
+		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
+		Map<String, String> persistenceMap = new HashMap<String, String>();
+
+		logger.info(databaseBaseUrl);
+		logger.info(testMode);
+
+		if (databaseBaseUrl.length() > 1) {
+			if (testMode) {
+				database = "eap_testing";
+			} else {
+				database = "eap_development";
+			}
+
+			String url = "jdbc:mariadb://" + databaseBaseUrl + "/" + database + "?createDatabaseIfNotExist=true";
+			persistenceMap.put("javax.persistence.jdbc.url", url);
+		}
+		return Persistance.createEntityManagerFactory("default", persistenceMap);
 	}
 
-	public static String getPERSISTENCE_UNIT_NAME() {
-		return Persistor.PERSISTENCE_UNIT_NAME;
-	}
-
-	public static void setPERSISTENCE_UNIT_NAME(final String persistenceUnitName) {
-		Persistor.entityManagerFactory.close();
-		Persistor.entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+	public static void setMode(boolean testMode) {
+		entityManagerFactory.close();
+		entityManagerFactory = getEntityManagerFactory(testMode);
 	}
 
 	public static void useDevelopmentEnviroment() {
-		Persistor.setPERSISTENCE_UNIT_NAME(PersistenceUnit.DEVELOPMENT.getName());
+		setMode(false);
 	}
 
 	public static void useTestEnviroment() {
-		Persistor.setPERSISTENCE_UNIT_NAME(PersistenceUnit.TEST.getName());
+		setMode(true);
+	}
+
+	public getEntityManager() {
+		return entityManagerFactory.createEntityManager();
 	}
 }

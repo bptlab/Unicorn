@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 public abstract class Persistable implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private static Persistor persistor = new Persistor();
 
 	/**
 	 * Saves the current object to the database.
@@ -27,7 +28,7 @@ public abstract class Persistable implements Serializable {
 	 */
 	public Persistable save() {
 		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
+			final EntityManager entityManager = persistor.getEntityManager();
 			entityManager.getTransaction().begin();
 			entityManager.persist(this);
 			entityManager.getTransaction().commit();
@@ -45,7 +46,7 @@ public abstract class Persistable implements Serializable {
 	 */
 	public Persistable merge() {
 		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
+			final EntityManager entityManager = persistor.getEntityManager();
 			entityManager.getTransaction().begin();
 			entityManager.merge(this);
 			entityManager.getTransaction().commit();
@@ -63,7 +64,7 @@ public abstract class Persistable implements Serializable {
 	 */
 	public Persistable remove() {
 		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
+			final EntityManager entityManager = persistor.getEntityManager();
 			entityManager.getTransaction().begin();
 			final Persistable toBeRemoved = entityManager.merge(this);
 			entityManager.remove(toBeRemoved);
@@ -83,7 +84,7 @@ public abstract class Persistable implements Serializable {
 	 */
 	public Persistable refresh() {
 		try {
-			final EntityManager entityManager = Persistor.getEntityManager();
+			final EntityManager entityManager = persistor.getEntityManager();
 			entityManager.getTransaction().begin();
 			entityManager.refresh(this);
 			entityManager.getTransaction().commit();
