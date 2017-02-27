@@ -132,6 +132,7 @@ public class EventGenerator {
             }
             if(!possibleDependentValues.isEmpty()) {
                 setValueForAttribute(dependentAttribute, possibleDependentValues.get(getRandomIndex(possibleDependentValues)), eventValues);
+                tryToFillDependentAttributes(dependentAttribute, eventValues);
             }
         }
     }
