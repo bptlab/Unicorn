@@ -38,7 +38,7 @@ public class EdifactXMLImporterTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.esper = StreamProcessingAdapter.getInstance();
 	}
 

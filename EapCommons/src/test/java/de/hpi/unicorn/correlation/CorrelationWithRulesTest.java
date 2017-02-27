@@ -22,9 +22,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.hpi.unicorn.correlation.CorrelationRule;
-import de.hpi.unicorn.correlation.Correlator;
-import de.hpi.unicorn.correlation.RuleCorrelator;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
@@ -39,7 +36,7 @@ public class CorrelationWithRulesTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

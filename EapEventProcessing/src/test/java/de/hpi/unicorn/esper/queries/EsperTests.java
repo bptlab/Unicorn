@@ -43,7 +43,7 @@ public class EsperTests {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		StreamProcessingAdapter.clearInstance();
 		Assert.assertTrue(StreamProcessingAdapter.instanceIsCleared());
 		this.esper = StreamProcessingAdapter.getInstance();

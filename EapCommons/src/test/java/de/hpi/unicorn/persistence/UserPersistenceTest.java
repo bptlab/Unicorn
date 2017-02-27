@@ -14,7 +14,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.user.EapUser;
 
 /**
@@ -26,7 +25,7 @@ public class UserPersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

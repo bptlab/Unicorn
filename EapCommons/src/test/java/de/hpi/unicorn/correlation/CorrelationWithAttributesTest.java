@@ -18,7 +18,6 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.hpi.unicorn.correlation.AttributeCorrelator;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
@@ -35,7 +34,7 @@ public class CorrelationWithAttributesTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

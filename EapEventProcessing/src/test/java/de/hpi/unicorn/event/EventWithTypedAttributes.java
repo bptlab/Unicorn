@@ -43,7 +43,7 @@ public class EventWithTypedAttributes {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.rootElement1Key = "RootElement";
 		this.rootElement1Child1Key = "RootElementStringChild";
 		this.rootElement1Child2Key = "RootElementIntegerChild";

@@ -50,7 +50,7 @@ public class HierarchicalEventsTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		StreamProcessingAdapter.clearInstance();
 		this.esper = StreamProcessingAdapter.getInstance();
 	}

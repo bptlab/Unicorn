@@ -11,7 +11,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.log4j.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is the controller for the database access and to get a connection
@@ -19,24 +20,17 @@ import org.log4j.Logger;
  */
 public class Persistor {
 
-	private static Logger logger = Logger.getLogger(Persistor.class);
+	private static EntityManagerFactory entityManagerFactory = getEntityManagerFactory(false);
 
-	private static EntityManagerFactory entityManagerFactory;
-
-	public Persistor() {
-		entityManagerFactory = getEntityManagerFactory(false);
+	private Persistor() {
+		throw new IllegalAccessError("Utility class");
 	}
 
-	public Persistor(boolean testMode) {
-		entityManagerFactory = getEntityManagerFactory(testMode);
-	}
-
-	public static EntityManagerFactory getEntityManagerFactory(boolean testMode) {
+	private static EntityManagerFactory getEntityManagerFactory(boolean testMode) {
 		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
-		Map<String, String> persistenceMap = new HashMap<String, String>();
-
-		logger.info(databaseBaseUrl);
-		logger.info(testMode);
+		Map<String, String> persistenceMap = new HashMap<>();
+		String database;
+		String url;
 
 		if (databaseBaseUrl.length() > 1) {
 			if (testMode) {
@@ -45,26 +39,18 @@ public class Persistor {
 				database = "eap_development";
 			}
 
-			String url = "jdbc:mariadb://" + databaseBaseUrl + "/" + database + "?createDatabaseIfNotExist=true";
+			url = "jdbc:mariadb://" + databaseBaseUrl + "/" + database + "?createDatabaseIfNotExist=true";
 			persistenceMap.put("javax.persistence.jdbc.url", url);
 		}
-		return Persistance.createEntityManagerFactory("default", persistenceMap);
+		return Persistence.createEntityManagerFactory("default", persistenceMap);
 	}
 
-	public static void setMode(boolean testMode) {
+	public static void useTestEnvironment() {
 		entityManagerFactory.close();
-		entityManagerFactory = getEntityManagerFactory(testMode);
+		entityManagerFactory = getEntityManagerFactory(true);
 	}
 
-	public static void useDevelopmentEnviroment() {
-		setMode(false);
-	}
-
-	public static void useTestEnviroment() {
-		setMode(true);
-	}
-
-	public getEntityManager() {
+	public static EntityManager getEntityManager() {
 		return entityManagerFactory.createEntityManager();
 	}
 }

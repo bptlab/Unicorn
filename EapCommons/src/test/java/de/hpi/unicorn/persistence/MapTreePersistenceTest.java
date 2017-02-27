@@ -18,7 +18,6 @@ import org.junit.Test;
 
 import de.hpi.unicorn.event.collection.EventTransformationElement;
 import de.hpi.unicorn.event.collection.TransformationTree;
-import de.hpi.unicorn.persistence.Persistor;
 
 /**
  * This class tests the saving, finding and removing of
@@ -30,7 +29,7 @@ public class MapTreePersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

@@ -25,7 +25,7 @@ public class QueryPersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

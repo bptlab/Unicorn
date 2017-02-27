@@ -77,7 +77,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<BPMNProcess> findByName(final String name) {
-		final Query query = persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM BPMNElement " +
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM BPMNElement " +
 				"WHERE ID IN (" + "	SELECT RESULT.ID " + "	FROM (" + "		SELECT * " + "		FROM BPMNElement AS SELECTEDBPMNELEMENT " + "		WHERE ID IN (" + "			SELECT ID " + "			FROM BPMNProcess AS SELECTEDBPMNPROCESS)) AS RESULT" + "			WHERE RESULT.NAME ='" + name + "')", BPMNProcess.class);
 		return query.getResultList();
 	}
@@ -90,7 +90,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<BPMNProcess> findByAttribute(final String columnName, final String value) {
-		final Query query = persistor.getEntityManager().createNativeQuery("SELECT * FROM BPMNProcess WHERE " +
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM BPMNProcess WHERE " +
 				columnName + " = '" + value + "'", BPMNProcess.class);
 		return query.getResultList();
 	}
@@ -102,7 +102,7 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<BPMNProcess> findAll() {
-		final Query q = persistor.getEntityManager().createQuery("select t from BPMNProcess t");
+		final Query q = Persistor.getEntityManager().createQuery("select t from BPMNProcess t");
 		return q.getResultList();
 	}
 
@@ -111,9 +111,9 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	public static void removeAll() {
 		try {
-			final EntityTransaction entr = persistor.getEntityManager().getTransaction();
+			final EntityTransaction entr = Persistor.getEntityManager().getTransaction();
 			entr.begin();
-			final Query query = persistor.getEntityManager().createQuery("DELETE FROM BPMNProcess");
+			final Query query = Persistor.getEntityManager().createQuery("DELETE FROM BPMNProcess");
 			query.executeUpdate();
 			entr.commit();
 			// System.out.println(deleteRecords + " records are deleted.");

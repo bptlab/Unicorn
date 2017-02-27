@@ -29,7 +29,6 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.AttributeTypeTree;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import de.hpi.unicorn.persistence.Persistor;
 
 /**
  * This class tests the saving, finding and removing of {@link EapEvent}.
@@ -43,7 +42,7 @@ public class EventPersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Override

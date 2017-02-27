@@ -22,7 +22,6 @@ import org.junit.runners.MethodSorters;
 
 import de.hpi.unicorn.correlation.TimeCondition;
 import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.process.CorrelationProcess;
 
 /**
@@ -36,7 +35,7 @@ public class ProcessPersistorTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Override

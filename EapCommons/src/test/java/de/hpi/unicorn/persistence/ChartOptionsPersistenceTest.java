@@ -14,7 +14,6 @@ import org.junit.Test;
 
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.visualisation.ChartConfiguration;
 import de.hpi.unicorn.visualisation.ChartTypeEnum;
 
@@ -29,7 +28,7 @@ public class ChartOptionsPersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	private void storeExampleOptions() {

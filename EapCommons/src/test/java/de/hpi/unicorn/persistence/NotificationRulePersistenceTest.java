@@ -18,7 +18,6 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.notification.NotificationMethod;
 import de.hpi.unicorn.notification.NotificationRule;
 import de.hpi.unicorn.notification.NotificationRuleForEvent;
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.user.EapUser;
 
 /**
@@ -35,7 +34,7 @@ public class NotificationRulePersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

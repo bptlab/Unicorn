@@ -45,7 +45,7 @@ public class ProcessWithTwoEndEventsTest extends AbstractQueryCreationTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/Automontage.bpmn20.xml";
 	}
 

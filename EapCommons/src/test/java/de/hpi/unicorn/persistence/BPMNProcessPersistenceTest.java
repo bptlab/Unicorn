@@ -18,7 +18,6 @@ import de.hpi.unicorn.bpmn.element.BPMNEndEvent;
 import de.hpi.unicorn.bpmn.element.BPMNProcess;
 import de.hpi.unicorn.bpmn.element.BPMNStartEvent;
 import de.hpi.unicorn.bpmn.element.BPMNTask;
-import de.hpi.unicorn.persistence.Persistor;
 
 /**
  * This class tests the saving, finding and removing of {@link BPMNProcess}.
@@ -31,7 +30,7 @@ public class BPMNProcessPersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		process = new BPMNProcess("1", "SimpleProcess", null);
 		BPMNStartEvent startEvent = new BPMNStartEvent("2", "StartEvent", null);
 		BPMNTask firstTask = new BPMNTask("3", "firstTask", null);
