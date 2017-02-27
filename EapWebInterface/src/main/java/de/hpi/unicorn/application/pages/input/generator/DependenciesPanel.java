@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.w3c.dom.Attr;
 
@@ -246,9 +247,18 @@ public class DependenciesPanel extends Panel {
                     return;
                 }
                 if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("This value is already registered!");
-                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    return;
+                    // We try to append the new input to the old one, using validators to make sure the map stays valid
+                    Validatable<String> currentDependencyValue = new Validatable<>(dependenciesInput.get(currentBaseAttributeInput) + ";" + currentDependentAttributeInput);
+                    IValidator<String> newDependencyValueValidator = getValidatorForAttribute(selectedDependentAttribute);
+                    newDependencyValueValidator.validate(currentDependencyValue);
+                    if(currentDependencyValue.getErrors().isEmpty()) {
+                        currentDependentAttributeInput = currentDependencyValue.getValue();
+                    }
+                    else {
+                        DependenciesPanel.this.page.getFeedbackPanel().error("Could not append the value to the existing dependency.");
+                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                        return;
+                    }
                 }
                 dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
