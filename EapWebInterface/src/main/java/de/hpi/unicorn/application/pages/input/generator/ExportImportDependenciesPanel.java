@@ -3,6 +3,7 @@ package de.hpi.unicorn.application.pages.input.generator;
 import com.google.common.io.Files;
 import de.hpi.unicorn.application.pages.export.AJAXDownload;
 import de.hpi.unicorn.application.pages.export.Export;
+import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.importer.FileUtils;
@@ -27,6 +28,9 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+/**
+ * {@link Panel}, that allows the import and export of attribute dependencies as json.
+ */
 
 public class ExportImportDependenciesPanel extends Panel {
     private static final long serialVersionUID = 1L;
@@ -41,8 +45,8 @@ public class ExportImportDependenciesPanel extends Panel {
     private static Logger logger = Logger.getLogger(ExportImportDependenciesPanel.class);
 
     /**
-     * Constructor for the dependencies panel. The page is initialized in this method,
-     * including the event type dropdown and the according event type attributes dropdowns.
+     * Constructor for the import/export dependencies panel. The page is initialized in this method,
+     * including the event type dropdown and export button and the upload for importing.
      *
      * @param id
      * @param page
@@ -59,56 +63,50 @@ public class ExportImportDependenciesPanel extends Panel {
             @Override
             protected void onSubmit() {
                 final FileUpload uploadedFile = uploadField.getFileUpload();
-                if (uploadedFile != null) {
-                    final String uploadFolder = TempFolderUtil.getFolder();
-                    final String fileName = uploadedFile.getClientFileName();
-                    final File newFile = new File(uploadFolder + System.getProperty("file.separator") + fileName);
-
-                    if (newFile.exists()) {
-                        newFile.delete();
-                    }
-
-                    try {
-                        newFile.createNewFile();
-                        uploadedFile.writeTo(newFile);
-                    } catch (final IOException e) {
-                        try {
-                            throw new IllegalStateException("Error: File could not be saved under " + newFile.getCanonicalPath() + ".");
-                        } catch (final IOException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                    }
-                    //if (uploadedFile.getContentType().equals("application/json")) {
-
-                        try {
-                            String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
-                            JsonImporter.generateAttributeDependencyFromString(fileContent);
-                        } catch (Exception e) {
-                        }
-                    //}
-                } else {
+                if (uploadedFile == null) {
                     this.error("File not found.");
+                    return;
                 }
+                // make sure provided file is json
+                final String fileName = uploadedFile.getClientFileName();
+                String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
+                if (!fileFormat.equals("json")) {
+                    error("Please provide a json file.");
+                    return;
+                }
+                // generate dependencies from file
+                File newFile;
+                try {
+                    newFile = uploadedFile.writeToTempFile();
+                    String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
+                    boolean success = JsonImporter.generateAttributeDependenciesFromString(fileContent);
+                    if (!success) {
+                        error("Dependencies could not be created. Make sure you have the correct event type stored.");
+                        return;
+                    }
+                } catch (Exception e) {
+                    error("File could not be read.");
+                    return;
+                }
+                success("Saved attribute dependencies.");
             }
         };
         importForm.setMultiPart(true);
         this.add(importForm);
 
-        this.addEventTypeDropDownExport();
+        this.addEventTypeDropDown();
         this.addExportButton();
-        this.addEventTypeDropDownImport();
         this.addImportField();
     }
 
-    private void addEventTypeDropDownExport() {
+    private void addEventTypeDropDown() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
 
         if(!eventTypes.isEmpty()) {
             selectedEventType = eventTypes.get(0);
         }
 
-        eventTypeDropDown = new DropDownChoice<>("eventTypeFieldExport", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+        eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
                 eventTypes);
         exportForm.add(eventTypeDropDown);
     }
@@ -121,7 +119,6 @@ public class ExportImportDependenciesPanel extends Panel {
                 public void onSubmit(final AjaxRequestTarget target, final Form form) {
                     final JsonExporter jsonExporter = new JsonExporter();
                     final AJAXDownload jsonDownload = new AJAXDownload() {
-
                         @Override
                         protected IResourceStream getResourceStream() {
                             final File csv = jsonExporter.generateExportFileWithDependencies(selectedEventType);
@@ -130,7 +127,7 @@ public class ExportImportDependenciesPanel extends Panel {
 
                         @Override
                         protected String getFileName() {
-                            return selectedEventType.getTypeName() + ".json";
+                            return selectedEventType.getTypeName() + "-dependencies.json";
                         }
                     };
                     ExportImportDependenciesPanel.this.add(jsonDownload);
@@ -140,18 +137,6 @@ public class ExportImportDependenciesPanel extends Panel {
                 }
             };
             exportForm.add(exportButton);
-    }
-
-    private void addEventTypeDropDownImport() {
-        final List<EapEventType> eventTypes = EapEventType.findAll();
-
-        if(!eventTypes.isEmpty()) {
-            selectedEventType = eventTypes.get(0);
-        }
-
-        eventTypeDropDown = new DropDownChoice<>("eventTypeFieldImport", new PropertyModel<EapEventType>( this, "selectedEventType" ),
-                eventTypes);
-        importForm.add(eventTypeDropDown);
     }
 
     private void addImportField() {

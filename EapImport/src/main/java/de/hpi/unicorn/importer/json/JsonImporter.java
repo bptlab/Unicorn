@@ -5,69 +5,56 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.apache.log4j.Logger;
 
-import javax.json.JsonObject;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JsonImporter {
-    private static Logger logger = Logger.getLogger(JsonImporter.class);
-    public static AttributeDependency generateAttributeDependencyFromString(String dependencyString) {
+    public static boolean generateAttributeDependenciesFromString(String dependenciesString) {
         try {
-            JSONObject dependencyJson = new JSONObject(dependencyString);
-            JSONObject eventTypeJson = dependencyJson.getJSONObject("eventTypeDependencies");
+            JSONObject dependenciesJson = new JSONObject(dependenciesString);
+            JSONObject eventTypeJson = dependenciesJson.getJSONObject("eventTypeDependencies");
+            // check if corresponding event type exists
             EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
-            if (!eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
-                logger.info("No such event type!");
-                return null;
-            }
-            JSONArray dependencies = eventTypeJson.getJSONArray("dependencies");
-            for (int i = 0; i < dependencies.length(); i++) {
-                JSONObject base = dependencies.getJSONObject(i).getJSONObject("base");
-                boolean baseAttIncluded = eventType.containsValue(base.getString("name"), AttributeTypeEnum.fromString(base.getString("type")));
-                JSONObject dependent = dependencies.getJSONObject(i).getJSONObject("dependent");
-                boolean dependentAttIncluded = eventType.containsValue(dependent.getString("name"), AttributeTypeEnum.fromString(dependent.getString("type")));
-                if (!baseAttIncluded || !dependentAttIncluded) {
-                    logger.warn("Attribute not included in Event Type.");
-                    return null;
-                }
-                AttributeDependency dep = new AttributeDependency(eventType, TypeTreeNode.findByName(base.getString("name")).get(0), TypeTreeNode.findByName(dependent.getString("name")).get(0));
-                logger.info("Created Dependency with base attribute: " + dep.getBaseAttribute().getName() + " and dep attribute: " + dep.getDependentAttribute());
-            }
-            logger.info("Json successfully created for eventType: " + eventType);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.info("Json not created.");
-            return null;
-        }
-        return new AttributeDependency();
-    }
-
-    private static boolean checkPrerequisites(JSONObject dependencyJson){
-        try {
-            JSONObject eventTypeJson = dependencyJson.getJSONObject("eventTypeDependencies");
-            EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
-            if (!eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
-                logger.info("No such event type!");
+            if (!eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName")) || eventType == null) {
                 return false;
             }
-            JSONArray dependencies = eventTypeJson.getJSONArray("dependencies");
-            for (int i = 0; i < dependencies.length(); i++) {
-                JSONObject base = dependencies.getJSONObject(i).getJSONObject("base");
-                boolean baseAttIncluded = eventType.containsValue(base.getString("name"), AttributeTypeEnum.fromString(base.getString("type")));
-                JSONObject dependent = dependencies.getJSONObject(i).getJSONObject("dependent");
-                boolean dependentAttIncluded = eventType.containsValue(dependent.getString("name"), AttributeTypeEnum.fromString(dependent.getString("type")));
+            JSONArray eventTypeDependenciesJson = eventTypeJson.getJSONArray("dependencies");
+            for (int i = 0; i < eventTypeDependenciesJson.length(); i++) {
+                JSONObject dependencyJson = eventTypeDependenciesJson.getJSONObject(i);
+                // check if corresponding event type exists with correct attributes
+                JSONObject baseJson = dependencyJson.getJSONObject("base");
+                boolean baseAttIncluded = eventType.containsValue(baseJson.getString("name"),
+                        AttributeTypeEnum.fromString(baseJson.getString("type")));
+                JSONObject dependentJson = dependencyJson.getJSONObject("dependent");
+                boolean dependentAttIncluded = eventType.containsValue(dependentJson.getString("name"),
+                        AttributeTypeEnum.fromString(dependentJson.getString("type")));
                 if (!baseAttIncluded || !dependentAttIncluded) {
-                    logger.warn("Attribute not included in Event Type.");
                     return false;
                 }
+                // create dependencies
+                AttributeDependency dep = new AttributeDependency(eventType,
+                        TypeTreeNode.findByName(baseJson.getString("name")).get(0),
+                        TypeTreeNode.findByName(dependentJson.getString("name")).get(0));
 
+                if(dep.save() == null) {
+                    return false;
+                }
+                // create dependency values
+                JSONObject valuesJson = dependencyJson.getJSONObject("values");
+                Map<String, String> values = new HashMap<>();
+                for (int j = 0; j < valuesJson.names().length(); j++) {
+                    String baseValue = (String) valuesJson.names().get(j);
+                    values.put(baseValue, valuesJson.getString(baseValue));
+                }
+                if (!dep.addDependencyValues(values)) {
+                    return false;
+                }
             }
-            logger.info("Json successfully created for eventType: " + eventType);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.info("Json not created.");
+            return false;
         }
         return true;
     }
