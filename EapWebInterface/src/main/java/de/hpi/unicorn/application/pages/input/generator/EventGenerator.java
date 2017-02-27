@@ -84,14 +84,14 @@ public class EventGenerator {
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<String, Serializable>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
-                //Check if current attribute has a dependency, if so we shouldn't touch its value as it will be filled later together with its base
-                // attribute
-                if(attributeDependencyManager.isDependentAttributeInDependency(attributeSchema.getKey())) {
-                    continue;
+                // Assign a random value only if the attribute hasn't been filled before (by a dependency). So we don't overwrite values defined by
+                // dependencies. In case the base attribute is considered later, it will then overwrite the random value with the dependency defined
+                // one.
+                if(values.get(attributeSchema.getKey().getName()) == null) {
+                    //Set a random value for the current attribute
+                    setRandomValueFromRangeForAttribute(attributeSchema.getKey(), attributeSchema.getValue(), values);
                 }
-                //Set a value for the current attribute
-                setValueForAttribute(attributeSchema.getKey(), attributeSchema.getValue(), values);
-                //Check if current attribute is a base attribute in a dependency and set dependent attribute values
+                // Check if current attribute is a base attribute in a dependency and set dependent attribute values
                 tryToFillDependentAttributes(attributeSchema.getKey(), values);
             }
             EapEvent event = new EapEvent(eventType, getRandomDateFromInput(eventTimestamps), values);
@@ -131,7 +131,7 @@ public class EventGenerator {
                 }
             }
             if(!possibleDependentValues.isEmpty()) {
-                setValueForAttribute(dependentAttribute, possibleDependentValues.get(getRandomIndex(possibleDependentValues)), eventValues);
+                setRandomValueFromRangeForAttribute(dependentAttribute, possibleDependentValues.get(getRandomIndex(possibleDependentValues)), eventValues);
                 tryToFillDependentAttributes(dependentAttribute, eventValues);
             }
         }
@@ -144,7 +144,7 @@ public class EventGenerator {
      * @param possibleValues a string containing the possible values which can be extracted by the "getRandom[attributeType]FromInput"-function
      * @param eventValues the map containing already set values will be altered by reference
      */
-    private void setValueForAttribute(TypeTreeNode attribute, String possibleValues, Map<String, Serializable> eventValues) {
+    private void setRandomValueFromRangeForAttribute(TypeTreeNode attribute, String possibleValues, Map<String, Serializable> eventValues) {
         switch (attribute.getType()) {
             case STRING:
                 eventValues.put(attribute.getName(), getRandomStringFromInput(possibleValues));
