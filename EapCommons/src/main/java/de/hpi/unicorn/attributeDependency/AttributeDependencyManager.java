@@ -12,6 +12,7 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Map;
  * It is used to reduce the database-access for basic requests.
  *
  */
-public class AttributeDependencyManager {
+public class AttributeDependencyManager implements Serializable {
 	private EapEventType eventType;
 	private List<AttributeDependency> attributeDependencies;
 	private Map<AttributeDependency, List<AttributeValueDependency>> attributeValueDependencies = new HashMap<>();
