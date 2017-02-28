@@ -40,7 +40,7 @@ public class JsonExporter {
                     writer.append("\"name\" : \"" + dependentAtt.getName() + "\",");
                     writer.append("\"type\" : \"" + dependentAtt.getType() + "\"},");
                 writer.append("\"values\": {");
-                List<AttributeValueDependency> dependencyValues = depManager.getAttributeValueDependenciesForAttributeDependency(dependency);
+                List<AttributeValueDependency> dependencyValues = depManager.getAttributeValueDependencies(dependency);
                 for (int i = 0; i < dependencyValues.size(); i++) {
                     AttributeValueDependency dependencyValue = dependencyValues.get(i);
                     writer.append("\"" + dependencyValue.getBaseAttributeValue() + "\" : \"" + dependencyValue.getDependentAttributeValues() + "\"");

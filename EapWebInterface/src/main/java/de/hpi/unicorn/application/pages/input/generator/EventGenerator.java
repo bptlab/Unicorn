@@ -109,7 +109,7 @@ public class EventGenerator {
      * @param eventValues a map containing already set values, will set the new values in here too. (Value for base attribute has to be set already!)
      */
     private void tryToFillDependentAttributes(TypeTreeNode baseAttribute, Map<String, Serializable> eventValues) {
-        if(!attributeDependencyManager.isBaseAttributeInDependency(baseAttribute)) {
+        if(!attributeDependencyManager.isBaseAttributeInAnyDependency(baseAttribute)) {
             return;
         }
 
@@ -121,10 +121,10 @@ public class EventGenerator {
             baseAttributeInput = String.valueOf(eventValues.get(baseAttribute.getName()));
         }
 
-        for(AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependenciesForAttribute(baseAttribute)) {
+        for(AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependencies(baseAttribute)) {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<String> possibleDependentValues = new ArrayList<>();
-            for(AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependenciesForAttributeDependency
+            for(AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies
                     (attributeDependency)) {
                 if(isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
                     possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());

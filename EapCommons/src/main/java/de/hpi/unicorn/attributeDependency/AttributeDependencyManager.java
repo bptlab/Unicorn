@@ -53,7 +53,7 @@ public class AttributeDependencyManager implements Serializable {
 	 * @param baseAttribute the attribute all dependencies should be returned for
 	 * @return a list with attribute dependencies
 	 */
-	public List<AttributeDependency> getAttributeDependenciesForAttribute(final TypeTreeNode baseAttribute) {
+	public List<AttributeDependency> getAttributeDependencies(final TypeTreeNode baseAttribute) {
 		ArrayList<AttributeDependency> filteredDependenciesList = new ArrayList<>(attributeDependencies);
 		CollectionUtils.filter(filteredDependenciesList, new Predicate() {
 			@Override
@@ -65,12 +65,21 @@ public class AttributeDependencyManager implements Serializable {
 	}
 
 	/**
+	 * Returns a map with all dependency rules mapped with their value dependency rules.
+	 *
+	 * @return a map
+	 */
+	public Map<AttributeDependency, List<AttributeValueDependency>> getAttributeValueDependencies() {
+		return attributeValueDependencies;
+	}
+
+	/**
 	 * Returns a list with all value dependencies for a given attribute dependency.
 	 *
 	 * @param attributeDependency the dependency all value dependencies should be returned for
 	 * @return a list with the attribute value dependencies
 	 */
-	public List<AttributeValueDependency> getAttributeValueDependenciesForAttributeDependency(final AttributeDependency attributeDependency) {
+	public List<AttributeValueDependency> getAttributeValueDependencies(final AttributeDependency attributeDependency) {
 		return attributeValueDependencies.get(attributeDependency);
 	}
 
@@ -79,7 +88,7 @@ public class AttributeDependencyManager implements Serializable {
 	 *
 	 * @param attribute Attribute to be checked to be a dependent attribute
 	 */
-	public boolean isDependentAttributeInDependency(TypeTreeNode attribute) {
+	public boolean isDependentAttributeInAnyDependency(TypeTreeNode attribute) {
 		for(AttributeDependency attributeDependency : attributeDependencies) {
 			if(attributeDependency.getDependentAttribute().equals(attribute)) {
 				return true;
@@ -93,7 +102,7 @@ public class AttributeDependencyManager implements Serializable {
 	 *
 	 * @param attribute Attribute to be checked to be a base attribute
 	 */
-	public boolean isBaseAttributeInDependency(TypeTreeNode attribute) {
+	public boolean isBaseAttributeInAnyDependency(TypeTreeNode attribute) {
 		for(AttributeDependency attributeDependency : attributeDependencies) {
 			if(attributeDependency.getBaseAttribute().equals(attribute)) {
 				return true;
@@ -115,13 +124,13 @@ public class AttributeDependencyManager implements Serializable {
 		if(!force) {
 			// If deletion is not forced there shouldn't be any value dependencies left before deletion.
 			for(AttributeDependency attributeDependency : getAttributeDependencies()) {
-				if(!getAttributeValueDependenciesForAttributeDependency(attributeDependency).isEmpty()) {
+				if(!getAttributeValueDependencies(attributeDependency).isEmpty()) {
 					return false;
 				}
 			}
 		}
 		for(AttributeDependency attributeDependency : getAttributeDependencies()) {
-			for(AttributeValueDependency attributeValueDependency : getAttributeValueDependenciesForAttributeDependency(attributeDependency)) {
+			for(AttributeValueDependency attributeValueDependency : getAttributeValueDependencies(attributeDependency)) {
 				attributeValueDependency.remove();
 			}
 			attributeDependency.remove();

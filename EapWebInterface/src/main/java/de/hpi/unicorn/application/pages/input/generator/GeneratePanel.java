@@ -178,7 +178,7 @@ public class GeneratePanel extends Panel {
                 inputField.setLabel(new Model<String>(attribute.getName()));
                 inputField.setRequired(true);
                 item.add(inputField);
-                item.add(new Label("attributeInputWarning", "").setVisible(attributeDependencyManager.isDependentAttributeInDependency(attribute)));
+                item.add(new Label("attributeInputWarning", "").setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
             }
         };
         listview.setReuseItems(true);
