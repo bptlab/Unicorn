@@ -1,4 +1,4 @@
-package de.hpi.unicorn.application.pages.input.generator;
+package de.hpi.unicorn.application.pages.input.generator.validation;
 
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -9,12 +9,15 @@ import java.util.regex.Pattern;
 /**
  * {@link IValidator}, that checks if input matches integer range pattern
  */
-public class IntegerRangeValidator implements IValidator<String> {
+public class IntegerRangeValidator extends AttributeValidator {
 
     private static final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
     private final Pattern pattern;
 
-    IntegerRangeValidator() {
+    /**
+     * Constructor for the integer range validator.
+     */
+    public IntegerRangeValidator() {
         pattern = Pattern.compile(INTEGER_RANGE_PATTERN);
     }
 
@@ -25,17 +28,10 @@ public class IntegerRangeValidator implements IValidator<String> {
      */
     @Override
     public void validate(IValidatable<String> validatable) {
-        //get input from attached component
-        final String input = validatable.getValue();
-        if (!pattern.matcher(input).matches()) {
-            error(validatable,"noIntegerRange");
-            return;
-        }
-        String[] splits;
-        if (input.contains("-")) {
-            splits = input.split("-");
-            if(Integer.parseInt(splits[0]) > Integer.parseInt(splits[1]))
-                error(validatable, "endBeforeStart");
+        de.hpi.unicorn.validation.IntegerRangeValidator validator = new de.hpi.unicorn.validation.IntegerRangeValidator();
+        boolean success = validator.validate(validatable.getValue());
+        if (!success) {
+            error(validatable, "noIntegerRange");
         }
     }
 
