@@ -103,7 +103,36 @@ public class AttributeDependencyManager implements Serializable {
 	}
 
 	/**
-	 * If a dependency entry for the given event-type, base attribute, dependent attribute triple already exist this entry is returned, otherwise a
+	 * Tries to delete all dependencies saved for the event type set.
+	 * If deletion is not forced and there are value dependencies referencing any concerned dependency, false is returned and no deletion is
+	 * executed at all.
+	 * If deletion is forced all value dependencies for this dependency will be deleted, too.
+	 *
+	 * @param force the deletion of dependencies (includes value dependencies)
+	 * @return if deletion was successful
+	 */
+	public boolean removeAll(boolean force) {
+		if(!force) {
+			// If deletion is not forced there shouldn't be any value dependencies left before deletion.
+			for(AttributeDependency attributeDependency : getAttributeDependencies()) {
+				if(!getAttributeValueDependenciesForAttributeDependency(attributeDependency).isEmpty()) {
+					return false;
+				}
+			}
+		}
+		for(AttributeDependency attributeDependency : getAttributeDependencies()) {
+			for(AttributeValueDependency attributeValueDependency : getAttributeValueDependenciesForAttributeDependency(attributeDependency)) {
+				attributeValueDependency.remove();
+			}
+			attributeDependency.remove();
+		}
+		attributeValueDependencies = new HashMap<>();
+		attributeDependencies = new ArrayList<>();
+		return true;
+	}
+
+	/**
+	 * If a dependency entry for the given (event-type, base attribute, dependent attribute) triple already exist this entry is returned, otherwise a
 	 * new dependency entry for this triple is created, saved and returned.
 	 *
 	 * @param eventType the dependency is for
