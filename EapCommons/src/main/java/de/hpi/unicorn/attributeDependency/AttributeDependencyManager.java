@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  * The AttributeDependencyManager allows to request dependencies and their values for a given event type.
- * It is used to reduce the database-access for basic requests.
+ * Use it to reduce the database-access for basic requests.
  *
  */
 public class AttributeDependencyManager implements Serializable {
@@ -102,6 +102,15 @@ public class AttributeDependencyManager implements Serializable {
 		return false;
 	}
 
+	/**
+	 * If a dependency entry for the given event-type, base attribute, dependent attribute triple already exist this entry is returned, otherwise a
+	 * new dependency entry for this triple is created, saved and returned.
+	 *
+	 * @param eventType the dependency is for
+	 * @param baseAttribute of the dependency
+	 * @param dependentAttribute of the dependency
+	 * @return the corresponding or new attribute dependency
+	 */
 	public static AttributeDependency getAttributeDependency(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode dependentAttribute) {
 		AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAttribute, dependentAttribute);
 		if(attributeDependency == null) {
