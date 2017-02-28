@@ -4,6 +4,7 @@ import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import de.hpi.unicorn.validation.AttributeValidator;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -50,12 +51,17 @@ public class JsonImporter {
                 }
 
                 // create dependency values
-                //TODO: Validate inputs
+                AttributeValidator baseValidator = AttributeValidator.getValidatorForAttribute(baseAtt);
+                AttributeValidator dependentValidator = AttributeValidator.getValidatorForAttribute(dependentAtt);
                 JSONObject valuesJson = dependencyJson.getJSONObject("values");
                 Map<String, String> values = new HashMap<>();
                 for (int j = 0; j < valuesJson.names().length(); j++) {
                     String baseValue = (String) valuesJson.names().get(j);
-                    values.put(baseValue, valuesJson.getString(baseValue));
+                    String dependentValue = valuesJson.getString(baseValue);
+                    if(!dependentValidator.validate(dependentValue) || !baseValidator.validate(baseValue)) {
+                        return false;
+                    }
+                    values.put(baseValue, dependentValue);
                 }
                 if (!dependency.addDependencyValues(values)) {
                     return false;

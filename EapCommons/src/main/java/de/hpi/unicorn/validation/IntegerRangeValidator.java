@@ -1,5 +1,7 @@
 package de.hpi.unicorn.validation;
 
+import org.apache.log4j.Logger;
+
 import java.util.regex.Pattern;
 
 /**
@@ -9,6 +11,7 @@ public class IntegerRangeValidator extends AttributeValidator {
 
     private static final String INTEGER_RANGE_PATTERN = "(?:\\d+(?:;\\d+)*|\\d+\\-\\d+)";
     private final Pattern pattern;
+    private static Logger logger = Logger.getLogger(IntegerRangeValidator.class);
 
     public IntegerRangeValidator() {
         pattern = Pattern.compile(INTEGER_RANGE_PATTERN);
@@ -17,13 +20,12 @@ public class IntegerRangeValidator extends AttributeValidator {
     /**
      * Checks if given validatable satisfies the integer pattern.
      *
-     * @param validatable
+     * @param input
      */
     @Override
-    public boolean validate(final String validatable) {
-        //get input from attached component
-        final String input = validatable;
+    public boolean validate(final String input) {
         if (!pattern.matcher(input).matches()) {
+            logger.info("Input " + input + " doesnt match pattern: " + pattern.toString());
             return false;
         }
         String[] splits;

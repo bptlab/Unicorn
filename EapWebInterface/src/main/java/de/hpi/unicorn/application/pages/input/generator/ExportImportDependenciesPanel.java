@@ -81,7 +81,7 @@ public class ExportImportDependenciesPanel extends Panel {
                     String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
                     boolean success = JsonImporter.generateAttributeDependenciesFromString(fileContent);
                     if (!success) {
-                        error("Dependencies could not be created. Make sure you have the correct event type stored.");
+                        error("Dependencies could not be created. Make sure you have the correct event type stored and the attribute values match their type.");
                         return;
                     }
                 } catch (Exception e) {
