@@ -16,7 +16,7 @@ public class DateRangeValidator extends AttributeValidator {
     /**
      * Constructor for the date range validator.
      */
-    DateRangeValidator() {
+    public DateRangeValidator() {
         pattern = Pattern.compile(DATE_RANGE_PATTERN);
     }
 

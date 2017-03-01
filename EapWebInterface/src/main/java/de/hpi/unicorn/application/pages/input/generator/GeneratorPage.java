@@ -17,6 +17,10 @@ import org.apache.wicket.model.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@Link AbstractEapPage} that contains everything that is connected with the generation of events,
+ * including the event generator itself and attribute dependency settings.
+ */
 @SuppressWarnings("serial")
 public class GeneratorPage extends AbstractEapPage {
 

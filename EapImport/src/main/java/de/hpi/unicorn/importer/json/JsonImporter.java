@@ -56,8 +56,11 @@ public class JsonImporter {
                 }
 
                 // check if dependency rule is already stored and create accordingly
-                TypeTreeNode baseAtt = TypeTreeNode.findByName(baseJson.getString("name")).get(0);
-                TypeTreeNode dependentAtt = TypeTreeNode.findByName(dependentJson.getString("name")).get(0);
+                TypeTreeNode baseAtt = eventType.getValueTypeTree().getAttributeByExpression(baseJson.getString("name"));
+                TypeTreeNode dependentAtt = eventType.getValueTypeTree().getAttributeByExpression(dependentJson.getString("name"));
+                if (baseAtt == null || dependentAtt == null) {
+                    return false;
+                }
                 AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAtt, dependentAtt);
                 if (dependency == null) {
                     dependency = new AttributeDependency(eventType, baseAtt, dependentAtt);

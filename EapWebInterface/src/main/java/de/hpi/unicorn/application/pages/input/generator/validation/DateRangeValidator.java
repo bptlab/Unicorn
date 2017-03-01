@@ -29,7 +29,7 @@ public class DateRangeValidator extends AttributeValidator {
      */
     @Override
     public void validate(IValidatable<String> validatable) {
-        de.hpi.unicorn.validation.IntegerRangeValidator validator = new de.hpi.unicorn.validation.IntegerRangeValidator();
+        de.hpi.unicorn.validation.DateRangeValidator validator = new de.hpi.unicorn.validation.DateRangeValidator();
         boolean success = validator.validate(validatable.getValue());
         if (!success) {
             error(validatable, "noDateRange");
