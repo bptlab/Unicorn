@@ -502,6 +502,26 @@ public class EapEventType extends Persistable {
 		return processText;
 	}
 
+	/**
+	 * Return a json string that includes the name, timestamp and attributes of the event type.
+	 * Event types are in capital letters.
+	 *
+	 * @return String - event type as json
+	 */
+	public String getJsonString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("{\"name\":\"" + this.typeName + "\",");
+		builder.append("\"timestamp\":\"" + this.timestampName + "\",");
+		builder.append("\"attributes\":{");
+		for (TypeTreeNode attribute : this.attributes.getAttributes()) {
+			builder.append("\"" + attribute.getName() + "\":");
+			builder.append("\"" + attribute.getType().toString().toUpperCase() + "\",");
+		}
+		builder.setLength(builder.length() - 1);
+		builder.append("}}");
+		return builder.toString();
+	}
+
 	public List<String> getNonHierarchicalAttributeExpressionsWithoutTimestamp() {
 		// String queryString = "" +
 		// "SELECT DISTINCT MapKey FROM EventTransformationElement " +
