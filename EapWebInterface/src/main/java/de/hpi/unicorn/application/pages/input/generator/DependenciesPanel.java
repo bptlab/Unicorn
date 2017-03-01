@@ -462,25 +462,4 @@ public class DependenciesPanel extends Panel {
             dependentAttributeInputField.remove(validator);
         }
     }
-
-    /**
-     * Chooses the correct validator fitting the given attribute type.
-     *
-     * @param attribute the validator should be used for
-     * @return a validator of attribute type
-     */
-    private IValidator<String> getValidatorForAttribute(TypeTreeNode attribute) {
-        switch (attribute.getType()) {
-            case INTEGER:
-                return new IntegerRangeValidator();
-            case STRING:
-                return new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*");
-            case FLOAT:
-                return new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*");
-            case DATE:
-                return new DateRangeValidator();
-            default:
-                return new PatternValidator("");
-        }
-    }
 }
