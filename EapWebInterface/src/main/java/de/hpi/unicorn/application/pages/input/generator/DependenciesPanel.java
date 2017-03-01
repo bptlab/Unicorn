@@ -211,6 +211,7 @@ public class DependenciesPanel extends Panel {
                 target.add(submitButton);
 
                 //ADD VALIDATORS FOR VALUE-INPUTS
+                removeOldValidatorsFromInputFields();
                 setValidatorsForInputFields(target);
 
                 listview.removeAll();
@@ -447,6 +448,19 @@ public class DependenciesPanel extends Panel {
         dependentAttributeInputField.add(getValidatorForAttribute(selectedDependentAttribute));
         target.add(baseAttributeInputField);
         target.add(dependentAttributeInputField);
+    }
+
+    /**
+     * Remove the old input validators from input field,
+     * in case they are different to the ones needed when updated.
+     */
+    private void removeOldValidatorsFromInputFields() {
+        for(IValidator validator : baseAttributeInputField.getValidators()) {
+            baseAttributeInputField.remove(validator);
+        }
+        for(IValidator validator : dependentAttributeInputField.getValidators()) {
+            dependentAttributeInputField.remove(validator);
+        }
     }
 
     /**
