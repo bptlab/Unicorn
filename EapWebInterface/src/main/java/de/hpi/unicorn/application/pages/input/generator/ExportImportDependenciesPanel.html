@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master"
+      xmlns="http://www.w3.org/1999/xhtml">
+<wicket:panel>
+    <div class="container">
+        <form wicket:id="exportForm">
+            <div class="row">
+                <h3>Export dependencies:</h3>
+                <div>
+                    <table class="table">
+                    <tr>
+                        <td class="span3">Event type:</td>
+                        <td><select wicket:id="eventTypeField"></select></td>
+                        <td class="span3"><input wicket:id="exportButton" type="submit" value="Export as Json" class="btn btn-primary btn-block"/></td>
+                    </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+        <form wicket:id="importForm">
+            <div class="row">
+                <h3>Import dependencies:</h3>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <td class="span3">Dependency Json:</td>
+                            <td><input wicket:id="uploadField" size="40" type="file" class="btn"/></td>
+                            <td class="span3"><input type="submit" value="Import" class="btn btn-primary btn-block"/></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+    </div>
+</wicket:panel>
+</html>
