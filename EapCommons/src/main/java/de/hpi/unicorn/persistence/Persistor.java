@@ -22,8 +22,6 @@ import java.util.Map;
  */
 public class Persistor {
 
-	private static Logger logger = Logger.getLogger(Persistor.class);
-
 	private static EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
 
 	private Persistor() {
@@ -36,7 +34,6 @@ public class Persistor {
 		if (System.getProperty("db.host") != null && System.getProperty("db.port") != null) {
 			persistenceMap = getUpdatedPersistenceMap();
 		}
-		logger.info("Ich lebe noch");
 		return Persistence.createEntityManagerFactory(PersistenceUnit.DEVELOPMENT.getName(), persistenceMap);
 	}
 
@@ -59,7 +56,6 @@ public class Persistor {
 	}
 
 	public static EntityManager getEntityManager() {
-		logger.info("Er geht in mich");
 		return entityManagerFactory.createEntityManager();
 	}
 }
