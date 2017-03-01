@@ -7,6 +7,7 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
@@ -27,7 +28,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
-import org.apache.wicket.validation.validator.PatternValidator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -262,7 +262,7 @@ public class DependenciesPanel extends Panel {
                 if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
                     // We try to append the new input to the old one, using validators to make sure the map stays valid
                     Validatable<String> currentDependencyValue = new Validatable<>(dependenciesInput.get(currentBaseAttributeInput) + ";" + currentDependentAttributeInput);
-                    IValidator<String> newDependencyValueValidator = getValidatorForAttribute(selectedDependentAttribute);
+                    IValidator<String> newDependencyValueValidator = AttributeValidator.getValidatorForAttribute(selectedDependentAttribute);
                     newDependencyValueValidator.validate(currentDependencyValue);
                     if(currentDependencyValue.getErrors().isEmpty()) {
                         currentDependentAttributeInput = currentDependencyValue.getValue();
@@ -444,8 +444,8 @@ public class DependenciesPanel extends Panel {
      * @param target to be updated
      */
     private void setValidatorsForInputFields(AjaxRequestTarget target) {
-        baseAttributeInputField.add(getValidatorForAttribute(selectedBaseAttribute));
-        dependentAttributeInputField.add(getValidatorForAttribute(selectedDependentAttribute));
+        baseAttributeInputField.add(AttributeValidator.getValidatorForAttribute(selectedBaseAttribute));
+        dependentAttributeInputField.add(AttributeValidator.getValidatorForAttribute(selectedDependentAttribute));
         target.add(baseAttributeInputField);
         target.add(dependentAttributeInputField);
     }
@@ -460,27 +460,6 @@ public class DependenciesPanel extends Panel {
         }
         for(IValidator validator : dependentAttributeInputField.getValidators()) {
             dependentAttributeInputField.remove(validator);
-        }
-    }
-
-    /**
-     * Chooses the correct validator fitting the given attribute type.
-     *
-     * @param attribute the validator should be used for
-     * @return a validator of attribute type
-     */
-    private IValidator<String> getValidatorForAttribute(TypeTreeNode attribute) {
-        switch (attribute.getType()) {
-            case INTEGER:
-                return new IntegerRangeValidator();
-            case STRING:
-                return new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*");
-            case FLOAT:
-                return new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*");
-            case DATE:
-                return new DateRangeValidator();
-            default:
-                return new PatternValidator("");
         }
     }
 }

@@ -30,4 +30,19 @@ public enum AttributeTypeEnum {
 		final String s = super.toString();
 		return s.substring(0, 1) + s.substring(1).toLowerCase();
 	}
+
+	/**
+	 * Retruns a AttributeTypeEnum that corresponds to the given String.
+	 *
+	 * @param typeString
+	 * @return Corresponding AttributeTypeEnum
+	 */
+	public static AttributeTypeEnum fromString(String typeString) {
+		for (AttributeTypeEnum typeEnum : AttributeTypeEnum.values()) {
+			if (typeEnum.type.equalsIgnoreCase(typeString)) {
+				return typeEnum;
+			}
+		}
+		return null;
+	}
 }

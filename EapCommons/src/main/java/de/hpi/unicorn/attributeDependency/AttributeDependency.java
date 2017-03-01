@@ -89,7 +89,9 @@ public class AttributeDependency extends Persistable {
                 }
                 if(!updatedValueDependency) {
                     AttributeValueDependency value = new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
-                    value.save();
+                    if (value.save() == null) {
+                        return false;
+                    }
                 }
             }
         } catch (Exception e) {

@@ -7,6 +7,9 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
+import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
+import de.hpi.unicorn.application.pages.input.generator.validation.IntegerRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
@@ -17,10 +20,7 @@ import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -29,10 +29,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.validation.IValidator;
-import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 /**
@@ -158,23 +155,7 @@ public class GeneratePanel extends Panel {
                 };
 
                 TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
-                switch (attribute.getType()) {
-                    case INTEGER:
-                        inputField.add(new IntegerRangeValidator());
-                        break;
-                    case STRING:
-                        inputField.add(new PatternValidator("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*"));
-                        break;
-                    case FLOAT:
-                        inputField.add(new PatternValidator("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
-                        break;
-                    case DATE:
-                        inputField.add(new DateRangeValidator());
-                        break;
-                    default:
-                        inputField.add(new PatternValidator(""));
-                        break;
-                }
+                inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
                 inputField.setLabel(new Model<String>(attribute.getName()));
                 inputField.setRequired(true);
                 item.add(inputField);

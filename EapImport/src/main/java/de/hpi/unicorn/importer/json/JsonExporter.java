@@ -1,21 +1,36 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2012-2015, Business Process Technology (BPT),
+ * http://bpt.hpi.uni-potsdam.de.
+ * All Rights Reserved.
+ *
+ *******************************************************************************/
 package de.hpi.unicorn.importer.json;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
-import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.utils.TempFolderUtil;
-import de.hpi.unicorn.utils.XMLUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * Class to export objects as Json. Currently only used for the export of dependencies.
+ */
 public class JsonExporter {
+
+    /**
+     * Generate a Json file for the given event type, including all dependencies
+     * and dependency values that have been stored in the EventGenerator.
+     *
+     * @param eventType eventType to be processed
+     * @return resulting json file
+     */
     public File generateExportFileWithDependencies(final EapEventType eventType) {
         // create file
         if (eventType.isHierarchical()) {

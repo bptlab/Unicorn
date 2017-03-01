@@ -10,10 +10,24 @@
                 <div>
                     <table class="table">
                     <tr>
-                        <td>Event type:</td>
-                        <td><select wicket:id="eventTypeFieldExport"></select></td>
-                        <td><input wicket:id="exportButton" type="submit" value="Export as Json" class="btn btn-primary"/></td>
+                        <td class="span3">Event type:</td>
+                        <td><select wicket:id="eventTypeField"></select></td>
+                        <td class="span3"><input wicket:id="exportButton" type="submit" value="Export as Json" class="btn btn-primary btn-block"/></td>
                     </tr>
+                    </table>
+                </div>
+            </div>
+        </form>
+        <form wicket:id="importForm">
+            <div class="row">
+                <h3>Import dependencies:</h3>
+                <div>
+                    <table class="table">
+                        <tr>
+                            <td class="span3">Dependency Json:</td>
+                            <td><input wicket:id="uploadField" size="40" type="file" class="btn"/></td>
+                            <td class="span3"><input type="submit" value="Import" class="btn btn-primary btn-block"/></td>
+                        </tr>
                     </table>
                 </div>
             </div>
