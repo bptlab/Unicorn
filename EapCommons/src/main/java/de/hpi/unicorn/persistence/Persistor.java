@@ -7,6 +7,8 @@
  *******************************************************************************/
 package de.hpi.unicorn.persistence;
 
+import org.apache.log4j.Logger;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -20,37 +22,44 @@ import java.util.Map;
  */
 public class Persistor {
 
-	private static EntityManagerFactory entityManagerFactory = getEntityManagerFactory(false);
+	private static Logger logger = Logger.getLogger(Persistor.class);
+
+	private static EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
 
 	private Persistor() {
 		throw new IllegalAccessError("Utility class");
 	}
 
-	private static EntityManagerFactory getEntityManagerFactory(boolean testMode) {
-		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
+	private static EntityManagerFactory getEntityManagerFactory() {
 		Map<String, String> persistenceMap = new HashMap<>();
-		String database;
-		String url;
 
-		if (databaseBaseUrl.length() > 1) {
-			if (testMode) {
-				database = "eap_testing";
-			} else {
-				database = "eap_development";
-			}
-
-			url = "jdbc:mariadb://" + databaseBaseUrl + "/" + database + "?createDatabaseIfNotExist=true";
-			persistenceMap.put("javax.persistence.jdbc.url", url);
+		if (System.getProperty("db.host") != null && System.getProperty("db.port") != null) {
+			persistenceMap = getUpdatedPersistenceMap();
 		}
-		return Persistence.createEntityManagerFactory("default", persistenceMap);
+		logger.info("Ich lebe noch");
+		return Persistence.createEntityManagerFactory(PersistenceUnit.DEVELOPMENT.getName(), persistenceMap);
+	}
+
+	/**
+	 * Updates the persistence map, if the db.host and db.port are set via parameter
+	 * @return - an updated persistence map
+	 */
+	private static Map<String, String> getUpdatedPersistenceMap() {
+		Map<String, String> persistenceMap = new HashMap<>();
+		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
+		String url = "jdbc:mariadb://" + databaseBaseUrl + "/eap_development?createDatabaseIfNotExist=true";
+
+		persistenceMap.put("javax.persistence.jdbc.url", url);
+		return persistenceMap;
 	}
 
 	public static void useTestEnvironment() {
-		entityManagerFactory.close();
-		entityManagerFactory = getEntityManagerFactory(true);
+		Persistor.entityManagerFactory.close();
+		Persistor.entityManagerFactory = Persistence.createEntityManagerFactory(PersistenceUnit.TEST.getName());
 	}
 
 	public static EntityManager getEntityManager() {
+		logger.info("Er geht in mich");
 		return entityManagerFactory.createEntityManager();
 	}
 }
