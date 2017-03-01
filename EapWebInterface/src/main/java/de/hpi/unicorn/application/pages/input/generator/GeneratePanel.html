@@ -3,30 +3,38 @@
 <html xmlns:wicket="http://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master"
       xmlns="http://www.w3.org/1999/xhtml">
 <wicket:panel>
-    <form wicket:id="layoutForm">
-        <table class="table table-striped table-hover ">
-            <tr><td>Event type:</td><td><select wicket:id="eventTypeField"></select></td></tr>
-            <tr><td>Event count:</td><td><input type="text" wicket:id="eventCountField"/></td></tr>
-            <tr><td>Scale factor:</td><td><input type="text" wicket:id="scaleFactorField"/></td></tr>
-            <tr><td>Timestamp:</td><td><input type="text" wicket:id="timestampField"/></td></tr>
-        </table>
-        <table wicket:id="theContainer" class="table table-striped table-hover ">
-            <thead>
-                <tr><th>Attribute Type</th><th>Attribute</th><th>Values</th><th>Input format</th></tr>
-            </thead>
-            <tbody wicket:id="listview" class="form-inline well-small">
-                    <tr>
-                        <td><span wicket:id="attribute">attribute</span></td>
-                        <td><span wicket:id="attributeType" style="color: gray; font-style: italic;">attributeType</span></td>
-                        <td><input wicket:id="attributeInput" type="text"></input></td>
-                        <td><span wicket:id="attributeInputDescription" style="color: gray;">Description placeholder</span></td>
-                    </tr>
-            </tbody>
-        </table>
-        <div class="form-inline well-small">
-            <input wicket:id="submitButton" type="submit" value="Generate events">
+    <div class="container">
+        <div class="row">
+            <form wicket:id="layoutForm">
+                <h3>Configure information for events to be generated:</h3>
+                <table class="table table-striped table-hover ">
+                    <tr><td>Event type:</td><td><select wicket:id="eventTypeField"></select></td></tr>
+                    <tr><td>Event count:</td><td><input type="text" wicket:id="eventCountField"/></td></tr>
+                    <tr><td>Scale factor:</td><td><input type="text" wicket:id="scaleFactorField"/></td></tr>
+                    <tr><td>Timestamp:</td><td><input type="text" wicket:id="timestampField"/></td></tr>
+                </table>
+                <h3>Enter possible values:</h3>
+                <table wicket:id="theContainer" class="table table-striped table-hover ">
+                    <thead>
+                        <tr><th>Attribute</th><th>Attribute Type</th><th>Values</th><th>Input format</th></tr>
+                    </thead>
+                    <tbody wicket:id="listview" class="form-inline well-small">
+                            <tr>
+                                <td><span wicket:id="attribute">attribute</span></td>
+                                <td><span wicket:id="attributeType" style="color: gray; font-style: italic;">attributeType</span></td>
+                                <td>
+                                    <input wicket:id="attributeInput" type="text"></input>
+                                    <i wicket:id="attributeInputWarning" class="icon-warning-sign"></i>
+                                </td>
+                                <td><span wicket:id="attributeInputDescription" style="color: gray;">Description placeholder</span></td>
+                            </tr>
+                    </tbody>
+                </table>
+                <div class="form-inline well-small">
+                    <input wicket:id="submitButton" type="submit" value="Generate events" class="btn btn-primary btn-lg btn-block">
+                </div>
+            </form>
         </div>
-
-    </form>
+    </div>
 </wicket:panel>
 </html>

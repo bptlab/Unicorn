@@ -8,6 +8,8 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
+import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -24,6 +26,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.Validatable;
 import org.apache.wicket.validation.validator.PatternValidator;
 
 import java.util.ArrayList;
@@ -89,9 +92,10 @@ public class DependenciesPanel extends Panel {
     }
 
     /**
-     * Adds dropdown with existing event types.
-     * When selected, the two dropdowns containing the attributes of the choosen event type will be updated.
+     * Create and add dropdown with existing event types.
+     * When selected, the two dropdowns containing the attributes of the chosen event type will be updated.
      * Using the two dropdowns the base and dependent attribute can be selected.
+     *
      */
     private void addDropDowns() {
         final List<EapEventType> eventTypes = EapEventType.findAll();
@@ -136,6 +140,7 @@ public class DependenciesPanel extends Panel {
                         selectedDependentAttribute = dependentDropDown.getChoices().get(0);
                     }
                     target.add(dependentDropDown);
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -144,6 +149,7 @@ public class DependenciesPanel extends Panel {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if(selectedEventType != null) {
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -158,6 +164,7 @@ public class DependenciesPanel extends Panel {
                     dependentDropDown.setChoices(getDependentAttributeChoiceList());
                     target.add(baseDropDown);
                     target.add(dependentDropDown);
+                    updateDependenciesMapForCurrentSelection();
                     updateLabelsAndList(target);
                 }
             }
@@ -170,6 +177,10 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(selectedDependentAttributeTypeLabel);
     }
 
+    /**
+     * Create and add a button to set the attribute dependency and enable the dependency value fields.
+     *
+     */
     private void addAddDependencyButton() {
         addDependencyButton = new AjaxButton("addDependencyButton", this.dependencyForm) {
             private static final long serialVersionUID = 1L;
@@ -182,8 +193,8 @@ public class DependenciesPanel extends Panel {
                 }
 
                 //DISABLE DEPENDENCY FORM
-                disableDropDowns();
-                addDependencyButton.setVisible(false);
+                setEnablementForDropDowns(false);
+                addDependencyButton.setEnabled(false);
                 target.add(eventTypeDropDown);
                 target.add(baseDropDown);
                 target.add(dependentDropDown);
@@ -200,6 +211,7 @@ public class DependenciesPanel extends Panel {
                 target.add(submitButton);
 
                 //ADD VALIDATORS FOR VALUE-INPUTS
+                removeOldValidatorsFromInputFields();
                 setValidatorsForInputFields(target);
 
                 listview.removeAll();
@@ -213,21 +225,29 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(addDependencyButton);
     }
 
+    /**
+     * Create and add input fields for new values of the dependency.
+     *
+     */
     private void addDependencyValuesInputs() {
         baseAttributeInputField = new TextField<String>("baseAttributeInput", new PropertyModel<String>(this,
                 "currentBaseAttributeInput"));
         dependentAttributeInputField = new TextField<String>("dependentAttributeInput", new PropertyModel<String>(this,
                 "currentDependentAttributeInput"));
-        baseAttributeInputField.setLabel(new Model<String>("currentBaseAttributeInput"));
+        baseAttributeInputField.setLabel(new Model<String>("Input for base attribute"));
         baseAttributeInputField.setOutputMarkupId(true);
         baseAttributeInputField.setEnabled(false);
-        dependentAttributeInputField.setLabel(new Model<String>("currentDependentAttributeInput"));
+        dependentAttributeInputField.setLabel(new Model<String>("Input for dependent attribute"));
         dependentAttributeInputField.setOutputMarkupId(true);
         dependentAttributeInputField.setEnabled(false);
         dependencyForm.add(baseAttributeInputField);
         dependencyForm.add(dependentAttributeInputField);
     }
 
+    /**
+     * Create and add a button to enter a new value dependency into the temporary map of dependency values.
+     *
+     */
     private void addAddDependencyValuesButton() {
         addDependencyValueButton = new AjaxButton("addDependencyValueButton", this.dependencyForm) {
             private static final long serialVersionUID = 1L;
@@ -240,9 +260,18 @@ public class DependenciesPanel extends Panel {
                     return;
                 }
                 if(dependenciesInput.containsKey(currentBaseAttributeInput)) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("This value is already registered!");
-                    target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    return;
+                    // We try to append the new input to the old one, using validators to make sure the map stays valid
+                    Validatable<String> currentDependencyValue = new Validatable<>(dependenciesInput.get(currentBaseAttributeInput) + ";" + currentDependentAttributeInput);
+                    IValidator<String> newDependencyValueValidator = getValidatorForAttribute(selectedDependentAttribute);
+                    newDependencyValueValidator.validate(currentDependencyValue);
+                    if(currentDependencyValue.getErrors().isEmpty()) {
+                        currentDependentAttributeInput = currentDependencyValue.getValue();
+                    }
+                    else {
+                        DependenciesPanel.this.page.getFeedbackPanel().error("Could not append the value to the existing dependency.");
+                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                        return;
+                    }
                 }
                 dependenciesInput.put(currentBaseAttributeInput, currentDependentAttributeInput);
                 DependenciesPanel.this.page.getFeedbackPanel().info("Added dependency!");
@@ -255,12 +284,21 @@ public class DependenciesPanel extends Panel {
                 listview.removeAll();
                 target.add(listContainer);
             }
+            @Override
+            public void onError(AjaxRequestTarget target, Form form) {
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+            }
         };
         addDependencyValueButton.setEnabled(false);
         dependencyForm.add(addDependencyValueButton);
     }
 
+    /**
+     * Create and add a container displaying labels with the selected attributes and the list with already submitted values.
+     *
+     */
     private void addListOfDependencies() {
+        updateDependenciesMapForCurrentSelection();
         LoadableDetachableModel list =  new LoadableDetachableModel()
         {
             @Override
@@ -286,13 +324,16 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(listContainer);
     }
 
+    /**
+     * Create and add the submit button to save the dependency and inserted dependency values.
+     *
+     */
     private void addSubmitButton() {
         submitButton = new AjaxButton("submitButton", this.dependencyForm) {
             private static final long serialVersionUID = 1L;
             @Override
             public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                AttributeDependency dependency = new AttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
-                dependency.save();
+                AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 if(dependency.addDependencyValues(dependenciesInput)) {
                     DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
                     target.add(DependenciesPanel.this.page.getFeedbackPanel());
@@ -307,7 +348,18 @@ public class DependenciesPanel extends Panel {
                 dependenciesInput = new HashMap<>();
                 currentBaseAttributeInput = "";
                 currentDependentAttributeInput = "";
+                baseAttributeInputField.setEnabled(false);
+                dependentAttributeInputField.setEnabled(false);
+                addDependencyValueButton.setEnabled(false);
+                submitButton.setEnabled(false);
+                target.add(baseAttributeInputField);
+                target.add(dependentAttributeInputField);
+                target.add(addDependencyValueButton);
+                target.add(submitButton);
+
                 setEnablementForDropDowns(true);
+                addDependencyButton.setEnabled(true);
+                target.add(addDependencyButton);
                 target.add(baseAttributeInputField);
                 target.add(dependentAttributeInputField);
                 target.add(eventTypeDropDown);
@@ -319,6 +371,10 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(submitButton);
     }
 
+    /**
+     * Try to initialize the base and dependent attribute with the first to attributes of the chosen event type.
+     *
+     */
     private void setFirstAttributes() {
         if(selectedEventType.getValueTypes().size() >= 2) {
             selectedBaseAttribute = selectedEventType.getValueTypes().get(0);
@@ -326,15 +382,22 @@ public class DependenciesPanel extends Panel {
         }
     }
 
-    private void disableDropDowns() {
-        setEnablementForDropDowns(false);
-    }
+    /**
+     * set the enablement of all dropdowns in the form.
+     *
+     * @param enabled defines if the dropdown should be enabled (true) or disabled (false)
+     */
     private void setEnablementForDropDowns(Boolean enabled) {
         eventTypeDropDown.setEnabled(enabled);
         baseDropDown.setEnabled(enabled);
         dependentDropDown.setEnabled(enabled);
     }
 
+    /**
+     * Builds a List containing all attributes of the chosen event type but the attribute select as base attribute for the dependency.
+     *
+     * @return a list of attributes trimmed by the base attribute
+     */
     private List<TypeTreeNode> getDependentAttributeChoiceList() {
         List<TypeTreeNode> attributesWithoutBaseAttribute = selectedEventType.getValueTypes();
         try {
@@ -344,6 +407,12 @@ public class DependenciesPanel extends Panel {
         return attributesWithoutBaseAttribute;
     }
 
+    /**
+     * Update the list containing the values map and the labels displaying the types of the chosen attributes.
+     * It will also update the given ajax target.
+     *
+     * @param target to be updated
+     */
     private void updateLabelsAndList(AjaxRequestTarget target) {
         listview.removeAll();
         target.add(selectedBaseAttributeTypeLabel);
@@ -351,6 +420,29 @@ public class DependenciesPanel extends Panel {
         target.add(listContainer);
     }
 
+    /**
+     * Creates a new dependency-value map and tries to load attribute value dependencies that already exist for the given attribute dependency,
+     * into the map.
+     *
+     */
+    private void updateDependenciesMapForCurrentSelection() {
+        dependenciesInput = new HashMap<>();
+        AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute,
+                selectedDependentAttribute);
+        if(attributeDependency != null) {
+            for(AttributeValueDependency attributeValueDependency : AttributeValueDependency.getAttributeValueDependenciesFor
+                    (attributeDependency)) {
+                dependenciesInput.put(attributeValueDependency.getBaseAttributeValue(), attributeValueDependency.getDependentAttributeValues());
+            }
+        }
+    }
+
+    /**
+     * Set input validators for the two input fields (base and dependent attribute value).
+     * The given ajax target will be updated for these two fields too.
+     *
+     * @param target to be updated
+     */
     private void setValidatorsForInputFields(AjaxRequestTarget target) {
         baseAttributeInputField.add(getValidatorForAttribute(selectedBaseAttribute));
         dependentAttributeInputField.add(getValidatorForAttribute(selectedDependentAttribute));
@@ -358,6 +450,25 @@ public class DependenciesPanel extends Panel {
         target.add(dependentAttributeInputField);
     }
 
+    /**
+     * Remove the old input validators from input field,
+     * in case they are different to the ones needed when updated.
+     */
+    private void removeOldValidatorsFromInputFields() {
+        for(IValidator validator : baseAttributeInputField.getValidators()) {
+            baseAttributeInputField.remove(validator);
+        }
+        for(IValidator validator : dependentAttributeInputField.getValidators()) {
+            dependentAttributeInputField.remove(validator);
+        }
+    }
+
+    /**
+     * Chooses the correct validator fitting the given attribute type.
+     *
+     * @param attribute the validator should be used for
+     * @return a validator of attribute type
+     */
     private IValidator<String> getValidatorForAttribute(TypeTreeNode attribute) {
         switch (attribute.getType()) {
             case INTEGER:

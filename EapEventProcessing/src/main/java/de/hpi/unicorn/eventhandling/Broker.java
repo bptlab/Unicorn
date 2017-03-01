@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import org.apache.log4j.Logger;
 
 import com.espertech.esper.client.EPStatement;
@@ -231,6 +232,10 @@ public class Broker implements EventImporter, EventAdministrator {
 			for (final TransformationRule transformationRule : transformationRules) {
 				this.remove(transformationRule);
 			}
+			// remove dependency rules and dependency value rules referencing this event type
+			final AttributeDependencyManager attributeDependencyManager = new AttributeDependencyManager(eventType);
+			attributeDependencyManager.removeAll(true);
+
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
