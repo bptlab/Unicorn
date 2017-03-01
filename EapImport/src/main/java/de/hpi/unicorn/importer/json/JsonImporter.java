@@ -1,3 +1,10 @@
+/*******************************************************************************
+ *
+ * Copyright (c) 2012-2015, Business Process Technology (BPT),
+ * http://bpt.hpi.uni-potsdam.de.
+ * All Rights Reserved.
+ *
+ *******************************************************************************/
 package de.hpi.unicorn.importer.json;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
@@ -5,22 +12,31 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.validation.AttributeValidator;
-import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *  Class to import Json. Currently only used for import of dependencies.
+ */
 public class JsonImporter {
-    private static Logger logger = Logger.getLogger(JsonImporter.class);
+
+    /**
+     * Generate Attribute dependencies for the event generator out of given json string.
+     * Export a file containing that string via @JsonExporter.
+     *
+     * @param dependenciesString jsonString that contains event type with dependencies
+     * @return Boolean if generating was successful
+     */
     public static boolean generateAttributeDependenciesFromString(String dependenciesString) {
         try {
             JSONObject dependenciesJson = new JSONObject(dependenciesString);
             JSONObject eventTypeJson = dependenciesJson.getJSONObject("eventTypeDependencies");
             // check if corresponding event type exists
             EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
-            if (!eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName")) || eventType == null) {
+            if (eventType == null || !eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
                 return false;
             }
             // add every dependency
