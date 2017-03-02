@@ -35,7 +35,7 @@ public class EventGeneratorTest extends TestCase {
 
     @Before
     public void setup() {
-        Persistor.useTestEnviroment();
+        Persistor.useTestEnvironment();
         EapEvent.removeAll();
         EapEventType.removeAll();
         attributeSchemas.put(attribute, attributeValue);
