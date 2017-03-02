@@ -1,0 +1,24 @@
+language: java
+
+sudo: false
+
+jdk:
+  - oraclejdk8
+
+cache:
+  directories:
+    - $HOME/.m2
+    - /home/travis/.sonar/cache
+
+addons:
+  mariadb: '10.0'
+  apt:
+    packages:
+      - oracle-java8-installer
+
+before_script:
+  - chmod +x sonarqube.sh
+  - sonarqube.sh
+  - mv unicorn_template.properties unicorn.properties
+
+script: mvn test -B -V
