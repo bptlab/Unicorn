@@ -527,7 +527,11 @@ public class EapEventType extends Persistable {
 		builder.append("\"attributes\":{");
 		for (TypeTreeNode attribute : this.attributes.getAttributes()) {
 			builder.append("\"" + attribute.getName() + "\":");
-			builder.append("\"" + attribute.getType().toString().toUpperCase() + "\",");
+			if (attribute.getType() != null) {
+				builder.append("\"" + attribute.getType().toString().toUpperCase() + "\",");
+			} else {
+				builder.append("\"UNDEFINED\",");
+			}
 		}
 		builder.setLength(builder.length() - 1);
 		builder.append("}}");
