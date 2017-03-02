@@ -48,7 +48,7 @@ public class XMLParserTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 
 	}
 

@@ -38,7 +38,7 @@ public class ProcessMonitoringViaQueries {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

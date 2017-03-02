@@ -4,8 +4,6 @@
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="development" transaction-type="RESOURCE_LOCAL">
 
-        <!-- comment out to use the default provider <provider>oracle.eclipselink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
-
         <class>de.hpi.unicorn.event.EapEvent</class>
         <class>de.hpi.unicorn.event.EapEventType</class>
         <class>de.hpi.unicorn.event.EventTypeRule</class>
@@ -73,7 +71,6 @@
 
     <persistence-unit name="testing" transaction-type="RESOURCE_LOCAL">
 
-        <!-- comment out to use the default provider <provider>oracle.eclipselink.essentials.ejb.cmp3.EntityManagerFactoryProvider</provider> -->
 
         <class>de.hpi.unicorn.event.EapEvent</class>
         <class>de.hpi.unicorn.event.EapEventType</class>

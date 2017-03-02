@@ -44,7 +44,7 @@ public class XORTest extends AbstractQueryCreationTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/XORTest.bpmn20.xml";
 	}
 

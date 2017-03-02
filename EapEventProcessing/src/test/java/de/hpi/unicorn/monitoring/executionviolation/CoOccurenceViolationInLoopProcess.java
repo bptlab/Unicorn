@@ -47,7 +47,7 @@ public class CoOccurenceViolationInLoopProcess extends AbstractMonitoringTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/XORLoopTest.bpmn20.xml";
 	}
 

@@ -77,7 +77,8 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<BPMNProcess> findByName(final String name) {
-		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM BPMNElement " + "WHERE ID IN (" + "	SELECT RESULT.ID " + "	FROM (" + "		SELECT * " + "		FROM BPMNElement AS SELECTEDBPMNELEMENT " + "		WHERE ID IN (" + "			SELECT ID " + "			FROM BPMNProcess AS SELECTEDBPMNPROCESS)) AS RESULT" + "			WHERE RESULT.NAME ='" + name + "')", BPMNProcess.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("" + "SELECT * " + "FROM BPMNElement " +
+				"WHERE ID IN (" + "	SELECT RESULT.ID " + "	FROM (" + "		SELECT * " + "		FROM BPMNElement AS SELECTEDBPMNELEMENT " + "		WHERE ID IN (" + "			SELECT ID " + "			FROM BPMNProcess AS SELECTEDBPMNPROCESS)) AS RESULT" + "			WHERE RESULT.NAME ='" + name + "')", BPMNProcess.class);
 		return query.getResultList();
 	}
 
@@ -89,7 +90,8 @@ public class BPMNProcess extends AbstractBPMNElement {
 	 */
 	@SuppressWarnings("unchecked")
 	public static List<BPMNProcess> findByAttribute(final String columnName, final String value) {
-		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM BPMNProcess WHERE " + columnName + " = '" + value + "'", BPMNProcess.class);
+		final Query query = Persistor.getEntityManager().createNativeQuery("SELECT * FROM BPMNProcess WHERE " +
+				columnName + " = '" + value + "'", BPMNProcess.class);
 		return query.getResultList();
 	}
 

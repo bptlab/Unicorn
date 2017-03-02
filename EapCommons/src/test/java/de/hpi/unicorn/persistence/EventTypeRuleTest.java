@@ -24,7 +24,6 @@ import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.AttributeTypeTree;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.notification.EventCondition;
-import de.hpi.unicorn.persistence.Persistor;
 
 public class EventTypeRuleTest implements PersistenceTest {
 
@@ -34,7 +33,7 @@ public class EventTypeRuleTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

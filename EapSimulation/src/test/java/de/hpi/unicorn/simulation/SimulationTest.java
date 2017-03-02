@@ -43,7 +43,7 @@ public class SimulationTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 
 		this.createEventTypes();
 

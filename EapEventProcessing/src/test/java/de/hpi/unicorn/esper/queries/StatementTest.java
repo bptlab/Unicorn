@@ -66,7 +66,7 @@ public class StatementTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	// TODO: Query und Listener anlegen und dann Events reinladen und Abfragen

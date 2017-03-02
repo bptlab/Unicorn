@@ -63,7 +63,7 @@ public class CSVImportTest {
 
 	@Test
 	public void testImportAndExport() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		final CSVImporter csvNormalizer = new CSVImporter();
 		final List<String> columnTitles = csvNormalizer.getColumnTitlesFromFile(CSVImportTest.filePath);
 		columnTitles.remove("Timestamp");

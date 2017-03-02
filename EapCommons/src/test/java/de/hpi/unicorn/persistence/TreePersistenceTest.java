@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.hpi.unicorn.event.collection.EventTree;
-import de.hpi.unicorn.persistence.Persistor;
 
 public class TreePersistenceTest implements PersistenceTest {
 
@@ -21,7 +20,7 @@ public class TreePersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

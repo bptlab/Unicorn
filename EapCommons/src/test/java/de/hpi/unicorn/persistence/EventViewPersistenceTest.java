@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.visualisation.EventView;
 
 /**
@@ -28,7 +27,7 @@ public class EventViewPersistenceTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	private void storeExampleView() {

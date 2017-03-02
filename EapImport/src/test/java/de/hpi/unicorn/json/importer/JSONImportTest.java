@@ -52,7 +52,7 @@ public class JSONImportTest {
         attributes.add(new TypeTreeNode(attribute3Name, AttributeTypeEnum.FLOAT));
         AttributeTypeTree attributeTree = new AttributeTypeTree(attributes);
         eventType = new EapEventType("EventType", attributeTree, "timestamp");
-        Persistor.useTestEnviroment();
+        Persistor.useTestEnvironment();
         EapEventType.removeAll();
     }
 

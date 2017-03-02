@@ -54,7 +54,7 @@ public class MessageAndTimerTest extends AbstractQueryCreationTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/MessageAndTimer.bpmn20.xml";
 	}
 

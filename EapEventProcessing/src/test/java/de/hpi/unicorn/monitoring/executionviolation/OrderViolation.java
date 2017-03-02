@@ -49,7 +49,7 @@ public class OrderViolation extends AbstractMonitoringTest {
 	@Before
 	public void setup() {
 		this.filePath = System.getProperty("user.dir") + "/src/test/resources/bpmn/SimpleSequence.bpmn20.xml";
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 	}
 
 	@Test

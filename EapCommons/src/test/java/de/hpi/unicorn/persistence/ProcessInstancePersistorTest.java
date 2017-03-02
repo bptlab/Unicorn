@@ -27,7 +27,6 @@ import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import de.hpi.unicorn.persistence.Persistor;
 import de.hpi.unicorn.process.CorrelationProcess;
 import de.hpi.unicorn.process.CorrelationProcessInstance;
 
@@ -49,7 +48,7 @@ public class ProcessInstancePersistorTest implements PersistenceTest {
 
 	@Before
 	public void setup() {
-		Persistor.useTestEnviroment();
+		Persistor.useTestEnvironment();
 
 		Map<String, Serializable> hm = new HashMap<String, Serializable>();
 		hm.put("kuchen", "kaese");
