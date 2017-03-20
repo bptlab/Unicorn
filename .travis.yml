@@ -16,9 +16,11 @@ addons:
     packages:
       - oracle-java8-installer
 
+before_install:
+  - mv unicorn_template.properties unicorn.properties
+      
 before_script:
   - chmod +x sonarqube.sh
   - sonarqube.sh
-  - mv unicorn_template.properties unicorn.properties
 
 script: mvn test -B -V
