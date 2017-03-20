@@ -5,6 +5,7 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
         -Dsonar.host.url=$SONAR_HOST_URL \
         -Dsonar.login=$SONAR_AUTH_TOKEN \
         -Dsonar.branch=$TRAVIS_BRANCH \
+		-Dsonar.inclusions=/home/travis/build/bptlab/Unicorn/EapWebInterface/src/main/java/de/hpi/unicorn/application/pages/input/generator/* \
 
 else
     mvn verify sonar:sonar -DskipTests \
@@ -15,5 +16,6 @@ else
         -Dsonar.github.repository=$TRAVIS_REPO_SLUG \
         -Dsonar.github.oauth=$GITHUB_ACCESS_TOKEN \
         -Dsonar.github.pullRequest=$TRAVIS_PULL_REQUEST
+		-Dsonar.inclusions=/home/travis/build/bptlab/Unicorn/EapWebInterface/src/main/java/de/hpi/unicorn/application/pages/input/generator/* \
 
 fi
