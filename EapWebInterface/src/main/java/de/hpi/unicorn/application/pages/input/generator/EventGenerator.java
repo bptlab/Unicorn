@@ -29,19 +29,12 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EventGenerator {
 
-    private int eventCount;
     private int replayScaleFactor = 10000;
     private static Random random = new Random();
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
     private AttributeDependencyManager attributeDependencyManager;
 
-    /**
-     * Creates a new EventGenerator
-     */
-    public EventGenerator() {
-
-    }
     /**
      * Generates (eventCount many) events with given event type and random selection of input values for attribute values
      * and replays them
@@ -78,9 +71,8 @@ public class EventGenerator {
      */
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas, String
             eventTimestamps) {
-        this.eventCount = eventCount;
         this.replayScaleFactor = scaleFactor;
-        List<EapEvent> events = new ArrayList<EapEvent>();
+        List<EapEvent> events = new ArrayList<>();
 
         if (eventCount < 0 || scaleFactor < 0 || EapEventType.findByTypeName(eventType.getTypeName()) == null) {
             throw new IllegalArgumentException();
@@ -89,7 +81,7 @@ public class EventGenerator {
         attributeDependencyManager = new AttributeDependencyManager(eventType);
 
         for (int j = 0; j < eventCount; j++) {
-            Map<String, Serializable> values = new HashMap<String, Serializable>();
+            Map<String, Serializable> values = new HashMap<>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
                 // Assign a random value only if the attribute hasn't been filled before (by a dependency). So we don't overwrite values defined by
                 // dependencies. In case the base attribute is considered later, it will then overwrite the random value with the dependency defined
