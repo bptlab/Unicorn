@@ -7,8 +7,6 @@
  *******************************************************************************/
 package de.hpi.unicorn.persistence;
 
-import org.apache.log4j.Logger;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,7 +19,6 @@ import java.util.Map;
  * to the EntityManager.
  */
 public class Persistor {
-
 	private static EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
 
 	private Persistor() {
@@ -32,7 +29,10 @@ public class Persistor {
 		Map<String, String> persistenceMap = new HashMap<>();
 
 		if (System.getProperty("db.host") != null && System.getProperty("db.port") != null) {
-			persistenceMap = getUpdatedPersistenceMap();
+			persistenceMap.putAll(getUpdatedPersistenceMapWithHost());
+		}
+		if (System.getProperty("db.user") != null && System.getProperty("db.password") != null) {
+			persistenceMap.putAll(getUpdatedPersistenceMapWithUser());
 		}
 		return Persistence.createEntityManagerFactory(PersistenceUnit.DEVELOPMENT.getName(), persistenceMap);
 	}
@@ -41,12 +41,19 @@ public class Persistor {
 	 * Updates the persistence map, if the db.host and db.port are set via parameter
 	 * @return - an updated persistence map
 	 */
-	private static Map<String, String> getUpdatedPersistenceMap() {
+	private static Map<String, String> getUpdatedPersistenceMapWithHost() {
 		Map<String, String> persistenceMap = new HashMap<>();
 		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
 		String url = "jdbc:mariadb://" + databaseBaseUrl + "/eap_development?createDatabaseIfNotExist=true";
 
 		persistenceMap.put("javax.persistence.jdbc.url", url);
+		return persistenceMap;
+	}
+
+	private static Map<String, String> getUpdatedPersistenceMapWithUser() {
+		Map<String, String> persistenceMap = new HashMap<>();
+		persistenceMap.put("javax.persistence.jdbc.user", System.getProperty("db.user"));
+		persistenceMap.put("javax.persistence.jdbc.password", System.getProperty("db.password"));
 		return persistenceMap;
 	}
 
