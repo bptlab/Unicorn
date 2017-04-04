@@ -144,9 +144,6 @@ public class ExportImportDependenciesPanel extends Panel {
      * Add a field for importing a selectable file.
      */
     private void addImportField() {
-        /**
-         * Add a field for importing a selectable file.
-         */
         uploadField = new FileUploadField("uploadField");
         importForm.add(uploadField);
     }
