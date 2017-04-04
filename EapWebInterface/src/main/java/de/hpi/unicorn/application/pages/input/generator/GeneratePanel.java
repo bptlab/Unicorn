@@ -184,7 +184,7 @@ public class GeneratePanel extends Panel {
         listContainer.setOutputMarkupId(true);
 
         DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
+                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
