@@ -108,12 +108,12 @@ public class ExportImportDependenciesPanel extends Panel {
             selectedEventType = eventTypes.get(0);
         }
         final DropDownChoice<EapEventType> eventTypeDropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>(this,"selectedEventType"), eventTypes);
+                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
         exportForm.add(eventTypeDropDown);
     }
 
     /**
-     * Add a button for exporting the dependencies of the given event type
+     * Add a button for exporting the dependencies of the given event type.
      */
     private void addExportButton() {
             final AjaxButton exportButton = new AjaxButton("exportButton") {
@@ -144,9 +144,6 @@ public class ExportImportDependenciesPanel extends Panel {
      * Add a field for importing a selectable file.
      */
     private void addImportField() {
-        /**
-         * Add a field for importing a selectable file.
-         */
         uploadField = new FileUploadField("uploadField");
         importForm.add(uploadField);
     }
