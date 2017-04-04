@@ -22,19 +22,19 @@ import java.util.concurrent.TimeUnit;
 
 public class EventGeneratorTest extends TestCase {
     private EventGenerator generator = new EventGenerator();
-    int eventCount = 2;
-    int scaleFactor = 1000000;
-    String attributeName = "TestAttribute";
-    String attributeValue = "AttributeValue";
-    TypeTreeNode attribute = new TypeTreeNode(attributeName);
-    AttributeTypeTree attributeTree = new AttributeTypeTree(attribute);
-    EapEventType eventType = new EapEventType("TestType", attributeTree);
-    HashMap<TypeTreeNode, String> attributeSchemas = new HashMap<>();
-    ArrayList<EapEventType> eventTypes = new ArrayList<EapEventType>();
-    DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+    private int eventCount = 2;
+    private int scaleFactor = 1000000;
+    private String attributeName = "TestAttribute";
+    private String attributeValue = "AttributeValue";
+    private TypeTreeNode attribute = new TypeTreeNode(attributeName);
+    private AttributeTypeTree attributeTree = new AttributeTypeTree(attribute);
+    private EapEventType eventType = new EapEventType("TestType", attributeTree);
+    private HashMap<TypeTreeNode, String> attributeSchemas = new HashMap<>();
+    private ArrayList<EapEventType> eventTypes = new ArrayList<EapEventType>();
+    private DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
     @Before
-    public void setup() {
+    public void setUp() {
         Persistor.useTestEnvironment();
         EapEvent.removeAll();
         EapEventType.removeAll();
@@ -42,9 +42,7 @@ public class EventGeneratorTest extends TestCase {
         eventTypes.add(eventType);
     }
 
-    @Test
     public void testGenerateEventExceptions() {
-        setup();
 
         try {
             generator.generateEvents(-1, scaleFactor, eventType, attributeSchemas);
@@ -66,7 +64,6 @@ public class EventGeneratorTest extends TestCase {
     }
 
     public void testGenerateEvents() {
-        setup();
         EapEventType.save(eventTypes);
 
         int globalEventCountBefore = EapEvent.findAll().size();
@@ -96,7 +93,6 @@ public class EventGeneratorTest extends TestCase {
     }
 
     public void testGenerateEventsWithScaleFactor() {
-        setup();
         EapEventType.save(eventTypes);
 
         int globalEventCountBefore = EapEvent.findAll().size();
@@ -135,7 +131,6 @@ public class EventGeneratorTest extends TestCase {
             e.printStackTrace();
         }
 
-        setup();
         EapEventType.save(eventTypes);
 
         int globalEventCountBefore = EapEvent.findAll().size();
@@ -166,7 +161,6 @@ public class EventGeneratorTest extends TestCase {
     }
 
     public void testGenerateEventsRange() {
-        setup();
         EapEventType.save(eventTypes);
 
         TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
@@ -206,7 +200,6 @@ public class EventGeneratorTest extends TestCase {
     }
 
     public void testGenerateEventsEnumeration() {
-        setup();
         EapEventType.save(eventTypes);
 
         TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
@@ -241,4 +234,41 @@ public class EventGeneratorTest extends TestCase {
             assertTrue(stringValue.equals("String1") || stringValue.equals("String2"));
         }
     }
+
+    public void testGenerateEventsWithEmptyValues() {
+        EapEventType.save(eventTypes);
+
+        TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
+        attributeTree.addRoot(attribute2);
+        attributeSchemas.put(attribute2, "");
+
+        TypeTreeNode attribute3 = new TypeTreeNode("Attribute3", AttributeTypeEnum.FLOAT);
+        attributeTree.addRoot(attribute3);
+        attributeSchemas.put(attribute3, "");
+
+        TypeTreeNode attribute4 = new TypeTreeNode("Attribute4", AttributeTypeEnum.STRING);
+        attributeTree.addRoot(attribute4);
+        attributeSchemas.put(attribute4, "");
+
+        generator.generateEvents(10, scaleFactor, eventType, attributeSchemas);
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // event attributes have default values
+        List<EapEvent> events = EapEvent.findByEventType(eventType);
+        for (EapEvent event : events) {
+            int intValue = Integer.parseInt(event.getValuesForExport().get("Attribute2"));
+            assertTrue(intValue >= 1 && intValue <= 50);
+
+            float floatValue = Float.parseFloat(event.getValuesForExport().get("Attribute3"));
+            assertTrue(floatValue == 1.1f || floatValue == 1.2f || floatValue == 2.0f || floatValue == 2.5f);
+
+            String stringValue = event.getValuesForExport().get("Attribute4");
+            assertTrue(stringValue.equals("String1") || stringValue.equals("String2") || stringValue.equals("String3"));
+        }
+    }
+
 }
