@@ -31,7 +31,7 @@ public class EventGeneratorTest extends TestCase {
     private EapEventType eventType = new EapEventType("TestType", attributeTree);
     private HashMap<TypeTreeNode, String> attributeSchemas = new HashMap<>();
     private ArrayList<EapEventType> eventTypes = new ArrayList<EapEventType>();
-    private DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+    private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
     @Before
     public void setUp() {
@@ -250,6 +250,10 @@ public class EventGeneratorTest extends TestCase {
         attributeTree.addRoot(attribute4);
         attributeSchemas.put(attribute4, "");
 
+        TypeTreeNode attribute5 = new TypeTreeNode("Attribute5", AttributeTypeEnum.DATE);
+        attributeTree.addRoot(attribute5);
+        attributeSchemas.put(attribute5, "");
+
         generator.generateEvents(10, scaleFactor, eventType, attributeSchemas);
         try {
             TimeUnit.SECONDS.sleep(2);
@@ -268,6 +272,22 @@ public class EventGeneratorTest extends TestCase {
 
             String stringValue = event.getValuesForExport().get("Attribute4");
             assertTrue(stringValue.equals("String1") || stringValue.equals("String2") || stringValue.equals("String3"));
+
+            try {
+                String dateValue = event.getValuesForExport().get("Attribute5");
+                Date startDate = dateFormatter.parse("2017/01/22T12:00");
+                Date endDate = dateFormatter.parse("2017/02/23T14:59");
+                Date date = new Date();
+                try {
+                    date = DateUtils.getFormatter().parse(dateValue);
+                }catch (ParseException e) {
+                    fail("Date was not in a parsable format");
+                }
+                assertTrue(date.after(startDate) && date.before(endDate));
+            } catch (ParseException e) {
+                fail("Error while parsing default dates");
+            }
+
         }
     }
 
