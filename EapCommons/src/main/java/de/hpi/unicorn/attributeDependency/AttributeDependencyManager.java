@@ -25,12 +25,10 @@ import java.util.Map;
  *
  */
 public class AttributeDependencyManager implements Serializable {
-	private EapEventType eventType;
 	private List<AttributeDependency> attributeDependencies;
 	private Map<AttributeDependency, List<AttributeValueDependency>> attributeValueDependencies = new HashMap<>();
 
 	public AttributeDependencyManager(EapEventType eventType) {
-		this.eventType = eventType;
 		this.attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
 		for(AttributeDependency attributeDependency : attributeDependencies) {
 			attributeValueDependencies.put(attributeDependency, AttributeValueDependency.getAttributeValueDependenciesFor

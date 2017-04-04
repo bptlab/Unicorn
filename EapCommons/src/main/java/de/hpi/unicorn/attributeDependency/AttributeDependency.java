@@ -7,12 +7,21 @@
  *******************************************************************************/
 package de.hpi.unicorn.attributeDependency;
 
-import javax.persistence.*;
-
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.persistence.Persistable;
 import de.hpi.unicorn.persistence.Persistor;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Query;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import java.util.Map;
 import java.util.List;
@@ -32,6 +41,9 @@ import java.util.List;
         uniqueConstraints = @UniqueConstraint(columnNames = {"EventType", "BaseAttribute", "DependentAttribute"}))
 public class AttributeDependency extends Persistable {
 
+    private static final String EVENTTYPE_LITERAL = "eventType";
+    private static final String BASEATTRIBUTE_LITERAL = "baseAttribute";
+    private static final String DEPENDENTATTRIBUTE_LITERAL = "dependentAttribute";
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -102,14 +114,14 @@ public class AttributeDependency extends Persistable {
 
     public static List<AttributeDependency> getAttributeDependenciesWithEventType(EapEventType eventType) {
         final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType",
-                AttributeDependency.class).setParameter("eventType", eventType);
+                AttributeDependency.class).setParameter(EVENTTYPE_LITERAL, eventType);
         return query.getResultList();
     }
 
     public static List<AttributeDependency> getAttributeDependenciesForAttribute(TypeTreeNode baseAttribute) {
         final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND a" +
                         ".baseAttribute = :baseAttribute",
-                AttributeDependency.class).setParameter("eventType", baseAttribute.getEventType()).setParameter("baseAttribute", baseAttribute);
+                AttributeDependency.class).setParameter(EVENTTYPE_LITERAL, baseAttribute.getEventType()).setParameter("baseAttribute", baseAttribute);
         return query.getResultList();
     }
 
@@ -119,9 +131,9 @@ public class AttributeDependency extends Persistable {
                         "a.baseAttribute = :baseAttribute AND " +
                         "a.dependentAttribute = :dependentAttribute",
                 AttributeDependency.class)
-                .setParameter("eventType", eventType)
-                .setParameter("baseAttribute", baseAttribute)
-                .setParameter("dependentAttribute", dependentAttribute);
+                .setParameter(EVENTTYPE_LITERAL, eventType)
+                .setParameter(BASEATTRIBUTE_LITERAL, baseAttribute)
+                .setParameter(DEPENDENTATTRIBUTE_LITERAL, dependentAttribute);
         try {
             return (AttributeDependency) query.getResultList().get(0);
         }
