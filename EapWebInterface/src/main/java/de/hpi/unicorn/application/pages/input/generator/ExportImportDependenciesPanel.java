@@ -9,16 +9,9 @@ package de.hpi.unicorn.application.pages.input.generator;
 
 import com.google.common.io.Files;
 import de.hpi.unicorn.application.pages.export.AJAXDownload;
-import de.hpi.unicorn.application.pages.export.Export;
-import de.hpi.unicorn.attributeDependency.AttributeDependency;
-import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.importer.FileUtils;
 import de.hpi.unicorn.importer.json.JsonExporter;
 import de.hpi.unicorn.importer.json.JsonImporter;
-import de.hpi.unicorn.importer.xml.XMLExporter;
-import de.hpi.unicorn.utils.TempFolderUtil;
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -31,7 +24,6 @@ import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -46,10 +38,8 @@ public class ExportImportDependenciesPanel extends Panel {
     private Form exportForm;
     private Form importForm;
 
-    private DropDownChoice<EapEventType> eventTypeDropDown;
     private FileUploadField uploadField;
     private EapEventType selectedEventType;
-    private static Logger logger = Logger.getLogger(ExportImportDependenciesPanel.class);
 
     /**
      * Constructor for the import/export dependencies panel. The page is initialized in this method,
@@ -76,8 +66,8 @@ public class ExportImportDependenciesPanel extends Panel {
                 }
                 // make sure provided file is json
                 final String fileName = uploadedFile.getClientFileName();
-                String fileFormat = fileName.substring(fileName.lastIndexOf(".") + 1);
-                if (!fileFormat.equals("json")) {
+                String fileFormat = fileName.substring(fileName.lastIndexOf('.') + 1);
+                if (!"json".equals(fileFormat)) {
                     error("Please provide a json file.");
                     return;
                 }
@@ -112,8 +102,8 @@ public class ExportImportDependenciesPanel extends Panel {
         if(!eventTypes.isEmpty()) {
             selectedEventType = eventTypes.get(0);
         }
-
-        eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
+        final DropDownChoice<EapEventType> eventTypeDropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this,
+                "selectedEventType" ),
                 eventTypes);
         exportForm.add(eventTypeDropDown);
     }
@@ -121,7 +111,6 @@ public class ExportImportDependenciesPanel extends Panel {
     private void addExportButton() {
             final AjaxButton exportButton = new AjaxButton("exportButton") {
                private static final long serialVersionUID = 1L;
-
                 @Override
                 public void onSubmit(final AjaxRequestTarget target, final Form form) {
                     final JsonExporter jsonExporter = new JsonExporter();
@@ -131,7 +120,6 @@ public class ExportImportDependenciesPanel extends Panel {
                             final File csv = jsonExporter.generateExportFileWithDependencies(selectedEventType);
                             return new FileResourceStream(new org.apache.wicket.util.file.File(csv));
                         }
-
                         @Override
                         protected String getFileName() {
                             return selectedEventType.getTypeName() + "-dependencies.json";

@@ -38,8 +38,7 @@ public class JsonExporter {
         }
         final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType.getTypeName() + "export.json");
         AttributeDependencyManager depManager = new AttributeDependencyManager(eventType);
-        try {
-            final FileWriter writer = new FileWriter(file, false);
+        try (FileWriter writer = new FileWriter(file, false)) {
             writer.append("{\"eventTypeDependencies\" : {\"name\" : \"" + eventType.getTypeName() + "\",");
             writer.append("\"timeStampName\" : \"" + eventType.getTimestampName() + "\",");
             writer.append("\"dependencies\" : [");
