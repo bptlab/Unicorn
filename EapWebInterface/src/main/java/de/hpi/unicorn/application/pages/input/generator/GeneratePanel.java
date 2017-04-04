@@ -50,7 +50,7 @@ public class GeneratePanel extends Panel {
     private String eventTimestamps;
     private Form layoutForm;
     protected String eventTypeName;
-    private EapEventType selectedEventType = new EapEventType("test" );
+    private EapEventType selectedEventType = new EapEventType("test");
     private ListView<TypeTreeNode> listview;
     private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
     private WebMarkupContainer listContainer;
@@ -61,8 +61,8 @@ public class GeneratePanel extends Panel {
      * Constructor for the generate panel. The page is initialized in this method,
      * including the event type dropdown and the according list of input fields.
      *
-     * @param id
-     * @param page
+     * @param id initialized ID
+     * @param page the page the panel belongs to
      */
     GeneratePanel(String id, final GeneratorPage page) {
         super(id);
@@ -74,10 +74,9 @@ public class GeneratePanel extends Panel {
             @Override
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
-                if(eventTimestamps == null) {
+                if (eventTimestamps == null) {
                     eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
-                }
-                else {
+                } else {
                     eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput, eventTimestamps);
                 }
                 success("Event(s) successfully created");
@@ -85,10 +84,9 @@ public class GeneratePanel extends Panel {
         };
         this.add(layoutForm);
 
-        if(eventTypes.isEmpty()) {
+        if (eventTypes.isEmpty()) {
             selectedEventType = new EapEventType("test");
-        }
-        else {
+        } else {
             selectedEventType = eventTypes.get(0);
         }
         attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
@@ -100,6 +98,9 @@ public class GeneratePanel extends Panel {
         addSubmitButton();
    }
 
+    /**
+     * Add field to specify the number of events to generate.
+     */
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
@@ -107,12 +108,18 @@ public class GeneratePanel extends Panel {
         layoutForm.add(eventCountField);
     }
 
+    /**
+     * Add field to specify the scale factor to replay with.
+     */
     private void addScaleFactorField() {
         final TextField<Integer> scaleFactorField = new TextField<>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
         scaleFactorField.setRequired(true);
         layoutForm.add(scaleFactorField);
     }
 
+    /**
+     * Add field to specify the timestamp of the events to generate.
+     */
     private void addTimestampField() {
         final TextField<String> timestampField = new TextField<>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
         timestampField.setLabel(new Model<String>("Timestamp"));
@@ -139,7 +146,7 @@ public class GeneratePanel extends Panel {
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
                 item.add(new Label("attribute", attribute.getName()));
-                if(attribute.getType() == null) {
+                if (attribute.getType() == null) {
                     attribute.setType(AttributeTypeEnum.STRING);
                     item.add(new Label("attributeType", "UNDEFINED"));
                     item.add(new Label("attributeInputDescription", getString("description.Undefined")));
@@ -176,12 +183,12 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField", new PropertyModel<EapEventType>( this, "selectedEventType" ),
-                eventTypes);
+        DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField",
+                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                if(selectedEventType != null) {
+                if (selectedEventType != null) {
                     attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
                     listview.removeAll();
                     target.add(listContainer);
@@ -191,6 +198,9 @@ public class GeneratePanel extends Panel {
         layoutForm.add(dropDown);
     }
 
+    /**
+     * Add a button to submit the form.
+     */
     private void addSubmitButton() {
         final Button submitButton = new Button("submitButton");
         layoutForm.add(submitButton);
