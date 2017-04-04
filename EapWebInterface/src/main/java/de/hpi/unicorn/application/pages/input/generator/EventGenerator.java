@@ -15,14 +15,19 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -30,9 +35,12 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class EventGenerator {
 
-    private int replayScaleFactor = 10000;
+    private static final int DEFAULT_REPLAY_SCALEFACTOR = 1000;
+    private int replayScaleFactor = DEFAULT_REPLAY_SCALEFACTOR;
     private static Random random = new Random();
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+    private static final Logger logger = Logger.getLogger(EventGenerator.class);
+
     private static EnumMap<AttributeTypeEnum, String> defaultValues = new EnumMap<>(AttributeTypeEnum.class);
     static {
         defaultValues.put(AttributeTypeEnum.STRING, "String1;String2;String3");
@@ -88,6 +96,7 @@ public class EventGenerator {
 
         attributeDependencyManager = new AttributeDependencyManager(eventType);
 
+
         for (int j = 0; j < eventCount; j++) {
             Map<String, Serializable> values = new HashMap<>();
             for (Map.Entry<TypeTreeNode, String> attributeSchema : attributeSchemas.entrySet()) {
@@ -138,7 +147,8 @@ public class EventGenerator {
                 }
             }
             if(!possibleDependentValues.isEmpty()) {
-                setRandomValueFromRangeForAttribute(dependentAttribute, possibleDependentValues.get(getRandomIndex(possibleDependentValues)), eventValues);
+                String possibleDependentValue = possibleDependentValues.get(getRandomIndex(possibleDependentValues));
+                setRandomValueFromRangeForAttribute(dependentAttribute, possibleDependentValue, eventValues);
                 tryToFillDependentAttributes(dependentAttribute, eventValues);
             }
         }
@@ -204,9 +214,9 @@ public class EventGenerator {
     /**
      * Implements the "isInRange" function for a string range
      *
-     * @param input
-     * @param range
-     * @return
+     * @param input to be checked whether in range
+     * @param range to be searched in
+     * @return bool if string is in range
      */
     private boolean isInStringRange(String input, String range) {
         String[] possibleValues = range.split(";");
@@ -221,9 +231,9 @@ public class EventGenerator {
     /**
      * Implements the "isInRange" function for an integer range
      *
-     * @param input
-     * @param range
-     * @return
+     * @param input to be checked whether in range
+     * @param range to be searched in
+     * @return bool if int is in range
      */
     private boolean isInIntegerRange(String input, String range) {
         int formattedInput = Integer.parseInt(input);
@@ -241,9 +251,9 @@ public class EventGenerator {
      * Implements the "isInRange" function for a float range.
      * Defaults to the "isInRange" function for strings as they currently use the same schema.
      *
-     * @param input
-     * @param range
-     * @return
+     * @param input to be checked whether in range
+     * @param range to be searched in
+     * @return bool if float is in range
      */
     private boolean isInFloatRange(String input, String range) {
         return isInStringRange(input, range);
@@ -252,9 +262,9 @@ public class EventGenerator {
     /**
      * Implements the "isInRange" function for a date range
      *
-     * @param input
-     * @param range
-     * @return
+     * @param input to be checked whether in range
+     * @param range to be searched in
+     * @return bool if date is in range
      */
     private boolean isInDateRange(String input, String range) {
         Date start;
@@ -265,7 +275,7 @@ public class EventGenerator {
             inputDate = dateFormatter.parse(input);
         }
         catch (ParseException e) {
-            e.printStackTrace();
+            logger.debug("DateInRange: Parse input", e);
             return false;
         }
 
@@ -274,7 +284,7 @@ public class EventGenerator {
                 start = dateFormatter.parse(range.split("-")[0]);
                 end = dateFormatter.parse(range.split("-")[1]);
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.debug("DateInRange: Parse range", e);
                 return false;
             }
             return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
@@ -283,7 +293,7 @@ public class EventGenerator {
             try {
                 start = dateFormatter.parse(range);
             } catch (ParseException e) {
-                e.printStackTrace();
+                logger.debug("DateInRange: Parse single date", e);
                 return false;
             }
             return inputDate.equals(start);
@@ -293,7 +303,7 @@ public class EventGenerator {
     /**
      * Find range in input and select random date from this range.
      *
-     * @param input
+     * @param input a range where a date should be picked from
      */
     private Date getRandomDateFromInput(String input) {
         Date start = new Date();
@@ -305,14 +315,14 @@ public class EventGenerator {
             try {
                 start = dateFormatter.parse(input.split("-")[0]);
                 end = dateFormatter.parse(input.split("-")[1]);
-            } catch (ParseException e) { e.printStackTrace(); }
+            } catch (ParseException e) { logger.debug("Random Date from input", e); }
             timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
             date = new Date(timestamp);
         }
         else {
             try {
                 date = dateFormatter.parse(input);
-            } catch (ParseException e) { e.printStackTrace(); }
+            } catch (ParseException e) { logger.debug("Random Date from input", e); }
         }
         return date;
     }
@@ -324,7 +334,7 @@ public class EventGenerator {
     /**
      * Select random String from given list of Strings.
      *
-     * @param input
+     * @param input a list of possible strings, separated by ';'
      */
     private static String getRandomStringFromInput(String input) {
         String[] possibleValues = input.split(";");
@@ -334,7 +344,7 @@ public class EventGenerator {
     /**
      * Find range in input and select random integer from this range.
      *
-     * @param input
+     * @param input a range or list of possible numbers
      */
     private static int getRandomIntFromInput(String input) {
         if(input.contains("-")) {
@@ -351,7 +361,7 @@ public class EventGenerator {
     /**
      * Select random Float from given list of Floats.
      *
-     * @param input
+     * @param input a list of possible floats
      */
     private static Float getRandomFloatFromInput(String input) {
         String[] possibleValues = input.split(";");
