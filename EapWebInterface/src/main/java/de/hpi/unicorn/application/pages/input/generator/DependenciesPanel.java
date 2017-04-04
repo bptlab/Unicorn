@@ -13,6 +13,8 @@ import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import de.hpi.unicorn.persistence.Persistable;
+import de.hpi.unicorn.persistence.Persistor;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -318,23 +320,52 @@ public class DependenciesPanel extends Panel {
         };
         listContainer = new WebMarkupContainer("dependenciesContainer");
         listContainer.setOutputMarkupId(true);
+
+
+
         listview = new ListView<String>("dependenciesListview", list) {
             @Override
             protected void populateItem(ListItem item) {
                 final DependencyInput key = (DependencyInput) item.getModelObject();
                 item.add(new Label("baseAttributeValue", key.baseValue));
                 item.add(new Label("dependentAttributeValue", dependenciesInput.get(key.baseValue)));
-                item.add(new AjaxCheckBox("deleteCheckbox", new PropertyModel<Boolean>(key, "selected")) {
+                IModel<Boolean> dependencyInputModel = new Model<Boolean>() {
+                    @Override
+                    public Boolean getObject() {
+                        for (DependencyInput input : dependencyValues) {
+                            if (input.baseValue == key.baseValue) {
+                               return input.getSelected();
+                            }
+                        }
+                        return false;
+                    }
+                    @Override
+                    public void setObject(Boolean bool) {
+                        for (DependencyInput input : dependencyValues) {
+                            if (input.baseValue == key.baseValue) {
+                                input.setSelected(bool);
+                            }
+                        }
+                    }
+                };
+                item.add(new AjaxCheckBox("deleteCheckbox", dependencyInputModel) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        logger.info("Called on Update");
-                        target.add(listContainer);
+                        logger.info("Called on Update: " + key.baseValue + " : " + key.selected);
+                        /*for (DependencyInput input : dependencyValues) {
+                            if (input.baseValue == key.baseValue) {
+                                logger.info("remove old and add new");
+                                dependencyValues.remove(input);
+                                dependencyValues.add(key);
+                                break;
+                            }
+                        }*/
+                        //target.add(listContainer);
                     }
                 });
             }
         };
         listview.setOutputMarkupId(true);
-        listview.setReuseItems(true);
         listContainer.add(new Label("selectedBaseAttributeLabel", new PropertyModel<String>(this, "selectedBaseAttribute.name")).setOutputMarkupId
                 (true));
         listContainer.add(new Label("selectedDependentAttributeLabel", new PropertyModel<String>(this, "selectedDependentAttribute.name"))
@@ -345,10 +376,11 @@ public class DependenciesPanel extends Panel {
 
     private class DependencyInput implements Serializable {
         private String baseValue;
-        private Boolean selected = Boolean.FALSE;
+        private Boolean selected;
 
         DependencyInput(String baseValue) {
             this.baseValue = baseValue;
+            this.selected = false;
         }
 
         public boolean getSelected() { return this.selected; }
@@ -360,6 +392,12 @@ public class DependenciesPanel extends Panel {
         {
             return baseValue + ": " + selected;
         }
+
+        @Override
+        public boolean equals(Object input) {
+            logger.info("Equals called");
+            return (this.selected == ((DependencyInput) input).selected && this.baseValue == ((DependencyInput)input).baseValue);
+        }
     }
 
     private void addDeleteButton() {
@@ -368,24 +406,28 @@ public class DependenciesPanel extends Panel {
 
             @Override
             public void onClick(final AjaxRequestTarget target) {
-                logger.info("Delete button clicked");
+                List<DependencyInput> valuesToRemove = new ArrayList<>();
                 for (DependencyInput dependencyValue : dependencyValues) {
-                    logger.info("value: " + dependencyValue.baseValue + " isSelected: " + dependencyValue.selected);
                     if (dependencyValue.selected) {
-                        AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
-                        AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, dependencyValue.baseValue);
-                        if (value != null) {
-                            value.remove();
-                            DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
-                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                            return;
-                        } else {
-                            DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Please try again.");
-                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                        }
+                        valuesToRemove.add(dependencyValue);
                     }
                 }
-
+                for (DependencyInput valueToRemove : valuesToRemove) {
+                    AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                    AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, valueToRemove.baseValue);
+                    if (value != null) {
+                        value.remove();
+                        dependencyValues.remove(valueToRemove);
+                        DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                    } else {
+                        DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Dependency is already deleted.");
+                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                    }
+                }
+                listview.removeAll();
+                updateDependenciesMapForCurrentSelection();
+                target.add(listContainer);
             }
         });
     }
