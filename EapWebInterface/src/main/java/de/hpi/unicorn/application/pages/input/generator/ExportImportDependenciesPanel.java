@@ -76,8 +76,8 @@ public class ExportImportDependenciesPanel extends Panel {
                     String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
                     boolean success = JsonImporter.generateAttributeDependenciesFromString(fileContent);
                     if (!success) {
-                        error("Dependencies could not be created. " +
-                                "Make sure you have the correct event type stored and the attribute values match their type.");
+                        error("Dependencies could not be created. "
+                                + "Make sure you have the correct event type stored and the attribute values match their type.");
                         return;
                     }
                 } catch (Exception e) {
@@ -105,12 +105,12 @@ public class ExportImportDependenciesPanel extends Panel {
             selectedEventType = eventTypes.get(0);
         }
         final DropDownChoice<EapEventType> eventTypeDropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>(this,"selectedEventType"), eventTypes);
+                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
         exportForm.add(eventTypeDropDown);
     }
 
     /**
-     * Add a button for exporting the dependencies of the given event type
+     * Add a button for exporting the dependencies of the given event type.
      */
     private void addExportButton() {
             final AjaxButton exportButton = new AjaxButton("exportButton") {
@@ -138,10 +138,10 @@ public class ExportImportDependenciesPanel extends Panel {
             exportForm.add(exportButton);
     }
 
+    /**
+     * Add a field for importing a selectable file.
+     */
     private void addImportField() {
-        /**
-         * Add a field for importing a selectable file.
-         */
         uploadField = new FileUploadField("uploadField");
         importForm.add(uploadField);
     }
