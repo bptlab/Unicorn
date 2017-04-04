@@ -13,15 +13,15 @@ import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.*;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -29,6 +29,7 @@ import org.apache.wicket.model.*;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,8 +66,11 @@ public class DependenciesPanel extends Panel {
     private AjaxButton submitButton;
 
     private HashMap<String, String> dependenciesInput = new HashMap<>();
+    ArrayList<DependencyInput> dependencyValues = new ArrayList<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
+
+    private static final Logger logger = Logger.getLogger(DependenciesPanel.class);
 
     /**
      * Constructor for the dependencies panel. The page is initialized in this method,
@@ -223,6 +227,7 @@ public class DependenciesPanel extends Panel {
             }
         };
         dependencyForm.add(addDependencyButton);
+        addDeleteButton();
     }
 
     /**
@@ -303,25 +308,86 @@ public class DependenciesPanel extends Panel {
         {
             @Override
             protected Object load() {
-                return new ArrayList<String>(dependenciesInput.keySet());
-            }
-        };
-        listview = new ListView<String>("dependenciesListview", list) {
-            @Override
-            protected void populateItem(ListItem item) {
-                final String key = (String) item.getModelObject();
-                item.add(new Label("baseAttributeValue", key));
-                item.add(new Label("dependentAttributeValue", dependenciesInput.get(key)));
+                ArrayList<String> keys = new ArrayList<>(dependenciesInput.keySet());
+                dependencyValues = new ArrayList<>();
+                for (String key : keys) {
+                    dependencyValues.add(new DependencyInput(key));
+                }
+                return dependencyValues;
             }
         };
         listContainer = new WebMarkupContainer("dependenciesContainer");
+        listContainer.setOutputMarkupId(true);
+        listview = new ListView<String>("dependenciesListview", list) {
+            @Override
+            protected void populateItem(ListItem item) {
+                final DependencyInput key = (DependencyInput) item.getModelObject();
+                item.add(new Label("baseAttributeValue", key.baseValue));
+                item.add(new Label("dependentAttributeValue", dependenciesInput.get(key.baseValue)));
+                item.add(new AjaxCheckBox("deleteCheckbox", new PropertyModel<Boolean>(key, "selected")) {
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        logger.info("Called on Update");
+                        target.add(listContainer);
+                    }
+                });
+            }
+        };
+        listview.setOutputMarkupId(true);
+        listview.setReuseItems(true);
         listContainer.add(new Label("selectedBaseAttributeLabel", new PropertyModel<String>(this, "selectedBaseAttribute.name")).setOutputMarkupId
                 (true));
         listContainer.add(new Label("selectedDependentAttributeLabel", new PropertyModel<String>(this, "selectedDependentAttribute.name"))
                 .setOutputMarkupId(true));
         listContainer.add(listview);
-        listContainer.setOutputMarkupId(true);
         dependencyForm.add(listContainer);
+    }
+
+    private class DependencyInput implements Serializable {
+        private String baseValue;
+        private Boolean selected = Boolean.FALSE;
+
+        DependencyInput(String baseValue) {
+            this.baseValue = baseValue;
+        }
+
+        public boolean getSelected() { return this.selected; }
+        public void setSelected(Boolean bool) { this.selected = bool; logger.info("setting selected");}
+        public String getBaseValue() { return this.baseValue; }
+        public void setBaseValue(String newValue) { this.baseValue = newValue; }
+
+        public String toString()
+        {
+            return baseValue + ": " + selected;
+        }
+    }
+
+    private void addDeleteButton() {
+        dependencyForm.add(new AjaxLink<Void>("deleteButton") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick(final AjaxRequestTarget target) {
+                logger.info("Delete button clicked");
+                for (DependencyInput dependencyValue : dependencyValues) {
+                    logger.info("value: " + dependencyValue.baseValue + " isSelected: " + dependencyValue.selected);
+                    if (dependencyValue.selected) {
+                        AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                        AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, dependencyValue.baseValue);
+                        if (value != null) {
+                            value.remove();
+                            DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                            return;
+                        } else {
+                            DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Please try again.");
+                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                        }
+                    }
+                }
+
+            }
+        });
     }
 
     /**
@@ -462,4 +528,6 @@ public class DependenciesPanel extends Panel {
             dependentAttributeInputField.remove(validator);
         }
     }
+
+
 }

@@ -76,6 +76,14 @@ public class AttributeValueDependency extends Persistable {
         return query.getResultList();
     }
 
-
+    public static AttributeValueDependency getAttributeValueDependencyFor(AttributeDependency attributeDependency, String baseValue) {
+        List<AttributeValueDependency> dependencyValues = AttributeValueDependency.getAttributeValueDependenciesFor(attributeDependency);
+        for (AttributeValueDependency value : dependencyValues) {
+            if (value.getBaseAttributeValue() == baseValue) {
+                return value;
+            }
+        }
+        return null;
+    }
 
 }

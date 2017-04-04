@@ -51,13 +51,17 @@
                     <tr>
                         <td><span wicket:id="baseAttributeValue">Base Attribute Value</span></td>
                         <td><span wicket:id="dependentAttributeValue">Base Attribute Value</span></td>
+                        <td><input wicket:id="deleteCheckbox" type="checkbox"></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="row">
-                <div class="form-inline well-small">
-                    <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg btn-block">
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg">
+                </div>
+                <div class="btn-group">
+                    <input wicket:id="deleteButton" type="button" value="Delete selected" class="btn btn-primary btn-lg">
                 </div>
             </div>
         </form>
