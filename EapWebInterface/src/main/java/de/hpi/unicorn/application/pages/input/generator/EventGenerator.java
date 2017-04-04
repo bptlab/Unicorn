@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.text.DateFormat;
+import java.util.EnumMap;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -32,6 +33,13 @@ public class EventGenerator {
     private int replayScaleFactor = 10000;
     private static Random random = new Random();
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
+    private static EnumMap<AttributeTypeEnum, String> defaultValues = new EnumMap<>(AttributeTypeEnum.class);
+    static {
+        defaultValues.put(AttributeTypeEnum.STRING, "String1;String2;String3");
+        defaultValues.put(AttributeTypeEnum.INTEGER, "1-50");
+        defaultValues.put(AttributeTypeEnum.FLOAT, "1.1;1.2;2.0;2.5");
+        defaultValues.put(AttributeTypeEnum.DATE, "2017/01/22T12:00-2017/02/23T14:59");
+    }
 
     private AttributeDependencyManager attributeDependencyManager;
 
@@ -143,7 +151,13 @@ public class EventGenerator {
      * @param possibleValues a string containing the possible values which can be extracted by the "getRandom[attributeType]FromInput"-function
      * @param eventValues the map containing already set values will be altered by reference
      */
-    private void setRandomValueFromRangeForAttribute(TypeTreeNode attribute, String possibleValues, Map<String, Serializable> eventValues) {
+    private void setRandomValueFromRangeForAttribute(TypeTreeNode attribute, String proposedPossibleValues, Map<String, Serializable> eventValues) {
+        String possibleValues = proposedPossibleValues;
+
+        if(possibleValues == null || possibleValues.isEmpty()) {
+            possibleValues = defaultValues.get(attribute.getType());
+        }
+
         switch (attribute.getType()) {
             case STRING:
                 eventValues.put(attribute.getName(), getRandomStringFromInput(possibleValues));

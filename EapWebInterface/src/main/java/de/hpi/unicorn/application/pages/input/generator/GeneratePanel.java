@@ -143,6 +143,7 @@ public class GeneratePanel extends Panel {
                     item.add(new Label("attributeType", attribute.getType().getName()));
                     item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
                 }
+                attributeInput.put(attribute, "");
                 IModel<String> attributeInputModel = new Model<String>() {
                     @Override
                     public String getObject() {
@@ -157,7 +158,6 @@ public class GeneratePanel extends Panel {
                 TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
                 inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
                 inputField.setLabel(new Model<String>(attribute.getName()));
-                inputField.setRequired(true);
                 item.add(inputField);
                 item.add(new Label("attributeInputWarning", "").setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
             }
