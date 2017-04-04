@@ -9,19 +9,14 @@ package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
 import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
-import de.hpi.unicorn.application.pages.input.generator.validation.IntegerRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.*;
-
-import java.util.*;
-
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -29,8 +24,15 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.validation.validator.PatternValidator;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.RangeValidator;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * {@link Panel}, which allows the generation of events.
@@ -40,8 +42,11 @@ public class GeneratePanel extends Panel {
     private static final long serialVersionUID = 1L;
     private GeneratorPage page;
     private GeneratePanel panel;
-    private Integer eventCount = 10;
-    private Integer scaleFactor = 10000;
+    private static final Integer DEFAULT_EVENTCOUNT = 10;
+    private static final Integer DEFAULT_SCALEFACTOR = 10000;
+    private static final Integer MAXIMUM_EVENTCOUNT = 100;
+    private Integer eventCount = DEFAULT_EVENTCOUNT;
+    private Integer scaleFactor = DEFAULT_SCALEFACTOR;
     private String eventTimestamps;
     private Form layoutForm;
     protected String eventTypeName;
@@ -98,7 +103,7 @@ public class GeneratePanel extends Panel {
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
-        eventCountField.add(new RangeValidator<Integer>(1,100));
+        eventCountField.add(new RangeValidator<Integer>(1,MAXIMUM_EVENTCOUNT));
         layoutForm.add(eventCountField);
     }
 
@@ -123,8 +128,7 @@ public class GeneratePanel extends Panel {
      * Additionally a description is provided so that the user knows the format of input that has to be used.
      */
     private void addEventTypeDropDown() {
-        LoadableDetachableModel list =  new LoadableDetachableModel()
-        {
+        LoadableDetachableModel list =  new LoadableDetachableModel() {
             @Override
             protected Object load() {
                 return selectedEventType.getValueTypes();
@@ -141,7 +145,9 @@ public class GeneratePanel extends Panel {
                     item.add(new Label("attributeInputDescription", getString("description.Undefined")));
                 } else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
-                    item.add(new Label("attributeInputDescription", new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
+                    StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>
+                            (attribute));
+                    item.add(new Label("attributeInputDescription", inputDescriptionModel));
                 }
                 attributeInput.put(attribute, "");
                 IModel<String> attributeInputModel = new Model<String>() {
@@ -159,7 +165,8 @@ public class GeneratePanel extends Panel {
                 inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
                 inputField.setLabel(new Model<String>(attribute.getName()));
                 item.add(inputField);
-                item.add(new Label("attributeInputWarning", "").setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
+                Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
+                item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
             }
         };
         listview.setReuseItems(true);
