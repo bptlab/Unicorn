@@ -17,6 +17,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
+
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,11 +33,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 import java.util.HashMap;
@@ -152,9 +156,8 @@ public class GeneratePanel extends Panel {
                     item.add(new Label("attributeInputDescription", getString("description.Undefined")));
                 } else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
-                    StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
-                            new Model<TypeTreeNode>(attribute));
-                    item.add(new Label("attributeInputDescription", inputDescriptionModel));
+                    item.add(new Label("attributeInputDescription",
+                            new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
                 }
                 attributeInput.put(attribute, "");
                 IModel<String> attributeInputModel = new Model<String>() {
@@ -172,8 +175,8 @@ public class GeneratePanel extends Panel {
                 inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
                 inputField.setLabel(new Model<String>(attribute.getName()));
                 item.add(inputField);
-                Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
-                item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
+                item.add(new Label("attributeInputWarning", "")
+                        .setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
             }
         };
         listview.setReuseItems(true);
@@ -184,7 +187,7 @@ public class GeneratePanel extends Panel {
         listContainer.setOutputMarkupId(true);
 
         DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
+                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
