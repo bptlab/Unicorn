@@ -140,6 +140,13 @@ public class AttributeDependencyManager implements Serializable {
 		return true;
 	}
 
+	public boolean removeDependency(AttributeDependency dependency) {
+		if(dependency.remove() == null) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * If a dependency entry for the given (event-type, base attribute, dependent attribute) triple already exist this entry is returned, otherwise a
 	 * new dependency entry for this triple is created, saved and returned.

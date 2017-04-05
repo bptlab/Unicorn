@@ -13,8 +13,6 @@ import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import de.hpi.unicorn.persistence.Persistable;
-import de.hpi.unicorn.persistence.Persistor;
 import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -71,6 +69,7 @@ public class DependenciesPanel extends Panel {
     ArrayList<DependencyInput> dependencyValues = new ArrayList<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
+    private boolean allSelected = false;
 
     private static final Logger logger = Logger.getLogger(DependenciesPanel.class);
 
@@ -88,13 +87,14 @@ public class DependenciesPanel extends Panel {
         dependencyForm = new Form("dependencyForm");
         this.add(dependencyForm);
 
-
         addDropDowns();
         addAddDependencyButton();
+        addDeleteDependencyButton();
         addDependencyValuesInputs();
         addAddDependencyValuesButton();
         addListOfDependencies();
         addSubmitButton();
+        addDeleteValuesButton();
     }
 
     /**
@@ -229,7 +229,26 @@ public class DependenciesPanel extends Panel {
             }
         };
         dependencyForm.add(addDependencyButton);
-        addDeleteButton();
+    }
+
+    private void addDeleteDependencyButton() {
+        AjaxLink deleteDependencyButton = new AjaxLink<Void>("deleteDependencyButton") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick(final AjaxRequestTarget target) {
+                AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                if (dependency == null) {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. Dependency is already deleted.");
+                } else if (dependency.remove() == null) {
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. Please Delete the corresponding values first.");
+                } else {
+                    DependenciesPanel.this.page.getFeedbackPanel().success("Dependency deleted.");
+                }
+                target.add(DependenciesPanel.this.page.getFeedbackPanel());
+            }
+        };
+        dependencyForm.add(deleteDependencyButton);
     }
 
     /**
@@ -320,9 +339,28 @@ public class DependenciesPanel extends Panel {
         };
         listContainer = new WebMarkupContainer("dependenciesContainer");
         listContainer.setOutputMarkupId(true);
-
-
-
+        Model selectAllModel = new Model<Boolean>() {
+            @Override
+            public Boolean getObject() {
+                return panel.allSelected;
+            }
+            @Override
+            public void setObject(Boolean bool) {
+                logger.info("Setting allSelected to: " + bool);
+                panel.allSelected = bool;
+            }
+        };
+        listContainer.add(new AjaxCheckBox("selectAllCheckbox", selectAllModel) {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                for (DependencyInput input : dependencyValues) {
+                    input.setSelected(panel.allSelected);
+                }
+                logger.info("AllSelected: " + panel.allSelected);
+                listview.removeAll();
+                target.add(listContainer);
+            }
+        });
         listview = new ListView<String>("dependenciesListview", list) {
             @Override
             protected void populateItem(ListItem item) {
@@ -332,8 +370,9 @@ public class DependenciesPanel extends Panel {
                 IModel<Boolean> dependencyInputModel = new Model<Boolean>() {
                     @Override
                     public Boolean getObject() {
+                        if (panel.allSelected) { return true; }
                         for (DependencyInput input : dependencyValues) {
-                            if (input.baseValue == key.baseValue) {
+                            if (input.baseValue.equals(key.baseValue)) {
                                return input.getSelected();
                             }
                         }
@@ -342,7 +381,7 @@ public class DependenciesPanel extends Panel {
                     @Override
                     public void setObject(Boolean bool) {
                         for (DependencyInput input : dependencyValues) {
-                            if (input.baseValue == key.baseValue) {
+                            if (input.baseValue.equals(key.baseValue)) {
                                 input.setSelected(bool);
                             }
                         }
@@ -351,16 +390,6 @@ public class DependenciesPanel extends Panel {
                 item.add(new AjaxCheckBox("deleteCheckbox", dependencyInputModel) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
-                        logger.info("Called on Update: " + key.baseValue + " : " + key.selected);
-                        /*for (DependencyInput input : dependencyValues) {
-                            if (input.baseValue == key.baseValue) {
-                                logger.info("remove old and add new");
-                                dependencyValues.remove(input);
-                                dependencyValues.add(key);
-                                break;
-                            }
-                        }*/
-                        //target.add(listContainer);
                     }
                 });
             }
@@ -372,64 +401,6 @@ public class DependenciesPanel extends Panel {
                 .setOutputMarkupId(true));
         listContainer.add(listview);
         dependencyForm.add(listContainer);
-    }
-
-    private class DependencyInput implements Serializable {
-        private String baseValue;
-        private Boolean selected;
-
-        DependencyInput(String baseValue) {
-            this.baseValue = baseValue;
-            this.selected = false;
-        }
-
-        public boolean getSelected() { return this.selected; }
-        public void setSelected(Boolean bool) { this.selected = bool; logger.info("setting selected");}
-        public String getBaseValue() { return this.baseValue; }
-        public void setBaseValue(String newValue) { this.baseValue = newValue; }
-
-        public String toString()
-        {
-            return baseValue + ": " + selected;
-        }
-
-        @Override
-        public boolean equals(Object input) {
-            logger.info("Equals called");
-            return (this.selected == ((DependencyInput) input).selected && this.baseValue == ((DependencyInput)input).baseValue);
-        }
-    }
-
-    private void addDeleteButton() {
-        dependencyForm.add(new AjaxLink<Void>("deleteButton") {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void onClick(final AjaxRequestTarget target) {
-                List<DependencyInput> valuesToRemove = new ArrayList<>();
-                for (DependencyInput dependencyValue : dependencyValues) {
-                    if (dependencyValue.selected) {
-                        valuesToRemove.add(dependencyValue);
-                    }
-                }
-                for (DependencyInput valueToRemove : valuesToRemove) {
-                    AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
-                    AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, valueToRemove.baseValue);
-                    if (value != null) {
-                        value.remove();
-                        dependencyValues.remove(valueToRemove);
-                        DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
-                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    } else {
-                        DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Dependency is already deleted.");
-                        target.add(DependenciesPanel.this.page.getFeedbackPanel());
-                    }
-                }
-                listview.removeAll();
-                updateDependenciesMapForCurrentSelection();
-                target.add(listContainer);
-            }
-        });
     }
 
     /**
@@ -477,6 +448,50 @@ public class DependenciesPanel extends Panel {
         };
         submitButton.setEnabled(false);
         dependencyForm.add(submitButton);
+    }
+
+    private void addDeleteValuesButton() {
+        dependencyForm.add(new AjaxLink<Void>("deleteValuesButton") {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void onClick(final AjaxRequestTarget target) {
+                List<DependencyInput> valuesToRemove = new ArrayList<>();
+                if (allSelected && !dependencyValues.isEmpty()) {
+                    valuesToRemove.addAll(dependencyValues);
+                }
+
+                for (DependencyInput dependencyValue : dependencyValues) {
+                    if (dependencyValue.selected) {
+                        logger.info("selected basevalue: " + dependencyValue.baseValue);
+                        valuesToRemove.add(dependencyValue);
+                    }
+                }
+                try {
+                    for (DependencyInput valueToRemove : valuesToRemove) {
+                        logger.info("Durchlauf begonnen");
+                        logger.info("values to remove: " + valuesToRemove);
+                        AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                        AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, valueToRemove.baseValue);
+                        if (value != null) {
+                            value.remove();
+                            dependencyValues.remove(valueToRemove);
+                            DependenciesPanel.this.page.getFeedbackPanel().success("Submitted.");
+                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                        } else {
+                            DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Dependency is already deleted.");
+                            target.add(DependenciesPanel.this.page.getFeedbackPanel());
+                        }
+                        logger.info("Durchlauf beendet");
+                    }
+                } catch (Exception e) {
+                    logger.info(e.toString());
+                }
+                listview.removeAll();
+                updateDependenciesMapForCurrentSelection();
+                target.add(listContainer);
+            }
+        });
     }
 
     /**
@@ -571,5 +586,17 @@ public class DependenciesPanel extends Panel {
         }
     }
 
+    private class DependencyInput implements Serializable {
+        private String baseValue;
+        private Boolean selected;
+
+        DependencyInput(String baseValue) {
+            this.baseValue = baseValue;
+            this.selected = false;
+        }
+
+        public boolean getSelected() { return this.selected; }
+        public void setSelected(Boolean bool) { this.selected = bool; }
+    }
 
 }

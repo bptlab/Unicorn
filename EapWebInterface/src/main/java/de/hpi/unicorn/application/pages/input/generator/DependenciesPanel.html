@@ -21,8 +21,13 @@
                         <td><select wicket:id="dependentAttributeField"></select></td>
                     </tr>
                 </table>
-                <div class="form-inline well-small">
+            </div>
+            <div class="row">
+                <div class="span10 columns no-margin">
                     <input wicket:id="addDependencyButton" type="submit" value="Add dependency" class="btn btn-primary btn-lg btn-block">
+                </div>
+                <div class="span2 columns text-right">
+                    <input wicket:id="deleteDependencyButton" type="button" value="Delete selected" class="btn btn-primary btn-lg btn-block pull-right">
                 </div>
             </div>
             <div class="row">
@@ -37,7 +42,7 @@
                             <input wicket:id="dependentAttributeInput" type="text"></input><br />
                             is <span wicket:id="selectedDependentAttributeType">selectedDependentAttrType</span>
                         </td>
-                        <td><input wicket:id="addDependencyValueButton" type="submit" value="Add dependency entry" class="btn btn-primary"></td>
+                        <td style="text-align: right"><input wicket:id="addDependencyValueButton" type="submit" value="Add dependency entry" class="btn btn-primary"></td>
                     </tr>
                 </table>
                 <table wicket:id="dependenciesContainer" class="table table-striped table-hover ">
@@ -45,6 +50,7 @@
                     <tr>
                         <th>When &#39;<span wicket:id="selectedBaseAttributeLabel">selectedBaseAttr</span>&#39; contains </th>
                         <th>possible values for &#39;<span wicket:id="selectedDependentAttributeLabel">selectedDependentAttr</span>&#39; are</th>
+                        <th>Select all <input wicket:id="selectAllCheckbox" type="checkbox"></th>
                     </tr>
                     </thead>
                     <tbody wicket:id="dependenciesListview" class="form-inline well-small">
@@ -56,12 +62,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="btn-group btn-group-justified">
-                <div class="btn-group">
-                    <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg">
+            <div class="row">
+                <div class="span10 columns no-margin">
+                    <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg btn-block">
                 </div>
-                <div class="btn-group">
-                    <input wicket:id="deleteButton" type="button" value="Delete selected" class="btn btn-primary btn-lg">
+                <div class="span2 columns text-right">
+                    <input wicket:id="deleteValuesButton" type="button" value="Delete selected" class="btn btn-primary btn-lg btn-block pull-right">
                 </div>
             </div>
         </form>
