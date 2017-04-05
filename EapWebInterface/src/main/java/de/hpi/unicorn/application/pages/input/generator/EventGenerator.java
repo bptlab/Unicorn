@@ -103,7 +103,7 @@ public class EventGenerator {
                 // Assign a random value only if the attribute hasn't been filled before (by a dependency). So we don't overwrite values defined by
                 // dependencies. In case the base attribute is considered later, it will then overwrite the random value with the dependency defined
                 // one.
-                if(values.get(attributeSchema.getKey().getName()) == null) {
+                if (values.get(attributeSchema.getKey().getName()) == null) {
                     //Set a random value for the current attribute
                     setRandomValueFromRangeForAttribute(attributeSchema.getKey(), attributeSchema.getValue(), values);
                 }
@@ -125,7 +125,7 @@ public class EventGenerator {
      * @param eventValues a map containing already set values, will set the new values in here too. (Value for base attribute has to be set already!)
      */
     private void tryToFillDependentAttributes(TypeTreeNode baseAttribute, Map<String, Serializable> eventValues) {
-        if(!attributeDependencyManager.isBaseAttributeInAnyDependency(baseAttribute)) {
+        if (!attributeDependencyManager.isBaseAttributeInAnyDependency(baseAttribute)) {
             return;
         }
 
@@ -137,16 +137,16 @@ public class EventGenerator {
             baseAttributeInput = String.valueOf(eventValues.get(baseAttribute.getName()));
         }
 
-        for(AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependencies(baseAttribute)) {
+        for (AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependencies(baseAttribute)) {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<String> possibleDependentValues = new ArrayList<>();
-            for(AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies
+            for (AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies
                     (attributeDependency)) {
-                if(isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
+                if (isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
                     possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());
                 }
             }
-            if(!possibleDependentValues.isEmpty()) {
+            if (!possibleDependentValues.isEmpty()) {
                 String possibleDependentValue = possibleDependentValues.get(getRandomIndex(possibleDependentValues));
                 setRandomValueFromRangeForAttribute(dependentAttribute, possibleDependentValue, eventValues);
                 tryToFillDependentAttributes(dependentAttribute, eventValues);
@@ -164,7 +164,7 @@ public class EventGenerator {
     private void setRandomValueFromRangeForAttribute(TypeTreeNode attribute, String proposedPossibleValues, Map<String, Serializable> eventValues) {
         String possibleValues = proposedPossibleValues;
 
-        if(possibleValues == null || possibleValues.isEmpty()) {
+        if (possibleValues == null || possibleValues.isEmpty()) {
             possibleValues = defaultValues.get(attribute.getType());
         }
 
@@ -220,8 +220,8 @@ public class EventGenerator {
      */
     private boolean isInStringRange(String input, String range) {
         String[] possibleValues = range.split(";");
-        for(String possibleValue : possibleValues) {
-            if(possibleValue.equals(input)) {
+        for (String possibleValue : possibleValues) {
+            if (possibleValue.equals(input)) {
                 return true;
             }
         }
@@ -237,7 +237,7 @@ public class EventGenerator {
      */
     private boolean isInIntegerRange(String input, String range) {
         int formattedInput = Integer.parseInt(input);
-        if(range.contains("-")) {
+        if (range.contains("-")) {
             int start = Integer.parseInt(range.split("-")[0]);
             int end = Integer.parseInt(range.split("-")[1]);
             return (formattedInput >= start) && (formattedInput <= end);
@@ -279,7 +279,7 @@ public class EventGenerator {
             return false;
         }
 
-        if(range.contains("-")) {
+        if (range.contains("-")) {
             try {
                 start = dateFormatter.parse(range.split("-")[0]);
                 end = dateFormatter.parse(range.split("-")[1]);
@@ -311,7 +311,7 @@ public class EventGenerator {
         long timestamp;
         Date date = new Date();
 
-        if(input.contains("-")) {
+        if (input.contains("-")) {
             try {
                 start = dateFormatter.parse(input.split("-")[0]);
                 end = dateFormatter.parse(input.split("-")[1]);
@@ -347,7 +347,7 @@ public class EventGenerator {
      * @param input a range or list of possible numbers
      */
     private static int getRandomIntFromInput(String input) {
-        if(input.contains("-")) {
+        if (input.contains("-")) {
             int start = Integer.parseInt(input.split("-")[0]);
             int end = Integer.parseInt(input.split("-")[1]);
             return random.nextInt(end - start + 1) + start;
