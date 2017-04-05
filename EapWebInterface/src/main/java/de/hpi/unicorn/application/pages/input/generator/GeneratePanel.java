@@ -104,7 +104,7 @@ public class GeneratePanel extends Panel {
     private void addEventCountField() {
         final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
-        eventCountField.add(new RangeValidator<Integer>(1,MAXIMUM_EVENTCOUNT));
+        eventCountField.add(new RangeValidator<Integer>(1, MAXIMUM_EVENTCOUNT));
         layoutForm.add(eventCountField);
     }
 
@@ -184,7 +184,7 @@ public class GeneratePanel extends Panel {
         listContainer.setOutputMarkupId(true);
 
         DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
+                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
         dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {

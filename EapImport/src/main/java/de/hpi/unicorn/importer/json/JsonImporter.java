@@ -26,6 +26,9 @@ public final class JsonImporter {
 
     private static final Logger logger = Logger.getLogger(JsonImporter.class);
 
+    /**
+     * Private constructor throwing exception as this is an utility class.
+     */
     private JsonImporter() {
         throw new IllegalAccessError("Utility class");
     }
@@ -84,7 +87,7 @@ public final class JsonImporter {
                 for (int j = 0; j < valuesJson.names().length(); j++) {
                     String baseValue = (String) valuesJson.names().get(j);
                     String dependentValue = valuesJson.getString(baseValue);
-                    if(!dependentValidator.validate(dependentValue) || !baseValidator.validate(baseValue)) {
+                    if (!dependentValidator.validate(dependentValue) || !baseValidator.validate(baseValue)) {
                         return false;
                     }
                     values.put(baseValue, dependentValue);

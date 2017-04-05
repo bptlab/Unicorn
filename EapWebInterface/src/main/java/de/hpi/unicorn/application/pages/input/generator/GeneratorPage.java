@@ -1,7 +1,7 @@
 /*******************************************************************************
  *
  * Copyright (c) 2012-2015, Business Process Technology (BPT),
- * http://bpt.hpi.uni-potsdam.de. 
+ * http://bpt.hpi.uni-potsdam.de.
  * All Rights Reserved.
  *
  *******************************************************************************/
@@ -26,11 +26,15 @@ public class GeneratorPage extends AbstractEapPage {
 
 	private GeneratorPage page;
 
+	/**
+	 * Constructor for the GeneratorPage.
+	 * Shows tabs containing pages, concerning the Event-Generator.
+	 */
 	public GeneratorPage() {
 		super();
 		this.page = this;
 
-		final List<ITab> tabs = new ArrayList<ITab>();
+		final List<ITab> tabs = new ArrayList<>();
 
 		tabs.add(new AbstractTab(new Model<String>("Generate events")) {
 			@Override

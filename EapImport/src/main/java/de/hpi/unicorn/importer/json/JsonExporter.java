@@ -27,6 +27,9 @@ public final class JsonExporter {
 
     private static final Logger logger = Logger.getLogger(JsonExporter.class);
 
+    /**
+     * Private constructor throwing exception as this is an utility class.
+     */
     private JsonExporter() {
         throw new IllegalAccessError("Utility class");
     }
@@ -65,12 +68,12 @@ public final class JsonExporter {
                 for (int i = 0; i < dependencyValues.size(); i++) {
                     AttributeValueDependency dependencyValue = dependencyValues.get(i);
                     writer.append("\"" + dependencyValue.getBaseAttributeValue() + "\" : \"" + dependencyValue.getDependentAttributeValues() + "\"");
-                    if(i < dependencyValues.size() -1) {
+                    if (i < dependencyValues.size() - 1) {
                         writer.append(",");
                     }
                 }
                 writer.append("}}");
-                if(j < dependencies.size() -1) {
+                if (j < dependencies.size() - 1) {
                     writer.append(",");
                 }
             }

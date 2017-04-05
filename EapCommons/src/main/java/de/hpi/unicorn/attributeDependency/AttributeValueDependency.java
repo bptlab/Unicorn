@@ -78,8 +78,8 @@ public class AttributeValueDependency extends Persistable {
     public AttributeDependency getDependencyRule() { return this.dependencyRule; }
 
     public static List<AttributeValueDependency> getAttributeValueDependenciesFor(AttributeDependency attributeDependency) {
-        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeValueDependency a WHERE a.dependencyRule = " +
-                ":depRule", AttributeValueDependency.class).setParameter("depRule",attributeDependency);
+        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeValueDependency a WHERE a.dependencyRule = "
+                + ":depRule", AttributeValueDependency.class).setParameter("depRule", attributeDependency);
         return query.getResultList();
     }
 

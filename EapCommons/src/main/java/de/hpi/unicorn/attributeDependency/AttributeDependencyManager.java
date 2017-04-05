@@ -31,8 +31,8 @@ public class AttributeDependencyManager implements Serializable {
 	public AttributeDependencyManager(EapEventType eventType) {
 		this.attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
 		for(AttributeDependency attributeDependency : attributeDependencies) {
-			attributeValueDependencies.put(attributeDependency, AttributeValueDependency.getAttributeValueDependenciesFor
-					(attributeDependency));
+			attributeValueDependencies.put(attributeDependency,
+					AttributeValueDependency.getAttributeValueDependenciesFor(attributeDependency));
 		}
 	}
 
@@ -85,10 +85,11 @@ public class AttributeDependencyManager implements Serializable {
 	 * Checks whether a dependency was configured so that this attribute is dependent of another.
 	 *
 	 * @param attribute Attribute to be checked to be a dependent attribute
+	 * @return a bool if the given attribute was found in any dependency as a dependent attribute
 	 */
 	public boolean isDependentAttributeInAnyDependency(TypeTreeNode attribute) {
-		for(AttributeDependency attributeDependency : attributeDependencies) {
-			if(attributeDependency.getDependentAttribute().equals(attribute)) {
+		for (AttributeDependency attributeDependency : attributeDependencies) {
+			if (attributeDependency.getDependentAttribute().equals(attribute)) {
 				return true;
 			}
 		}
@@ -99,10 +100,11 @@ public class AttributeDependencyManager implements Serializable {
 	 * Checks whether a dependency was configured so that this attribute defines the value of another attribute.
 	 *
 	 * @param attribute Attribute to be checked to be a base attribute
+	 * @return a bool if the given attribute was found in any dependency as a base attribute
 	 */
 	public boolean isBaseAttributeInAnyDependency(TypeTreeNode attribute) {
-		for(AttributeDependency attributeDependency : attributeDependencies) {
-			if(attributeDependency.getBaseAttribute().equals(attribute)) {
+		for (AttributeDependency attributeDependency : attributeDependencies) {
+			if (attributeDependency.getBaseAttribute().equals(attribute)) {
 				return true;
 			}
 		}
@@ -119,16 +121,16 @@ public class AttributeDependencyManager implements Serializable {
 	 * @return if deletion was successful
 	 */
 	public boolean removeAll(boolean force) {
-		if(!force) {
+		if (!force) {
 			// If deletion is not forced there shouldn't be any value dependencies left before deletion.
-			for(AttributeDependency attributeDependency : getAttributeDependencies()) {
-				if(!getAttributeValueDependencies(attributeDependency).isEmpty()) {
+			for (AttributeDependency attributeDependency : getAttributeDependencies()) {
+				if (!getAttributeValueDependencies(attributeDependency).isEmpty()) {
 					return false;
 				}
 			}
 		}
-		for(AttributeDependency attributeDependency : getAttributeDependencies()) {
-			for(AttributeValueDependency attributeValueDependency : getAttributeValueDependencies(attributeDependency)) {
+		for (AttributeDependency attributeDependency : getAttributeDependencies()) {
+			for (AttributeValueDependency attributeValueDependency : getAttributeValueDependencies(attributeDependency)) {
 				attributeValueDependency.remove();
 			}
 			attributeDependency.remove();
@@ -149,7 +151,7 @@ public class AttributeDependencyManager implements Serializable {
 	 */
 	public static AttributeDependency getAttributeDependency(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode dependentAttribute) {
 		AttributeDependency attributeDependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAttribute, dependentAttribute);
-		if(attributeDependency == null) {
+		if (attributeDependency == null) {
 			attributeDependency = new AttributeDependency(eventType, baseAttribute, dependentAttribute);
 			attributeDependency.save();
 		}
