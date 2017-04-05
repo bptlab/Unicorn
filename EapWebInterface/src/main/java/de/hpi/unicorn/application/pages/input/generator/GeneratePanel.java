@@ -145,8 +145,8 @@ public class GeneratePanel extends Panel {
                     item.add(new Label("attributeInputDescription", getString("description.Undefined")));
                 } else {
                     item.add(new Label("attributeType", attribute.getType().getName()));
-                    StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>
-                            (attribute));
+                    StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
+                            new Model<TypeTreeNode>(attribute));
                     item.add(new Label("attributeInputDescription", inputDescriptionModel));
                 }
                 attributeInput.put(attribute, "");
