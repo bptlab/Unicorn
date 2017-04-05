@@ -120,11 +120,10 @@ public class ExportImportDependenciesPanel extends Panel {
                private static final long serialVersionUID = 1L;
                 @Override
                 public void onSubmit(final AjaxRequestTarget target, final Form form) {
-                    final JsonExporter jsonExporter = new JsonExporter();
                     final AJAXDownload jsonDownload = new AJAXDownload() {
                         @Override
                         protected IResourceStream getResourceStream() {
-                            final File csv = jsonExporter.generateExportFileWithDependencies(selectedEventType);
+                            final File csv = JsonExporter.generateExportFileWithDependencies(selectedEventType);
                             return new FileResourceStream(new org.apache.wicket.util.file.File(csv));
                         }
                         @Override
