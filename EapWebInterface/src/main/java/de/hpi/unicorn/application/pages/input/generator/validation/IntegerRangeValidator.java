@@ -22,9 +22,9 @@ public class IntegerRangeValidator extends AttributeValidator {
     }
 
     /**
-     * Checks if given validatable satisfies the integer pattern
+     * Checks if given validatable satisfies the integer pattern.
      *
-     * @param validatable
+     * @param validatable the object to be validated
      */
     @Override
     public void validate(IValidatable<String> validatable) {
@@ -38,8 +38,8 @@ public class IntegerRangeValidator extends AttributeValidator {
     /**
      * Throws error including the name of the field with wrong input.
      *
-     * @param validatable
-     * @param errorKey
+     * @param validatable the object to be validated
+     * @param errorKey  a string to be concatinated to the error
      */
     private void error(IValidatable<String> validatable, String errorKey) {
         ValidationError error = new ValidationError();

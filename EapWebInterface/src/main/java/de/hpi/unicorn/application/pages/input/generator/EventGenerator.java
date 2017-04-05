@@ -140,8 +140,8 @@ public class EventGenerator {
         for (AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependencies(baseAttribute)) {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<String> possibleDependentValues = new ArrayList<>();
-            for (AttributeValueDependency attributeValueDependency :
-                    attributeDependencyManager.getAttributeValueDependencies(attributeDependency)) {
+            for (AttributeValueDependency attributeValueDependency
+                    : attributeDependencyManager.getAttributeValueDependencies(attributeDependency)) {
                 if (isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
                     possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());
                 }
