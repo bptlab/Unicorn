@@ -11,6 +11,7 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.persistence.Persistable;
 import de.hpi.unicorn.persistence.Persistor;
+import org.apache.log4j.Logger;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,8 @@ public class AttributeDependency extends Persistable {
     private static final String BASEATTRIBUTE_LITERAL = "baseAttribute";
     private static final String DEPENDENTATTRIBUTE_LITERAL = "dependentAttribute";
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = Logger.getLogger(AttributeDependency.class);
 
     @Id
     @Column(name = "ID")
@@ -107,6 +110,7 @@ public class AttributeDependency extends Persistable {
                 }
             }
         } catch (Exception e) {
+            logger.debug("Error while merging new dependencyValues into dependency.", e);
             return false;
         }
         return true;
@@ -138,6 +142,7 @@ public class AttributeDependency extends Persistable {
             return (AttributeDependency) query.getResultList().get(0);
         }
         catch (Exception e){
+            logger.debug("No fitting dependency found.", e);
             return null;
         }
     }

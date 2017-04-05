@@ -12,6 +12,7 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.validation.AttributeValidator;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,7 +22,13 @@ import java.util.Map;
 /**
  *  Class to import Json. Currently only used for import of dependencies.
  */
-public class JsonImporter {
+public final class JsonImporter {
+
+    private static final Logger logger = Logger.getLogger(JsonImporter.class);
+
+    private JsonImporter() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     /**
      * Generate Attribute dependencies for the event generator out of given json string.
@@ -87,7 +94,7 @@ public class JsonImporter {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.warn("Error while importing JSON.", e);
             return false;
         }
         return true;

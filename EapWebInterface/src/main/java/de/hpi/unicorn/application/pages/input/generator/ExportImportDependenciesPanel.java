@@ -12,6 +12,7 @@ import de.hpi.unicorn.application.pages.export.AJAXDownload;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.importer.json.JsonExporter;
 import de.hpi.unicorn.importer.json.JsonImporter;
+import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -39,6 +40,8 @@ public class ExportImportDependenciesPanel extends Panel {
 
     private FileUploadField uploadField;
     private EapEventType selectedEventType;
+
+    private static final Logger logger = Logger.getLogger(ExportImportDependenciesPanel.class);
 
     /**
      * Constructor for the import/export dependencies panel. The page is initialized in this method,
@@ -81,7 +84,7 @@ public class ExportImportDependenciesPanel extends Panel {
                         return;
                     }
                 } catch (Exception e) {
-                    error("File could not be read.");
+                    logger.warn("File could not be read.", e);
                     return;
                 }
                 success("Saved attribute dependencies.");
