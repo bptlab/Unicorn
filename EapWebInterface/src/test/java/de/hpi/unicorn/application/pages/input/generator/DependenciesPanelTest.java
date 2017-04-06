@@ -11,9 +11,11 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.util.iterator.ComponentHierarchyIterator;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 
@@ -35,7 +37,7 @@ public class DependenciesPanelTest extends TestCase {
         attributes.add(depAttribute);
         AttributeTypeTree attributeTree = new AttributeTypeTree(attributes);
         eventType = new EapEventType("TestType", attributeTree);
-        ArrayList<EapEventType> eventTypes = new ArrayList();
+        ArrayList<EapEventType> eventTypes = new ArrayList<>();
         eventTypes.add(eventType);
         EapEventType.save(eventTypes);
         tester = new WicketTester(new UNICORNApplication());
@@ -93,6 +95,52 @@ public class DependenciesPanelTest extends TestCase {
         Assert.assertEquals("String", baseTypeLabel.getDefaultModelObjectAsString());
         Label depTypeLabel = (Label) tester.getComponentFromLastRenderedPage(formPath + ":selectedDependentAttributeType");
         Assert.assertEquals("Integer", depTypeLabel.getDefaultModelObjectAsString());
+    }
 
+    public void testDependencyDeletion() {
+        // no dependency saved
+        tester.executeAjaxEvent(formPath + ":deleteDependencyButton", "click");
+        Assert.assertTrue(tester.getLastResponse().getDocument().contains("Error while deleting dependency. Dependency is already deleted."));
+
+        // create dependency
+        tester.executeAjaxEvent(formPath + ":addDependencyButton", "click");
+        tester.executeAjaxEvent(formPath + ":submitButton", "click");
+        tester.executeAjaxEvent(formPath + ":deleteDependencyButton", "click");
+        Assert.assertTrue(tester.getLastResponse().getDocument().contains("Dependency deleted."));
+
+        // dependency has Values
+        addDependencyValues();
+        tester.executeAjaxEvent(formPath + ":deleteDependencyButton", "click");
+        Assert.assertTrue(tester.getLastResponse().getDocument().contains("Error while deleting dependency. Please Delete the corresponding values first."));
+    }
+
+    public void testSelectAllCheckbox() {
+        addDependencyValues();
+        Assert.assertFalse(((AjaxCheckBox) tester.getComponentFromLastRenderedPage(formPath + ":dependenciesContainer:dependenciesListview:0:deleteCheckbox")).getModel().getObject());
+
+        // click checkbox
+        FormTester formTester = tester.newFormTester(formPath, false);
+        formTester.setValue("dependenciesContainer:selectAllCheckbox", true);
+        tester.executeAjaxEvent(formPath + ":dependenciesContainer:selectAllCheckbox", "onclick");
+
+        ComponentHierarchyIterator allCheckboxes = tester.getLastRenderedPage().visitChildren(AjaxCheckBox.class);
+        int numberOfCheckboxes = 0;
+        for (Component box : allCheckboxes) {
+            numberOfCheckboxes++;
+            Assert.assertTrue(((AjaxCheckBox) box).getModel().getObject());
+        }
+        Assert.assertEquals(3, numberOfCheckboxes);
+    }
+
+    private void addDependencyValues() {
+        tester.executeAjaxEvent(formPath + ":addDependencyButton", "click");
+        FormTester formTester = tester.newFormTester(formPath, false);
+        formTester.setValue("baseAttributeInput", "String1");
+        formTester.setValue("dependentAttributeInput", "1");
+        tester.executeAjaxEvent(formPath + ":addDependencyValueButton", "click");
+        formTester.setValue("baseAttributeInput", "String2");
+        formTester.setValue("dependentAttributeInput", "2");
+        tester.executeAjaxEvent(formPath + ":addDependencyValueButton", "click");
+        tester.executeAjaxEvent(formPath + ":submitButton", "click");
     }
 }

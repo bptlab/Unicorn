@@ -358,6 +358,7 @@ public class DependenciesPanel extends Panel {
                 }
                 logger.info("AllSelected: " + panel.allSelected);
                 listview.removeAll();
+                updateDependenciesMapForCurrentSelection();
                 target.add(listContainer);
             }
         });
@@ -463,14 +464,11 @@ public class DependenciesPanel extends Panel {
 
                 for (DependencyInput dependencyValue : dependencyValues) {
                     if (dependencyValue.selected) {
-                        logger.info("selected basevalue: " + dependencyValue.baseValue);
                         valuesToRemove.add(dependencyValue);
                     }
                 }
                 try {
                     for (DependencyInput valueToRemove : valuesToRemove) {
-                        logger.info("Durchlauf begonnen");
-                        logger.info("values to remove: " + valuesToRemove);
                         AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                         AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, valueToRemove.baseValue);
                         if (value != null) {
@@ -482,7 +480,6 @@ public class DependenciesPanel extends Panel {
                             DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependencies. Dependency is already deleted.");
                             target.add(DependenciesPanel.this.page.getFeedbackPanel());
                         }
-                        logger.info("Durchlauf beendet");
                     }
                 } catch (Exception e) {
                     logger.info(e.toString());
