@@ -188,211 +188,189 @@ class EventGenerator {
         }
     }
 
-    /**
-     * Returns the value of a "isInRange" function corresponding to the given type.
-     * This "class of functions" in general return a boolean indicating if the given input lies within a given range.
-     *
-     * @param input the input value to be tested to be in a range
-     * @param range the range the input value should be in
-     * @param type the type of the range (corresponds to the attribute type the value is conceived for)
-     * @return a boolean indicating if the input is within the range
-     */
-    private boolean isInRange(String input, String range, AttributeTypeEnum type) {
-        switch (type) {
-            case STRING:
-                return isInStringRange(input, range);
-            case INTEGER:
-                return isInIntegerRange(input, range);
-            case FLOAT:
-                return isInFloatRange(input, range);
-            case DATE:
-                return isInDateRange(input, range);
-            default:
-                return false;
-        }
-    }
+//    /**
+//     * Returns the value of a "isInRange" function corresponding to the given type.
+//     * This "class of functions" in general return a boolean indicating if the given input lies within a given range.
+//     *
+//     * @param input the input value to be tested to be in a range
+//     * @param range the range the input value should be in
+//     * @param type the type of the range (corresponds to the attribute type the value is conceived for)
+//     * @return a boolean indicating if the input is within the range
+//     */
+//    private boolean isInRange(String input, String range, AttributeTypeEnum type) {
+//        switch (type) {
+//            case STRING:
+//                return isInStringRange(input, range);
+//            case INTEGER:
+//                return isInIntegerRange(input, range);
+//            case FLOAT:
+//                return isInFloatRange(input, range);
+//            case DATE:
+//                return isInDateRange(input, range);
+//            default:
+//                return false;
+//        }
+//    }
 
-    /**
-     * Implements the "isInRange" function for a string range.
-     *
-     * @param input to be checked whether in range
-     * @param range to be searched in
-     * @return bool if string is in range
-     */
-    private boolean isInStringRange(String input, String range) {
-        String[] possibleValues = range.split(";");
-        for (String possibleValue : possibleValues) {
-            if (possibleValue.equals(input)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    /**
+//     * Implements the "isInRange" function for a string range
+//     *
+//     * @param input to be checked whether in range
+//     * @param range to be searched in
+//     * @return bool if string is in range
+//     */
+//    private boolean isInStringRange(String input, String range) {
+//        String[] possibleValues = range.split(";");
+//        for (String possibleValue : possibleValues) {
+//            if (possibleValue.equals(input)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
-    /**
-     * Implements the "isInRange" function for an integer range.
-     *
-     * @param input to be checked whether in range
-     * @param range to be searched in
-     * @return bool if int is in range
-     */
-    private boolean isInIntegerRange(String input, String range) {
-        int formattedInput = Integer.parseInt(input);
-        if (range.contains("-")) {
-            int start = Integer.parseInt(range.split("-")[0]);
-            int end = Integer.parseInt(range.split("-")[1]);
-            return (formattedInput >= start) && (formattedInput <= end);
-        }
-        else {
-            return isInStringRange(input, range);
-        }
-    }
+//    /**
+//     * Implements the "isInRange" function for an integer range
+//     *
+//     * @param input to be checked whether in range
+//     * @param range to be searched in
+//     * @return bool if int is in range
+//     */
+//    private boolean isInIntegerRange(String input, String range) {
+//        int formattedInput = Integer.parseInt(input);
+//        if (range.contains("-")) {
+//            int start = Integer.parseInt(range.split("-")[0]);
+//            int end = Integer.parseInt(range.split("-")[1]);
+//            return (formattedInput >= start) && (formattedInput <= end);
+//        }
+//        else {
+//            return isInStringRange(input, range);
+//        }
+//    }
 
-    /**
-     * Implements the "isInRange" function for a float range.
-     * Defaults to the "isInRange" function for strings as they currently use the same schema.
-     *
-     * @param input to be checked whether in range
-     * @param range to be searched in
-     * @return bool if float is in range
-     */
-    private boolean isInFloatRange(String input, String range) {
-        return isInStringRange(input, range);
-    }
+//    /**
+//     * Implements the "isInRange" function for a float range.
+//     * Defaults to the "isInRange" function for strings as they currently use the same schema.
+//     *
+//     * @param input to be checked whether in range
+//     * @param range to be searched in
+//     * @return bool if float is in range
+//     */
+//    private boolean isInFloatRange(String input, String range) {
+//        return isInStringRange(input, range);
+//    }
 
-    /**
-     * Implements the "isInRange" function for a date range.
-     *
-     * @param input to be checked whether in range
-     * @param range to be searched in
-     * @return bool if date is in range
-     */
-    private boolean isInDateRange(String input, String range) {
-        Date start;
-        Date end;
-        Date inputDate = new Date();
+//    /**
+//     * Implements the "isInRange" function for a date range
+//     *
+//     * @param input to be checked whether in range
+//     * @param range to be searched in
+//     * @return bool if date is in range
+//     */
+//    private boolean isInDateRange(String input, String range) {
+//        Date start;
+//        Date end;
+//        Date inputDate = new Date();
+//
+//        try {
+//            inputDate = dateFormatter.parse(input);
+//        }
+//        catch (ParseException e) {
+//            logger.debug("DateInRange: Parse input", e);
+//            return false;
+//        }
+//
+//        if (range.contains("-")) {
+//            try {
+//                start = dateFormatter.parse(range.split("-")[0]);
+//                end = dateFormatter.parse(range.split("-")[1]);
+//            } catch (ParseException e) {
+//                logger.debug("DateInRange: Parse range", e);
+//                return false;
+//            }
+//            return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
+//        }
+//        else {
+//            try {
+//                start = dateFormatter.parse(range);
+//            } catch (ParseException e) {
+//                logger.debug("DateInRange: Parse single date", e);
+//                return false;
+//            }
+//            return inputDate.equals(start);
+//        }
+//    }
 
-        try {
-            inputDate = dateFormatter.parse(input);
-        }
-        catch (ParseException e) {
-            logger.debug("DateInRange: Parse input", e);
-            return false;
-        }
+//    /**
+//     * Find range in input and select random date from this range.
+//     *
+//     * @param input a range where a date should be picked from
+//     */
+//    private Date getRandomDateFromInput(String input) {
+//        Date start = new Date();
+//        Date end = new Date();
+//        long timestamp;
+//        Date date = new Date();
+//
+//        if (input.contains("-")) {
+//            try {
+//                start = dateFormatter.parse(input.split("-")[0]);
+//                end = dateFormatter.parse(input.split("-")[1]);
+//            } catch (ParseException e) { logger.debug("Random Date from input", e); }
+//            timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
+//            date = new Date(timestamp);
+//        }
+//        else {
+//            try {
+//                date = dateFormatter.parse(input);
+//            } catch (ParseException e) { logger.debug("Random Date from input", e); }
+//        }
+//        return date;
+//    }
 
-        if (range.contains("-")) {
-            try {
-                start = dateFormatter.parse(range.split("-")[0]);
-                end = dateFormatter.parse(range.split("-")[1]);
-            } catch (ParseException e) {
-                logger.debug("DateInRange: Parse range", e);
-                return false;
-            }
-            return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
-        }
-        else {
-            try {
-                start = dateFormatter.parse(range);
-            } catch (ParseException e) {
-                logger.debug("DateInRange: Parse single date", e);
-                return false;
-            }
-            return inputDate.equals(start);
-        }
-    }
-
-    /**
-     * Find range in input and select random date from this range.
-     *
-     * @param input a range where a date should be picked from
-     * @return a date selected from input range
-     */
-    private Date getRandomDateFromInput(String input) {
-        Date start = new Date();
-        Date end = new Date();
-        long timestamp;
-        Date date = new Date();
-
-        if (input.contains("-")) {
-            try {
-                start = dateFormatter.parse(input.split("-")[0]);
-                end = dateFormatter.parse(input.split("-")[1]);
-            } catch (ParseException e) { logger.debug("Random Date from input", e); }
-            timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
-            date = new Date(timestamp);
-        }
-        else {
-            try {
-                date = dateFormatter.parse(input);
-            } catch (ParseException e) { logger.debug("Random Date from input", e); }
-        }
-        return date;
-    }
-
-    /**
-     * Formats the current time, to fit used date-format and returns it as string.
-     *
-     * @return the current timestamp formatted as string
-     */
     private String getCurrentTimestamp() {
         return dateFormatter.format(new Date());
     }
 
-    /**
-     * Select random String from given list of Strings.
-     *
-     * @param input a list of possible strings, separated by ';'
-     * @return a string randomly selected from given list
-     */
-    private static String getRandomStringFromInput(String input) {
-        String[] possibleValues = input.split(";");
-        return possibleValues[getRandomIndex(possibleValues)];
-    }
-
-    /**
-     * Find range in input and select random integer from this range.
-     *
-     * @param input a range or list of possible numbers
-     * @return a random int selected from input range
-     */
-    private static int getRandomIntFromInput(String input) {
-        if (input.contains("-")) {
-            int start = Integer.parseInt(input.split("-")[0]);
-            int end = Integer.parseInt(input.split("-")[1]);
-            return random.nextInt(end - start + 1) + start;
-        }
-        else {
-            String[] possibleValues = input.split(";");
-            return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
-        }
-    }
-
-    /**
-     * Select random Float from given list of Floats.
-     *
-     * @param input a list of possible floats
-     * @return a float randomly selected from input list
-     */
-    private static Float getRandomFloatFromInput(String input) {
-        String[] possibleValues = input.split(";");
-        return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
-    }
-
-    /**
-     * Randomly selects an index from a given array.
-     *
-     * @param inputArray the array the random index should 'calculated' for
-     * @return a int containing a random index for the given array
-     */
-    private static int getRandomIndex(Object[] inputArray) {
-        return random.nextInt(inputArray.length);
-    }
-
-    /**
-     * Randomly selects an index from a given list.
-     *
-     * @param inputList the list the random index should 'calculated' for
-     * @return a int containing a random index for the given list
-     */
-    private static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
+//    /**
+//     * Select random String from given list of Strings.
+//     *
+//     * @param input a list of possible strings, separated by ';'
+//     */
+//    private static String getRandomStringFromInput(String input) {
+//        String[] possibleValues = input.split(";");
+//        return possibleValues[getRandomIndex(possibleValues)];
+//    }
+//
+//    /**
+//     * Find range in input and select random integer from this range.
+//     *
+//     * @param input a range or list of possible numbers
+//     */
+//    private static int getRandomIntFromInput(String input) {
+//        if (input.contains("-")) {
+//            int start = Integer.parseInt(input.split("-")[0]);
+//            int end = Integer.parseInt(input.split("-")[1]);
+//            return random.nextInt(end - start + 1) + start;
+//        }
+//        else {
+//            String[] possibleValues = input.split(";");
+//            return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
+//        }
+//    }
+//
+//    /**
+//     * Select random Float from given list of Floats.
+//     *
+//     * @param input a list of possible floats
+//     */
+//    private static Float getRandomFloatFromInput(String input) {
+//        String[] possibleValues = input.split(";");
+//        return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
+//    }
+//
+//    private static int getRandomIndex(Object[] inputArray) {
+//        return random.nextInt(inputArray.length);
+//    }
+//    private static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
 }

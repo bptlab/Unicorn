@@ -33,4 +33,23 @@ public class IntegerAttributeInput extends AttributeInput {
 			return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
 		}
 	}
+
+	/**
+	 * Implements the "isInRange" function for an integer range.
+	 *
+	 * @param range to be searched in
+	 * @return bool if int is in range
+	 */
+	@Override
+	public boolean isInRange(String range) {
+		int formattedInput = Integer.parseInt(this.getInput());
+		if (range.contains("-")) {
+			int start = Integer.parseInt(range.split("-")[0]);
+			int end = Integer.parseInt(range.split("-")[1]);
+			return (formattedInput >= start) && (formattedInput <= end);
+		}
+		else {
+			return super.isInRange(range);
+		}
+	}
 }

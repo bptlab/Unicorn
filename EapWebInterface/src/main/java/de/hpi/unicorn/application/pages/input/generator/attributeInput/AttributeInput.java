@@ -38,6 +38,23 @@ abstract class AttributeInput {
 
 	abstract Serializable getRandomValue();
 
+	/**
+	 * Checks whether the user input is contained in a given range.
+	 * Might get overridden in subclass.
+	 *
+	 * @param range to be searched in
+	 * @return bool if string is in range
+	 */
+	boolean isInRange(String range) {
+		String[] possibleValues = range.split(";");
+		for (String possibleValue : possibleValues) {
+			if (possibleValue.equals(this.getInput())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	static int getRandomIndex(Object[] inputArray) {
 		return random.nextInt(inputArray.length);
 	}

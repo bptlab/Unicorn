@@ -51,4 +51,45 @@ public class DateAttributeInput extends AttributeInput {
 		}
 		return date;
 	}
+
+	/**
+	 * Implements the "isInRange" function for a date range.
+	 *
+	 * @param range to be searched in
+	 * @return bool if date is in range
+	 */
+	@Override
+	public boolean isInRange(String range) {
+		Date start;
+		Date end;
+		Date inputDate = new Date();
+
+		try {
+			inputDate = dateFormatter.parse(this.getInput());
+		}
+		catch (ParseException e) {
+			logger.debug("DateInRange: Parse input", e);
+			return false;
+		}
+
+		if (range.contains("-")) {
+			try {
+				start = dateFormatter.parse(range.split("-")[0]);
+				end = dateFormatter.parse(range.split("-")[1]);
+			} catch (ParseException e) {
+				logger.debug("DateInRange: Parse range", e);
+				return false;
+			}
+			return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
+		}
+		else {
+			try {
+				start = dateFormatter.parse(range);
+			} catch (ParseException e) {
+				logger.debug("DateInRange: Parse single date", e);
+				return false;
+			}
+			return inputDate.equals(start);
+		}
+	}
 }
