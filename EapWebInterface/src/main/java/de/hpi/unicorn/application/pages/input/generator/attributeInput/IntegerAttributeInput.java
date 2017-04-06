@@ -16,13 +16,21 @@ public class IntegerAttributeInput extends AttributeInput {
 	}
 
 	/**
-	 * Select random Float value from the input.
+	 * Select random int value from the input.
 	 *
-	 * @return a float
+	 * @return an integer
 	 */
 	@Override
-	public Float getRandomValue() {
-		String[] possibleValues = this.getInput().split(";");
-		return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
+	public Integer getRandomValue() {
+		String userInput = this.getInput();
+		if (userInput.contains("-")) {
+			int start = Integer.parseInt(userInput.split("-")[0]);
+			int end = Integer.parseInt(userInput.split("-")[1]);
+			return random.nextInt(end - start + 1) + start;
+		}
+		else {
+			String[] possibleValues = userInput.split(";");
+			return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
+		}
 	}
 }

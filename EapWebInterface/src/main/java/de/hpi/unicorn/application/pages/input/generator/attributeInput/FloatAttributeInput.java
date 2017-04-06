@@ -16,13 +16,13 @@ public class FloatAttributeInput extends AttributeInput {
 	}
 
 	/**
-	 * Select random String from the input.
+	 * Select random Float value from the input.
 	 *
-	 * @return a random string from input
+	 * @return a float
 	 */
 	@Override
-	public String getRandomValue() {
+	public Float getRandomValue() {
 		String[] possibleValues = this.getInput().split(";");
-		return possibleValues[getRandomIndex(possibleValues)];
+		return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
 	}
 }
