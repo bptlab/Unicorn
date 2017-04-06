@@ -1,6 +1,6 @@
 /*******************************************************************************
  *
- * Copyright (c) 2012-2015, Business Process Technology (BPT),
+ * Copyright (c) 2012-2017, Business Process Technology (BPT),
  * http://bpt.hpi.uni-potsdam.de.
  * All Rights Reserved.
  *
@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * Can generate events and push them to replayer.
  */
-public class EventGenerator {
+class EventGenerator {
 
     private static final int DEFAULT_REPLAY_SCALEFACTOR = 1000;
     private int replayScaleFactor = DEFAULT_REPLAY_SCALEFACTOR;
@@ -59,7 +59,7 @@ public class EventGenerator {
      * @param eventType type the generated events should be of
      * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible values
      */
-    public void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
+    void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, this.replayScaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
     /**
@@ -71,7 +71,7 @@ public class EventGenerator {
      * @param eventType type the generated events should be of
      * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible value
      */
-    public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
+    void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, scaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
 
@@ -85,7 +85,7 @@ public class EventGenerator {
      * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible value
      * @param eventTimestamps timestamps for the events to be generated with
      */
-    public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas, String
+    void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas, String
             eventTimestamps) {
         this.replayScaleFactor = scaleFactor;
         List<EapEvent> events = new ArrayList<>();
