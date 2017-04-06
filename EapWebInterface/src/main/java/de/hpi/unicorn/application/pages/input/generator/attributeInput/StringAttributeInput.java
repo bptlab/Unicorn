@@ -11,18 +11,23 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 
 public class StringAttributeInput extends AttributeInput {
 
+	private String value;
+
 	public StringAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
+		defaultInput = "String1;String2;String3";
 	}
 
 	/**
 	 * Select random String from the input.
-	 *
-	 * @return a string
 	 */
 	@Override
-	public String getRandomValue() {
+	public void calculateRandomValue() {
 		String[] possibleValues = this.getInput().split(";");
-		return possibleValues[getRandomIndex(possibleValues)];
+		this.value = possibleValues[getRandomIndex(possibleValues)];
+	}
+
+	String getValue() {
+		return this.value;
 	}
 }

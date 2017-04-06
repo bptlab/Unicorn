@@ -17,19 +17,19 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DateAttributeInput extends AttributeInput {
 
+	private Date value;
 	private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
 	public DateAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
+		defaultInput = "2017/01/22T12:00-2017/02/23T14:59";
 	}
 
 	/**
 	 * Select random date from the input.
-	 *
-	 * @return a date
 	 */
 	@Override
-	public Date getRandomValue() {
+	public void calculateRandomValue() {
 		String userInput = this.getInput();
 		Date start = new Date();
 		Date end = new Date();
@@ -49,7 +49,7 @@ public class DateAttributeInput extends AttributeInput {
 				date = dateFormatter.parse(userInput);
 			} catch (ParseException e) { logger.debug("Random Date from input", e); }
 		}
-		return date;
+		this.value = date;
 	}
 
 	/**
@@ -62,15 +62,7 @@ public class DateAttributeInput extends AttributeInput {
 	public boolean isInRange(String range) {
 		Date start;
 		Date end;
-		Date inputDate = new Date();
-
-		try {
-			inputDate = dateFormatter.parse(this.getInput());
-		}
-		catch (ParseException e) {
-			logger.debug("DateInRange: Parse input", e);
-			return false;
-		}
+		Date inputDate = this.getValue();
 
 		if (range.contains("-")) {
 			try {
@@ -91,5 +83,13 @@ public class DateAttributeInput extends AttributeInput {
 			}
 			return inputDate.equals(start);
 		}
+	}
+
+	Date getValue() {
+		return this.value;
+	}
+
+	public String getValueAsString() {
+		return dateFormatter.format(this.getCalculatedValue());
 	}
 }

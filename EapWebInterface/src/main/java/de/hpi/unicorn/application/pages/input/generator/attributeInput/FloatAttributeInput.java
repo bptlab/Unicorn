@@ -11,18 +11,23 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 
 public class FloatAttributeInput extends AttributeInput {
 
+	private Float value;
+
 	public FloatAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
+		defaultInput = "1.1;1.2;2.0;2.5";
 	}
 
 	/**
 	 * Select random Float value from the input.
-	 *
-	 * @return a float
 	 */
 	@Override
-	public Float getRandomValue() {
+	public void calculateRandomValue() {
 		String[] possibleValues = this.getInput().split(";");
-		return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
+		this.value = Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
+	}
+
+	Float getValue() {
+		return this.value;
 	}
 }

@@ -11,26 +11,27 @@ import de.hpi.unicorn.event.attribute.TypeTreeNode;
 
 public class IntegerAttributeInput extends AttributeInput {
 
+	private Integer value;
+
 	public IntegerAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
+		defaultInput = "1-50";
 	}
 
 	/**
 	 * Select random int value from the input.
-	 *
-	 * @return an integer
 	 */
 	@Override
-	public Integer getRandomValue() {
+	public void calculateRandomValue() {
 		String userInput = this.getInput();
 		if (userInput.contains("-")) {
 			int start = Integer.parseInt(userInput.split("-")[0]);
 			int end = Integer.parseInt(userInput.split("-")[1]);
-			return random.nextInt(end - start + 1) + start;
+			this.value = random.nextInt(end - start + 1) + start;
 		}
 		else {
 			String[] possibleValues = userInput.split(";");
-			return Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
+			this.value = Integer.parseInt(possibleValues[getRandomIndex(possibleValues)]);
 		}
 	}
 
@@ -42,14 +43,17 @@ public class IntegerAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public boolean isInRange(String range) {
-		int formattedInput = Integer.parseInt(this.getInput());
 		if (range.contains("-")) {
 			int start = Integer.parseInt(range.split("-")[0]);
 			int end = Integer.parseInt(range.split("-")[1]);
-			return (formattedInput >= start) && (formattedInput <= end);
+			return (this.getValue() >= start) && (this.getValue() <= end);
 		}
 		else {
 			return super.isInRange(range);
 		}
+	}
+
+	Integer getValue() {
+		return this.value;
 	}
 }
