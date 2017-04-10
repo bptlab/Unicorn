@@ -25,6 +25,7 @@ import java.util.List;
 public class DependenciesPanelTest extends TestCase {
     private WicketTester tester;
     private String formPath;
+    private String listViewPath;
     private TypeTreeNode baseAttribute = new TypeTreeNode("BaseAttribute");
     private TypeTreeNode depAttribute = new TypeTreeNode("DepAttribute", AttributeTypeEnum.INTEGER);
     private List<TypeTreeNode> attributes = new ArrayList<>();
@@ -50,6 +51,7 @@ public class DependenciesPanelTest extends TestCase {
             list.add((Form) form);
         }
         formPath = list.get(0).getPageRelativePath();
+        listViewPath = formPath + ":dependenciesContainer:dependenciesListview";
     }
 
     public void testBasicRender() {
@@ -116,7 +118,7 @@ public class DependenciesPanelTest extends TestCase {
 
     public void testSelectAllCheckbox() {
         addDependencyValues();
-        Assert.assertFalse(((AjaxCheckBox) tester.getComponentFromLastRenderedPage(formPath + ":dependenciesContainer:dependenciesListview:0:deleteCheckbox")).getModel().getObject());
+        Assert.assertFalse(((AjaxCheckBox) tester.getComponentFromLastRenderedPage(listViewPath + ":0:deleteCheckbox")).getModel().getObject());
 
         // click checkbox
         FormTester formTester = tester.newFormTester(formPath, false);
@@ -124,12 +126,27 @@ public class DependenciesPanelTest extends TestCase {
         tester.executeAjaxEvent(formPath + ":dependenciesContainer:selectAllCheckbox", "onclick");
 
         ComponentHierarchyIterator allCheckboxes = tester.getLastRenderedPage().visitChildren(AjaxCheckBox.class);
-        int numberOfCheckboxes = 0;
+        int numberOfCheckedBoxes = 0;
         for (Component box : allCheckboxes) {
-            numberOfCheckboxes++;
+            numberOfCheckedBoxes++;
+            System.out.println("PATH: " + box.getPageRelativePath());
             Assert.assertTrue(((AjaxCheckBox) box).getModel().getObject());
         }
-        Assert.assertEquals(3, numberOfCheckboxes);
+        Assert.assertEquals(3, numberOfCheckedBoxes);
+    }
+
+    public void testDependencyValueDeletion() {
+        addDependencyValues();
+        final Label oldLabel = (Label) tester.getComponentFromLastRenderedPage(listViewPath + ":0:baseAttributeValue");
+
+        FormTester formTester = tester.newFormTester(formPath, false);
+        formTester.setValue("dependenciesContainer:dependenciesListview:0:deleteCheckbox", true);
+        tester.executeAjaxEvent(listViewPath + ":0:deleteCheckbox", "onclick");
+        tester.executeAjaxEvent(formPath + ":deleteValuesButton", "onclick");
+
+        final Label newLabel = (Label) tester.getComponentFromLastRenderedPage(listViewPath + ":0:baseAttributeValue");
+
+        Assert.assertFalse(oldLabel.getDefaultModelObjectAsString().equals(newLabel.getDefaultModelObjectAsString()));
     }
 
     private void addDependencyValues() {

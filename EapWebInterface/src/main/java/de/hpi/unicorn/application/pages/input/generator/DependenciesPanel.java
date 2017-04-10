@@ -346,7 +346,6 @@ public class DependenciesPanel extends Panel {
             }
             @Override
             public void setObject(Boolean bool) {
-                logger.info("Setting allSelected to: " + bool);
                 panel.allSelected = bool;
             }
         };
@@ -356,7 +355,6 @@ public class DependenciesPanel extends Panel {
                 for (DependencyInput input : dependencyValues) {
                     input.setSelected(panel.allSelected);
                 }
-                logger.info("AllSelected: " + panel.allSelected);
                 listview.removeAll();
                 updateDependenciesMapForCurrentSelection();
                 target.add(listContainer);
@@ -594,6 +592,8 @@ public class DependenciesPanel extends Panel {
 
         public boolean getSelected() { return this.selected; }
         public void setSelected(Boolean bool) { this.selected = bool; }
+        public String getBaseValue() { return this.baseValue; }
+        public void setBaseValue(String newValue) { this.baseValue = newValue; }
     }
 
 }
