@@ -23,7 +23,7 @@ public class FloatAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public void calculateRandomValue() {
-		String[] possibleValues = this.getInput().split(";");
+		String[] possibleValues = this.getInputOrDefault().split(";");
 		this.value = Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
 	}
 

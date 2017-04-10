@@ -30,7 +30,7 @@ public class DateAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public void calculateRandomValue() {
-		String userInput = this.getInput();
+		String userInput = this.getInputOrDefault();
 		Date start = new Date();
 		Date end = new Date();
 		long timestamp;
@@ -40,6 +40,8 @@ public class DateAttributeInput extends AttributeInput {
 			try {
 				start = dateFormatter.parse(userInput.split("-")[0]);
 				end = dateFormatter.parse(userInput.split("-")[1]);
+				logger.warn(start + String.valueOf(start.getTime()));
+				logger.warn(end + String.valueOf(end.getTime()));
 			} catch (ParseException e) { logger.debug("Random Date from input", e); }
 			timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
 			date = new Date(timestamp);

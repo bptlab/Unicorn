@@ -152,6 +152,7 @@ class EventGenerator {
      * @param eventValues the map containing already set values will be altered by reference
      */
     private void setRandomValueFromRangeForAttribute(AttributeInput attributeInput, Map<String, Serializable> eventValues) {
+        attributeInput.calculateRandomValue();
         eventValues.put(attributeInput.getAttributeName(), attributeInput.getCalculatedValue());
     }
 

@@ -15,10 +15,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Random;
 
-public abstract class AttributeInput {
+public abstract class AttributeInput implements Serializable {
 	private final TypeTreeNode attribute;
 	private String input = "";
-	static String defaultInput = "UNDEFINED";
+	String defaultInput = "UNDEFINED";
 	static Random random = new Random();
 	static final Logger logger = Logger.getLogger(AttributeInput.class);
 
@@ -37,6 +37,7 @@ public abstract class AttributeInput {
 			case DATE:
 				return new DateAttributeInput(attribute);
 			default:
+				attribute.setType(AttributeTypeEnum.STRING);
 				return new StringAttributeInput(attribute);
 		}
 	}
@@ -55,6 +56,13 @@ public abstract class AttributeInput {
 
 	public String getInput() {
 		return input;
+	}
+
+	String getInputOrDefault() {
+		if(input != null && !input.isEmpty()) {
+			return input;
+		}
+		return defaultInput;
 	}
 
 	public void setInput(String input) {

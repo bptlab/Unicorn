@@ -7,12 +7,13 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import de.hpi.unicorn.application.pages.input.generator.attributeInput.AttributeInput;
 import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
 import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
@@ -35,6 +36,9 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.validation.validator.RangeValidator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * {@link Panel}, which allows the generation of events.
  */
@@ -53,10 +57,12 @@ public class GeneratePanel extends Panel {
     protected String eventTypeName;
     private EapEventType selectedEventType = new EapEventType("test");
     private ListView<TypeTreeNode> listview;
-    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
+    private List<AttributeInput> attributeInputs = new ArrayList<>();
     private WebMarkupContainer listContainer;
     private AttributeDependencyManager attributeDependencyManager;
     private final List<EapEventType> eventTypes = EapEventType.findAll();
+
+    private static final Logger logger = Logger.getLogger(GeneratePanel.class);
 
     /**
      * Constructor for the generate panel. The page is initialized in this method,
@@ -66,19 +72,22 @@ public class GeneratePanel extends Panel {
      * @param page the page the panel belongs to
      */
     GeneratePanel(String id, final GeneratorPage page) {
+
         super(id);
         this.page = page;
         this.panel = this;
+
 
         layoutForm = new Form("layoutForm") {
 
             @Override
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
-                if (eventTimestamps == null) {
-                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
-                } else {
-                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput, eventTimestamps);
+                if(eventTimestamps == null) {
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInputs);
+                }
+                else {
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInputs, eventTimestamps);
                 }
                 success("Event(s) successfully created");
             }
@@ -146,25 +155,23 @@ public class GeneratePanel extends Panel {
             @Override
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
-                item.add(new Label("attribute", attribute.getName()));
-                if (attribute.getType() == null) {
-                    attribute.setType(AttributeTypeEnum.STRING);
-                    item.add(new Label("attributeType", "UNDEFINED"));
-                    item.add(new Label("attributeInputDescription", getString("description.Undefined")));
-                } else {
-                    item.add(new Label("attributeType", attribute.getType().getName()));
-                    item.add(new Label("attributeInputDescription",
-                            new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
-                }
-                attributeInput.put(attribute, "");
+                final AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
+                item.add(new Label("attribute", attributeInput.getAttributeName()));
+                item.add(new Label("attributeType", attributeInput.getAttributeType().getName()));
+                StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
+                        new Model<TypeTreeNode>(attribute));
+                item.add(new Label("attributeInputDescription", inputDescriptionModel));
+                attributeInputs.add(attributeInput);
                 IModel<String> attributeInputModel = new Model<String>() {
                     @Override
                     public String getObject() {
-                        return attributeInput.get(attribute);
+                        int indexOfAttributeInput = attributeInputs.indexOf(attributeInput);
+                        return attributeInputs.get(indexOfAttributeInput).getInput();
                     }
                     @Override
                     public void setObject(String inputValue) {
-                        attributeInput.put(attribute, inputValue);
+                        int indexOfAttributeInput = attributeInputs.indexOf(attributeInput);
+                        attributeInputs.get(indexOfAttributeInput).setInput(inputValue);
                     }
                 };
 

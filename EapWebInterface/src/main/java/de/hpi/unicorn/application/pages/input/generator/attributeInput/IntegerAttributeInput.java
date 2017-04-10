@@ -23,7 +23,7 @@ public class IntegerAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public void calculateRandomValue() {
-		String userInput = this.getInput();
+		String userInput = this.getInputOrDefault();
 		if (userInput.contains("-")) {
 			int start = Integer.parseInt(userInput.split("-")[0]);
 			int end = Integer.parseInt(userInput.split("-")[1]);

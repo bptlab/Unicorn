@@ -23,7 +23,7 @@ public class StringAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public void calculateRandomValue() {
-		String[] possibleValues = this.getInput().split(";");
+		String[] possibleValues = this.getInputOrDefault().split(";");
 		this.value = possibleValues[getRandomIndex(possibleValues)];
 	}
 
