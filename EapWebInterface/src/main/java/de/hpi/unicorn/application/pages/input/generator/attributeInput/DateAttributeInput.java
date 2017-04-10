@@ -8,6 +8,7 @@
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,9 +21,10 @@ public class DateAttributeInput extends AttributeInput {
 	private Date value;
 	private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
+	static final Logger logger = Logger.getLogger(DateAttributeInput.class);
+
 	public DateAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
-		defaultInput = "2017/01/22T12:00-2017/02/23T14:59";
 	}
 
 	/**
@@ -40,8 +42,6 @@ public class DateAttributeInput extends AttributeInput {
 			try {
 				start = dateFormatter.parse(userInput.split("-")[0]);
 				end = dateFormatter.parse(userInput.split("-")[1]);
-				logger.warn(start + String.valueOf(start.getTime()));
-				logger.warn(end + String.valueOf(end.getTime()));
 			} catch (ParseException e) { logger.debug("Random Date from input", e); }
 			timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
 			date = new Date(timestamp);
@@ -90,6 +90,8 @@ public class DateAttributeInput extends AttributeInput {
 	Date getValue() {
 		return this.value;
 	}
+
+	String getDefaultInput() { return "2017/01/22T12:00-2017/02/23T14:59"; }
 
 	public String getValueAsString() {
 		return dateFormatter.format(this.getCalculatedValue());

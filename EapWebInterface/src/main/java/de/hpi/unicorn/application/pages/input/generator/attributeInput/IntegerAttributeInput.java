@@ -8,14 +8,16 @@
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 
 public class IntegerAttributeInput extends AttributeInput {
 
 	private Integer value;
 
+	static final Logger logger = Logger.getLogger(IntegerAttributeInput.class);
+
 	public IntegerAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
-		defaultInput = "1-50";
 	}
 
 	/**
@@ -56,4 +58,6 @@ public class IntegerAttributeInput extends AttributeInput {
 	Integer getValue() {
 		return this.value;
 	}
+
+	String getDefaultInput() { return "1-50"; }
 }

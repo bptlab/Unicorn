@@ -8,14 +8,16 @@
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import org.apache.log4j.Logger;
 
 public class FloatAttributeInput extends AttributeInput {
 
 	private Float value;
 
+	static final Logger logger = Logger.getLogger(FloatAttributeInput.class);
+
 	public FloatAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
-		defaultInput = "1.1;1.2;2.0;2.5";
 	}
 
 	/**
@@ -30,4 +32,6 @@ public class FloatAttributeInput extends AttributeInput {
 	Float getValue() {
 		return this.value;
 	}
+
+	String getDefaultInput() { return "1.1;1.2;2.0;2.5"; }
 }

@@ -18,7 +18,6 @@ import java.util.Random;
 public abstract class AttributeInput implements Serializable {
 	private final TypeTreeNode attribute;
 	private String input = "";
-	String defaultInput = "UNDEFINED";
 	static Random random = new Random();
 	static final Logger logger = Logger.getLogger(AttributeInput.class);
 
@@ -62,7 +61,7 @@ public abstract class AttributeInput implements Serializable {
 		if(input != null && !input.isEmpty()) {
 			return input;
 		}
-		return defaultInput;
+		return this.getDefaultInput();
 	}
 
 	public void setInput(String input) {
@@ -103,6 +102,8 @@ public abstract class AttributeInput implements Serializable {
 		return String.valueOf(this.getCalculatedValue());
 	}
 
+	String getDefaultInput() { return "UNDEFINED"; }
+
 	/**
 	 * Checks whether the user input is contained in a given range.
 	 * Might get overridden in subclass.
@@ -118,6 +119,17 @@ public abstract class AttributeInput implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder stringify = new StringBuilder();
+		stringify.append(this.getClass() + System.getProperty("line.separator"));
+		stringify.append("Current input: " + this.getInput() + System.getProperty("line.separator"));
+		stringify.append("Default input: " + this.getDefaultInput() + System.getProperty("line.separator"));
+		stringify.append("Input used: " + this.getInputOrDefault() + System.getProperty("line.separator"));
+		stringify.append("Current value: " + this.getValueAsString());
+		return stringify.toString();
 	}
 
 	public static int getRandomIndex(Object[] inputArray) {
