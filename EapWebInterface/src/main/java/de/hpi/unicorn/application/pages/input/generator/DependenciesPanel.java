@@ -21,7 +21,10 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.*;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -231,13 +234,17 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(addDependencyButton);
     }
 
+    /**
+     * Create and add a link to delete the selected attribute dependency.
+     */
     private void addDeleteDependencyButton() {
         AjaxLink deleteDependencyButton = new AjaxLink<Void>("deleteDependencyButton") {
             private static final long serialVersionUID = 1L;
 
             @Override
             public void onClick(final AjaxRequestTarget target) {
-                AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
+                AttributeDependency dependency = AttributeDependency
+                        .getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 if (dependency == null) {
                     DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. Dependency is already deleted.");
                 } else if (dependency.remove() == null) {
@@ -369,7 +376,9 @@ public class DependenciesPanel extends Panel {
                 IModel<Boolean> dependencyInputModel = new Model<Boolean>() {
                     @Override
                     public Boolean getObject() {
-                        if (panel.allSelected) { return true; }
+                        if (panel.allSelected) {
+                            return true;
+                        }
                         for (DependencyInput input : dependencyValues) {
                             if (input.baseValue.equals(key.baseValue)) {
                                return input.getSelected();
@@ -389,6 +398,7 @@ public class DependenciesPanel extends Panel {
                 item.add(new AjaxCheckBox("deleteCheckbox", dependencyInputModel) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
+                        // no special implementation
                     }
                 });
             }
@@ -449,6 +459,9 @@ public class DependenciesPanel extends Panel {
         dependencyForm.add(submitButton);
     }
 
+    /**
+     * Create and add a link to delete the selected attribute value dependencies.
+     */
     private void addDeleteValuesButton() {
         dependencyForm.add(new AjaxLink<Void>("deleteValuesButton") {
             private static final long serialVersionUID = 1L;
@@ -581,6 +594,9 @@ public class DependenciesPanel extends Panel {
         }
     }
 
+    /**
+     * Class to indicate list items by their base value and the status of their checkbox.
+     */
     private class DependencyInput implements Serializable {
         private String baseValue;
         private Boolean selected;
