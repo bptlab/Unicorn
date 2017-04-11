@@ -50,6 +50,11 @@ public class FloatAttributeInput extends AttributeInput {
 
 	private void calculateUniformDistributedValue() {
 		//		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/UniformIntegerDistribution.html
+		String userInput = this.getInputOrDefault();
+		if (!userInput.contains(";")) {
+			this.value = Float.parseFloat(userInput);
+			return;
+		}
 		String[] possibleValues = this.getInputOrDefault().split(";");
 		UniformIntegerDistribution uniformIntegerDistribution = new UniformIntegerDistribution(0, possibleValues.length - 1);
 		this.value = Float.parseFloat(possibleValues[uniformIntegerDistribution.sample()]);

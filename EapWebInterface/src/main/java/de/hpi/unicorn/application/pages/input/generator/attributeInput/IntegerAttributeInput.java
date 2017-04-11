@@ -57,9 +57,13 @@ public class IntegerAttributeInput extends AttributeInput {
 			this.value = uniformIntegerDistribution.sample();
 		}
 		else {
-			String[] possibleValues = userInput.split(";");
-			UniformIntegerDistribution uniformIntegerDistribution = new UniformIntegerDistribution(0, possibleValues.length - 1);
-			this.value = Integer.parseInt(possibleValues[uniformIntegerDistribution.sample()]);
+			if (!userInput.contains(";")) {
+				this.value = Integer.parseInt(userInput);
+			} else {
+				String[] possibleValues = userInput.split(";");
+				UniformIntegerDistribution uniformIntegerDistribution = new UniformIntegerDistribution(0, possibleValues.length - 1);
+				this.value = Integer.parseInt(possibleValues[uniformIntegerDistribution.sample()]);
+			}
 		}
 	}
 
