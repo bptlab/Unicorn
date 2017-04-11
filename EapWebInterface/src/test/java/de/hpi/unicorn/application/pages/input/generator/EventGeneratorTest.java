@@ -249,71 +249,63 @@ public class EventGeneratorTest extends TestCase {
         }
     }
 
-//    public void testGenerateEventsWithEmptyValues() {
-//        EapEventType.save(eventTypes);
-//
-//        TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
-//        attributeTree.addRoot(attribute2);
-//        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute2);
-//        attributeInputs.add(attributeInput2);
-//
-//        logger.warn(attributeInput2);
-//
-//        TypeTreeNode attribute3 = new TypeTreeNode("Attribute3", AttributeTypeEnum.FLOAT);
-//        AttributeInput attributeInput3 = AttributeInput.attributeInputFactory(attribute3);
-//        attributeInputs.add(attributeInput3);
-//
-//        logger.warn(attributeInput3);
-//
-//        TypeTreeNode attribute4 = new TypeTreeNode("Attribute4", AttributeTypeEnum.STRING);
-//        attributeTree.addRoot(attribute4);
-//        AttributeInput attributeInput4 = AttributeInput.attributeInputFactory(attribute4);
-//        attributeInputs.add(attributeInput4);
-//
-//        logger.warn(attributeInput4);
-//
-//        TypeTreeNode attribute5 = new TypeTreeNode("Attribute5", AttributeTypeEnum.DATE);
-//        attributeTree.addRoot(attribute5);
-//        AttributeInput attributeInput5 = AttributeInput.attributeInputFactory(attribute5);
-//        attributeInputs.add(attributeInput5);
-//
-//        logger.warn(attributeInput5);
-//
-//        generator.generateEvents(10, scaleFactor, eventType, attributeInputs);
-//        try {
-//            TimeUnit.SECONDS.sleep(2);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // event attributes have default values
-//        List<EapEvent> events = EapEvent.findByEventType(eventType);
-//        for (EapEvent event : events) {
-//            int intValue = Integer.parseInt(event.getValuesForExport().get("Attribute2"));
-//            assertTrue(intValue >= 1 && intValue <= 50);
-//
-//            float floatValue = Float.parseFloat(event.getValuesForExport().get("Attribute3"));
-//            assertTrue(floatValue == 1.1f || floatValue == 1.2f || floatValue == 2.0f || floatValue == 2.5f);
-//
-//            String stringValue = event.getValuesForExport().get("Attribute4");
-//            assertTrue(stringValue.equals("String1") || stringValue.equals("String2") || stringValue.equals("String3"));
-//
-//            try {
-//                String dateValue = event.getValuesForExport().get("Attribute5");
-//                Date startDate = dateFormatter.parse("2017/01/22T12:00");
-//                Date endDate = dateFormatter.parse("2017/02/23T14:59");
-//                Date date = new Date();
-//                try {
-//                    date = DateUtils.getFormatter().parse(dateValue);
-//                }catch (ParseException e) {
-//                    fail("Date was not in a parsable format");
-//                }
-//                assertTrue(date.after(startDate) && date.before(endDate));
-//            } catch (ParseException e) {
-//                fail("Error while parsing default dates");
-//            }
-//
-//        }
-//    }
+    public void testGenerateEventsWithEmptyValues() {
+        EapEventType.save(eventTypes);
+
+        TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
+        attributeTree.addRoot(attribute2);
+        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute2);
+        attributeInputs.add(attributeInput2);
+
+        TypeTreeNode attribute3 = new TypeTreeNode("Attribute3", AttributeTypeEnum.FLOAT);
+        attributeTree.addRoot(attribute3);
+        AttributeInput attributeInput3 = AttributeInput.attributeInputFactory(attribute3);
+        attributeInputs.add(attributeInput3);
+
+        TypeTreeNode attribute4 = new TypeTreeNode("Attribute4", AttributeTypeEnum.STRING);
+        attributeTree.addRoot(attribute4);
+        AttributeInput attributeInput4 = AttributeInput.attributeInputFactory(attribute4);
+        attributeInputs.add(attributeInput4);
+
+        TypeTreeNode attribute5 = new TypeTreeNode("Attribute5", AttributeTypeEnum.DATE);
+        attributeTree.addRoot(attribute5);
+        AttributeInput attributeInput5 = AttributeInput.attributeInputFactory(attribute5);
+        attributeInputs.add(attributeInput5);
+
+        generator.generateEvents(10, scaleFactor, eventType, attributeInputs);
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // event attributes have default values
+        List<EapEvent> events = EapEvent.findByEventType(eventType);
+        for (EapEvent event : events) {
+            int intValue = Integer.parseInt(event.getValuesForExport().get("Attribute2"));
+            assertTrue(intValue >= 1 && intValue <= 50);
+
+            float floatValue = Float.parseFloat(event.getValuesForExport().get("Attribute3"));
+            assertTrue(floatValue == 1.1f || floatValue == 1.2f || floatValue == 2.0f || floatValue == 2.5f);
+
+            String stringValue = event.getValuesForExport().get("Attribute4");
+            assertTrue(stringValue.equals("String1") || stringValue.equals("String2") || stringValue.equals("String3"));
+
+            try {
+                String dateValue = event.getValuesForExport().get("Attribute5");
+                Date startDate = dateFormatter.parse("2017/01/22T12:00");
+                Date endDate = dateFormatter.parse("2017/02/23T14:59");
+                Date date = new Date();
+                try {
+                    date = DateUtils.getFormatter().parse(dateValue);
+                }catch (ParseException e) {
+                    fail("Date was not in a parsable format");
+                }
+                assertTrue(date.after(startDate) && date.before(endDate));
+            } catch (ParseException e) {
+                fail("Error while parsing default dates");
+            }
+        }
+    }
 
 }

@@ -143,7 +143,7 @@ public abstract class AttributeInput implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder stringify = new StringBuilder();
+		StringBuilder stringify = new StringBuilder(System.getProperty("line.separator"));
 		stringify.append(this.getClass() + System.getProperty("line.separator"));
 		stringify.append("Current input: " + this.getInput() + System.getProperty("line.separator"));
 		stringify.append("Default input: " + this.getDefaultInput() + System.getProperty("line.separator"));

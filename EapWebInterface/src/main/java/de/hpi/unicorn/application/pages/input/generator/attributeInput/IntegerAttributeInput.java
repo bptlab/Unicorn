@@ -61,7 +61,6 @@ public class IntegerAttributeInput extends AttributeInput {
 			UniformIntegerDistribution uniformIntegerDistribution = new UniformIntegerDistribution(0, possibleValues.length - 1);
 			this.value = Integer.parseInt(possibleValues[uniformIntegerDistribution.sample()]);
 		}
-		logger.warn("Calculated uniform: " + this.value.toString());
 	}
 
 	private void calculateNormalDistributedValue() {
@@ -70,9 +69,7 @@ public class IntegerAttributeInput extends AttributeInput {
 		double mean = Double.parseDouble(userInput.split(";")[0]);
 		double standardDeviation = Double.parseDouble(userInput.split(";")[1]);
 		NormalDistribution normalDistribution = new NormalDistribution(mean, standardDeviation);
-		logger.warn("Bsp:" + normalDistribution.sample());
 		this.value = (int) Math.round(normalDistribution.sample());
-		logger.warn("Calculated normals: " + this.value.toString());
 	}
 
 	/**
