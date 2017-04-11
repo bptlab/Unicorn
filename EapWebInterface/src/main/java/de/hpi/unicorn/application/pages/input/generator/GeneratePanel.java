@@ -175,12 +175,26 @@ public class GeneratePanel extends Panel {
                     }
                 };
 
-                TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
-                inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
+                final TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
+                inputField.add(attributeInput.getAttributeInputValidator());
                 inputField.setLabel(new Model<String>(attribute.getName()));
+                inputField.setOutputMarkupId(true);
                 item.add(inputField);
-                item.add(new Label("attributeInputWarning", "")
-                        .setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
+                Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
+                item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
+
+                DropDownChoice<String> methodDropDown = new DropDownChoice<>("attributeInputMethodSelection", new PropertyModel<String>
+                        (attributeInput, "selectedMethod"), attributeInput.getAvailableMethods());
+                methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        inputField.remove(inputField.getValidators().get(0));
+                        inputField.add(attributeInput.getAttributeInputValidator());
+                        target.add(inputField);
+                    }
+                });
+                methodDropDown.setVisible(attributeInput.hasDifferentMethods());
+                item.add(methodDropDown);
             }
         };
         listview.setReuseItems(true);
@@ -197,6 +211,7 @@ public class GeneratePanel extends Panel {
             protected void onUpdate(AjaxRequestTarget target) {
                 if (selectedEventType != null) {
                     attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
+                    attributeInputs.clear();
                     listview.removeAll();
                     target.add(listContainer);
                 }

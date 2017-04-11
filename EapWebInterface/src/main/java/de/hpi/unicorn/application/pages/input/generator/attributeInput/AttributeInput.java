@@ -7,11 +7,14 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
+import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.log4j.Logger;
+import org.apache.wicket.validation.IValidator;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +22,11 @@ public abstract class AttributeInput implements Serializable {
 	private final TypeTreeNode attribute;
 	private String input = "";
 	static Random random = new Random();
+
+	final List<String> availableMethods = new ArrayList<>();
+
+	private String selectedMethod;
+
 	static final Logger logger = Logger.getLogger(AttributeInput.class);
 
 	AttributeInput(TypeTreeNode attribute) {
@@ -51,6 +59,18 @@ public abstract class AttributeInput implements Serializable {
 
 	public String getAttributeName() {
 		return this.getAttribute().getName();
+	}
+
+	public List<String> getAvailableMethods() {
+		return availableMethods;
+	}
+
+	public String getSelectedMethod() {
+		return selectedMethod;
+	}
+
+	public void setSelectedMethod(String selectedMethod) {
+		this.selectedMethod = selectedMethod;
 	}
 
 	public String getInput() {
@@ -130,6 +150,14 @@ public abstract class AttributeInput implements Serializable {
 		stringify.append("Input used: " + this.getInputOrDefault() + System.getProperty("line.separator"));
 		stringify.append("Current value: " + this.getValueAsString());
 		return stringify.toString();
+	}
+
+	public boolean hasDifferentMethods() {
+		return !this.getAvailableMethods().isEmpty();
+	}
+
+	public IValidator<String> getAttributeInputValidator() {
+		return AttributeValidator.getValidatorForAttribute(this.getAttribute());
 	}
 
 	public static int getRandomIndex(Object[] inputArray) {
