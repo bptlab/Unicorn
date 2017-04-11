@@ -16,7 +16,7 @@ public class FloatAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(FloatAttributeInput.class);
 
-	public FloatAttributeInput(TypeTreeNode inputAttribute) {
+	FloatAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 	}
 
@@ -29,9 +29,11 @@ public class FloatAttributeInput extends AttributeInput {
 		this.value = Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
 	}
 
+	@Override
 	Float getValue() {
 		return this.value;
 	}
 
+	@Override
 	String getDefaultInput() { return "1.1;1.2;2.0;2.5"; }
 }

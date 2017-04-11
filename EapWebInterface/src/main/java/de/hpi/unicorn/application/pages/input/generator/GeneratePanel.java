@@ -8,7 +8,6 @@
 package de.hpi.unicorn.application.pages.input.generator;
 
 import de.hpi.unicorn.application.pages.input.generator.attributeInput.AttributeInput;
-import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
 import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
@@ -183,7 +182,7 @@ public class GeneratePanel extends Panel {
                 Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
                 item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
 
-                DropDownChoice<String> methodDropDown = new DropDownChoice<>("attributeInputMethodSelection", new PropertyModel<String>
+                DropDownChoice<AttributeInput.ProbabilityDistributionEnum> methodDropDown = new DropDownChoice<>("attributeInputMethodSelection", new PropertyModel<AttributeInput.ProbabilityDistributionEnum>
                         (attributeInput, "selectedMethod"), attributeInput.getAvailableMethods());
                 methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
                     @Override

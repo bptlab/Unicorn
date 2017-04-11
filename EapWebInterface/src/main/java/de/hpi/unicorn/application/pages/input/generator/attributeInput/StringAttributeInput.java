@@ -16,7 +16,7 @@ public class StringAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(StringAttributeInput.class);
 
-	public StringAttributeInput(TypeTreeNode inputAttribute) {
+	StringAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 	}
 
@@ -29,9 +29,11 @@ public class StringAttributeInput extends AttributeInput {
 		this.value = possibleValues[getRandomIndex(possibleValues)];
 	}
 
+	@Override
 	String getValue() {
 		return this.value;
 	}
 
+	@Override
 	String getDefaultInput() { return "String1;String2;String3"; }
 }

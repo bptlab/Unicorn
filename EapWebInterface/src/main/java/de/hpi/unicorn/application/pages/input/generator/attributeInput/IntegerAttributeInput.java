@@ -21,14 +21,15 @@ public class IntegerAttributeInput extends AttributeInput {
 
 	private Integer value;
 	{
-		availableMethods.add("Uniform");
-		availableMethods.add("Normal");
+		availableMethods.add(ProbabilityDistributionEnum.UNIFORM);
+		availableMethods.add(ProbabilityDistributionEnum.NORMAL);
 	}
 
 	static final Logger logger = Logger.getLogger(IntegerAttributeInput.class);
 
-	public IntegerAttributeInput(TypeTreeNode inputAttribute) {
+	IntegerAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
+		this.setSelectedMethod(ProbabilityDistributionEnum.UNIFORM);
 	}
 
 	/**
@@ -36,11 +37,11 @@ public class IntegerAttributeInput extends AttributeInput {
 	 */
 	@Override
 	public void calculateRandomValue() {
-		if ("Uniform".equals(this.getSelectedMethod())) {
+		if (ProbabilityDistributionEnum.UNIFORM.equals(this.getSelectedMethod())) {
 			this.calculateUniformDistributedValue();
 			return;
 		}
-		if ("Normal".equals(this.getSelectedMethod())) {
+		if (ProbabilityDistributionEnum.NORMAL.equals(this.getSelectedMethod())) {
 			this.calculateNormalDistributedValue();
 			return;
 		}
@@ -66,13 +67,11 @@ public class IntegerAttributeInput extends AttributeInput {
 	private void calculateNormalDistributedValue() {
 //		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/NormalDistribution.html
 		String userInput = this.getInputOrDefault();
-		if (userInput.contains(";")) {
-			double mean = Double.parseDouble(userInput.split(";")[0]);
-			double standardDeviation = Double.parseDouble(userInput.split(";")[1]);
-			NormalDistribution normalDistribution = new NormalDistribution(mean, standardDeviation);
-			logger.warn("Bsp:" + normalDistribution.sample());
-			this.value = (int) Math.round(normalDistribution.sample());
-		}
+		double mean = Double.parseDouble(userInput.split(";")[0]);
+		double standardDeviation = Double.parseDouble(userInput.split(";")[1]);
+		NormalDistribution normalDistribution = new NormalDistribution(mean, standardDeviation);
+		logger.warn("Bsp:" + normalDistribution.sample());
+		this.value = (int) Math.round(normalDistribution.sample());
 		logger.warn("Calculated normals: " + this.value.toString());
 	}
 
@@ -94,15 +93,22 @@ public class IntegerAttributeInput extends AttributeInput {
 		}
 	}
 
+	@Override
 	Integer getValue() {
 		return this.value;
 	}
 
-	String getDefaultInput() { return "1-50"; }
+	@Override
+	String getDefaultInput() {
+		if (this.getSelectedMethod().equals(ProbabilityDistributionEnum.NORMAL)) {
+			return "5;1";
+		}
+		return "1-50";
+	}
 
 	@Override
 	public IValidator<String> getAttributeInputValidator() {
-		if ("Normal".equals(this.getSelectedMethod())) {
+		if (ProbabilityDistributionEnum.NORMAL.equals(this.getSelectedMethod())) {
 			return new RegexValidator(Pattern.compile("\\d+(?:\\.\\d+)?;\\d+(?:\\.\\d+)?"));
 		}
 		return super.getAttributeInputValidator();

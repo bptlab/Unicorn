@@ -23,9 +23,9 @@ public abstract class AttributeInput implements Serializable {
 	private String input = "";
 	static Random random = new Random();
 
-	final List<String> availableMethods = new ArrayList<>();
+	final List<ProbabilityDistributionEnum> availableMethods = new ArrayList<>();
 
-	private String selectedMethod;
+	private ProbabilityDistributionEnum selectedMethod;
 
 	static final Logger logger = Logger.getLogger(AttributeInput.class);
 
@@ -61,15 +61,15 @@ public abstract class AttributeInput implements Serializable {
 		return this.getAttribute().getName();
 	}
 
-	public List<String> getAvailableMethods() {
+	public List<ProbabilityDistributionEnum> getAvailableMethods() {
 		return availableMethods;
 	}
 
-	public String getSelectedMethod() {
+	public ProbabilityDistributionEnum getSelectedMethod() {
 		return selectedMethod;
 	}
 
-	public void setSelectedMethod(String selectedMethod) {
+	public void setSelectedMethod(ProbabilityDistributionEnum selectedMethod) {
 		this.selectedMethod = selectedMethod;
 	}
 
@@ -164,4 +164,27 @@ public abstract class AttributeInput implements Serializable {
 		return random.nextInt(inputArray.length);
 	}
 	public static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
+
+	public enum ProbabilityDistributionEnum {
+
+		UNIFORM("uniform"), NORMAL("normal");
+
+		private String distribution;
+
+		ProbabilityDistributionEnum(final String distribution) {
+			this.distribution = distribution;
+		}
+
+		public String getName() {
+			return this.distribution;
+		}
+
+		@Override
+		public String toString() {
+			// only capitalize the first letter
+			final String s = super.toString();
+			return s.substring(0, 1) + s.substring(1).toLowerCase();
+		}
+	}
+
 }
