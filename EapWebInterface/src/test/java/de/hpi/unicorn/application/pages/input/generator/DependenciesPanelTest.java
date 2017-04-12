@@ -113,7 +113,7 @@ public class DependenciesPanelTest extends TestCase {
         // dependency has Values
         addDependencyValues();
         tester.executeAjaxEvent(formPath + ":deleteDependencyButton", "click");
-        Assert.assertTrue(tester.getLastResponse().getDocument().contains("Error while deleting dependency. Please Delete the corresponding values first."));
+        Assert.assertTrue(tester.getLastResponse().getDocument().contains("Error while deleting dependency. Please delete the corresponding values first."));
     }
 
     public void testSelectAllCheckbox() {
