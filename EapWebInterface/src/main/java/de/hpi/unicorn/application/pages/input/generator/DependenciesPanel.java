@@ -28,7 +28,10 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.*;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.Validatable;
 
@@ -44,11 +47,11 @@ public class DependenciesPanel extends Panel {
 
     private static final long serialVersionUID = 1L;
     private GeneratorPage page;
-    private DependenciesPanel panel;
+    private DependenciesPanel thisPanel;
 
     private Form dependencyForm;
     protected String eventTypeName;
-    private EapEventType selectedEventType = new EapEventType("test" );
+    private EapEventType selectedEventType = new EapEventType("test");
     private TypeTreeNode selectedBaseAttribute = new TypeTreeNode("base attribute");
     private TypeTreeNode selectedDependentAttribute = new TypeTreeNode("dependent attribute");
     private String currentBaseAttributeInput = "";
@@ -69,7 +72,7 @@ public class DependenciesPanel extends Panel {
     private AjaxButton submitButton;
 
     private HashMap<String, String> dependenciesInput = new HashMap<>();
-    ArrayList<DependencyInput> dependencyValues = new ArrayList<>();
+    private ArrayList<DependencyInput> dependencyValues = new ArrayList<>();
     private ListView<String> listview;
     private WebMarkupContainer listContainer;
     private boolean allSelected = false;
@@ -77,7 +80,7 @@ public class DependenciesPanel extends Panel {
     private static final Logger logger = Logger.getLogger(DependenciesPanel.class);
 
     /**
-     * Constructor for the dependencies panel. The page is initialized in this method,
+     * Constructor for the dependencies thisPanel. The page is initialized in this method,
      * including the event type dropdown and the according event type attributes dropdowns.
      *
      * @param id
@@ -86,7 +89,7 @@ public class DependenciesPanel extends Panel {
     DependenciesPanel(String id, final GeneratorPage page) {
         super(id);
         this.page = page;
-        this.panel = this;
+        this.thisPanel = this;
         dependencyForm = new Form("dependencyForm");
         this.add(dependencyForm);
 
@@ -246,9 +249,11 @@ public class DependenciesPanel extends Panel {
                 AttributeDependency dependency = AttributeDependency
                         .getAttributeDependencyIfExists(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
                 if (dependency == null) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. Dependency is already deleted.");
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. "
+                            + "Dependency is already deleted.");
                 } else if (dependency.remove() == null) {
-                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. Please Delete the corresponding values first.");
+                    DependenciesPanel.this.page.getFeedbackPanel().error("Error while deleting dependency. "
+                            + "Please delete the corresponding values first.");
                 } else {
                     DependenciesPanel.this.page.getFeedbackPanel().success("Dependency deleted.");
                 }
@@ -349,18 +354,18 @@ public class DependenciesPanel extends Panel {
         Model selectAllModel = new Model<Boolean>() {
             @Override
             public Boolean getObject() {
-                return panel.allSelected;
+                return thisPanel.allSelected;
             }
             @Override
             public void setObject(Boolean bool) {
-                panel.allSelected = bool;
+                thisPanel.allSelected = bool;
             }
         };
         listContainer.add(new AjaxCheckBox("selectAllCheckbox", selectAllModel) {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 for (DependencyInput input : dependencyValues) {
-                    input.setSelected(panel.allSelected);
+                    input.setSelected(thisPanel.allSelected);
                 }
                 listview.removeAll();
                 updateDependenciesMapForCurrentSelection();
@@ -376,7 +381,7 @@ public class DependenciesPanel extends Panel {
                 IModel<Boolean> dependencyInputModel = new Model<Boolean>() {
                     @Override
                     public Boolean getObject() {
-                        if (panel.allSelected) {
+                        if (thisPanel.allSelected) {
                             return true;
                         }
                         for (DependencyInput input : dependencyValues) {
@@ -493,7 +498,7 @@ public class DependenciesPanel extends Panel {
                         }
                     }
                 } catch (Exception e) {
-                    logger.info(e.toString());
+                    logger.debug("addDeleteValuesButton", e);
                 }
                 listview.removeAll();
                 updateDependenciesMapForCurrentSelection();
@@ -601,6 +606,11 @@ public class DependenciesPanel extends Panel {
         private String baseValue;
         private Boolean selected;
 
+        /**
+         * Constructor for the DependencyInput class.
+         *
+         * @param baseValue base value of the input
+         */
         DependencyInput(String baseValue) {
             this.baseValue = baseValue;
             this.selected = false;
