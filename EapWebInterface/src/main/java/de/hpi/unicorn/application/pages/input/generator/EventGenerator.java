@@ -16,7 +16,6 @@ import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.EapEvent;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -35,7 +34,6 @@ class EventGenerator {
     private static final int DEFAULT_REPLAY_SCALEFACTOR = 1000;
     private int replayScaleFactor = DEFAULT_REPLAY_SCALEFACTOR;
     private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
-    private static final Logger logger = Logger.getLogger(EventGenerator.class);
 
     private AttributeDependencyManager attributeDependencyManager;
 
@@ -45,7 +43,7 @@ class EventGenerator {
      *
      * @param eventCount number of events to be generated
      * @param eventType type the generated events should be of
-     * @param attributeUserInput
+     * @param attributeUserInput list of all AttributeInputs containing the user input
      */
     void generateEvents(int eventCount, EapEventType eventType, List<AttributeInput> attributeUserInput) {
         generateEvents(eventCount, this.replayScaleFactor, eventType, attributeUserInput, getCurrentTimestamp());
@@ -57,7 +55,7 @@ class EventGenerator {
      * @param eventCount number of events to be generated
      * @param scaleFactor time-scale for the replayer to generate the events
      * @param eventType type the generated events should be of
-     * @param attributeUserInput
+     * @param attributeUserInput list of all AttributeInputs containing the user input
      */
     void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, List<AttributeInput> attributeUserInput) {
         generateEvents(eventCount, scaleFactor, eventType, attributeUserInput, getCurrentTimestamp());
@@ -71,7 +69,7 @@ class EventGenerator {
      * @param scaleFactor time-scale for the replayer to generate the events
      * @param eventType type the generated events should be of
      * @param eventTimestamps timestamps for the events to be generated with
-     * @param attributeUserInput
+     * @param attributeUserInput list of all AttributeInputs containing the user input
      */
     void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, List<AttributeInput> attributeUserInput, String
             eventTimestamps) {
@@ -137,8 +135,8 @@ class EventGenerator {
                 }
             }
             if (!possibleDependentAttributeInputs.isEmpty()) {
-                AttributeInput dependentAttributeInput = possibleDependentAttributeInputs.get(AttributeInput.getRandomIndex
-                        (possibleDependentAttributeInputs));
+                AttributeInput dependentAttributeInput = possibleDependentAttributeInputs.get(
+                        AttributeInput.getRandomIndex(possibleDependentAttributeInputs));
                 setRandomValueFromRangeForAttribute(dependentAttributeInput, eventValues);
                 tryToFillDependentAttributes(dependentAttributeInput, eventValues);
             }
@@ -156,7 +154,11 @@ class EventGenerator {
         eventValues.put(attributeInput.getAttributeName(), attributeInput.getCalculatedValue());
     }
 
-
+    /**
+     * Returns the current timestamp to a string using the dateFormatter.
+     *
+     * @return a string with the formatted timestamp
+     */
     private String getCurrentTimestamp() {
         return dateFormatter.format(new Date());
     }

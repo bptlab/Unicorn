@@ -29,6 +29,12 @@ public abstract class AttributeInput implements Serializable {
 
 	static final Logger logger = Logger.getLogger(AttributeInput.class);
 
+	/**
+	 * 'Super'-constructor for AttributeInput.
+	 * Associates the given attribute with the instance.
+	 *
+	 * @param attribute the object should be associated with.
+	 */
 	AttributeInput(TypeTreeNode attribute) {
 		this.attribute = attribute;
 	}
@@ -134,7 +140,7 @@ public abstract class AttributeInput implements Serializable {
 	 * @return a string containing the current input or the default input
 	 */
 	String getInputOrDefault() {
-		if(input != null && !input.isEmpty()) {
+		if (input != null && !input.isEmpty()) {
 			return input;
 		}
 		return this.getDefaultInput();
@@ -273,14 +279,20 @@ public abstract class AttributeInput implements Serializable {
 
 		private String distribution;
 
+		/**
+		 * Constructor for the enum, sets the given distribution string.
+		 *
+		 * @param distribution string to be set as distribution name
+		 */
 		ProbabilityDistributionEnum(final String distribution) {
 			this.distribution = distribution;
 		}
 
-		public String getName() {
-			return this.distribution;
-		}
-
+		/**
+		 * Implements the toString method and returns the name of the distribution as string.
+		 *
+		 * @return a string containing the distribution
+		 */
 		@Override
 		public String toString() {
 			// only capitalize the first letter

@@ -66,18 +66,16 @@ public class GeneratePanel extends Panel {
      * @param page the page the panel belongs to
      */
     GeneratePanel(String id, final GeneratorPage page) {
-
         super(id);
         this.page = page;
         this.panel = this;
-
 
         layoutForm = new Form("layoutForm") {
 
             @Override
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
-                if(eventTimestamps == null) {
+                if (eventTimestamps == null) {
                     eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInputs);
                 }
                 else {
@@ -219,6 +217,12 @@ public class GeneratePanel extends Panel {
         layoutForm.add(dropDown);
     }
 
+    /**
+     * Creates a model used for retrieving the description text for the user input from the properties file.
+     *
+     * @param attributeInput the model should be created for
+     * @return a StringResourceModel fitting the given attributeInput
+     */
     private StringResourceModel getAttributeInputDescription(AttributeInput attributeInput) {
         StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
                 new Model<TypeTreeNode>(attributeInput.getAttribute()));
