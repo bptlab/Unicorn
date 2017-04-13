@@ -35,9 +35,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.validation.validator.RangeValidator;
 
-import java.util.HashMap;
-import java.util.List;
-
 /**
  * {@link Panel}, which allows the generation of events.
  */

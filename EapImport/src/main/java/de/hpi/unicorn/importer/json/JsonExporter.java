@@ -84,6 +84,7 @@ public final class JsonExporter {
             writer.close();
         } catch (final IOException e) {
             logger.warn("Error while exporting JSON.", e);
+            return null;
         }
         return file;
     }
