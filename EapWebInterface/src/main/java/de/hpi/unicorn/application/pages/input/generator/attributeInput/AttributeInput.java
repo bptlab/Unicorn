@@ -21,7 +21,7 @@ import java.util.Random;
 public abstract class AttributeInput implements Serializable {
 	private final TypeTreeNode attribute;
 	private String input = "";
-	static Random random = new Random();
+	private static Random random = new Random();
 
 	final List<ProbabilityDistributionEnum> availableMethods = new ArrayList<>();
 
@@ -33,6 +33,12 @@ public abstract class AttributeInput implements Serializable {
 		this.attribute = attribute;
 	}
 
+	/**
+	 * Returns an AttributeInput-Object fitting to the attribute type.
+	 *
+	 * @param attribute the AttributeInput should be chosen for
+	 * @return a subclass of AttributeInput
+	 */
 	public static AttributeInput attributeInputFactory(TypeTreeNode attribute) {
 		switch (attribute.getType()) {
 			case STRING:
@@ -49,34 +55,75 @@ public abstract class AttributeInput implements Serializable {
 		}
 	}
 
+	/**
+	 * Getter for the attribute associated to the AttributeInput-Instance.
+	 *
+	 * @return an attribute
+	 */
 	public TypeTreeNode getAttribute() {
 		return attribute;
 	}
 
+	/**
+	 * Get the type of the attribute associated to the AttributeInput-Instance.
+	 *
+	 * @return the type of the attribute
+	 */
 	public AttributeTypeEnum getAttributeType() {
 		return this.getAttribute().getType();
 	}
 
+	/**
+	 * Get the name of the attribute associated to the AttributeInput-Instance.
+	 *
+	 * @return a String containing the name
+	 */
 	public String getAttributeName() {
 		return this.getAttribute().getName();
 	}
 
+	/**
+	 * Returns a list containing all (probability) methods supported by the instance.
+	 * This differs from e.g. StringAttributeInput to IntegerAttributeInput.
+	 *
+	 * @return a list with all supported methods (from ProbabilityDistributionEnum)
+	 */
 	public List<ProbabilityDistributionEnum> getAvailableMethods() {
 		return availableMethods;
 	}
 
+	/**
+	 * Returns the currently selected method for the computation of a value.
+	 *
+	 * @return the by the user selected method
+	 */
 	public ProbabilityDistributionEnum getSelectedMethod() {
 		return selectedMethod;
 	}
 
+	/**
+	 * Setter for the currently selected method.
+	 *
+	 * @param selectedMethod that should be set
+	 */
 	public void setSelectedMethod(ProbabilityDistributionEnum selectedMethod) {
 		this.selectedMethod = selectedMethod;
 	}
 
+	/**
+	 * Getter for the current input.
+	 *
+	 * @return the current input
+	 */
 	public String getInput() {
 		return input;
 	}
 
+	/**
+	 * Returns the current input, in case this is empty, a default value defined by the class is returned.
+	 *
+	 * @return a string containing the current input or the default input
+	 */
 	String getInputOrDefault() {
 		if(input != null && !input.isEmpty()) {
 			return input;
@@ -84,6 +131,11 @@ public abstract class AttributeInput implements Serializable {
 		return this.getDefaultInput();
 	}
 
+	/**
+	 * Setter for the input.
+	 *
+	 * @param input to be set
+	 */
 	public void setInput(String input) {
 		this.input = input;
 	}
@@ -108,6 +160,8 @@ public abstract class AttributeInput implements Serializable {
 
 	/**
 	 * Abstract getter for the value instance variable defined in subclasses.
+	 * Will be overridden in subclasses.
+	 *
 	 * @return a serializable object
 	 */
 	abstract Serializable getValue();
@@ -115,6 +169,7 @@ public abstract class AttributeInput implements Serializable {
 	/**
 	 * Returns the chosen value as string instead of serializable object.
 	 * It will execute the calculation of a value in case this wasn't done until now.
+	 * Might be overriden in case the parsing to string isn't this easy (e.g. in DateAttributeInput).
 	 *
 	 * @return a string
 	 */
@@ -122,6 +177,12 @@ public abstract class AttributeInput implements Serializable {
 		return String.valueOf(this.getCalculatedValue());
 	}
 
+	/**
+	 * Returns the default value, that should be used if the user input is empty.
+	 * Will be overridden in subclasses.
+	 *
+	 * @return a default value as string
+	 */
 	String getDefaultInput() { return "UNDEFINED"; }
 
 	/**
@@ -141,6 +202,11 @@ public abstract class AttributeInput implements Serializable {
 		return false;
 	}
 
+	/**
+	 * Returns the object as a string containing the most important information concerning the instance.
+	 *
+	 * @return a string describing the AttributeInput-Object
+	 */
 	@Override
 	public String toString() {
 		StringBuilder stringify = new StringBuilder(System.getProperty("line.separator"));
@@ -152,19 +218,45 @@ public abstract class AttributeInput implements Serializable {
 		return stringify.toString();
 	}
 
+	/**
+	 * Checks whether the AttributeInput-Instance provides different methods that can be selected for computation.
+	 *
+	 * @return a bool indicating if different methods are supported
+	 */
 	public boolean hasDifferentMethods() {
 		return !this.getAvailableMethods().isEmpty();
 	}
 
+	/**
+	 * Returns a validator for wicket input fields fitting the AttributeInput and the selected method.
+	 *
+	 * @return an IValidator object from the generator.validation package
+	 */
 	public IValidator<String> getAttributeInputValidator() {
 		return AttributeValidator.getValidatorForAttribute(this.getAttribute());
 	}
 
+	/**
+	 * Get a random index for the provided array.
+	 *
+	 * @param inputArray the index should be generated for
+	 * @return an int containing the index
+	 */
 	public static int getRandomIndex(Object[] inputArray) {
 		return random.nextInt(inputArray.length);
 	}
+
+	/**
+	 *  Get a random index for the provided list.
+	 *
+	 * @param inputList the index should be generated for
+	 * @return an int containing the index
+	 */
 	public static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
 
+	/**
+	 * Enum containing all possible methods for value generation of any AttributeInput-Subclasses.
+	 */
 	public enum ProbabilityDistributionEnum {
 
 		UNIFORM("uniform"), NORMAL("normal");

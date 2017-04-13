@@ -16,12 +16,17 @@ public class StringAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(StringAttributeInput.class);
 
+	/**
+	 * Constructor for the StringAttributeInput.
+	 *
+	 * @param inputAttribute the object should be associated with.
+	 */
 	StringAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 	}
 
 	/**
-	 * Select random String from the input.
+	 * Select random string from the input.
 	 */
 	@Override
 	public void calculateRandomValue() {
@@ -29,11 +34,21 @@ public class StringAttributeInput extends AttributeInput {
 		this.value = possibleValues[getRandomIndex(possibleValues)];
 	}
 
+	/**
+	 * Getter for the computed string-value.
+	 *
+	 * @return an integer
+	 */
 	@Override
 	String getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Returns the default value for string attributes.
+	 *
+	 * @return a default value as string
+	 */
 	@Override
 	String getDefaultInput() { return "String1;String2;String3"; }
 }

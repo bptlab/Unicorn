@@ -23,12 +23,19 @@ public class DateAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(DateAttributeInput.class);
 
+	/**
+	 * Constructor for the DateAttributeInput.
+	 *
+	 * @param inputAttribute the object should be associated with.
+	 */
 	public DateAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 	}
 
 	/**
 	 * Select random date from the input.
+	 * The calculated value is saved in instance variable 'value'.
+	 *
 	 */
 	@Override
 	public void calculateRandomValue() {
@@ -87,12 +94,30 @@ public class DateAttributeInput extends AttributeInput {
 		}
 	}
 
+	/**
+	 * Getter for the computed date-value.
+	 *
+	 * @return a date
+	 */
+	@Override
 	Date getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Returns the default value for date attributes.
+	 *
+	 * @return a default value as string
+	 */
+	@Override
 	String getDefaultInput() { return "2017/01/22T12:00-2017/02/23T14:59"; }
 
+	/**
+	 * Returns the computed date-value as string.
+	 *
+	 * @return a string containing the value
+	 */
+	@Override
 	public String getValueAsString() {
 		return dateFormatter.format(this.getCalculatedValue());
 	}

@@ -26,13 +26,20 @@ public class FloatAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(FloatAttributeInput.class);
 
+	/**
+	 * Constructor for the FloatAttributeInput.
+	 * Sets the selected method to uniform distribution.
+	 *
+	 * @param inputAttribute the object should be associated with.
+	 */
 	FloatAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 		this.setSelectedMethod(ProbabilityDistributionEnum.UNIFORM);
 	}
 
 	/**
-	 * Select random Float value from the input.
+	 * Select random Float value from the input depending on the selected method.
+	 *
 	 */
 	@Override
 	public void calculateRandomValue() {
@@ -48,6 +55,10 @@ public class FloatAttributeInput extends AttributeInput {
 		this.value = Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
 	}
 
+	/**
+	 * Select random Float value from the input with uniform distribution.
+	 *
+	 */
 	private void calculateUniformDistributedValue() {
 		//		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/UniformIntegerDistribution.html
 		String userInput = this.getInputOrDefault();
@@ -60,6 +71,10 @@ public class FloatAttributeInput extends AttributeInput {
 		this.value = Float.parseFloat(possibleValues[uniformIntegerDistribution.sample()]);
 	}
 
+	/**
+	 * 'Computes' a random float with the given mean and standard deviation as normal distribution.
+	 *
+	 */
 	private void calculateNormalDistributedValue() {
 		//		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/NormalDistribution.html
 		String userInput = this.getInputOrDefault();
@@ -69,11 +84,21 @@ public class FloatAttributeInput extends AttributeInput {
 		this.value = (float) normalDistribution.sample();
 	}
 
+	/**
+	 * Getter for the computed float-value.
+	 *
+	 * @return a float
+	 */
 	@Override
 	Float getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Returns the default value for float attributes, depending on the selected method.
+	 *
+	 * @return a default value as string
+	 */
 	@Override
 	String getDefaultInput() {
 		if (this.getSelectedMethod().equals(ProbabilityDistributionEnum.NORMAL)) {
@@ -82,7 +107,12 @@ public class FloatAttributeInput extends AttributeInput {
 		return "1.1;1.2;2.0;2.5";
 	}
 
-
+	/**
+	 * Returns a validator for wicket input fields fitting float input and the selected method.
+	 * E.g. normal distribution needs input of mean and standard deviation (mean;sd) and uniform a more general input.
+	 *
+	 * @return an IValidator object from the generator.validation package
+	 */
 	@Override
 	public IValidator<String> getAttributeInputValidator() {
 		if (ProbabilityDistributionEnum.NORMAL.equals(this.getSelectedMethod())) {

@@ -27,6 +27,12 @@ public class IntegerAttributeInput extends AttributeInput {
 
 	static final Logger logger = Logger.getLogger(IntegerAttributeInput.class);
 
+	/**
+	 * Constructor for the IntAttributeInput.
+	 * Sets the selected method to uniform distribution.
+	 *
+	 * @param inputAttribute the object should be associated with.
+	 */
 	IntegerAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 		this.setSelectedMethod(ProbabilityDistributionEnum.UNIFORM);
@@ -47,6 +53,10 @@ public class IntegerAttributeInput extends AttributeInput {
 		}
 	}
 
+	/**
+	 * Select random integer value from the input with uniform distribution.
+	 *
+	 */
 	private void calculateUniformDistributedValue() {
 //		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/UniformIntegerDistribution.html
 		String userInput = this.getInputOrDefault();
@@ -67,6 +77,11 @@ public class IntegerAttributeInput extends AttributeInput {
 		}
 	}
 
+	/**
+	 * 'Computes' a random integer with the given mean and standard deviation as normal distribution.
+	 * The computed value will be rounded and casted to integer.
+	 *
+	 */
 	private void calculateNormalDistributedValue() {
 //		https://commons.apache.org/proper/commons-math/javadocs/api-3.2/org/apache/commons/math3/distribution/NormalDistribution.html
 		String userInput = this.getInputOrDefault();
@@ -94,11 +109,21 @@ public class IntegerAttributeInput extends AttributeInput {
 		}
 	}
 
+	/**
+	 * Getter for the computed integer-value.
+	 *
+	 * @return an integer
+	 */
 	@Override
 	Integer getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Returns the default value for float attributes, depending on the selected method.
+	 *
+	 * @return a default value as string
+	 */
 	@Override
 	String getDefaultInput() {
 		if (this.getSelectedMethod().equals(ProbabilityDistributionEnum.NORMAL)) {
@@ -107,6 +132,12 @@ public class IntegerAttributeInput extends AttributeInput {
 		return "1-50";
 	}
 
+	/**
+	 * Returns a validator for wicket input fields fitting integer input and the selected method.
+	 * E.g. normal distribution needs input of mean and standard deviation (mean;sd) and uniform a more general input.
+	 *
+	 * @return an IValidator object from the generator.validation package
+	 */
 	@Override
 	public IValidator<String> getAttributeInputValidator() {
 		if (ProbabilityDistributionEnum.NORMAL.equals(this.getSelectedMethod())) {
