@@ -23,7 +23,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -36,7 +35,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.validation.validator.RangeValidator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@link Panel}, which allows the generation of events.
@@ -157,9 +155,9 @@ public class GeneratePanel extends Panel {
                 final AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
                 item.add(new Label("attribute", attributeInput.getAttributeName()));
                 item.add(new Label("attributeType", attributeInput.getAttributeType().getName()));
-                StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
-                        new Model<TypeTreeNode>(attribute));
-                item.add(new Label("attributeInputDescription", inputDescriptionModel));
+                final Label attributeInputDescriptionLabel = new Label("attributeInputDescription", getAttributeInputDescription(attributeInput));
+                attributeInputDescriptionLabel.setOutputMarkupId(true);
+                item.add(attributeInputDescriptionLabel);
                 attributeInputs.add(attributeInput);
                 IModel<String> attributeInputModel = new Model<String>() {
                     @Override
@@ -187,8 +185,11 @@ public class GeneratePanel extends Panel {
                 methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
+                        attributeInputDescriptionLabel.detachModels();
+                        attributeInputDescriptionLabel.setDefaultModel(getAttributeInputDescription(attributeInput));
                         inputField.remove(inputField.getValidators().get(0));
                         inputField.add(attributeInput.getAttributeInputValidator());
+                        target.add(attributeInputDescriptionLabel);
                         target.add(inputField);
                     }
                 });
@@ -217,6 +218,18 @@ public class GeneratePanel extends Panel {
             }
         });
         layoutForm.add(dropDown);
+    }
+
+    private StringResourceModel getAttributeInputDescription(AttributeInput attributeInput) {
+        StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
+                new Model<TypeTreeNode>(attributeInput.getAttribute()));
+        if (attributeInput.hasDifferentMethods()) {
+            IModel<AttributeInput> attributeInputIModel = new Model<AttributeInput>(attributeInput);
+            inputDescriptionModel = new StringResourceModel("description.${attributeType}.${selectedMethod}", this,
+                    attributeInputIModel
+            );
+        }
+        return inputDescriptionModel;
     }
 
     /**
