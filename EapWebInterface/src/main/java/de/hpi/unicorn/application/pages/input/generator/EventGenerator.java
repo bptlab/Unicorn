@@ -123,8 +123,7 @@ class EventGenerator {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<AttributeInput> possibleDependentAttributeInputs = new ArrayList<>();
             // iterate over each value-dependency defined on this dependency
-            for (AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies
-                    (attributeDependency)) {
+            for (AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies(attributeDependency)) {
                 // if the (already computed) value for the base attribute is within the value range of the current value-dependency-rule for the
                 // base attribute (hence this dependency-rule can be applied), add the values of the corresponding dependent-attribute to the list of
                 // possible values.
