@@ -12,7 +12,6 @@ import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeVali
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.Button;
@@ -58,8 +57,6 @@ public class GeneratePanel extends Panel {
     private WebMarkupContainer listContainer;
     private AttributeDependencyManager attributeDependencyManager;
     private final List<EapEventType> eventTypes = EapEventType.findAll();
-
-    private static final Logger logger = Logger.getLogger(GeneratePanel.class);
 
     /**
      * Constructor for the generate panel. The page is initialized in this method,
@@ -180,8 +177,10 @@ public class GeneratePanel extends Panel {
                 Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
                 item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
 
-                DropDownChoice<AttributeInput.ProbabilityDistributionEnum> methodDropDown = new DropDownChoice<>("attributeInputMethodSelection", new PropertyModel<AttributeInput.ProbabilityDistributionEnum>
-                        (attributeInput, "selectedMethod"), attributeInput.getAvailableMethods());
+                DropDownChoice<AttributeInput.ProbabilityDistributionEnum> methodDropDown = new DropDownChoice<>(
+                        "attributeInputMethodSelection",
+                        new PropertyModel<AttributeInput.ProbabilityDistributionEnum>(attributeInput, "selectedMethod"),
+                        attributeInput.getAvailableMethods());
                 methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
@@ -224,7 +223,7 @@ public class GeneratePanel extends Panel {
         StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
                 new Model<TypeTreeNode>(attributeInput.getAttribute()));
         if (attributeInput.hasDifferentMethods()) {
-            IModel<AttributeInput> attributeInputIModel = new Model<AttributeInput>(attributeInput);
+            IModel<AttributeInput> attributeInputIModel = new Model<>(attributeInput);
             inputDescriptionModel = new StringResourceModel("description.${attributeType}.${selectedMethod}", this,
                     attributeInputIModel
             );

@@ -8,13 +8,10 @@
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
-import org.apache.log4j.Logger;
 
 public class StringAttributeInput extends AttributeInput {
 
 	private String value;
-
-	static final Logger logger = Logger.getLogger(StringAttributeInput.class);
 
 	/**
 	 * Constructor for the StringAttributeInput.

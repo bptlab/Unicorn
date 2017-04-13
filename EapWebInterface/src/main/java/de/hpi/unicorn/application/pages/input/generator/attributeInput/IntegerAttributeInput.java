@@ -11,7 +11,6 @@ import de.hpi.unicorn.application.pages.input.generator.validation.RegexValidato
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.apache.commons.math3.distribution.UniformIntegerDistribution;
-import org.apache.log4j.Logger;
 import org.apache.wicket.validation.IValidator;
 
 import java.util.regex.Pattern;
@@ -20,12 +19,6 @@ import java.util.regex.Pattern;
 public class IntegerAttributeInput extends AttributeInput {
 
 	private Integer value;
-	{
-		availableMethods.add(ProbabilityDistributionEnum.UNIFORM);
-		availableMethods.add(ProbabilityDistributionEnum.NORMAL);
-	}
-
-	static final Logger logger = Logger.getLogger(IntegerAttributeInput.class);
 
 	/**
 	 * Constructor for the IntAttributeInput.
@@ -36,6 +29,8 @@ public class IntegerAttributeInput extends AttributeInput {
 	IntegerAttributeInput(TypeTreeNode inputAttribute) {
 		super(inputAttribute);
 		this.setSelectedMethod(ProbabilityDistributionEnum.UNIFORM);
+		this.addAvailableMethod(ProbabilityDistributionEnum.UNIFORM);
+		this.addAvailableMethod(ProbabilityDistributionEnum.NORMAL);
 	}
 
 	/**

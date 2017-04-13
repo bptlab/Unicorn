@@ -23,7 +23,7 @@ public abstract class AttributeInput implements Serializable {
 	private String input = "";
 	private static Random random = new Random();
 
-	final List<ProbabilityDistributionEnum> availableMethods = new ArrayList<>();
+	private final List<ProbabilityDistributionEnum> availableMethods = new ArrayList<>();
 
 	private ProbabilityDistributionEnum selectedMethod;
 
@@ -90,6 +90,15 @@ public abstract class AttributeInput implements Serializable {
 	 */
 	public List<ProbabilityDistributionEnum> getAvailableMethods() {
 		return availableMethods;
+	}
+
+	/**
+	 * Adds a method to the available methods of the object.
+	 *
+	 * @param method to be marked as available
+	 */
+	void addAvailableMethod(ProbabilityDistributionEnum method) {
+		availableMethods.add(method);
 	}
 
 	/**
@@ -209,11 +218,12 @@ public abstract class AttributeInput implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder stringify = new StringBuilder(System.getProperty("line.separator"));
-		stringify.append(this.getClass() + System.getProperty("line.separator"));
-		stringify.append("Current input: " + this.getInput() + System.getProperty("line.separator"));
-		stringify.append("Default input: " + this.getDefaultInput() + System.getProperty("line.separator"));
-		stringify.append("Input used: " + this.getInputOrDefault() + System.getProperty("line.separator"));
+		String lineSeparator = System.getProperty("line.separator");
+		StringBuilder stringify = new StringBuilder(lineSeparator);
+		stringify.append(this.getClass() + lineSeparator);
+		stringify.append("Current input: " + this.getInput() + lineSeparator);
+		stringify.append("Default input: " + this.getDefaultInput() + lineSeparator);
+		stringify.append("Input used: " + this.getInputOrDefault() + lineSeparator);
 		stringify.append("Current value: " + this.getValueAsString());
 		return stringify.toString();
 	}
@@ -257,7 +267,7 @@ public abstract class AttributeInput implements Serializable {
 	/**
 	 * Enum containing all possible methods for value generation of any AttributeInput-Subclasses.
 	 */
-	public enum ProbabilityDistributionEnum {
+	public enum ProbabilityDistributionEnum implements Serializable {
 
 		UNIFORM("uniform"), NORMAL("normal");
 

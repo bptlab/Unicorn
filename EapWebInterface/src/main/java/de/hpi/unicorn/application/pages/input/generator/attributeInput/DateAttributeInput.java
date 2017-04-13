@@ -21,7 +21,7 @@ public class DateAttributeInput extends AttributeInput {
 	private Date value;
 	private static final DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd'T'HH:mm");
 
-	static final Logger logger = Logger.getLogger(DateAttributeInput.class);
+	static final Logger dateLogger = Logger.getLogger(DateAttributeInput.class);
 
 	/**
 	 * Constructor for the DateAttributeInput.
@@ -49,14 +49,14 @@ public class DateAttributeInput extends AttributeInput {
 			try {
 				start = dateFormatter.parse(userInput.split("-")[0]);
 				end = dateFormatter.parse(userInput.split("-")[1]);
-			} catch (ParseException e) { logger.debug("Random Date from input", e); }
+			} catch (ParseException e) { dateLogger.debug("Random Date from input", e); }
 			timestamp = ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime());
 			date = new Date(timestamp);
 		}
 		else {
 			try {
 				date = dateFormatter.parse(userInput);
-			} catch (ParseException e) { logger.debug("Random Date from input", e); }
+			} catch (ParseException e) { dateLogger.debug("Random Date from input", e); }
 		}
 		this.value = date;
 	}
@@ -78,7 +78,7 @@ public class DateAttributeInput extends AttributeInput {
 				start = dateFormatter.parse(range.split("-")[0]);
 				end = dateFormatter.parse(range.split("-")[1]);
 			} catch (ParseException e) {
-				logger.debug("DateInRange: Parse range", e);
+				dateLogger.debug("DateInRange: Parse range", e);
 				return false;
 			}
 			return (inputDate.compareTo(start) >= 0) && (inputDate.compareTo(end) <= 0);
@@ -87,7 +87,7 @@ public class DateAttributeInput extends AttributeInput {
 			try {
 				start = dateFormatter.parse(range);
 			} catch (ParseException e) {
-				logger.debug("DateInRange: Parse single date", e);
+				dateLogger.debug("DateInRange: Parse single date", e);
 				return false;
 			}
 			return inputDate.equals(start);
