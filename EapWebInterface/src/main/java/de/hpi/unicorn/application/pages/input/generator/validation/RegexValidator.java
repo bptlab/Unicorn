@@ -7,13 +7,14 @@ import org.apache.wicket.validation.ValidationError;
 import java.util.regex.Pattern;
 
 /**
- * {@link IValidator}, that checks if input matches the given pattern
+ * {@link IValidator}, that checks if input matches the given pattern.
  */
 public class RegexValidator extends AttributeValidator {
 
     Pattern pattern;
     /**
-     * Constructor for the date range validator.
+     * Constructor for the regex validator.
+     * @param regex the pattern to be used for validation
      */
     public RegexValidator(Pattern regex) {
         pattern = regex;
@@ -22,7 +23,7 @@ public class RegexValidator extends AttributeValidator {
     /**
      * Checks if given validatable satisfies the pattern.
      *
-     * @param validatable
+     * @param validatable the object to be validated
      */
     @Override
     public void validate(IValidatable<String> validatable) {
@@ -36,7 +37,7 @@ public class RegexValidator extends AttributeValidator {
     /**
      * Throws error including the name of the field with wrong input and the pattern.
      *
-     * @param validatable
+     * @param validatable the object to be validated
      */
     private void error(IValidatable<String> validatable) {
         ValidationError error = new ValidationError();

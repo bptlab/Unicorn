@@ -53,23 +53,23 @@ public class EventGenerator {
 
     /**
      * Generates (eventCount many) events with given event type and random selection of input values for attribute values
-     * and replays them
+     * and replays them.
      *
-     * @param eventCount
-     * @param eventType
-     * @param attributeSchemas
+     * @param eventCount number of events to be generated
+     * @param eventType type the generated events should be of
+     * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible values
      */
     public void generateEvents(int eventCount, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, this.replayScaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
     }
     /**
      * Generates (eventCount many) events with given event type and random selection of input values for attribute values
-     * and replays them with given scale factor
+     * and replays them with given scale factor.
      *
-     * @param eventCount
-     * @param scaleFactor
-     * @param eventType
-     * @param attributeSchemas
+     * @param eventCount number of events to be generated
+     * @param scaleFactor time-scale for the replayer to generate the events
+     * @param eventType type the generated events should be of
+     * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible value
      */
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas) {
         generateEvents(eventCount, scaleFactor, eventType, attributeSchemas, getCurrentTimestamp());
@@ -77,13 +77,13 @@ public class EventGenerator {
 
     /**
      * Generates (eventCount many) events with given event type and random selection of input values for attribute values
-     * and replays them with given scale factor and given timestamp
+     * and replays them with given scale factor and given timestamp.
      *
-     * @param eventCount
-     * @param scaleFactor
-     * @param eventType
-     * @param attributeSchemas
-     * @param eventTimestamps
+     * @param eventCount number of events to be generated
+     * @param scaleFactor time-scale for the replayer to generate the events
+     * @param eventType type the generated events should be of
+     * @param attributeSchemas map containing all eventType-attributes and their user-defined, possible value
+     * @param eventTimestamps timestamps for the events to be generated with
      */
     public void generateEvents(int eventCount, int scaleFactor, EapEventType eventType, Map<TypeTreeNode, String> attributeSchemas, String
             eventTimestamps) {
@@ -119,7 +119,7 @@ public class EventGenerator {
 
     /**
      * If the given attribute can be found as a base attribute in a dependency, this function will set dependency-compliant values for dependent
-     * attributes
+     * attributes.
      *
      * @param baseAttribute the attribute to be handled as a base attribute
      * @param eventValues a map containing already set values, will set the new values in here too. (Value for base attribute has to be set already!)
@@ -140,8 +140,8 @@ public class EventGenerator {
         for (AttributeDependency attributeDependency : attributeDependencyManager.getAttributeDependencies(baseAttribute)) {
             TypeTreeNode dependentAttribute = attributeDependency.getDependentAttribute();
             List<String> possibleDependentValues = new ArrayList<>();
-            for (AttributeValueDependency attributeValueDependency : attributeDependencyManager.getAttributeValueDependencies
-                    (attributeDependency)) {
+            for (AttributeValueDependency attributeValueDependency
+                    : attributeDependencyManager.getAttributeValueDependencies(attributeDependency)) {
                 if (isInRange(baseAttributeInput, attributeValueDependency.getBaseAttributeValue(), baseAttribute.getType())) {
                     possibleDependentValues.add(attributeValueDependency.getDependentAttributeValues());
                 }
@@ -158,7 +158,8 @@ public class EventGenerator {
      * Chooses a random value from the given values and sets it in the given map for the given attribute.
      *
      * @param attribute the attribute a value should be set for
-     * @param possibleValues a string containing the possible values which can be extracted by the "getRandom[attributeType]FromInput"-function
+     * @param proposedPossibleValues a string containing the possible values which can be extracted by the
+     *                               "getRandom[attributeType]FromInput"-function
      * @param eventValues the map containing already set values will be altered by reference
      */
     private void setRandomValueFromRangeForAttribute(TypeTreeNode attribute, String proposedPossibleValues, Map<String, Serializable> eventValues) {
@@ -212,7 +213,7 @@ public class EventGenerator {
     }
 
     /**
-     * Implements the "isInRange" function for a string range
+     * Implements the "isInRange" function for a string range.
      *
      * @param input to be checked whether in range
      * @param range to be searched in
@@ -229,7 +230,7 @@ public class EventGenerator {
     }
 
     /**
-     * Implements the "isInRange" function for an integer range
+     * Implements the "isInRange" function for an integer range.
      *
      * @param input to be checked whether in range
      * @param range to be searched in
@@ -260,7 +261,7 @@ public class EventGenerator {
     }
 
     /**
-     * Implements the "isInRange" function for a date range
+     * Implements the "isInRange" function for a date range.
      *
      * @param input to be checked whether in range
      * @param range to be searched in
@@ -304,6 +305,7 @@ public class EventGenerator {
      * Find range in input and select random date from this range.
      *
      * @param input a range where a date should be picked from
+     * @return a date selected from input range
      */
     private Date getRandomDateFromInput(String input) {
         Date start = new Date();
@@ -327,6 +329,11 @@ public class EventGenerator {
         return date;
     }
 
+    /**
+     * Formats the current time, to fit used date-format and returns it as string.
+     *
+     * @return the current timestamp formatted as string
+     */
     private String getCurrentTimestamp() {
         return dateFormatter.format(new Date());
     }
@@ -335,6 +342,7 @@ public class EventGenerator {
      * Select random String from given list of Strings.
      *
      * @param input a list of possible strings, separated by ';'
+     * @return a string randomly selected from given list
      */
     private static String getRandomStringFromInput(String input) {
         String[] possibleValues = input.split(";");
@@ -345,6 +353,7 @@ public class EventGenerator {
      * Find range in input and select random integer from this range.
      *
      * @param input a range or list of possible numbers
+     * @return a random int selected from input range
      */
     private static int getRandomIntFromInput(String input) {
         if (input.contains("-")) {
@@ -362,14 +371,28 @@ public class EventGenerator {
      * Select random Float from given list of Floats.
      *
      * @param input a list of possible floats
+     * @return a float randomly selected from input list
      */
     private static Float getRandomFloatFromInput(String input) {
         String[] possibleValues = input.split(";");
         return Float.parseFloat(possibleValues[getRandomIndex(possibleValues)]);
     }
 
+    /**
+     * Randomly selects an index from a given array.
+     *
+     * @param inputArray the array the random index should 'calculated' for
+     * @return a int containing a random index for the given array
+     */
     private static int getRandomIndex(Object[] inputArray) {
         return random.nextInt(inputArray.length);
     }
+
+    /**
+     * Randomly selects an index from a given list.
+     *
+     * @param inputList the list the random index should 'calculated' for
+     * @return a int containing a random index for the given list
+     */
     private static int getRandomIndex(List inputList) { return random.nextInt(inputList.size()); }
 }

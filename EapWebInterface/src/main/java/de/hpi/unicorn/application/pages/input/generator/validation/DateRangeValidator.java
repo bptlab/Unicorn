@@ -14,7 +14,6 @@ public class DateRangeValidator extends AttributeValidator {
     private static final String DATE = "(\\d{4}\\/\\d{2}\\/\\d{2}T\\d{2}\\:\\d{2})";
     private static final String DATE_RANGE_PATTERN = DATE + "||" + DATE + "-" + DATE;
     private final Pattern pattern;
-
     /**
      * Constructor for the date range validator.
      */
@@ -25,7 +24,7 @@ public class DateRangeValidator extends AttributeValidator {
     /**
      * Checks if given validatable satisfies the date pattern.
      *
-     * @param validatable
+     * @param validatable the object to be validated
      */
     @Override
     public void validate(IValidatable<String> validatable) {
@@ -39,8 +38,8 @@ public class DateRangeValidator extends AttributeValidator {
     /**
      * Throws error including the name of the field with wrong input.
      *
-     * @param validatable
-     * @param errorKey
+     * @param validatable the object to be validated
+     * @param errorKey a string to be concatinated to the error
      */
     private void error(IValidatable<String> validatable, String errorKey) {
         ValidationError error = new ValidationError();

@@ -13,6 +13,7 @@ import de.hpi.unicorn.attributeDependency.AttributeValueDependency;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.utils.TempFolderUtil;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,7 +23,16 @@ import java.util.List;
 /**
  * Class to export objects as Json. Currently only used for the export of dependencies.
  */
-public class JsonExporter {
+public final class JsonExporter {
+
+    private static final Logger logger = Logger.getLogger(JsonExporter.class);
+
+    /**
+     * Private constructor throwing exception as this is an utility class.
+     */
+    private JsonExporter() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     /**
      * Generate a Json file for the given event type, including all dependencies
@@ -31,7 +41,7 @@ public class JsonExporter {
      * @param eventType eventType to be processed
      * @return resulting json file
      */
-    public File generateExportFileWithDependencies(final EapEventType eventType) {
+    public static File generateExportFileWithDependencies(final EapEventType eventType) {
         // create file
         if (eventType.isHierarchical()) {
             return null;
@@ -58,12 +68,12 @@ public class JsonExporter {
                 for (int i = 0; i < dependencyValues.size(); i++) {
                     AttributeValueDependency dependencyValue = dependencyValues.get(i);
                     writer.append("\"" + dependencyValue.getBaseAttributeValue() + "\" : \"" + dependencyValue.getDependentAttributeValues() + "\"");
-                    if(i < dependencyValues.size() -1) {
+                    if (i < dependencyValues.size() - 1) {
                         writer.append(",");
                     }
                 }
                 writer.append("}}");
-                if(j < dependencies.size() -1) {
+                if (j < dependencies.size() - 1) {
                     writer.append(",");
                 }
             }
@@ -72,8 +82,9 @@ public class JsonExporter {
             writer.flush();
             // close the stream
             writer.close();
-        } catch (final IOException e1) {
-            e1.printStackTrace();
+        } catch (final IOException e) {
+            logger.warn("Error while exporting JSON.", e);
+            return null;
         }
         return file;
     }
