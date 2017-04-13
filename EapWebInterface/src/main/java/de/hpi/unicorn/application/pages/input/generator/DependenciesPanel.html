@@ -21,8 +21,13 @@
                         <td><select wicket:id="dependentAttributeField"></select></td>
                     </tr>
                 </table>
-                <div class="form-inline well-small">
+            </div>
+            <div class="row">
+                <div class="span10 columns no-margin">
                     <input wicket:id="addDependencyButton" type="submit" value="Add dependency" class="btn btn-primary btn-lg btn-block">
+                </div>
+                <div class="span2 columns text-right">
+                    <input wicket:id="deleteDependencyButton" type="button" value="Delete selected" class="btn btn-primary btn-lg btn-block pull-right">
                 </div>
             </div>
             <div class="row">
@@ -45,19 +50,24 @@
                     <tr>
                         <th>When &#39;<span wicket:id="selectedBaseAttributeLabel">selectedBaseAttr</span>&#39; contains </th>
                         <th>possible values for &#39;<span wicket:id="selectedDependentAttributeLabel">selectedDependentAttr</span>&#39; are</th>
+                        <th>Select all <input wicket:id="selectAllCheckbox" type="checkbox"></th>
                     </tr>
                     </thead>
                     <tbody wicket:id="dependenciesListview" class="form-inline well-small">
                     <tr>
                         <td><span wicket:id="baseAttributeValue">Base Attribute Value</span></td>
                         <td><span wicket:id="dependentAttributeValue">Base Attribute Value</span></td>
+                        <td><input wicket:id="deleteCheckbox" type="checkbox"></td>
                     </tr>
                     </tbody>
                 </table>
             </div>
             <div class="row">
-                <div class="form-inline well-small">
+                <div class="span10 columns no-margin">
                     <input wicket:id="submitButton" type="submit" value="Save dependencies" class="btn btn-primary btn-lg btn-block">
+                </div>
+                <div class="span2 columns text-right">
+                    <input wicket:id="deleteValuesButton" type="button" value="Delete selected" class="btn btn-primary btn-lg btn-block pull-right">
                 </div>
             </div>
         </form>

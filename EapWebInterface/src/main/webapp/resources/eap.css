@@ -20,6 +20,10 @@ div.wicket-aa ul li.selected {
     background-color: #CCCCCC;
 }
 
+div.no-margin {
+    margin-left: 0px;
+}
+
 .brand {
     color: #000000 !important;
     background: transparent url(../resources/unicorn_v18.png) center left no-repeat;
