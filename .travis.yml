@@ -25,4 +25,4 @@ before_script:
 
 script: 
   - mvn -Dtest=de.hpi.unicorn.json.importer.*Test -DfailIfNoTests=false -pl EapImport test
-  - mvn -Dtest=de.hpi.unicorn.application.pages.input.generator.*Test -DfailIfNoTests=false -pl EapWebInterface test
+  - mvn -Dtest=de.hpi.unicorn.application.pages.input.generator.**.*Test -DfailIfNoTests=false -pl EapWebInterface test

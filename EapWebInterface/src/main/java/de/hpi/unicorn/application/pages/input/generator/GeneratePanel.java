@@ -7,11 +7,10 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
-import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
+import de.hpi.unicorn.application.pages.input.generator.attributeInput.AttributeInput;
 import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
-import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -23,7 +22,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -34,6 +32,8 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.validation.validator.RangeValidator;
+
+import java.util.ArrayList;
 
 /**
  * {@link Panel}, which allows the generation of events.
@@ -53,7 +53,7 @@ public class GeneratePanel extends Panel {
     protected String eventTypeName;
     private EapEventType selectedEventType = new EapEventType("test");
     private ListView<TypeTreeNode> listview;
-    private HashMap<TypeTreeNode, String> attributeInput = new HashMap<>();
+    private List<AttributeInput> attributeInputs = new ArrayList<>();
     private WebMarkupContainer listContainer;
     private AttributeDependencyManager attributeDependencyManager;
     private final List<EapEventType> eventTypes = EapEventType.findAll();
@@ -76,9 +76,10 @@ public class GeneratePanel extends Panel {
             public void onSubmit() {
                 EventGenerator eventGenerator = new EventGenerator();
                 if (eventTimestamps == null) {
-                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput);
-                } else {
-                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInput, eventTimestamps);
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInputs);
+                }
+                else {
+                    eventGenerator.generateEvents(eventCount, scaleFactor, selectedEventType, attributeInputs, eventTimestamps);
                 }
                 success("Event(s) successfully created");
             }
@@ -146,34 +147,51 @@ public class GeneratePanel extends Panel {
             @Override
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
-                item.add(new Label("attribute", attribute.getName()));
-                if (attribute.getType() == null) {
-                    attribute.setType(AttributeTypeEnum.STRING);
-                    item.add(new Label("attributeType", "UNDEFINED"));
-                    item.add(new Label("attributeInputDescription", getString("description.Undefined")));
-                } else {
-                    item.add(new Label("attributeType", attribute.getType().getName()));
-                    item.add(new Label("attributeInputDescription",
-                            new StringResourceModel("description.${type}", this, new Model<TypeTreeNode>(attribute))));
-                }
-                attributeInput.put(attribute, "");
+                final AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
+                item.add(new Label("attribute", attributeInput.getAttributeName()));
+                item.add(new Label("attributeType", attributeInput.getAttributeType().getName()));
+                final Label attributeInputDescriptionLabel = new Label("attributeInputDescription", getAttributeInputDescription(attributeInput));
+                attributeInputDescriptionLabel.setOutputMarkupId(true);
+                item.add(attributeInputDescriptionLabel);
+                attributeInputs.add(attributeInput);
                 IModel<String> attributeInputModel = new Model<String>() {
                     @Override
                     public String getObject() {
-                        return attributeInput.get(attribute);
+                        int indexOfAttributeInput = attributeInputs.indexOf(attributeInput);
+                        return attributeInputs.get(indexOfAttributeInput).getInput();
                     }
                     @Override
                     public void setObject(String inputValue) {
-                        attributeInput.put(attribute, inputValue);
+                        int indexOfAttributeInput = attributeInputs.indexOf(attributeInput);
+                        attributeInputs.get(indexOfAttributeInput).setInput(inputValue);
                     }
                 };
 
-                TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
-                inputField.add(AttributeValidator.getValidatorForAttribute(attribute));
+                final TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
+                inputField.add(attributeInput.getAttributeInputValidator());
                 inputField.setLabel(new Model<String>(attribute.getName()));
+                inputField.setOutputMarkupId(true);
                 item.add(inputField);
-                item.add(new Label("attributeInputWarning", "")
-                        .setVisible(attributeDependencyManager.isDependentAttributeInAnyDependency(attribute)));
+                Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
+                item.add(new Label("attributeInputWarning", "").setVisible(isDependentAttribute));
+
+                DropDownChoice<AttributeInput.ProbabilityDistributionEnum> methodDropDown = new DropDownChoice<>(
+                        "attributeInputMethodSelection",
+                        new PropertyModel<AttributeInput.ProbabilityDistributionEnum>(attributeInput, "selectedMethod"),
+                        attributeInput.getAvailableMethods());
+                methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        attributeInputDescriptionLabel.detachModels();
+                        attributeInputDescriptionLabel.setDefaultModel(getAttributeInputDescription(attributeInput));
+                        inputField.remove(inputField.getValidators().get(0));
+                        inputField.add(attributeInput.getAttributeInputValidator());
+                        target.add(attributeInputDescriptionLabel);
+                        target.add(inputField);
+                    }
+                });
+                methodDropDown.setVisible(attributeInput.hasDifferentMethods());
+                item.add(methodDropDown);
             }
         };
         listview.setReuseItems(true);
@@ -190,12 +208,31 @@ public class GeneratePanel extends Panel {
             protected void onUpdate(AjaxRequestTarget target) {
                 if (selectedEventType != null) {
                     attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
+                    attributeInputs.clear();
                     listview.removeAll();
                     target.add(listContainer);
                 }
             }
         });
         layoutForm.add(dropDown);
+    }
+
+    /**
+     * Creates a model used for retrieving the description text for the user input from the properties file.
+     *
+     * @param attributeInput the model should be created for
+     * @return a StringResourceModel fitting the given attributeInput
+     */
+    private StringResourceModel getAttributeInputDescription(AttributeInput attributeInput) {
+        StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
+                new Model<TypeTreeNode>(attributeInput.getAttribute()));
+        if (attributeInput.hasDifferentMethods()) {
+            IModel<AttributeInput> attributeInputIModel = new Model<>(attributeInput);
+            inputDescriptionModel = new StringResourceModel("description.${attributeType}.${selectedMethod}", this,
+                    attributeInputIModel
+            );
+        }
+        return inputDescriptionModel;
     }
 
     /**
