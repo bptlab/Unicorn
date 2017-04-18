@@ -7,7 +7,7 @@ import org.apache.wicket.validation.ValidationError;
 import java.util.regex.Pattern;
 
 /**
- * {@link IValidator}, that checks if input matches integer range pattern
+ * {@link IValidator}, that checks if input matches integer range pattern.
  */
 public class IntegerRangeValidator extends AttributeValidator {
 

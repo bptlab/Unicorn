@@ -410,10 +410,12 @@ public class DependenciesPanel extends Panel {
             }
         };
         listview.setOutputMarkupId(true);
-        listContainer.add(new Label("selectedBaseAttributeLabel", new PropertyModel<String>(this, "selectedBaseAttribute.name")).setOutputMarkupId
-                (true));
-        listContainer.add(new Label("selectedDependentAttributeLabel", new PropertyModel<String>(this, "selectedDependentAttribute.name"))
-                .setOutputMarkupId(true));
+        listContainer.add(new Label(
+                "selectedBaseAttributeLabel",
+                new PropertyModel<String>(this, "selectedBaseAttribute.name")).setOutputMarkupId(true));
+        listContainer.add(new Label(
+                "selectedDependentAttributeLabel",
+                new PropertyModel<String>(this, "selectedDependentAttribute.name")).setOutputMarkupId(true));
         listContainer.add(listview);
         dependencyForm.add(listContainer);
     }
@@ -486,8 +488,13 @@ public class DependenciesPanel extends Panel {
                 }
                 try {
                     for (DependencyInput valueToRemove : valuesToRemove) {
-                        AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(selectedEventType, selectedBaseAttribute, selectedDependentAttribute);
-                        AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(dependency, valueToRemove.baseValue);
+                        AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(
+                                selectedEventType,
+                                selectedBaseAttribute,
+                                selectedDependentAttribute);
+                        AttributeValueDependency value = AttributeValueDependency.getAttributeValueDependencyFor(
+                                dependency,
+                                valueToRemove.baseValue);
                         if (value != null) {
                             value.remove();
                             dependencyValues.remove(valueToRemove);

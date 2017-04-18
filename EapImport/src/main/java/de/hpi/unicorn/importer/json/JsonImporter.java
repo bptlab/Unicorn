@@ -8,6 +8,7 @@
 package de.hpi.unicorn.importer.json;
 
 import de.hpi.unicorn.attributeDependency.AttributeDependency;
+import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
@@ -71,26 +72,17 @@ public final class JsonImporter {
                 if (baseAtt == null || dependentAtt == null) {
                     return false;
                 }
-                AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAtt, dependentAtt);
+
+                AttributeDependency dependency = AttributeDependencyManager.getAttributeDependency(eventType, baseAtt, dependentAtt);
                 if (dependency == null) {
-                    dependency = new AttributeDependency(eventType, baseAtt, dependentAtt);
-                    if(dependency.save() == null) {
-                        return false;
-                    }
+                    return false;
                 }
 
                 // create dependency values
-                AttributeValidator baseValidator = AttributeValidator.getValidatorForAttribute(baseAtt);
-                AttributeValidator dependentValidator = AttributeValidator.getValidatorForAttribute(dependentAtt);
-                JSONObject valuesJson = dependencyJson.getJSONObject("values");
-                Map<String, String> values = new HashMap<>();
-                for (int j = 0; j < valuesJson.names().length(); j++) {
-                    String baseValue = (String) valuesJson.names().get(j);
-                    String dependentValue = valuesJson.getString(baseValue);
-                    if (!dependentValidator.validate(dependentValue) || !baseValidator.validate(baseValue)) {
-                        return false;
-                    }
-                    values.put(baseValue, dependentValue);
+                Map<String, String> values = JsonImporter.buildMapForDependencyValuesFromJSON(dependencyJson.getJSONObject("values"),
+                        baseAtt, dependentAtt);
+                if (values == null) {
+                    return false;
                 }
                 if (!dependency.addDependencyValues(values)) {
                     return false;
@@ -101,5 +93,35 @@ public final class JsonImporter {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Build a <String, String> Map containing the values for new AttributeValueDependencies.
+     *
+     * @param jsonValues that need to be parsed
+     * @param baseAttribute the dependencies will be defined for
+     * @param dependentAttribute the dependencies will be defined for
+     * @return a map containing the values
+     */
+    private static Map<String, String> buildMapForDependencyValuesFromJSON(JSONObject jsonValues, TypeTreeNode baseAttribute,
+                                                                          TypeTreeNode dependentAttribute) {
+        Map<String, String> values = new HashMap<>();
+        AttributeValidator baseValidator = AttributeValidator.getValidatorForAttribute(baseAttribute);
+        AttributeValidator dependentValidator = AttributeValidator.getValidatorForAttribute(dependentAttribute);
+
+        try {
+            for (int j = 0; j < jsonValues.names().length(); j++) {
+                String baseValue = (String) jsonValues.names().get(j);
+                String dependentValue = jsonValues.getString(baseValue);
+                if (!dependentValidator.validate(dependentValue) || !baseValidator.validate(baseValue)) {
+                    return null;
+                }
+                values.put(baseValue, dependentValue);
+            }
+        } catch (Exception e) {
+            logger.warn("Error while parsing JSON.", e);
+            return null;
+        }
+        return values;
     }
 }

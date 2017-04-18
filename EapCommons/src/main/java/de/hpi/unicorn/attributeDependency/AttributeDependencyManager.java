@@ -28,9 +28,14 @@ public class AttributeDependencyManager implements Serializable {
 	private List<AttributeDependency> attributeDependencies;
 	private Map<AttributeDependency, List<AttributeValueDependency>> attributeValueDependencies = new HashMap<>();
 
+	/**
+	 * Constructor for AttributeDependencyManager.
+	 *
+	 * @param eventType the manager should be created for
+	 */
 	public AttributeDependencyManager(EapEventType eventType) {
 		this.attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
-		for(AttributeDependency attributeDependency : attributeDependencies) {
+		for (AttributeDependency attributeDependency : attributeDependencies) {
 			attributeValueDependencies.put(attributeDependency,
 					AttributeValueDependency.getAttributeValueDependenciesFor(attributeDependency));
 		}
