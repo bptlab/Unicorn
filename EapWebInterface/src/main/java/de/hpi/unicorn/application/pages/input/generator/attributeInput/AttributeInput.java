@@ -46,6 +46,9 @@ public abstract class AttributeInput implements Serializable {
 	 * @return a subclass of AttributeInput
 	 */
 	public static AttributeInput attributeInputFactory(TypeTreeNode attribute) {
+		if (attribute.getType() == null) {
+			attribute.setType(AttributeTypeEnum.STRING);
+		}
 		switch (attribute.getType()) {
 			case STRING:
 				return new StringAttributeInput(attribute);
@@ -56,7 +59,6 @@ public abstract class AttributeInput implements Serializable {
 			case DATE:
 				return new DateAttributeInput(attribute);
 			default:
-				attribute.setType(AttributeTypeEnum.STRING);
 				return new StringAttributeInput(attribute);
 		}
 	}
