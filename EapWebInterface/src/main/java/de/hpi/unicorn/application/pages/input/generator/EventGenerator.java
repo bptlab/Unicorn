@@ -90,7 +90,7 @@ class EventGenerator {
                 // one.
                 if (values.get(attributeInput.getAttributeName()) == null) {
                     //Set a random value for the current attribute
-                    setRandomValueFromRangeForAttribute(attributeInput, values);
+                    setValueForAttribute(attributeInput, values);
                 }
                 // Check if current attribute is a base attribute in a dependency and set dependent attribute values
                 tryToFillDependentAttributes(attributeInput, values);
@@ -137,7 +137,7 @@ class EventGenerator {
             if (!possibleDependentAttributeInputs.isEmpty()) {
                 AttributeInput dependentAttributeInput = possibleDependentAttributeInputs.get(
                         AttributeInput.getRandomIndex(possibleDependentAttributeInputs));
-                setRandomValueFromRangeForAttribute(dependentAttributeInput, eventValues);
+                setValueForAttribute(dependentAttributeInput, eventValues);
                 tryToFillDependentAttributes(dependentAttributeInput, eventValues);
             }
         }
@@ -149,7 +149,7 @@ class EventGenerator {
      * @param attributeInput contains the concerned event type attribute and its user input
      * @param eventValues the map containing already set values will be altered by reference
      */
-    private void setRandomValueFromRangeForAttribute(AttributeInput attributeInput, Map<String, Serializable> eventValues) {
+    private void setValueForAttribute(AttributeInput attributeInput, Map<String, Serializable> eventValues) {
         attributeInput.calculateRandomValue();
         eventValues.put(attributeInput.getAttributeName(), attributeInput.getCalculatedValue());
     }
