@@ -15,6 +15,13 @@ import org.apache.wicket.validation.IValidator;
 
 import java.util.regex.Pattern;
 
+/**
+ * Concrete implementation of {@link AttributeInput} for float attributes.
+ * Supported methods:
+ * - Uniform	{@link AttributeInput.ProbabilityDistributionEnum#UNIFORM}
+ * - Normal		{@link AttributeInput.ProbabilityDistributionEnum#NORMAL}
+ *
+ */
 public class FloatAttributeInput extends AttributeInput {
 
 	private Float value;

@@ -18,6 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Abstract class handling user input for the event generator.
+ * Each instance represents the input for one attribute.
+ * Depending on this input, a "random" value can be generated,
+ * used while creating new events in the {@link de.hpi.unicorn.application.pages.input.generator.EventGenerator}.
+ * The type of the attribute defines which subclass will be used (see {@link AttributeInput#attributeInputFactory(TypeTreeNode)}.
+ *
+ */
 public abstract class AttributeInput implements Serializable {
 	private final TypeTreeNode attribute;
 	private String input = "";

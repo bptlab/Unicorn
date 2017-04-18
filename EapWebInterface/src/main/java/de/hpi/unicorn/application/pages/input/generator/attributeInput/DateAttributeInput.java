@@ -16,6 +16,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Concrete implementation of {@link AttributeInput} for date attributes.
+ * * Supported methods:
+ * - Uniform (no special implementation)
+ *
+ */
 public class DateAttributeInput extends AttributeInput {
 
 	private Date value;

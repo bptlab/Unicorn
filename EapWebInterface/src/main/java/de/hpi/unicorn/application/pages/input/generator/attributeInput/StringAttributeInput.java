@@ -9,6 +9,12 @@ package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 
+/**
+ * Concrete implementation of {@link AttributeInput} for string attributes.
+ * Supported methods:
+ * - Uniform (no special implementation)
+ *
+ */
 public class StringAttributeInput extends AttributeInput {
 
 	private String value;
