@@ -37,7 +37,6 @@ public class AttributeInputTest extends TestCase {
     @BeforeClass
     public void setUpClass() {
         Persistor.useTestEnvironment();
-        TypeTreeNode attribute = new TypeTreeNode("StringAttribute", AttributeTypeEnum.STRING);
         attributeTree = new AttributeTypeTree(stringAttribute);
         attributeTree.addRoot(integerAttribute);
         attributeTree.addRoot(floatAttribute);
@@ -126,6 +125,28 @@ public class AttributeInputTest extends TestCase {
                 RegexValidator);
 
         assertTrue("Wrong validator for DateAttributeInput.", dateAttributeInput.getAttributeInputValidator() instanceof DateRangeValidator);
+    }
+
+    public void testIsInRange() {
+        //String attribute + default behavior for semicolon separated ranges
+        stringAttributeInput.setInput("String1");
+        stringAttributeInput.calculateRandomValue();
+        assertTrue("String value should be in range.", stringAttributeInput.isInRange("String1;String2;String3"));
+        assertFalse("String value shouldn't be in range.", stringAttributeInput.isInRange("String2;String3;String4"));
+
+        //Integer attribute
+        integerAttributeInput.setInput("4");
+        integerAttributeInput.calculateRandomValue();
+        assertTrue("Integer value should be in range.", integerAttributeInput.isInRange("1-5"));
+        assertFalse("Integer value shouldn't be in range.", integerAttributeInput.isInRange("5-12"));
+
+        //Date attribute
+        dateAttributeInput.setInput("2017/04/18T13:29");
+        dateAttributeInput.calculateRandomValue();
+        assertTrue("Date value should be in range.", dateAttributeInput.isInRange("2017/04/17T12:00-2017/04/19T12:00"));
+        assertTrue("Date value should be the same and in range.", dateAttributeInput.isInRange("2017/04/18T13:29"));
+        assertFalse("Date value shouldn't be in range.", dateAttributeInput.isInRange("2017/04/19T12:00-2017/04/20T12:00"));
+        assertFalse("Date value shouldn't be the same and in range.", dateAttributeInput.isInRange("2017/04/19T11:11"));
     }
 
 }
