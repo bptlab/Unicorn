@@ -24,17 +24,6 @@ import javax.persistence.Query;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Query;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import java.util.Map;
 import java.util.List;
 
@@ -105,15 +94,15 @@ public class AttributeDependency extends Persistable {
             for (Map.Entry entry : values.entrySet()) {
                 // Check if value dependency already exists that should be updated instead of creating a new one
                 boolean updatedValueDependency = false;
-                for(AttributeValueDependency attributeValueDependency : attributeValueDependencies) {
-                    if(attributeValueDependency.getBaseAttributeValue().equals(entry.getKey().toString())) {
+                for (AttributeValueDependency attributeValueDependency : attributeValueDependencies) {
+                    if (attributeValueDependency.getBaseAttributeValue().equals(entry.getKey().toString())) {
                         attributeValueDependency.setDependentAttributeValues(entry.getValue().toString());
                         attributeValueDependency.merge();
                         updatedValueDependency = true;
                         break;
                     }
                 }
-                if(!updatedValueDependency) {
+                if (!updatedValueDependency) {
                     AttributeValueDependency value = new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
                     if (value.save() == null) {
                         return false;
@@ -142,9 +131,9 @@ public class AttributeDependency extends Persistable {
 
     public static AttributeDependency getAttributeDependencyIfExists(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode
             dependentAttribute) {
-        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND " +
-                        "a.baseAttribute = :baseAttribute AND " +
-                        "a.dependentAttribute = :dependentAttribute",
+        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND "
+                        + "a.baseAttribute = :baseAttribute AND "
+                        + "a.dependentAttribute = :dependentAttribute",
                 AttributeDependency.class)
                 .setParameter(EVENTTYPE_LITERAL, eventType)
                 .setParameter(BASEATTRIBUTE_LITERAL, baseAttribute)
@@ -152,7 +141,7 @@ public class AttributeDependency extends Persistable {
         try {
             return (AttributeDependency) query.getResultList().get(0);
         }
-        catch (Exception e){
+        catch (Exception e) {
             logger.debug("No fitting dependency found.", e);
             return null;
         }

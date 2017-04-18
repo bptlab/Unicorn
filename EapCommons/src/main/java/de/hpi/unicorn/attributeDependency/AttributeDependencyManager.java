@@ -30,7 +30,7 @@ public class AttributeDependencyManager implements Serializable {
 
 	public AttributeDependencyManager(EapEventType eventType) {
 		this.attributeDependencies = AttributeDependency.getAttributeDependenciesWithEventType(eventType);
-		for(AttributeDependency attributeDependency : attributeDependencies) {
+		for (AttributeDependency attributeDependency : attributeDependencies) {
 			attributeValueDependencies.put(attributeDependency,
 					AttributeValueDependency.getAttributeValueDependenciesFor(attributeDependency));
 		}

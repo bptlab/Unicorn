@@ -74,7 +74,7 @@ public final class JsonImporter {
                 AttributeDependency dependency = AttributeDependency.getAttributeDependencyIfExists(eventType, baseAtt, dependentAtt);
                 if (dependency == null) {
                     dependency = new AttributeDependency(eventType, baseAtt, dependentAtt);
-                    if(dependency.save() == null) {
+                    if (dependency.save() == null) {
                         return false;
                     }
                 }
