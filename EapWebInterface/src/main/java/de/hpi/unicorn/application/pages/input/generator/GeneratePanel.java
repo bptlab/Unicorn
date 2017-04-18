@@ -32,6 +32,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,7 @@ public class GeneratePanel extends Panel {
     private WebMarkupContainer listContainer;
     private AttributeDependencyManager attributeDependencyManager;
     private final List<EapEventType> eventTypes = EapEventType.findAll();
+    private static Logger logger = Logger.getLogger(GeneratePanel.class);
 
     /**
      * Constructor for the generate panel. The page is initialized in this method,
@@ -306,6 +308,9 @@ public class GeneratePanel extends Panel {
         layoutForm.add(submitButton);
     }
 
+    /**
+     * Add a button to export the input values given via input fields
+     */
     private void addExportValuesButton() {
         final AjaxLink exportButton = new AjaxLink<Void>("exportValuesButton") {
             @Override
@@ -318,8 +323,11 @@ public class GeneratePanel extends Panel {
                         for (AttributeInput input : attributeInputs) {
                             inputsForExporter.put(input.getAttribute(), input.getInput());
                         }
-                        final File json = JsonExporter.generateExportFileWithValues(selectedEventType, inputsForExporter, eventCount, scaleFactor, eventTimestamps);
-                        if (json == null) { return null; }
+                        final File json = JsonExporter
+                                .generateExportFileWithValues(selectedEventType, inputsForExporter, eventCount, scaleFactor, eventTimestamps);
+                        if (json == null) {
+                            return null;
+                        }
                         return new FileResourceStream(new org.apache.wicket.util.file.File(json));
                     }
                     @Override
@@ -337,11 +345,17 @@ public class GeneratePanel extends Panel {
         layoutForm.add(exportButton);
     }
 
+    /**
+     * Add a upload field to upload a file.
+      */
     private void addImportField() {
         uploadField = new FileUploadField("importValuesUpload");
         this.importForm.add(uploadField);
     }
 
+    /**
+     * Add a button to import values from a file.
+     */
     private void addImportSubmitButton() {
         AjaxButton button = new AjaxButton("importValuesButton") {
             @Override
@@ -373,6 +387,7 @@ public class GeneratePanel extends Panel {
                         return;
                     }
                 } catch (Exception e) {
+                    logger.warn("File could not be read", e);
                     GeneratePanel.this.page.getFeedbackPanel().error("File could not be read.");
                     target.add(GeneratePanel.this.page.getFeedbackPanel());
                     return;
@@ -396,9 +411,9 @@ public class GeneratePanel extends Panel {
 
                 Map<TypeTreeNode, String> values = (Map<TypeTreeNode, String>) valueMap.get("values");
                 attributeInputs.clear();
-                for (TypeTreeNode inputValue : values.keySet()) {
-                    AttributeInput newInput = AttributeInput.attributeInputFactory(inputValue);
-                    newInput.setInput(values.get(inputValue));
+                for (Map.Entry entry : values.entrySet()) {
+                    AttributeInput newInput = AttributeInput.attributeInputFactory((TypeTreeNode) entry.getKey());
+                    newInput.setInput((String) entry.getValue());
                     attributeInputs.add(newInput);
                 }
                 listview.removeAll();

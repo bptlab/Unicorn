@@ -95,15 +95,21 @@ public final class JsonImporter {
         return true;
     }
 
-    public static Map<Object,Object> generateValuesFromString(String valuesString) {
-        Map<Object,Object> result = new HashMap<>();
+    /**
+     * Parse a given Json string to objects that can be used to import the values specified in json.
+     * Used to import input field values.
+     *
+     * @param valuesString json to be parsed
+     * @return map of objects to use imported values
+     */
+    public static Map<Object, Object> generateValuesFromString(String valuesString) {
+        Map<Object, Object> result = new HashMap<>();
         try {
             JSONObject eventTypeValueJson = (new JSONObject(valuesString)).getJSONObject("eventTypeValues");
             JSONObject eventTypeJson = eventTypeValueJson.getJSONObject("eventType");
             // check if corresponding event type exists
             EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
             if (eventType == null || !eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
-                logger.info("a");
                 return null;
             }
             result.put("eventType", eventType);
@@ -116,14 +122,15 @@ public final class JsonImporter {
                 JSONObject valuePair = valuesJson.getJSONObject(i);
                 JSONObject attributeJson = valuePair.getJSONObject("attribute");
                 TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
-                if(attribute == null) {logger.info("b"); return null;}
+                if (attribute == null) {
+                    return null;
+                }
                 values.put(attribute, valuePair.getString("value"));
             }
             result.put("values", values);
         } catch (Exception e) {
             e.printStackTrace();
             logger.warn("ImportException", e);
-            logger.info("c");
             return null;
         }
         return result;

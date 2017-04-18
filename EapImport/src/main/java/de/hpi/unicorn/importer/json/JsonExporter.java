@@ -90,7 +90,18 @@ public final class JsonExporter {
         return file;
     }
 
-    public static File generateExportFileWithValues(EapEventType eventType, Map<TypeTreeNode, String> inputValues, int eventCount, int scaleFactor, String timestamp) {
+    /**
+     * Generate a json including:
+     *
+     * @param eventType selected event types
+     * @param inputValues values of the input fields
+     * @param eventCount number of events to be generated
+     * @param scaleFactor scale factor of events
+     * @param timestamp starting timestamp for replay
+     * @return json file including all information of the Input
+     */
+    public static File generateExportFileWithValues(
+            EapEventType eventType, Map<TypeTreeNode, String> inputValues, int eventCount, int scaleFactor, String timestamp) {
         // create file
         if (eventType.isHierarchical()) {
             return null;
@@ -121,8 +132,8 @@ public final class JsonExporter {
                 }
             }
             writer.append("]}}");
-        } catch (final IOException e1) {
-            e1.printStackTrace();
+        } catch (final IOException e) {
+            logger.warn("IOException in JsonExporter", e);
             return null;
         }
         return file;
