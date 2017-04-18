@@ -7,6 +7,10 @@
         <div class="row">
             <form wicket:id="layoutForm">
                 <h3>Configure information for events to be generated:</h3>
+                <form wicket:id="importForm">
+                    <input wicket:id="importValuesUpload" size="40" type="file" class="btn"/>
+                    <input wicket:id="importValuesButton" type="submit" value="Import values" class="btn btn-primary"/>
+                </form>
                 <table class="table table-striped table-hover ">
                     <tr><td>Event type:</td><td><select wicket:id="eventTypeField"></select></td></tr>
                     <tr><td>Event count:</td><td><input type="text" wicket:id="eventCountField"/></td></tr>
@@ -35,6 +39,7 @@
                 </table>
                 <div class="form-inline well-small">
                     <input wicket:id="submitButton" type="submit" value="Generate events" class="btn btn-primary btn-lg btn-block">
+                    <input wicket:id="exportValuesButton" type="button" value="Export values" class="btn btn-primary btn-lg btn-block">
                 </div>
             </form>
         </div>

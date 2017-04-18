@@ -7,14 +7,23 @@
  *******************************************************************************/
 package de.hpi.unicorn.application.pages.input.generator;
 
+import com.google.common.io.Files;
+import de.hpi.unicorn.application.pages.export.AJAXDownload;
 import de.hpi.unicorn.application.pages.input.generator.attributeInput.AttributeInput;
 import de.hpi.unicorn.application.pages.input.generator.validation.DateRangeValidator;
 import de.hpi.unicorn.attributeDependency.AttributeDependencyManager;
 import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
+import de.hpi.unicorn.importer.json.JsonExporter;
+import de.hpi.unicorn.importer.json.JsonImporter;
+import org.apache.log4j.Logger;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.Model;
@@ -22,7 +31,12 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -31,9 +45,9 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.util.resource.FileResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.RangeValidator;
-
-import java.util.ArrayList;
 
 /**
  * {@link Panel}, which allows the generation of events.
@@ -50,6 +64,12 @@ public class GeneratePanel extends Panel {
     private Integer scaleFactor = DEFAULT_SCALEFACTOR;
     private String eventTimestamps;
     private Form layoutForm;
+    private Form importForm;
+    private DropDownChoice<EapEventType> eventTypeDropDown;
+    private TextField<Integer> eventCountField;
+    private TextField<Integer> scaleFactorField;
+    private TextField<String> timestampField;
+    private FileUploadField uploadField;
     protected String eventTypeName;
     private EapEventType selectedEventType = new EapEventType("test");
     private ListView<TypeTreeNode> listview;
@@ -86,6 +106,14 @@ public class GeneratePanel extends Panel {
         };
         this.add(layoutForm);
 
+        importForm = new Form("importForm") {
+            @Override
+            public void onSubmit() {
+
+            }
+        };
+        layoutForm.add(importForm);
+
         if (eventTypes.isEmpty()) {
             selectedEventType = new EapEventType("test");
         } else {
@@ -98,15 +126,25 @@ public class GeneratePanel extends Panel {
         addTimestampField();
         addEventTypeDropDown();
         addSubmitButton();
-   }
+        addExportValuesButton();
+        addImportField();
+        addImportSubmitButton();
+    }
 
     /**
      * Add field to specify the number of events to generate.
      */
     private void addEventCountField() {
-        final TextField<Integer> eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
+        eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
         eventCountField.add(new RangeValidator<Integer>(1, MAXIMUM_EVENTCOUNT));
+        eventCountField.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            public void onUpdate(AjaxRequestTarget target) {
+                target.add(eventCountField);
+            }
+        });
+        eventCountField.setOutputMarkupId(true);
         layoutForm.add(eventCountField);
     }
 
@@ -114,8 +152,15 @@ public class GeneratePanel extends Panel {
      * Add field to specify the scale factor to replay with.
      */
     private void addScaleFactorField() {
-        final TextField<Integer> scaleFactorField = new TextField<>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
+        scaleFactorField = new TextField<>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
         scaleFactorField.setRequired(true);
+        scaleFactorField.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            public void onUpdate(AjaxRequestTarget target) {
+                target.add(scaleFactorField);
+            }
+        });
+        scaleFactorField.setOutputMarkupId(true);
         layoutForm.add(scaleFactorField);
     }
 
@@ -123,9 +168,16 @@ public class GeneratePanel extends Panel {
      * Add field to specify the timestamp of the events to generate.
      */
     private void addTimestampField() {
-        final TextField<String> timestampField = new TextField<>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
+        timestampField = new TextField<>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
         timestampField.setLabel(new Model<String>("Timestamp"));
         timestampField.add(new DateRangeValidator());
+        timestampField.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            public void onUpdate(AjaxRequestTarget target) {
+                target.add(timestampField);
+            }
+        });
+        timestampField.setOutputMarkupId(true);
         layoutForm.add(timestampField);
     }
 
@@ -148,6 +200,11 @@ public class GeneratePanel extends Panel {
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
                 final AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
+                for (AttributeInput input : attributeInputs) {
+                    if (input.getAttribute() == attributeInput.getAttribute()) {
+                        attributeInput.setInput(input.getInput());
+                    }
+                }
                 item.add(new Label("attribute", attributeInput.getAttributeName()));
                 item.add(new Label("attributeType", attributeInput.getAttributeType().getName()));
                 final Label attributeInputDescriptionLabel = new Label("attributeInputDescription", getAttributeInputDescription(attributeInput));
@@ -170,6 +227,12 @@ public class GeneratePanel extends Panel {
                 final TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
                 inputField.add(attributeInput.getAttributeInputValidator());
                 inputField.setLabel(new Model<String>(attribute.getName()));
+                inputField.add(new AjaxFormComponentUpdatingBehavior("change") {
+                    @Override
+                    public void onUpdate(AjaxRequestTarget target) {
+                        target.add(inputField);
+                    }
+                });
                 inputField.setOutputMarkupId(true);
                 item.add(inputField);
                 Boolean isDependentAttribute = attributeDependencyManager.isDependentAttributeInAnyDependency(attribute);
@@ -201,9 +264,9 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        DropDownChoice<EapEventType> dropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
-        dropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        eventTypeDropDown = new DropDownChoice<>("eventTypeField",
+                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
+        eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if (selectedEventType != null) {
@@ -214,7 +277,7 @@ public class GeneratePanel extends Panel {
                 }
             }
         });
-        layoutForm.add(dropDown);
+        layoutForm.add(eventTypeDropDown);
     }
 
     /**
@@ -241,5 +304,112 @@ public class GeneratePanel extends Panel {
     private void addSubmitButton() {
         final Button submitButton = new Button("submitButton");
         layoutForm.add(submitButton);
+    }
+
+    private void addExportValuesButton() {
+        final AjaxLink exportButton = new AjaxLink<Void>("exportValuesButton") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                layoutForm.modelChanged();
+                final AJAXDownload jsonDownload = new AJAXDownload() {
+                    @Override
+                    protected IResourceStream getResourceStream() {
+                        Map<TypeTreeNode, String> inputsForExporter = new HashMap<>();
+                        for (AttributeInput input : attributeInputs) {
+                            inputsForExporter.put(input.getAttribute(), input.getInput());
+                        }
+                        final File json = JsonExporter.generateExportFileWithValues(selectedEventType, inputsForExporter, eventCount, scaleFactor, eventTimestamps);
+                        if (json == null) { return null; }
+                        return new FileResourceStream(new org.apache.wicket.util.file.File(json));
+                    }
+                    @Override
+                    protected String getFileName() {
+                        return selectedEventType.getTypeName() + "-values.json";
+                    }
+                };
+                GeneratePanel.this.add(jsonDownload);
+                jsonDownload.initiate(target);
+
+                GeneratePanel.this.page.getFeedbackPanel().success("Json created.");
+                target.add(GeneratePanel.this.page.getFeedbackPanel());
+            }
+        };
+        layoutForm.add(exportButton);
+    }
+
+    private void addImportField() {
+        uploadField = new FileUploadField("importValuesUpload");
+        this.importForm.add(uploadField);
+    }
+
+    private void addImportSubmitButton() {
+        AjaxButton button = new AjaxButton("importValuesButton") {
+            @Override
+            public void onSubmit(AjaxRequestTarget target, Form importForm) {
+                final FileUpload uploadedFile = uploadField.getFileUpload();
+                if (uploadedFile == null) {
+                    GeneratePanel.this.page.getFeedbackPanel().error("File not found.");
+                    target.add(GeneratePanel.this.page.getFeedbackPanel());
+                    return;
+                }
+                // make sure provided file is json
+                final String fileName = uploadedFile.getClientFileName();
+                String fileFormat = fileName.substring(fileName.lastIndexOf('.') + 1);
+                if (!"json".equals(fileFormat)) {
+                    GeneratePanel.this.page.getFeedbackPanel().error("Please provide a json file.");
+                    target.add(GeneratePanel.this.page.getFeedbackPanel());
+                    return;
+                }
+                // generate inputs from file
+                File newFile;
+                Map<Object, Object> valueMap;
+                try {
+                    newFile = uploadedFile.writeToTempFile();
+                    String fileContent = Files.readFirstLine(newFile, Charset.defaultCharset());
+                    valueMap = JsonImporter.generateValuesFromString(fileContent);
+                    if (valueMap == null) {
+                        GeneratePanel.this.page.getFeedbackPanel().error("Values could not be read.");
+                        target.add(GeneratePanel.this.page.getFeedbackPanel());
+                        return;
+                    }
+                } catch (Exception e) {
+                    GeneratePanel.this.page.getFeedbackPanel().error("File could not be read.");
+                    target.add(GeneratePanel.this.page.getFeedbackPanel());
+                    return;
+                }
+
+                eventCountField.getModel().setObject((int) valueMap.get("eventCount"));
+                eventCountField.clearInput();
+                target.add(eventCountField);
+
+                scaleFactorField.getModel().setObject((int) valueMap.get("scaleFactor"));
+                scaleFactorField.clearInput();
+                target.add(scaleFactorField);
+
+                timestampField.getModel().setObject((String) valueMap.get("timestamp"));
+                timestampField.clearInput();
+                target.add(timestampField);
+
+                eventTypeDropDown.getModel().setObject((EapEventType) valueMap.get("eventType"));
+                eventTypeDropDown.clearInput();
+                target.add(eventTypeDropDown);
+
+                Map<TypeTreeNode, String> values = (Map<TypeTreeNode, String>) valueMap.get("values");
+                attributeInputs.clear();
+                for (TypeTreeNode inputValue : values.keySet()) {
+                    AttributeInput newInput = AttributeInput.attributeInputFactory(inputValue);
+                    newInput.setInput(values.get(inputValue));
+                    attributeInputs.add(newInput);
+                }
+                listview.removeAll();
+                listview.modelChanged();
+                target.add(listContainer);
+
+                GeneratePanel.this.page.getFeedbackPanel().success("Saved attribute values.");
+                target.add(GeneratePanel.this.page.getFeedbackPanel());
+            }
+        };
+        button.setDefaultFormProcessing(false);
+        this.importForm.add(button);
     }
 }

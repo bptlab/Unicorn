@@ -95,6 +95,40 @@ public final class JsonImporter {
         return true;
     }
 
+    public static Map<Object,Object> generateValuesFromString(String valuesString) {
+        Map<Object,Object> result = new HashMap<>();
+        try {
+            JSONObject eventTypeValueJson = (new JSONObject(valuesString)).getJSONObject("eventTypeValues");
+            JSONObject eventTypeJson = eventTypeValueJson.getJSONObject("eventType");
+            // check if corresponding event type exists
+            EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
+            if (eventType == null || !eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
+                logger.info("a");
+                return null;
+            }
+            result.put("eventType", eventType);
+            result.put("eventCount", eventTypeValueJson.getInt("eventCount"));
+            result.put("scaleFactor", eventTypeValueJson.getInt("scaleFactor"));
+            result.put("timestamp", eventTypeValueJson.getString("timestamp"));
+            Map<TypeTreeNode, String> values = new HashMap<>();
+            JSONArray valuesJson = eventTypeValueJson.getJSONArray("values");
+            for (int i = 0; i < valuesJson.length(); i++) {
+                JSONObject valuePair = valuesJson.getJSONObject(i);
+                JSONObject attributeJson = valuePair.getJSONObject("attribute");
+                TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
+                if(attribute == null) {logger.info("b"); return null;}
+                values.put(attribute, valuePair.getString("value"));
+            }
+            result.put("values", values);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn("ImportException", e);
+            logger.info("c");
+            return null;
+        }
+        return result;
+    }
+
     /**
      * Build a <String, String> Map containing the values for new AttributeValueDependencies.
      *

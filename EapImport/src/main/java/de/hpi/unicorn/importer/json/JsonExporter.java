@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to export objects as Json. Currently only used for the export of dependencies.
@@ -84,6 +85,44 @@ public final class JsonExporter {
             writer.close();
         } catch (final IOException e) {
             logger.warn("Error while exporting JSON.", e);
+            return null;
+        }
+        return file;
+    }
+
+    public static File generateExportFileWithValues(EapEventType eventType, Map<TypeTreeNode, String> inputValues, int eventCount, int scaleFactor, String timestamp) {
+        // create file
+        if (eventType.isHierarchical()) {
+            return null;
+        }
+        final File file = new File(TempFolderUtil.getFolder() + System.getProperty("file.separator") + eventType.getTypeName() + "export.json");
+        try (FileWriter writer = new FileWriter(file, false)) {
+            // general information
+            writer.append("{\"eventTypeValues\" : ");
+            writer.append("{\"eventType\" : ");
+            writer.append("{\"name\" : \"" + eventType.getTypeName() + "\",");
+            writer.append("\"timeStampName\" : \"" + eventType.getTimestampName() + "\"},");
+            writer.append("\"eventCount\" : " + eventCount + ",");
+            writer.append("\"scaleFactor\" : " + scaleFactor + ",");
+            writer.append("\"timestamp\" : " + timestamp + ",");
+
+            // values
+            writer.append("\"values\" : [");
+            TypeTreeNode[] nodes = {};
+            TypeTreeNode[] attributes = inputValues.keySet().toArray(nodes);
+            for (int i = 0; i < inputValues.size(); i++) {
+                TypeTreeNode node = attributes[i];
+                writer.append("{\"attribute\" : {");
+                writer.append("\"name\" : \"" + node.getName() + "\",");
+                writer.append("\"type\" : \"" + node.getType() + "\"},");
+                writer.append("\"value\" : \"" + inputValues.get(node) + "\"}");
+                if (i != inputValues.size() - 1) {
+                    writer.append(",");
+                }
+            }
+            writer.append("]}}");
+        } catch (final IOException e1) {
+            e1.printStackTrace();
             return null;
         }
         return file;
