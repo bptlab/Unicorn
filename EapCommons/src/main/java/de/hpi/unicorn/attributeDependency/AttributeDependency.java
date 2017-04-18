@@ -47,7 +47,7 @@ public class AttributeDependency extends Persistable {
     private static final String DEPENDENTATTRIBUTE_LITERAL = "dependentAttribute";
     private static final long serialVersionUID = 1L;
     private static final String SELECT_A_ATTRIBUTEDEPENDENCY = "SELECT a FROM AttributeDependency a";
-    private static final String WHERE_MATCH_EVENTTYPE = "WHERE a.eventType = :eventType";
+    private static final String WHERE_MATCH_EVENTTYPE = " WHERE a.eventType = :eventType";
 
 
     private static final Logger logger = Logger.getLogger(AttributeDependency.class);
