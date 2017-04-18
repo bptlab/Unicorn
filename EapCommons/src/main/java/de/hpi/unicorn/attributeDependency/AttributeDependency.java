@@ -123,34 +123,49 @@ public class AttributeDependency extends Persistable {
 
     /**
      * Add multiple value dependencies to this dependency.
-     * If there already are some value dependencies, a merge is tried.
      *
      * @param values a map containing base values associated with dependent values
-     * @return a bool if save/merge was successful
+     * @return a bool indicating if there where errors while importing
      */
     public boolean addDependencyValues(Map<String, String> values) {
+        boolean accurateImport = true;
+        for (Map.Entry entry : values.entrySet()) {
+           if(!addDependencyValue(entry.getKey().toString(), entry.getValue().toString())) {
+               accurateImport = false;
+           }
+        }
+        return  accurateImport;
+    }
+
+    /**
+     * Add a new AttributeValueDependency for this AttributeDependency.
+     * If there already are some value dependencies, a merge is tried.
+     *
+     * @param baseValue string containing the desired base input triggering this rule
+     * @param dependentValue string with possible dependent value for this rule
+     * @return a bool whether saving was successful
+     */
+    public boolean addDependencyValue(String baseValue, String dependentValue) {
         List<AttributeValueDependency> attributeValueDependencies = AttributeValueDependency.getAttributeValueDependenciesFor(this);
         try {
-            for (Map.Entry entry : values.entrySet()) {
-                // Check if value dependency already exists that should be updated instead of creating a new one
-                boolean updatedValueDependency = false;
-                for (AttributeValueDependency attributeValueDependency : attributeValueDependencies) {
-                    if (attributeValueDependency.getBaseAttributeValue().equals(entry.getKey().toString())) {
-                        attributeValueDependency.setDependentAttributeValues(entry.getValue().toString());
-                        attributeValueDependency.merge();
-                        updatedValueDependency = true;
-                        break;
-                    }
+            // Check if value dependency already exists that should be updated instead of creating a new one
+            boolean updatedValueDependency = false;
+            for (AttributeValueDependency attributeValueDependency : attributeValueDependencies) {
+                if (attributeValueDependency.getBaseAttributeValue().equals(baseValue)) {
+                    attributeValueDependency.setDependentAttributeValues(dependentValue);
+                    attributeValueDependency.merge();
+                    updatedValueDependency = true;
+                    break;
                 }
-                if (!updatedValueDependency) {
-                    AttributeValueDependency value = new AttributeValueDependency(this, entry.getKey().toString(), entry.getValue().toString());
-                    if (value.save() == null) {
-                        return false;
-                    }
+            }
+            if (!updatedValueDependency) {
+                AttributeValueDependency value = new AttributeValueDependency(this, baseValue, dependentValue);
+                if (value.save() == null) {
+                    return false;
                 }
             }
         } catch (Exception e) {
-            logger.debug("Error while merging new dependencyValues into dependency.", e);
+            logger.debug("Error while merging new dependencyValue into dependency.", e);
             return false;
         }
         return true;
