@@ -69,10 +69,20 @@ public class AttributeDependency extends Persistable {
     @JoinColumn(name = "DependentAttribute")
     private TypeTreeNode dependentAttribute;
 
+    /**
+     * Basic constructor for AttributeDependency (no ID given, defaults to 0).
+     */
     public AttributeDependency() {
         this.ID = 0;
     }
 
+    /**
+     * Default constructor for AttributeDependency.
+     *
+     * @param eventType the dependency is defined on
+     * @param baseAttribute whose input will define the value of the
+     * @param dependentAttribute which will get a value defined in the dependency if a rule matches
+     */
     public AttributeDependency(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode dependentAttribute) {
         this();
         this.eventType = eventType;
@@ -80,17 +90,44 @@ public class AttributeDependency extends Persistable {
         this.dependentAttribute = dependentAttribute;
     }
 
+    /**
+     * Getter for ID of dependency.
+     *
+     * @return an integer
+     */
     @Override
     public int getID() {
         return this.ID;
     }
 
+    /**
+     * Getter for base attribute.
+     *
+     * @return a TypeTreeNode / attribute
+     */
     public TypeTreeNode getBaseAttribute() { return this.baseAttribute; }
 
+    /**
+     * Getter for dependent attribute.
+     *
+     * @return a TypeTreeNode / attribute
+     */
     public TypeTreeNode getDependentAttribute() { return this.dependentAttribute; }
 
+    /**
+     * Getter for event type on which the dependency is defined on.
+     *
+     * @return an EventType
+     */
     public EapEventType getEventType() { return eventType; }
 
+    /**
+     * Add multiple value dependencies to this dependency.
+     * If there already are some value dependencies, a merge is tried.
+     *
+     * @param values a map containing base values associated with dependent values
+     * @return a bool if save/merge was successful
+     */
     public boolean addDependencyValues(Map<String, String> values) {
         List<AttributeValueDependency> attributeValueDependencies = AttributeValueDependency.getAttributeValueDependenciesFor(this);
         try {
@@ -119,6 +156,12 @@ public class AttributeDependency extends Persistable {
         return true;
     }
 
+    /**
+     * Static method to retrieve all dependencies defined on a given EventType.
+     *
+     * @param eventType the dependencies should be returned for
+     * @return a list with AttributeDependencies
+     */
     public static List<AttributeDependency> getAttributeDependenciesWithEventType(EapEventType eventType) {
         final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
                 + WHERE_MATCH_EVENTTYPE,
@@ -126,6 +169,12 @@ public class AttributeDependency extends Persistable {
         return query.getResultList();
     }
 
+    /**
+     * Static method to retrieve all dependencies having the given attribute as base attribute.
+     *
+     * @param baseAttribute the dependencies should be returned for
+     * @return a list with AttributeDependencies
+     */
     public static List<AttributeDependency> getAttributeDependenciesForAttribute(TypeTreeNode baseAttribute) {
         final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
                         + WHERE_MATCH_EVENTTYPE
@@ -134,6 +183,15 @@ public class AttributeDependency extends Persistable {
         return query.getResultList();
     }
 
+    /**
+     * Tries to fetch an existing AttributeDependency specified by EventType, base and dependent attribute, if it already exists.
+     * If there is no dependency defined for this constellation, null is returned.
+     *
+     * @param eventType the dependency should be defined on
+     * @param baseAttribute the dependency should be defined on
+     * @param dependentAttribute the dependency should be defined on
+     * @return an attributeDependency or null
+     */
     public static AttributeDependency getAttributeDependencyIfExists(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode
             dependentAttribute) {
         final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
