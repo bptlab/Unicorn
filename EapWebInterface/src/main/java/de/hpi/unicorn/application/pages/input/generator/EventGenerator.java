@@ -128,8 +128,9 @@ class EventGenerator {
                 // base attribute (hence this dependency-rule can be applied), add the values of the corresponding dependent-attribute to the list of
                 // possible values.
                 if (baseAttributeInput.isInRange(attributeValueDependency.getBaseAttributeValue())) {
-                    AttributeInput possibleDependentAttributeInput = AttributeInput.attributeInputFactory(dependentAttribute);
-                    possibleDependentAttributeInput.setInput(attributeValueDependency.getDependentAttributeValues());
+                    AttributeInput possibleDependentAttributeInput = AttributeInput.attributeInputFactory(
+                            dependentAttribute,
+                            attributeValueDependency.getDependentAttributeValues());
                     possibleDependentAttributeInputs.add(possibleDependentAttributeInput);
                 }
             }

@@ -49,26 +49,47 @@ public abstract class AttributeInput implements Serializable {
 
 	/**
 	 * Returns an AttributeInput-Object fitting to the attribute type.
+	 * Gets initialized with empty input.
 	 *
 	 * @param attribute the AttributeInput should be chosen for
 	 * @return a subclass of AttributeInput
 	 */
 	public static AttributeInput attributeInputFactory(TypeTreeNode attribute) {
+		return attributeInputFactory(attribute, "");
+	}
+
+	/**
+	 * Returns an AttributeInput-Object fitting to the attribute type.
+	 * Gets initialized with the given input.
+	 *
+	 * @param attribute the AttributeInput should be chosen for
+	 * @param initialInput will be set in AttributeInput object
+	 * @return a subclass of AttributeInput
+	 */
+	public static AttributeInput attributeInputFactory(TypeTreeNode attribute, String initialInput) {
 		if (attribute.getType() == null) {
 			attribute.setType(AttributeTypeEnum.STRING);
 		}
+		AttributeInput newAttributeInput;
 		switch (attribute.getType()) {
 			case STRING:
-				return new StringAttributeInput(attribute);
+				newAttributeInput = new StringAttributeInput(attribute);
+				break;
 			case INTEGER:
-				return new IntegerAttributeInput(attribute);
+				newAttributeInput = new IntegerAttributeInput(attribute);
+				break;
 			case FLOAT:
-				return new FloatAttributeInput(attribute);
+				newAttributeInput = new FloatAttributeInput(attribute);
+				break;
 			case DATE:
-				return new DateAttributeInput(attribute);
+				newAttributeInput = new DateAttributeInput(attribute);
+				break;
 			default:
-				return new StringAttributeInput(attribute);
+				newAttributeInput = new StringAttributeInput(attribute);
+				break;
 		}
+		newAttributeInput.setInput(initialInput);
+		return newAttributeInput;
 	}
 
 	/**

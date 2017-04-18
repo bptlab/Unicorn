@@ -41,8 +41,7 @@ public class EventGeneratorTest extends TestCase {
         Persistor.useTestEnvironment();
         EapEvent.removeAll();
         EapEventType.removeAll();
-        AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
-        attributeInput.setInput(attributeValue);
+        AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute, attributeValue);
         attributeInputs.add(attributeInput);
         eventTypes.add(eventType);
     }
@@ -170,14 +169,12 @@ public class EventGeneratorTest extends TestCase {
 
         TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
         attributeTree.addRoot(attribute2);
-        AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute2);
-        attributeInput.setInput("1-3");
+        AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute2, "1-3");
         attributeInputs.add(attributeInput);
 
         TypeTreeNode attribute3 = new TypeTreeNode("Attribute3", AttributeTypeEnum.DATE);
         attributeTree.addRoot(attribute3);
-        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute3);
-        attributeInput2.setInput("2017/02/10T12:00-2017/02/11T12:00");
+        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute3, "2017/02/10T12:00-2017/02/11T12:00");
         Date startDate = new Date();
         Date endDate = new Date();
         try {
@@ -212,20 +209,17 @@ public class EventGeneratorTest extends TestCase {
 
         TypeTreeNode attribute2 = new TypeTreeNode("Attribute2", AttributeTypeEnum.INTEGER);
         attributeTree.addRoot(attribute2);
-        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute2);
-        attributeInput2.setInput("1;3;4");
+        AttributeInput attributeInput2 = AttributeInput.attributeInputFactory(attribute2, "1;3;4");
         attributeInputs.add(attributeInput2);
 
         TypeTreeNode attribute3 = new TypeTreeNode("Attribute3", AttributeTypeEnum.FLOAT);
         attributeTree.addRoot(attribute3);
-        AttributeInput attributeInput3 = AttributeInput.attributeInputFactory(attribute3);
-        attributeInput3.setInput("1.1;34.67");
+        AttributeInput attributeInput3 = AttributeInput.attributeInputFactory(attribute3, "1.1;34.67");
         attributeInputs.add(attributeInput3);
 
         TypeTreeNode attribute4 = new TypeTreeNode("Attribute4", AttributeTypeEnum.STRING);
         attributeTree.addRoot(attribute4);
-        AttributeInput attributeInput4 = AttributeInput.attributeInputFactory(attribute4);
-        attributeInput4.setInput("String1;String2");
+        AttributeInput attributeInput4 = AttributeInput.attributeInputFactory(attribute4, "String1;String2");
         attributeInputs.add(attributeInput4);
 
         generator.generateEvents(eventCount, scaleFactor, eventType, attributeInputs);
