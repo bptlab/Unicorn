@@ -46,6 +46,9 @@ public class AttributeDependency extends Persistable {
     private static final String BASEATTRIBUTE_LITERAL = "baseAttribute";
     private static final String DEPENDENTATTRIBUTE_LITERAL = "dependentAttribute";
     private static final long serialVersionUID = 1L;
+    private static final String SELECT_A_ATTRIBUTEDEPENDENCY = "SELECT a FROM AttributeDependency a";
+    private static final String WHERE_MATCH_EVENTTYPE = "WHERE a.eventType = :eventType";
+
 
     private static final Logger logger = Logger.getLogger(AttributeDependency.class);
 
@@ -117,23 +120,26 @@ public class AttributeDependency extends Persistable {
     }
 
     public static List<AttributeDependency> getAttributeDependenciesWithEventType(EapEventType eventType) {
-        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType",
+        final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
+                + WHERE_MATCH_EVENTTYPE,
                 AttributeDependency.class).setParameter(EVENTTYPE_LITERAL, eventType);
         return query.getResultList();
     }
 
     public static List<AttributeDependency> getAttributeDependenciesForAttribute(TypeTreeNode baseAttribute) {
-        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND a" +
-                        ".baseAttribute = :baseAttribute",
+        final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
+                        + WHERE_MATCH_EVENTTYPE
+                        + " AND a.baseAttribute = :baseAttribute",
                 AttributeDependency.class).setParameter(EVENTTYPE_LITERAL, baseAttribute.getEventType()).setParameter("baseAttribute", baseAttribute);
         return query.getResultList();
     }
 
     public static AttributeDependency getAttributeDependencyIfExists(EapEventType eventType, TypeTreeNode baseAttribute, TypeTreeNode
             dependentAttribute) {
-        final Query query = Persistor.getEntityManager().createQuery("SELECT a FROM AttributeDependency a WHERE a.eventType = :eventType AND "
-                        + "a.baseAttribute = :baseAttribute AND "
-                        + "a.dependentAttribute = :dependentAttribute",
+        final Query query = Persistor.getEntityManager().createQuery(SELECT_A_ATTRIBUTEDEPENDENCY
+                        + WHERE_MATCH_EVENTTYPE
+                        + " AND a.baseAttribute = :baseAttribute"
+                        + " AND a.dependentAttribute = :dependentAttribute",
                 AttributeDependency.class)
                 .setParameter(EVENTTYPE_LITERAL, eventType)
                 .setParameter(BASEATTRIBUTE_LITERAL, baseAttribute)
