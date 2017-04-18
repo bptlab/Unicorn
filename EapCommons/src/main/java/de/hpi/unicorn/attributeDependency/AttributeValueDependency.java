@@ -127,7 +127,7 @@ public class AttributeValueDependency extends Persistable {
     /**
      * Find the value dependency with the given dependency rule and base value.
      * As this combination is a primary key, there is just one value dependency returned.
-     * 
+     *
      * @param attributeDependency AttributeDependency of searched value dependency
      * @param baseValue base value of searched value dependency
      * @return value dependency that matches the search criteria
@@ -135,7 +135,7 @@ public class AttributeValueDependency extends Persistable {
     public static AttributeValueDependency getAttributeValueDependencyFor(AttributeDependency attributeDependency, String baseValue) {
         List<AttributeValueDependency> dependencyValues = AttributeValueDependency.getAttributeValueDependenciesFor(attributeDependency);
         for (AttributeValueDependency value : dependencyValues) {
-            if (value.getBaseAttributeValue() == baseValue) {
+            if (baseValue.equals(value.getBaseAttributeValue())) {
                 return value;
             }
         }
