@@ -130,7 +130,7 @@ public class AttributeDependency extends Persistable {
     public boolean addDependencyValues(Map<String, String> values) {
         boolean accurateImport = true;
         for (Map.Entry entry : values.entrySet()) {
-           if(!addDependencyValue(entry.getKey().toString(), entry.getValue().toString())) {
+           if (!addDependencyValue(entry.getKey().toString(), entry.getValue().toString())) {
                accurateImport = false;
            }
         }
