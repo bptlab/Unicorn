@@ -104,7 +104,7 @@ public final class JsonExporter {
             writer.append("\"timeStampName\" : \"" + eventType.getTimestampName() + "\"},");
             writer.append("\"eventCount\" : " + eventCount + ",");
             writer.append("\"scaleFactor\" : " + scaleFactor + ",");
-            writer.append("\"timestamp\" : " + timestamp + ",");
+            writer.append("\"timestamp\" : \"" + timestamp + "\",");
 
             // values
             writer.append("\"values\" : [");

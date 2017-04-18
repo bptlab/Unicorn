@@ -109,7 +109,7 @@ public class GeneratePanel extends Panel {
         importForm = new Form("importForm") {
             @Override
             public void onSubmit() {
-
+                // this is completely handled in the import button that submits the form
             }
         };
         layoutForm.add(importForm);
@@ -265,7 +265,7 @@ public class GeneratePanel extends Panel {
         listContainer.setOutputMarkupId(true);
 
         eventTypeDropDown = new DropDownChoice<>("eventTypeField",
-                new PropertyModel<EapEventType>( this, "selectedEventType" ), eventTypes);
+                new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
         eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -378,7 +378,7 @@ public class GeneratePanel extends Panel {
                     return;
                 }
 
-                eventCountField.getModel().setObject((int) valueMap.get("eventCount"));
+                eventCountField.setModelObject((int) valueMap.get("eventCount"));
                 eventCountField.clearInput();
                 target.add(eventCountField);
 
@@ -386,11 +386,11 @@ public class GeneratePanel extends Panel {
                 scaleFactorField.clearInput();
                 target.add(scaleFactorField);
 
-                timestampField.getModel().setObject((String) valueMap.get("timestamp"));
+                timestampField.setModelObject((String) valueMap.get("timestamp"));
                 timestampField.clearInput();
                 target.add(timestampField);
 
-                eventTypeDropDown.getModel().setObject((EapEventType) valueMap.get("eventType"));
+                eventTypeDropDown.setModelObject((EapEventType) valueMap.get("eventType"));
                 eventTypeDropDown.clearInput();
                 target.add(eventTypeDropDown);
 
