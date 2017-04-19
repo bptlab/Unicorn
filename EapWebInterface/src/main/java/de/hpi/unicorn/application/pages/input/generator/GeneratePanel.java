@@ -266,7 +266,7 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        eventTypeDropDown = new DropDownChoice<EapEventType>("eventTypeField",
+        eventTypeDropDown = new DropDownChoice<>("eventTypeField",
                 new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
         eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
             @Override
@@ -395,7 +395,7 @@ public class GeneratePanel extends Panel {
                 }
 
                 EapEventType newEventType = (EapEventType) valueMap.get("eventType");
-                if(selectedEventType.getID() != newEventType.getID()) {
+                if (selectedEventType.getID() != newEventType.getID()) {
                     GeneratePanel.this.page.getFeedbackPanel().error("Please select the correct event type.");
                     target.add(GeneratePanel.this.page.getFeedbackPanel());
                     return;
