@@ -96,6 +96,46 @@ public final class JsonImporter {
     }
 
     /**
+     * Parse a given Json string to objects that can be used to import the values specified in json.
+     * Used to import input field values.
+     *
+     * @param valuesString json to be parsed
+     * @return map of objects to use imported values
+     */
+    public static Map<Object, Object> generateValuesFromString(String valuesString) {
+        Map<Object, Object> result = new HashMap<>();
+        try {
+            JSONObject eventTypeValueJson = (new JSONObject(valuesString)).getJSONObject("eventTypeValues");
+            JSONObject eventTypeJson = eventTypeValueJson.getJSONObject("eventType");
+            // check if corresponding event type exists
+            EapEventType eventType = EapEventType.findByTypeName(eventTypeJson.getString("name"));
+            if (eventType == null || !eventType.getTimestampName().equals(eventTypeJson.getString("timeStampName"))) {
+                return null;
+            }
+            result.put("eventType", eventType);
+            result.put("eventCount", eventTypeValueJson.getInt("eventCount"));
+            result.put("scaleFactor", eventTypeValueJson.getInt("scaleFactor"));
+            result.put("timestamp", eventTypeValueJson.getString("timestamp"));
+            Map<TypeTreeNode, String> values = new HashMap<>();
+            JSONArray valuesJson = eventTypeValueJson.getJSONArray("values");
+            for (int i = 0; i < valuesJson.length(); i++) {
+                JSONObject valuePair = valuesJson.getJSONObject(i);
+                JSONObject attributeJson = valuePair.getJSONObject("attribute");
+                TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
+                if (attribute == null) {
+                    return null;
+                }
+                values.put(attribute, valuePair.getString("value"));
+            }
+            result.put("values", values);
+        } catch (Exception e) {
+            logger.warn("ImportException", e);
+            return null;
+        }
+        return result;
+    }
+
+    /**
      * Build a <String, String> Map containing the values for new AttributeValueDependencies.
      *
      * @param jsonValues that need to be parsed
