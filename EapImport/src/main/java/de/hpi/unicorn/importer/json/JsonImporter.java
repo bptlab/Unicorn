@@ -129,7 +129,6 @@ public final class JsonImporter {
             }
             result.put("values", values);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.warn("ImportException", e);
             return null;
         }

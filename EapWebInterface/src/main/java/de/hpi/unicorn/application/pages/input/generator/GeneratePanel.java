@@ -32,7 +32,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +60,7 @@ public class GeneratePanel extends Panel {
     private static final Integer DEFAULT_EVENTCOUNT = 10;
     private static final Integer DEFAULT_SCALEFACTOR = 10000;
     private static final Integer MAXIMUM_EVENTCOUNT = 100;
+    private static final String AJAX_BEHAVIOR = "change";
     private Integer eventCount = DEFAULT_EVENTCOUNT;
     private Integer scaleFactor = DEFAULT_SCALEFACTOR;
     private String eventTimestamps;
@@ -139,8 +139,8 @@ public class GeneratePanel extends Panel {
     private void addEventCountField() {
         eventCountField = new TextField<>("eventCountField", new PropertyModel<Integer>(this, "eventCount"));
         eventCountField.setRequired(true);
-        eventCountField.add(new RangeValidator<Integer>(1, MAXIMUM_EVENTCOUNT));
-        eventCountField.add(new AjaxFormComponentUpdatingBehavior("change") {
+        eventCountField.add(new RangeValidator<>(1, MAXIMUM_EVENTCOUNT));
+        eventCountField.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
             @Override
             public void onUpdate(AjaxRequestTarget target) {
                 target.add(eventCountField);
@@ -156,7 +156,7 @@ public class GeneratePanel extends Panel {
     private void addScaleFactorField() {
         scaleFactorField = new TextField<>("scaleFactorField", new PropertyModel<Integer>(this, "scaleFactor"));
         scaleFactorField.setRequired(true);
-        scaleFactorField.add(new AjaxFormComponentUpdatingBehavior("change") {
+        scaleFactorField.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
             @Override
             public void onUpdate(AjaxRequestTarget target) {
                 target.add(scaleFactorField);
@@ -171,9 +171,9 @@ public class GeneratePanel extends Panel {
      */
     private void addTimestampField() {
         timestampField = new TextField<>("timestampField", new PropertyModel<String>(this, "eventTimestamps"));
-        timestampField.setLabel(new Model<String>("Timestamp"));
+        timestampField.setLabel(new Model<>("Timestamp"));
         timestampField.add(new DateRangeValidator());
-        timestampField.add(new AjaxFormComponentUpdatingBehavior("change") {
+        timestampField.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
             @Override
             public void onUpdate(AjaxRequestTarget target) {
                 target.add(timestampField);
@@ -228,8 +228,8 @@ public class GeneratePanel extends Panel {
 
                 final TextField<String> inputField = new TextField<>("attributeInput", attributeInputModel);
                 inputField.add(attributeInput.getAttributeInputValidator());
-                inputField.setLabel(new Model<String>(attribute.getName()));
-                inputField.add(new AjaxFormComponentUpdatingBehavior("change") {
+                inputField.setLabel(new Model<>(attribute.getName()));
+                inputField.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
                     @Override
                     public void onUpdate(AjaxRequestTarget target) {
                         target.add(inputField);
@@ -244,7 +244,7 @@ public class GeneratePanel extends Panel {
                         "attributeInputMethodSelection",
                         new PropertyModel<AttributeInput.ProbabilityDistributionEnum>(attributeInput, "selectedMethod"),
                         attributeInput.getAvailableMethods());
-                methodDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+                methodDropDown.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
                     @Override
                     protected void onUpdate(AjaxRequestTarget target) {
                         attributeInputDescriptionLabel.detachModels();
@@ -266,9 +266,9 @@ public class GeneratePanel extends Panel {
         layoutForm.add(listContainer);
         listContainer.setOutputMarkupId(true);
 
-        eventTypeDropDown = new DropDownChoice<>("eventTypeField",
+        eventTypeDropDown = new DropDownChoice<EapEventType>("eventTypeField",
                 new PropertyModel<EapEventType>(this, "selectedEventType"), eventTypes);
-        eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        eventTypeDropDown.add(new AjaxFormComponentUpdatingBehavior(AJAX_BEHAVIOR) {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 if (selectedEventType != null) {
@@ -279,6 +279,7 @@ public class GeneratePanel extends Panel {
                 }
             }
         });
+        eventTypeDropDown.setOutputMarkupId(true);
         layoutForm.add(eventTypeDropDown);
     }
 
@@ -290,7 +291,7 @@ public class GeneratePanel extends Panel {
      */
     private StringResourceModel getAttributeInputDescription(AttributeInput attributeInput) {
         StringResourceModel inputDescriptionModel = new StringResourceModel("description.${type}", this,
-                new Model<TypeTreeNode>(attributeInput.getAttribute()));
+                new Model<>(attributeInput.getAttribute()));
         if (attributeInput.hasDifferentMethods()) {
             IModel<AttributeInput> attributeInputIModel = new Model<>(attributeInput);
             inputDescriptionModel = new StringResourceModel("description.${attributeType}.${selectedMethod}", this,
@@ -309,7 +310,7 @@ public class GeneratePanel extends Panel {
     }
 
     /**
-     * Add a button to export the input values given via input fields
+     * Add a button to export the input values given via input fields.
      */
     private void addExportValuesButton() {
         final AjaxLink exportButton = new AjaxLink<Void>("exportValuesButton") {
@@ -393,6 +394,14 @@ public class GeneratePanel extends Panel {
                     return;
                 }
 
+                EapEventType newEventType = (EapEventType) valueMap.get("eventType");
+                if(selectedEventType.getID() != newEventType.getID()) {
+                    GeneratePanel.this.page.getFeedbackPanel().error("Please select the correct event type.");
+                    target.add(GeneratePanel.this.page.getFeedbackPanel());
+                    return;
+                }
+                eventTypeDropDown.setModelObject(newEventType);
+
                 eventCountField.setModelObject((int) valueMap.get("eventCount"));
                 eventCountField.clearInput();
                 target.add(eventCountField);
@@ -404,10 +413,6 @@ public class GeneratePanel extends Panel {
                 timestampField.setModelObject((String) valueMap.get("timestamp"));
                 timestampField.clearInput();
                 target.add(timestampField);
-
-                eventTypeDropDown.setModelObject((EapEventType) valueMap.get("eventType"));
-                eventTypeDropDown.clearInput();
-                target.add(eventTypeDropDown);
 
                 Map<TypeTreeNode, String> values = (Map<TypeTreeNode, String>) valueMap.get("values");
                 attributeInputs.clear();

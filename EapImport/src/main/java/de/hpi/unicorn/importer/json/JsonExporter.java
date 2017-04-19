@@ -91,7 +91,7 @@ public final class JsonExporter {
     }
 
     /**
-     * Generate a json including:
+     * Generate a json including all inputs.
      *
      * @param eventType selected event types
      * @param inputValues values of the input fields
