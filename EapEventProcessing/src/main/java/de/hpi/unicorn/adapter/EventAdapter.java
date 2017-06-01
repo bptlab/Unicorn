@@ -56,7 +56,7 @@ public abstract class EventAdapter {
 		return false;
 	}
 
-	abstract void trigger();
+	public abstract void trigger();
 	// abstract void registerEventType();
 
 }
