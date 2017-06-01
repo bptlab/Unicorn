@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hpi.unicorn.adapter.tfl.TflAdapter;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -49,6 +50,10 @@ public final class AdapterManager {
 		switch (type) {
 			case NokiaHere:
 				adapter = new NokiaHereAdapter(name);
+				this.adapters.put(name, adapter);
+				return adapter;
+			case TransportForLondon:
+				adapter = new TflAdapter(name);
 				this.adapters.put(name, adapter);
 				return adapter;
 			default:
@@ -132,6 +137,22 @@ public final class AdapterManager {
 		stop("AMS-Calais");
 		remove("AMS-Calais");
 		System.out.println("Removed job 'AMS-Calais'");
+	}
+
+	public void startTflAdapter(String... modeNames) {
+		String adapterName = "TransportForLondon";
+		TflAdapter adapter = (TflAdapter) create(adapterName, AdapterType.TransportForLondon);
+
+		if (adapter != null) {
+			adapter.setModes(modeNames);
+			start(adapterName);
+		}
+	}
+
+	public void stopAndRemoveTflAdapter() {
+		String adapterName = "TransportForLondon";
+		stop(adapterName);
+		remove(adapterName);
 	}
 
 }

@@ -31,7 +31,7 @@ public class AdapterPage extends AbstractEapPage {
 			protected void onSubmit() {
 			}
 		};
-		form.add(new AjaxButton("start") {
+		form.add(new AjaxButton("startNokiaHere") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -43,13 +43,37 @@ public class AdapterPage extends AbstractEapPage {
 			}
 		});
 
-		form.add(new AjaxButton("stop") {
+		form.add(new AjaxButton("stopNokiaHere") {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void onSubmit(final AjaxRequestTarget target, final Form form) {
 				super.onSubmit(target, form);
 				AdapterManager.getInstance().stopAndRemoveNokiaHereAdapterForDemoRoute();
+				AdapterPage.this.getFeedbackPanel().success("Adapter stopped!");
+				target.add(AdapterPage.this.getFeedbackPanel());
+			}
+		});
+
+		form.add(new AjaxButton("startTfl") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit(final AjaxRequestTarget target, final Form form) {
+				super.onSubmit(target, form);
+				AdapterManager.getInstance().startTflAdapter("tube");
+				AdapterPage.this.getFeedbackPanel().success("Adapter started!");
+				target.add(AdapterPage.this.getFeedbackPanel());
+			}
+		});
+
+		form.add(new AjaxButton("stopTfl") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit(final AjaxRequestTarget target, final Form form) {
+				super.onSubmit(target, form);
+				AdapterManager.getInstance().stopAndRemoveTflAdapter();
 				AdapterPage.this.getFeedbackPanel().success("Adapter stopped!");
 				target.add(AdapterPage.this.getFeedbackPanel());
 			}

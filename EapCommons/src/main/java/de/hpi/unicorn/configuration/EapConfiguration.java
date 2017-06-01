@@ -32,6 +32,8 @@ public class EapConfiguration {
 	public static int defaultInterval = 900; // in seconds
 	public static String nokiaHereAppID = "";
 	public static String nokiaHereAppCode = "";
+	public static String tflAppId = "";
+	public static String tflAppCode = "";
 	public static String eMailUser = "";
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
@@ -59,6 +61,8 @@ public class EapConfiguration {
 		defaultInterval = Integer.valueOf(props.getProperty("de.hpi.unicorn.adapter.defaultInterval", "900"));
 		nokiaHereAppID = props.getProperty("de.hpi.unicorn.adapter.nokiaHereAppID", "");
 		nokiaHereAppCode = props.getProperty("de.hpi.unicorn.adapter.nokiaHereAppCode", "");
+		tflAppId = props.getProperty("de.hpi.unicorn.adapter.tflAppId", "");
+		tflAppCode = props.getProperty("de.hpi.unicorn.adapter.tflAppCode", "");
 		eMailUser = props.getProperty("de.hpi.unicorn.email.user", "YOUR GMAIL ADDRESS HERE");
 		eMailPassword = props.getProperty("de.hpi.unicorn.email.password", "YOUR PASSWORD HERE");
 		triplestoreLocation = props.getProperty("de.hpi.unicorn.semantic.Triplestore.location", "./Triplestore");

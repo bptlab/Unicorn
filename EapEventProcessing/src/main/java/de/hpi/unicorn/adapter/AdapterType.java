@@ -8,5 +8,6 @@
 package de.hpi.unicorn.adapter;
 
 public enum AdapterType {
-	NokiaHere
+	NokiaHere,
+	TransportForLondon
 }
