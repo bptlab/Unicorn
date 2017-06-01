@@ -39,3 +39,5 @@ epp.log
 .settings
 .idea/*
 unicorn.properties
+
+\.DS_Store
