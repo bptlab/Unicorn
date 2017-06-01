@@ -77,6 +77,7 @@ class TflArrayDifference {
 				}
 
 				changedEntries.add(new TflChangedEntry(oldObject, newObject));
+				break;
 			}
 		}
 	}
