@@ -265,6 +265,16 @@ public abstract class AttributeInput implements Serializable {
 		return stringify.toString();
 	}
 
+	public String toJson() {
+		StringBuilder jsonBuilder = new StringBuilder("{");
+		jsonBuilder.append("{\"attribute\" : {")
+				.append("\"name\" : \"" + this.getAttributeName() + "\",")
+				.append("\"type\" : \"" + this.getAttributeType() + "\"},")
+				.append("\"probabilityMethod\" . \"" + this.getSelectedMethod() + "\"},")
+				.append("\"value\" : \"" + this.getInput() + "\"}");
+		return jsonBuilder.toString();
+	}
+
 	/**
 	 * Checks whether the AttributeInput-Instance provides different methods that can be selected for computation.
 	 *
