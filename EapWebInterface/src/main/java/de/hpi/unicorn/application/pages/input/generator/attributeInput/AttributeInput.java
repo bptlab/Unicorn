@@ -8,10 +8,12 @@
 package de.hpi.unicorn.application.pages.input.generator.attributeInput;
 
 import de.hpi.unicorn.application.pages.input.generator.validation.AttributeValidator;
+import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.log4j.Logger;
 import org.apache.wicket.validation.IValidator;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -270,9 +272,27 @@ public abstract class AttributeInput implements Serializable {
 		jsonBuilder.append("{\"attribute\" : {")
 				.append("\"name\" : \"" + this.getAttributeName() + "\",")
 				.append("\"type\" : \"" + this.getAttributeType() + "\"},")
-				.append("\"probabilityMethod\" . \"" + this.getSelectedMethod() + "\"},")
 				.append("\"value\" : \"" + this.getInput() + "\"}");
+		if (this.hasDifferentMethods()) {
+			jsonBuilder.append("\"probabilityMethod\" . \"" + this.getSelectedMethod() + "\"},");
+		}
 		return jsonBuilder.toString();
+	}
+
+	public static AttributeInput fromJson(EapEventType eventType, JSONObject inputJson) {
+		try {
+			JSONObject attributeJson = inputJson.getJSONObject("attribute");
+			TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
+			AttributeInput importedInput = AttributeInput.attributeInputFactory(attribute, inputJson.getString("value"));
+			if (inputJson.has("probabilityMethod")) {
+				importedInput.setSelectedMethod(ProbabilityDistributionEnum.valueOf(inputJson.getString("probabilityMethod")));
+			}
+			return importedInput;
+		}
+		catch (org.json.JSONException e) {
+			logger.warn(e);
+		}
+		return null;
 	}
 
 	/**
