@@ -48,6 +48,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.apache.wicket.validation.validator.RangeValidator;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * {@link Panel}, which allows the generation of events.
@@ -320,12 +322,12 @@ public class GeneratePanel extends Panel {
                 final AJAXDownload jsonDownload = new AJAXDownload() {
                     @Override
                     protected IResourceStream getResourceStream() {
-                        Map<TypeTreeNode, String> inputsForExporter = new HashMap<>();
+                        JSONArray valuesForExport = new JSONArray();
                         for (AttributeInput input : attributeInputs) {
-                            inputsForExporter.put(input.getAttribute(), input.getInput());
+                            valuesForExport.put(input.toJson());
                         }
                         final File json = JsonExporter
-                                .generateExportFileWithValues(selectedEventType, inputsForExporter, eventCount, scaleFactor, eventTimestamps);
+                                .generateExportFileWithValues(selectedEventType, valuesForExport, eventCount, scaleFactor, eventTimestamps);
                         if (json == null) {
                             return null;
                         }
@@ -414,12 +416,15 @@ public class GeneratePanel extends Panel {
                 timestampField.clearInput();
                 target.add(timestampField);
 
-                Map<TypeTreeNode, String> values = (Map<TypeTreeNode, String>) valueMap.get("values");
+                JSONArray values = (JSONArray) valueMap.get("values");
                 attributeInputs.clear();
-                for (Map.Entry entry : values.entrySet()) {
-                    AttributeInput newInput = AttributeInput.attributeInputFactory((TypeTreeNode) entry.getKey());
-                    newInput.setInput((String) entry.getValue());
-                    attributeInputs.add(newInput);
+                for (int i = 0; i < values.length(); i++) {
+                    try {
+                        attributeInputs.add(AttributeInput.fromJson(newEventType, values.getJSONObject(i)));
+                    }
+                    catch (JSONException e) {
+                        logger.warn("Could not import attribute input", e);
+                    }
                 }
                 listview.removeAll();
                 listview.modelChanged();
