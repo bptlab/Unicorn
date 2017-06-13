@@ -13,6 +13,7 @@ import de.hpi.unicorn.event.attribute.AttributeTypeEnum;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import org.apache.log4j.Logger;
 import org.apache.wicket.validation.IValidator;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -267,16 +268,24 @@ public abstract class AttributeInput implements Serializable {
 		return stringify.toString();
 	}
 
-	public String toJson() {
-		StringBuilder jsonBuilder = new StringBuilder("{");
-		jsonBuilder.append("{\"attribute\" : {")
-				.append("\"name\" : \"" + this.getAttributeName() + "\",")
-				.append("\"type\" : \"" + this.getAttributeType() + "\"},")
-				.append("\"value\" : \"" + this.getInput() + "\"}");
-		if (this.hasDifferentMethods()) {
-			jsonBuilder.append("\"probabilityMethod\" . \"" + this.getSelectedMethod() + "\"},");
+	public JSONObject toJson() {
+		try {
+			JSONObject attributeInputJson = new JSONObject();
+			JSONObject attributeJson = new JSONObject();
+			attributeJson.put("name", this.getAttributeName());
+			attributeJson.put("type", this.getAttributeType());
+			attributeInputJson.put("attribute", attributeJson);
+
+			attributeInputJson.put("value", this.getInput());
+			if (this.hasDifferentMethods()) {
+				attributeInputJson.put("probabilityMethod", this.getSelectedMethod().toString());
+			}
+			return attributeInputJson;
 		}
-		return jsonBuilder.toString();
+		catch (JSONException e) {
+			logger.warn(e);
+		}
+		return null;
 	}
 
 	public static AttributeInput fromJson(EapEventType eventType, JSONObject inputJson) {
@@ -289,7 +298,7 @@ public abstract class AttributeInput implements Serializable {
 			}
 			return importedInput;
 		}
-		catch (org.json.JSONException e) {
+		catch (JSONException e) {
 			logger.warn(e);
 		}
 		return null;
