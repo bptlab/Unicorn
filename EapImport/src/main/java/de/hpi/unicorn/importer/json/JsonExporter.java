@@ -14,6 +14,7 @@ import de.hpi.unicorn.event.EapEventType;
 import de.hpi.unicorn.event.attribute.TypeTreeNode;
 import de.hpi.unicorn.utils.TempFolderUtil;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -101,7 +102,7 @@ public final class JsonExporter {
      * @return json file including all information of the Input
      */
     public static File generateExportFileWithValues(
-            EapEventType eventType, Map<TypeTreeNode, String> inputValues, int eventCount, int scaleFactor, String timestamp) {
+            EapEventType eventType, JSONArray inputValues, int eventCount, int scaleFactor, String timestamp) {
         // create file
         if (eventType.isHierarchical()) {
             return null;
@@ -118,20 +119,9 @@ public final class JsonExporter {
             writer.append("\"timestamp\" : \"" + timestamp + "\",");
 
             // values
-            writer.append("\"values\" : [");
-            TypeTreeNode[] nodes = {};
-            TypeTreeNode[] attributes = inputValues.keySet().toArray(nodes);
-            for (int i = 0; i < inputValues.size(); i++) {
-                TypeTreeNode node = attributes[i];
-                writer.append("{\"attribute\" : {");
-                writer.append("\"name\" : \"" + node.getName() + "\",");
-                writer.append("\"type\" : \"" + node.getType() + "\"},");
-                writer.append("\"value\" : \"" + inputValues.get(node) + "\"}");
-                if (i != inputValues.size() - 1) {
-                    writer.append(",");
-                }
-            }
-            writer.append("]}}");
+            writer.append("\"values\" : ");
+            writer.append(inputValues.toString());
+            writer.append("}}");
         } catch (final IOException e) {
             logger.warn("IOException in JsonExporter", e);
             return null;
