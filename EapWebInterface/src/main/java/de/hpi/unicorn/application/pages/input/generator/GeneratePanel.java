@@ -207,6 +207,9 @@ public class GeneratePanel extends Panel {
                 for (AttributeInput input : attributeInputs) {
                     if (input.getAttribute() == attributeInput.getAttribute()) {
                         attributeInput.setInput(input.getInput());
+                        if (input.hasDifferentMethods()) {
+                            attributeInput.setSelectedMethod(input.getSelectedMethod());
+                        }
                     }
                 }
                 item.add(new Label("attribute", attributeInput.getAttributeName()));

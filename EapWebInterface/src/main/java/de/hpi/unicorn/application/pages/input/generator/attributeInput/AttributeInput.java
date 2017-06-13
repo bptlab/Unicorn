@@ -294,7 +294,7 @@ public abstract class AttributeInput implements Serializable {
 			TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
 			AttributeInput importedInput = AttributeInput.attributeInputFactory(attribute, inputJson.getString("value"));
 			if (inputJson.has("probabilityMethod")) {
-				importedInput.setSelectedMethod(ProbabilityDistributionEnum.valueOf(inputJson.getString("probabilityMethod")));
+				importedInput.setSelectedMethod(ProbabilityDistributionEnum.valueOf(inputJson.getString("probabilityMethod").toUpperCase()));
 			}
 			return importedInput;
 		}
