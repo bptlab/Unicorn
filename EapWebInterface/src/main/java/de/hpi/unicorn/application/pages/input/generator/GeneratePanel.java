@@ -306,9 +306,7 @@ public class GeneratePanel extends Panel {
         }
         AttributeInput newAttributeInput = AttributeInput.attributeInputFactory(attribute);
         attributeInputs.add(newAttributeInput);
-        logger.warn("Creating new attributeInput Object for " + attribute.getName() + ". This normally shouldn't be needed.");
         return  newAttributeInput;
-
     }
 
     /**
@@ -438,7 +436,13 @@ public class GeneratePanel extends Panel {
                 scaleFactorField.clearInput();
                 target.add(scaleFactorField);
 
-                timestampField.setModelObject((String) valueMap.get("timestamp"));
+                String importedTimeStamp = (String) valueMap.get("timestamp");
+                if (!"null".equals(importedTimeStamp)) {
+                    timestampField.setModelObject(importedTimeStamp);
+                }
+                else {
+                    timestampField.setModelObject("");
+                }
                 timestampField.clearInput();
                 target.add(timestampField);
 
