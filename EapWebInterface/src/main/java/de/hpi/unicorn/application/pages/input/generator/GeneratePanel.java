@@ -36,7 +36,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -203,21 +202,14 @@ public class GeneratePanel extends Panel {
             @Override
             protected void populateItem(ListItem item) {
                 final TypeTreeNode attribute = (TypeTreeNode) item.getModelObject();
-                final AttributeInput attributeInput = AttributeInput.attributeInputFactory(attribute);
-                for (AttributeInput input : attributeInputs) {
-                    if (input.getAttribute() == attributeInput.getAttribute()) {
-                        attributeInput.setInput(input.getInput());
-                        if (input.hasDifferentMethods()) {
-                            attributeInput.setSelectedMethod(input.getSelectedMethod());
-                        }
-                    }
-                }
+                final AttributeInput attributeInput = getAttributeInput(attribute);
+
                 item.add(new Label("attribute", attributeInput.getAttributeName()));
                 item.add(new Label("attributeType", attributeInput.getAttributeType().getName()));
                 final Label attributeInputDescriptionLabel = new Label("attributeInputDescription", getAttributeInputDescription(attributeInput));
                 attributeInputDescriptionLabel.setOutputMarkupId(true);
                 item.add(attributeInputDescriptionLabel);
-                attributeInputs.add(attributeInput);
+
                 IModel<String> attributeInputModel = new Model<String>() {
                     @Override
                     public String getObject() {
@@ -278,7 +270,7 @@ public class GeneratePanel extends Panel {
             protected void onUpdate(AjaxRequestTarget target) {
                 if (selectedEventType != null) {
                     attributeDependencyManager = new AttributeDependencyManager(selectedEventType);
-                    attributeInputs.clear();
+                    setNewAttributeInputs(selectedEventType);
                     listview.removeAll();
                     target.add(listContainer);
                 }
@@ -286,6 +278,37 @@ public class GeneratePanel extends Panel {
         });
         eventTypeDropDown.setOutputMarkupId(true);
         layoutForm.add(eventTypeDropDown);
+    }
+
+    /**
+     * Create new attribute input objects for the attributes of the given event type.
+     *
+     * @param newEventType (EapEventType) the inputs should be created for
+     */
+    private void setNewAttributeInputs(EapEventType newEventType) {
+        attributeInputs.clear();
+        for (TypeTreeNode attribute : newEventType.getValueTypes()) {
+            attributeInputs.add(AttributeInput.attributeInputFactory(attribute));
+        }
+    }
+
+    /**
+     * Searches for the attribute input object fitting to the given attribute.
+     *
+     * @param attribute (TypeTreeNode) the attribute input should be for
+     * @return AttributeInput fitting to the attribute (might be created newly, in case it couldn't be found in existing inputs.
+     */
+    private AttributeInput getAttributeInput(TypeTreeNode attribute) {
+        for (AttributeInput input : attributeInputs) {
+            if (input.getAttribute() == attribute) {
+                return input;
+            }
+        }
+        AttributeInput newAttributeInput = AttributeInput.attributeInputFactory(attribute);
+        attributeInputs.add(newAttributeInput);
+        logger.warn("Creating new attributeInput Object for " + attribute.getName() + ". This normally shouldn't be needed.");
+        return  newAttributeInput;
+
     }
 
     /**
