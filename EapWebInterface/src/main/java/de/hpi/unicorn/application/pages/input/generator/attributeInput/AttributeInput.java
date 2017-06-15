@@ -371,7 +371,7 @@ public abstract class AttributeInput implements Serializable {
 		}
 
 		/**
-		 * Returns a string naming and representing the enum itself
+		 * Returns a string naming and representing the enum itself.
 		 * @return a string
 		 */
 		static String getEnumName() {
