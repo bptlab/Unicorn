@@ -268,6 +268,11 @@ public abstract class AttributeInput implements Serializable {
 		return stringify.toString();
 	}
 
+	/**
+	 * Parses the attribute input to a json object, which can be used to duplicate the attribute input object by importing this object.
+	 *
+	 * @return a json object
+	 */
 	public JSONObject toJson() {
 		try {
 			JSONObject attributeInputJson = new JSONObject();
@@ -278,7 +283,7 @@ public abstract class AttributeInput implements Serializable {
 
 			attributeInputJson.put("value", this.getInput());
 			if (this.hasDifferentMethods()) {
-				attributeInputJson.put("probabilityMethod", this.getSelectedMethod().toString());
+				attributeInputJson.put(ProbabilityDistributionEnum.getEnumName(), this.getSelectedMethod().toString());
 			}
 			return attributeInputJson;
 		}
@@ -288,12 +293,19 @@ public abstract class AttributeInput implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Creates an attribute input object based on the given json object.
+	 *
+	 * @param eventType the attribut input should be for
+	 * @param inputJson containing the information about the object to be build
+	 * @return an attribute input
+	 */
 	public static AttributeInput fromJson(EapEventType eventType, JSONObject inputJson) {
 		try {
 			JSONObject attributeJson = inputJson.getJSONObject("attribute");
 			TypeTreeNode attribute = eventType.getValueTypeTree().getAttributeByExpression(attributeJson.getString("name"));
 			AttributeInput importedInput = AttributeInput.attributeInputFactory(attribute, inputJson.getString("value"));
-			if (inputJson.has("probabilityMethod")) {
+			if (inputJson.has(ProbabilityDistributionEnum.getEnumName())) {
 				importedInput.setSelectedMethod(ProbabilityDistributionEnum.valueOf(inputJson.getString("probabilityMethod").toUpperCase()));
 			}
 			return importedInput;
@@ -356,6 +368,14 @@ public abstract class AttributeInput implements Serializable {
 		 */
 		ProbabilityDistributionEnum(final String distribution) {
 			this.distribution = distribution;
+		}
+
+		/**
+		 * Returns a string naming and representing the enum itself
+		 * @return a string
+		 */
+		static String getEnumName() {
+			return "probabilityMethod";
 		}
 
 		/**
