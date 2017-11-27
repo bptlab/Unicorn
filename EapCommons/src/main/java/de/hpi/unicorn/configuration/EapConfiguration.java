@@ -34,6 +34,8 @@ public class EapConfiguration {
 	public static String nokiaHereAppCode = "";
 	public static String tflAppId = "";
 	public static String tflAppCode = "";
+	public static String boschIotUsername = "";
+	public static String boschIotPassword = "";
 	public static String eMailUser = "";
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
@@ -63,6 +65,8 @@ public class EapConfiguration {
 		nokiaHereAppCode = props.getProperty("de.hpi.unicorn.adapter.nokiaHereAppCode", "");
 		tflAppId = props.getProperty("de.hpi.unicorn.adapter.tflAppId", "");
 		tflAppCode = props.getProperty("de.hpi.unicorn.adapter.tflAppCode", "");
+		boschIotUsername = props.getProperty("de.hpi.unicorn.adapter.boschIotUsername", "");
+		boschIotPassword = props.getProperty("de.hpi.unicorn.adapter.boschIotPassword", "");
 		eMailUser = props.getProperty("de.hpi.unicorn.email.user", "YOUR GMAIL ADDRESS HERE");
 		eMailPassword = props.getProperty("de.hpi.unicorn.email.password", "YOUR PASSWORD HERE");
 		triplestoreLocation = props.getProperty("de.hpi.unicorn.semantic.Triplestore.location", "./Triplestore");

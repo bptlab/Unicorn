@@ -41,7 +41,7 @@ public class BoschIotAdapter extends EventAdapter {
 	private List<EapEvent> eventsToSend;
 	private JSONArray boschIotOldThings;
 
-	public BoschIotAdapter(String name) {
+	public BoschIotAdapter(String name, String... modeNames) {
 		super(name);
 
 		this.username = EapConfiguration.boschIotUsername;
