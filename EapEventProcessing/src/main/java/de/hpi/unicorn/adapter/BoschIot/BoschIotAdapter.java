@@ -108,14 +108,14 @@ public class BoschIotAdapter extends EventAdapter {
 	}
 
 	private void addThingsEvents(BoschIotArrayDifference difference) {
-		for (BoschIotChangedEntry changedEntry : difference.getChangedEntries()) {
+		for (BoschIotChangedEntry newEntry : difference.getNewEntries()) {
 			try {
 				Map<String, Serializable> eventValues = new HashMap<>();
 
-				eventValues.put("thingId", changedEntry.getNewEntry().getString("thingId"));
-                eventValues.put("policyId", changedEntry.getNewEntry().getString("policyId"));
-                eventValues.put("attributes", changedEntry.getNewEntry().getString("attributes"));
-                eventValues.put("features", changedEntry.getNewEntry().getString("features"));
+				eventValues.put("thingId", newEntry.getNewEntry().getString("thingId"));
+                eventValues.put("policyId", newEntry.getNewEntry().getString("policyId"));
+                eventValues.put("attributes", newEntry.getNewEntry().getString("attributes"));
+                eventValues.put("features", newEntry.getNewEntry().getString("features"));
 
 				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
 
