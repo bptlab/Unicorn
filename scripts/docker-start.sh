@@ -1,5 +1,19 @@
 #!/bin/bash
-envsubst < /usr/local/tomcat/conf/server-template.xml > /usr/local/tomcat/conf/server.xml
-export CATALINA_OPTS="-Ddb.host=database -Ddb.port=3306 -Ddb.user=${MYSQL_USER} -Ddb.password=${MYSQL_ROOT_PASSWORD}"
-echo CATALINA_OPTS
+
+if [ -z ${UNICORN_DB_PORT+x} ]; then
+    export UNICORN_DB_PORT=3306
+fi
+
+if [ -z ${UNICORN_DB_DEV_DB+x} ]; then
+    export UNICORN_DB_DEV_DB=eap_development
+fi
+
+if [ -z ${UNICORN_DB_TEST_DB+x} ]; then
+    export UNICORN_DB_TEST_DB=eap_testing
+fi
+
+envsubst < /usr/local/tomcat/conf/unicorn.properties.tpl > /usr/local/tomcat/conf/unicorn.properties
+# TODO why this?!
+#envsubst < /usr/local/tomcat/conf/server-template.xml > /usr/local/tomcat/conf/server.xml
+export CATALINA_OPTS="-Ddb.host=$UNICORN_DB_HOST -Ddb.port=$UNICORN_DB_PORT -Ddb.user=$UNICORN_DB_USER -Ddb.password=$UNICORN_DB_PASSWORD"
 catalina.sh run
