@@ -36,6 +36,7 @@ public class BoschIotAdapter extends EventAdapter {
 
 	private String username;
 	private String password;
+	private String apikey;
 	private SimpleDateFormat biotDateFormat;
 	private EapEventType thingAddedEventType;
 	private List<EapEvent> eventsToSend;
@@ -46,6 +47,7 @@ public class BoschIotAdapter extends EventAdapter {
 
 		this.username = EapConfiguration.boschIotUsername;
 		this.password = EapConfiguration.boschIotPassword;
+		this.apikey = EapConfiguration.boschIotApiKey;
 		eventsToSend = new ArrayList<>();
         boschIotOldThings = new JSONArray();
 
@@ -183,7 +185,7 @@ public class BoschIotAdapter extends EventAdapter {
 		try {
 			final HttpGet request = new HttpGet(url);
 			request.addHeader(BasicScheme.authenticate(credentials, "UTF-8", false));
-			request.setHeader("x-cr-api-token", "***REMOVED***");
+			request.setHeader("x-cr-api-token", apikey);
 			logger.info("request: "+request);
 			HttpResponse httpResponse = client.execute(request);
 			int tries = 0;

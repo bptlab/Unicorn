@@ -36,6 +36,7 @@ public class EapConfiguration {
 	public static String tflAppCode = "";
 	public static String boschIotUsername = "";
 	public static String boschIotPassword = "";
+	public static String boschIotApiKey = "";
 	public static String eMailUser = "";
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
@@ -67,6 +68,7 @@ public class EapConfiguration {
 		tflAppCode = props.getProperty("de.hpi.unicorn.adapter.tflAppCode", "");
 		boschIotUsername = props.getProperty("de.hpi.unicorn.adapter.boschIotUsername", "");
 		boschIotPassword = props.getProperty("de.hpi.unicorn.adapter.boschIotPassword", "");
+		boschIotApiKey = props.getProperty("de.hpi.unicorn.adapter.boschIotApiKey", "");
 		eMailUser = props.getProperty("de.hpi.unicorn.email.user", "YOUR GMAIL ADDRESS HERE");
 		eMailPassword = props.getProperty("de.hpi.unicorn.email.password", "YOUR PASSWORD HERE");
 		triplestoreLocation = props.getProperty("de.hpi.unicorn.semantic.Triplestore.location", "./Triplestore");
