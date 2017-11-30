@@ -104,7 +104,7 @@ public class BoschIotAdapter extends EventAdapter {
 							return false;
 						}
 					});
-
+			boschIotOldThings = newResponse;
 			addThingsEvents(diff);
 		} catch (Exception e) {
 			logger.error("cannot parse things object", e);
@@ -121,6 +121,39 @@ public class BoschIotAdapter extends EventAdapter {
                 eventValues.put("attributes", newEntry.getString("attributes"));
                 eventValues.put("features", newEntry.getString("features"));
 
+                logger.info("New Thing Added!");
+				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
+
+			} catch (Exception e) {
+				logger.error("cannot parse Bosch iot api difference", e);
+			}
+		}
+		for (BoschIotChangedEntry changedEntry : difference.getChangedEntries()) {
+			try {
+				Map<String, Serializable> eventValues = new HashMap<>();
+
+				eventValues.put("thingId", changedEntry.getNewEntry().getString("thingId"));
+				eventValues.put("policyId", changedEntry.getNewEntry().getString("policyId"));
+				eventValues.put("attributes", changedEntry.getNewEntry().getString("attributes"));
+				eventValues.put("features", changedEntry.getNewEntry().getString("features"));
+
+				logger.info("Thing Modified!");
+				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
+
+			} catch (Exception e) {
+				logger.error("cannot parse Bosch iot api difference", e);
+			}
+		}
+		for (JSONObject deletedEntry : difference.getDeletedEntries()) {
+			try {
+				Map<String, Serializable> eventValues = new HashMap<>();
+
+				eventValues.put("thingId", deletedEntry.getString("thingId"));
+				eventValues.put("policyId", deletedEntry.getString("policyId"));
+				eventValues.put("attributes", deletedEntry.getString("attributes"));
+				eventValues.put("features", deletedEntry.getString("features"));
+
+				logger.info("Thing Deleted!");
 				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
 
 			} catch (Exception e) {
