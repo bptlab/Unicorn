@@ -57,6 +57,10 @@ public final class AdapterManager {
 				adapter = new TflAdapter(name);
 				this.adapters.put(name, adapter);
 				return adapter;
+			case BoschIot:
+				adapter = new BoschIotAdapter(name);
+				this.adapters.put(name, adapter);
+				return adapter;
 			default:
 				return null;
 		}
