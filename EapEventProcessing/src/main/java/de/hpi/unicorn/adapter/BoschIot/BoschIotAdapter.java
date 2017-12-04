@@ -1,5 +1,6 @@
 package de.hpi.unicorn.adapter.BoschIot;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.hpi.unicorn.adapter.EventAdapter;
 import de.hpi.unicorn.configuration.EapConfiguration;
 import de.hpi.unicorn.event.EapEvent;
@@ -23,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import com.flipkart.zjsonpatch.JsonDiff;
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class BoschIotAdapter extends EventAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(BoschIotAdapter.class);
@@ -40,7 +43,8 @@ public class BoschIotAdapter extends EventAdapter {
 	private SimpleDateFormat biotDateFormat;
 	private EapEventType thingAddedEventType;
 	private List<EapEvent> eventsToSend;
-	private JSONArray boschIotOldThings;
+	private ObjectMapper mapper;
+	private JsonNode boschIotOldThings;
 
 	public BoschIotAdapter(String name, String... modeNames) {
 		super(name);
@@ -48,8 +52,14 @@ public class BoschIotAdapter extends EventAdapter {
 		this.username = EapConfiguration.boschIotUsername;
 		this.password = EapConfiguration.boschIotPassword;
 		this.apikey = EapConfiguration.boschIotApiKey;
-		eventsToSend = new ArrayList<>();
-        boschIotOldThings = new JSONArray();
+		this.eventsToSend = new ArrayList<>();
+		this.mapper = new ObjectMapper();
+		try {
+			boschIotOldThings = mapper.readTree("{\"items\":[]}");
+		} catch (Exception e) {
+			//logger.error("cannot parse default json: ", e);
+		}
+
 
 		if (username.isEmpty() || password.isEmpty()) {
 			logger.info("Bosch iot api username and / or password not configured");
@@ -85,32 +95,38 @@ public class BoschIotAdapter extends EventAdapter {
 
 	private void calculateNewArrivals() {
 
-        JSONObject thingsResponse = getThings();
-		try {
-			JSONArray newResponse = thingsResponse.getJSONArray("items");
-			BoschIotArrayDifference diff = new BoschIotArrayDifference(boschIotOldThings, newResponse, "thingId",
-					new BoschIotPropertyCompare() {
-						@Override
-						public boolean isDifferent(JSONObject oldEntry, JSONObject newEntry) {
-							if (!oldEntry.has("attributes")
-									|| !newEntry.has("attributes")) {
-								return false;
-							}
-							try {
-								String oldManufacturer = oldEntry.getJSONObject("attributes").getString("manufacturer");
-								String newManufacturer = newEntry.getJSONObject("attributes").getString("manufacturer");
-								return !oldManufacturer.equals(newManufacturer);
-							} catch (Exception e) {
-								logger.error("cannot parse Bosch iot api difference", e);
-							}
-							return false;
-						}
-					});
-			boschIotOldThings = newResponse;
-			addThingsEvents(diff);
-		} catch (Exception e) {
-			logger.error("cannot parse things object", e);
-		}
+		JsonNode things = getThings();
+		JsonNode patch = JsonDiff.asJson(boschIotOldThings, things);
+		logger.info("Difference: " + patch.asText());
+		boschIotOldThings = things;
+
+//      JSONObject thingsResponse = getThings();
+//		try {
+//			JSONArray newResponse = thingsResponse.getJSONArray("items");
+//			BoschIotArrayDifference diff = new BoschIotArrayDifference(boschIotOldThings, newResponse, "thingId",
+//					new BoschIotPropertyCompare() {
+//						@Override
+//						public boolean isDifferent(JSONObject oldEntry, JSONObject newEntry) {
+//							if (!oldEntry.has("features")
+//									|| !newEntry.has("features")) {
+//								return false;
+//							}
+//							try {
+//								JsonNode patch = JsonDiff.asJson(JsonNode source, JsonNode target)
+//								String oldManufacturer = oldEntry.getJSONObject("attributes").getString("manufacturer");
+//								String newManufacturer = newEntry.getJSONObject("attributes").getString("manufacturer");
+//								return !oldManufacturer.equals(newManufacturer);
+//							} catch (Exception e) {
+//								logger.error("cannot parse Bosch iot api difference", e);
+//							}
+//							return false;
+//						}
+//					});
+//			boschIotOldThings = newResponse;
+//			addThingsEvents(diff);
+//		} catch (Exception e) {
+//			logger.error("cannot parse things object", e);
+//		}
 	}
 
 	private void addThingsEvents(BoschIotArrayDifference difference) {
@@ -165,7 +181,7 @@ public class BoschIotAdapter extends EventAdapter {
 	}
 
 	@NotNull
-	private JSONObject getThings() {
+	private JsonNode getThings() {
 
 	    return getFromAPI(getThingsUrl());
 	}
@@ -176,13 +192,14 @@ public class BoschIotAdapter extends EventAdapter {
 	}
 
 	@NotNull
-	private JSONObject getFromAPI(String url) {
+	private JsonNode getFromAPI(String url) {
 		final HttpClient client = new DefaultHttpClient();
         Credentials credentials = new UsernamePasswordCredentials(username, password);
 		String responseBody = "";
-		JSONObject response = new JSONObject();
+		JsonNode response = null;
 
 		try {
+
 			final HttpGet request = new HttpGet(url);
 			request.addHeader(BasicScheme.authenticate(credentials, "UTF-8", false));
 			request.setHeader("x-cr-api-token", apikey);
@@ -200,18 +217,24 @@ public class BoschIotAdapter extends EventAdapter {
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
 				ResponseHandler<String> responseHandler = new BasicResponseHandler();
 				responseBody = responseHandler.handleResponse(httpResponse);
-				response = new JSONObject(responseBody);
-			} else {
-				response = new JSONObject();
-			}
 
+				//response = new JSONObject(responseBody);
+
+				response = mapper.readTree(responseBody);
+
+			} else {
+				//response = new JSONObject();
+
+				response = mapper.readTree("");
+			}
+			return response;
 		} catch (final Exception e) {
 			System.err.println("ERROR: Unexpected Bosch iot api response or no connection possible: " + responseBody);
 			e.printStackTrace();
 		} finally {
 			client.getConnectionManager().shutdown();
 		}
-
 		return response;
+
 	}
 }
