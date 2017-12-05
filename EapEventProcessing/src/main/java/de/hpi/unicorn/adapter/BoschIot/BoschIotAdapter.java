@@ -1,6 +1,8 @@
 package de.hpi.unicorn.adapter.BoschIot;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flipkart.zjsonpatch.JsonDiff;
 import de.hpi.unicorn.adapter.EventAdapter;
 import de.hpi.unicorn.configuration.EapConfiguration;
 import de.hpi.unicorn.event.EapEvent;
@@ -16,31 +18,21 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import com.flipkart.zjsonpatch.JsonDiff;
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class BoschIotAdapter extends EventAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(BoschIotAdapter.class);
 
 	private static final String THING_ADDED_EVENT_TYPE_NAME = "ThingAdded";
-	private static final String EXPECTED_ARRIVAL = "expectedArrival";
-	private static final String DESTINATION_NAME = "destinationName";
-	private static final String DESTINATION_NAPTAN_ID = "destinationNaptanId";
-
-	private static final long TIME_TOLERANCE = 30L * 1000L;
 
 	private String username;
 	private String password;
 	private String apikey;
-	private SimpleDateFormat biotDateFormat;
 	private EapEventType thingAddedEventType;
 	private List<EapEvent> eventsToSend;
 	private ObjectMapper mapper;
@@ -57,7 +49,7 @@ public class BoschIotAdapter extends EventAdapter {
 		try {
 			boschIotOldThings = mapper.readTree("{\"items\":[]}");
 		} catch (Exception e) {
-			//logger.error("cannot parse default json: ", e);
+			logger.error("cannot parse default json: ", e);
 		}
 
 
