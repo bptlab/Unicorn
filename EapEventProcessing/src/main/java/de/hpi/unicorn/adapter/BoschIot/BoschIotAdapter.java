@@ -22,6 +22,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.json.Json;
 import java.io.Serializable;
 import java.util.*;
 
@@ -29,11 +30,13 @@ public class BoschIotAdapter extends EventAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(BoschIotAdapter.class);
 
 	private static final String THING_ADDED_EVENT_TYPE_NAME = "ThingAdded";
+	private static final String ATTRIBUTE_ADDED_EVENT_TYPE_NAME = "AttributeAdded";
 
 	private String username;
 	private String password;
 	private String apikey;
 	private EapEventType thingAddedEventType;
+	private EapEventType attributeAddedEventType;
 	private List<EapEvent> eventsToSend;
 	private ObjectMapper mapper;
 	private JsonNode boschIotOldThings;
@@ -47,7 +50,7 @@ public class BoschIotAdapter extends EventAdapter {
 		this.eventsToSend = new ArrayList<>();
 		this.mapper = new ObjectMapper();
 		try {
-			boschIotOldThings = mapper.readTree("{\"items\":[]}");
+			boschIotOldThings = mapper.readTree("{\"items\":[], \"nextPageOffset\": -1}");
 		} catch (Exception e) {
 			logger.error("cannot parse default json: ", e);
 		}
@@ -70,7 +73,12 @@ public class BoschIotAdapter extends EventAdapter {
 			return;
 		}
 
-		calculateNewArrivals();
+		if (attributeAddedEventType == null && attributeAddedEventType() == null) {
+			logger.info("Cannot find Bosch iot attributeAdded event type.");
+			return;
+		}
+
+		calculateApiDifference();
 
 		logger.info("Bosch iot adapter produced " + eventsToSend.size() + " events.");
 
@@ -85,89 +93,79 @@ public class BoschIotAdapter extends EventAdapter {
 		return thingAddedEventType;
 	}
 
-	private void calculateNewArrivals() {
-
-		JsonNode things = getThings();
-		JsonNode patch = JsonDiff.asJson(boschIotOldThings, things);
-		logger.info("Difference: " + patch.asText());
-		boschIotOldThings = things;
-
-//      JSONObject thingsResponse = getThings();
-//		try {
-//			JSONArray newResponse = thingsResponse.getJSONArray("items");
-//			BoschIotArrayDifference diff = new BoschIotArrayDifference(boschIotOldThings, newResponse, "thingId",
-//					new BoschIotPropertyCompare() {
-//						@Override
-//						public boolean isDifferent(JSONObject oldEntry, JSONObject newEntry) {
-//							if (!oldEntry.has("features")
-//									|| !newEntry.has("features")) {
-//								return false;
-//							}
-//							try {
-//								JsonNode patch = JsonDiff.asJson(JsonNode source, JsonNode target)
-//								String oldManufacturer = oldEntry.getJSONObject("attributes").getString("manufacturer");
-//								String newManufacturer = newEntry.getJSONObject("attributes").getString("manufacturer");
-//								return !oldManufacturer.equals(newManufacturer);
-//							} catch (Exception e) {
-//								logger.error("cannot parse Bosch iot api difference", e);
-//							}
-//							return false;
-//						}
-//					});
-//			boschIotOldThings = newResponse;
-//			addThingsEvents(diff);
-//		} catch (Exception e) {
-//			logger.error("cannot parse things object", e);
-//		}
+	private EapEventType attributeAddedEventType() {
+		attributeAddedEventType = EapEventType.findByTypeName(ATTRIBUTE_ADDED_EVENT_TYPE_NAME);
+		return attributeAddedEventType;
 	}
 
-	private void addThingsEvents(BoschIotArrayDifference difference) {
-		for (JSONObject newEntry : difference.getNewEntries()) {
-			try {
-				Map<String, Serializable> eventValues = new HashMap<>();
+	private void calculateApiDifference() {
+		JsonNode things = getThings();
+		JsonNode difference = JsonDiff.asJson(boschIotOldThings, things);
+		addThingsEvents(things, difference);
+		boschIotOldThings = things;
+	}
 
-				eventValues.put("thingId", newEntry.getString("thingId"));
-                eventValues.put("policyId", newEntry.getString("policyId"));
-                eventValues.put("attributes", newEntry.getString("attributes"));
-                eventValues.put("features", newEntry.getString("features"));
 
-                logger.info("New Thing Added!");
-				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
+	private void addThingsEvents(JsonNode response, JsonNode difference) {
+		Iterator<JsonNode> elements = difference.elements();
+		while (elements.hasNext()) {
+			JsonNode element = elements.next();
 
-			} catch (Exception e) {
-				logger.error("cannot parse Bosch iot api difference", e);
+			if (!element.has("op") || !element.has("path") || !element.has("value")) {
+				continue;
 			}
-		}
-		for (BoschIotChangedEntry changedEntry : difference.getChangedEntries()) {
-			try {
-				Map<String, Serializable> eventValues = new HashMap<>();
+			String operation =  element.get("op").asText();
+			String[] splittedPath = element.get("path").asText().split("/");
+			JsonNode value =  element.get("value");
+			switch (operation) {
+				case "add":
+					logger.info("Element added: " + element.toString());
+					String thing, attribute, feature, property;
+					if (splittedPath.length >= 3 && splittedPath[1].equals("items")) {
+						thing = splittedPath[2];
+						logger.info("thing: " + thing);
 
-				eventValues.put("thingId", changedEntry.getNewEntry().getString("thingId"));
-				eventValues.put("policyId", changedEntry.getNewEntry().getString("policyId"));
-				eventValues.put("attributes", changedEntry.getNewEntry().getString("attributes"));
-				eventValues.put("features", changedEntry.getNewEntry().getString("features"));
+						if (splittedPath.length >= 5) {
+							if (splittedPath[3].equals("attributes")) {
+								attribute = splittedPath[4];
+								logger.info("attribute: " + attribute);
+								logger.info("Attribute added: " + attribute);
+								logger.info("Attribute value: " + value.asText());
 
-				logger.info("Thing Modified!");
-				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
+								// TODO
+								Map<String, Serializable> eventValues = new HashMap<>();
+								logger.info("Thing id: " + response.get("items").get(thing).get("thingId").asText());
+								eventValues.put("thingId", response.get("items").get(thing).get("thingId").asText());
+								eventValues.put("attribute", attribute);
+								eventValues.put("attributeValue", value.asText());
+								eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
+							}
+							else if (splittedPath[3].equals("features")) {
+								feature = splittedPath[4];
+								logger.info("feature: " + feature);
 
-			} catch (Exception e) {
-				logger.error("cannot parse Bosch iot api difference", e);
-			}
-		}
-		for (JSONObject deletedEntry : difference.getDeletedEntries()) {
-			try {
-				Map<String, Serializable> eventValues = new HashMap<>();
-
-				eventValues.put("thingId", deletedEntry.getString("thingId"));
-				eventValues.put("policyId", deletedEntry.getString("policyId"));
-				eventValues.put("attributes", deletedEntry.getString("attributes"));
-				eventValues.put("features", deletedEntry.getString("features"));
-
-				logger.info("Thing Deleted!");
-				eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
-
-			} catch (Exception e) {
-				logger.error("cannot parse Bosch iot api difference", e);
+								if (splittedPath.length >= 7 && splittedPath[5].equals("properties")) {
+									property = splittedPath[6];
+									logger.info("property: " + property);
+									logger.info("Property added: " + property);
+									logger.info("Property value: " + value.asText());
+								} else {
+									logger.info("Feature added: " + feature);
+									logger.info("Feature value: " + value.toString());
+								}
+							}
+						} else {
+							logger.info("Thing added: " + thing);
+							logger.info("Thing value: " + value.toString());
+						}
+					}
+					break;
+				case "replace":
+					logger.info("Value replaced: " + element.toString());
+					break;
+				case "remove":
+					logger.info("Element removed: " + element.toString());
+					break;
 			}
 		}
 	}
