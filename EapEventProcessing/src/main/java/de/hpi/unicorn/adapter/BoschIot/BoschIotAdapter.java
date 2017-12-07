@@ -34,6 +34,16 @@ public class BoschIotAdapter extends EventAdapter {
 	private static final String FEATURE_ADDED_EVENT_TYPE_NAME = "FeatureAdded";
 	private static final String PROPERTY_ADDED_EVENT_TYPE_NAME = "PropertyAdded";
 
+	private static final String THING_CHANGED_EVENT_TYPE_NAME = "ThingChanged";
+	private static final String ATTRIBUTE_CHANGED_EVENT_TYPE_NAME = "AttributeChanged";
+	private static final String FEATURE_CHANGED_EVENT_TYPE_NAME = "FeatureChanged";
+	private static final String PROPERTY_CHANGED_EVENT_TYPE_NAME = "PropertyChanged";
+
+	private static final String THING_REMOVED_EVENT_TYPE_NAME = "ThingRemoved";
+	private static final String ATTRIBUTE_REMOVED_EVENT_TYPE_NAME = "AttributeRemoved";
+	private static final String FEATURE_REMOVED_EVENT_TYPE_NAME = "FeatureRemoved";
+	private static final String PROPERTY_REMOVED_EVENT_TYPE_NAME = "PropertyRemoved";
+
 	private String username;
 	private String password;
 	private String apikey;
@@ -41,6 +51,14 @@ public class BoschIotAdapter extends EventAdapter {
 	private EapEventType attributeAddedEventType;
 	private EapEventType featureAddedEventType;
 	private EapEventType propertyAddedEventType;
+	private EapEventType thingChangedEventType;
+	private EapEventType attributeChangedEventType;
+	private EapEventType featureChangedEventType;
+	private EapEventType propertyChangedEventType;
+	private EapEventType thingRemovedEventType;
+	private EapEventType attributeRemovedEventType;
+	private EapEventType featureRemovedEventType;
+	private EapEventType propertyRemovedEventType;
 	private List<EapEvent> eventsToSend;
 	private ObjectMapper mapper;
 	private JsonNode boschIotOldThings;
@@ -83,14 +101,55 @@ public class BoschIotAdapter extends EventAdapter {
 		}
 
 		if (featureAddedEventType == null && featureAddedEventType() == null) {
-			logger.info("Cannot find Bosch iot attributeAdded event type.");
+			logger.info("Cannot find Bosch iot featureAdded event type.");
 			return;
 		}
 
 		if (propertyAddedEventType == null && propertyAddedEventType() == null) {
-			logger.info("Cannot find Bosch iot attributeAdded event type.");
+			logger.info("Cannot find Bosch iot propertyAdded event type.");
 			return;
 		}
+
+		if (attributeChangedEventType == null && attributeChangedEventType() == null) {
+			logger.info("Cannot find Bosch iot attributeChanged event type.");
+			return;
+		}
+
+		if (featureChangedEventType == null && featureChangedEventType() == null) {
+			logger.info("Cannot find Bosch iot featureChanged event type.");
+			return;
+		}
+
+		if (propertyChangedEventType == null && propertyChangedEventType() == null) {
+			logger.info("Cannot find Bosch iot propertyChanged event type.");
+			return;
+		}
+
+		if (thingChangedEventType == null && thingChangedEventType() == null) {
+			logger.info("Cannot find Bosch iot thingChanged event type.");
+			return;
+		}
+
+		if (thingRemovedEventType == null && thingRemovedEventType() == null) {
+			logger.info("Cannot find Bosch iot thingRemoved event type.");
+			return;
+		}
+
+		if (attributeRemovedEventType == null && attributeRemovedEventType() == null) {
+			logger.info("Cannot find Bosch iot attributeRemoved event type.");
+			return;
+		}
+
+		if (featureRemovedEventType == null && featureRemovedEventType() == null) {
+			logger.info("Cannot find Bosch iot featureRemoved event type.");
+			return;
+		}
+
+		if (propertyRemovedEventType == null && propertyRemovedEventType() == null) {
+			logger.info("Cannot find Bosch iot propertyRemoved event type.");
+			return;
+		}
+
 
 		calculateApiDifference();
 
@@ -122,6 +181,46 @@ public class BoschIotAdapter extends EventAdapter {
 		return propertyAddedEventType;
 	}
 
+	private EapEventType thingChangedEventType() {
+		thingChangedEventType = EapEventType.findByTypeName(THING_CHANGED_EVENT_TYPE_NAME);
+		return thingChangedEventType;
+	}
+
+	private EapEventType attributeChangedEventType() {
+		attributeChangedEventType = EapEventType.findByTypeName(ATTRIBUTE_CHANGED_EVENT_TYPE_NAME);
+		return attributeChangedEventType;
+	}
+
+	private EapEventType featureChangedEventType() {
+		featureChangedEventType = EapEventType.findByTypeName(FEATURE_CHANGED_EVENT_TYPE_NAME);
+		return featureChangedEventType;
+	}
+
+	private EapEventType propertyChangedEventType() {
+		propertyChangedEventType = EapEventType.findByTypeName(PROPERTY_CHANGED_EVENT_TYPE_NAME);
+		return propertyChangedEventType;
+	}
+
+	private EapEventType thingRemovedEventType() {
+		thingRemovedEventType = EapEventType.findByTypeName(THING_REMOVED_EVENT_TYPE_NAME);
+		return thingRemovedEventType;
+	}
+
+	private EapEventType attributeRemovedEventType() {
+		attributeRemovedEventType = EapEventType.findByTypeName(ATTRIBUTE_REMOVED_EVENT_TYPE_NAME);
+		return attributeRemovedEventType;
+	}
+
+	private EapEventType featureRemovedEventType() {
+		featureRemovedEventType = EapEventType.findByTypeName(FEATURE_REMOVED_EVENT_TYPE_NAME);
+		return featureRemovedEventType;
+	}
+
+	private EapEventType propertyRemovedEventType() {
+		propertyRemovedEventType = EapEventType.findByTypeName(PROPERTY_REMOVED_EVENT_TYPE_NAME);
+		return propertyRemovedEventType;
+	}
+
 	private void calculateApiDifference() {
 		JsonNode thingsResponse = getThings();
 		JsonNode difference = JsonDiff.asJson(boschIotOldThings, thingsResponse);
@@ -134,50 +233,52 @@ public class BoschIotAdapter extends EventAdapter {
 		Iterator<JsonNode> elements = difference.elements();
 		while (elements.hasNext()) {
 			JsonNode element = elements.next();
+			logger.info(element.toString());
 
-			if (!element.has("op") || !element.has("path") || !element.has("value")) {
+			if (!element.has("op") || !element.has("path")) {
 				continue;
 			}
-			String operation =  element.get("op").asText();
+			String operation = element.get("op").asText();
 			String path = element.get("path").asText();
-			JsonNode value =  element.get("value");
+			JsonNode value = element.get("value");
 			switch (operation) {
 				case "add":
-					addThingRelatedEvent(path, value, thingAddedEventType);
-					addAttributeRelatedEvent(path, value, newThingsResponse, attributeAddedEventType);
-					addFeatureRelatedEvent(path, value, newThingsResponse, featureAddedEventType);
-					addPropertyRelatedEvent(path, value, newThingsResponse, propertyAddedEventType);
+					addThingRelatedEvent(path, newThingsResponse, thingAddedEventType);
+					addAttributeRelatedEvent(path, newThingsResponse, attributeAddedEventType);
+					addFeatureRelatedEvent(path, newThingsResponse, featureAddedEventType);
+					addPropertyRelatedEvent(path, newThingsResponse, propertyAddedEventType);
 					logger.info("Element added: " + element.toString());
 					break;
 
 				case "replace":
-					addThingRelatedEvent(path, value, thingAddedEventType);
-					addAttributeRelatedEvent(path, value, newThingsResponse, attributeAddedEventType);
-					addFeatureRelatedEvent(path, value, newThingsResponse, featureAddedEventType);
-					addPropertyRelatedEvent(path, value, newThingsResponse, propertyAddedEventType);
+					addThingRelatedEvent(path, newThingsResponse, thingChangedEventType);
+					addAttributeRelatedEvent(path, newThingsResponse, attributeChangedEventType);
+					addFeatureRelatedEvent(path, newThingsResponse, featureChangedEventType);
+					addPropertyRelatedEvent(path, newThingsResponse, propertyChangedEventType);
 					logger.info("Element changed: " + element.toString());
 					break;
 				case "remove":
-					addThingRelatedEvent(path, value, thingAddedEventType);
-					addAttributeRelatedEvent(path, value, oldThingsResponse, attributeAddedEventType);
-					addFeatureRelatedEvent(path, value, oldThingsResponse, featureAddedEventType);
-					addPropertyRelatedEvent(path, value, oldThingsResponse, propertyAddedEventType);
+					addThingRelatedEvent(path, oldThingsResponse, thingRemovedEventType);
+					addAttributeRelatedEvent(path, oldThingsResponse, attributeRemovedEventType);
+					addFeatureRelatedEvent(path, oldThingsResponse, featureRemovedEventType);
+					addPropertyRelatedEvent(path, oldThingsResponse, propertyRemovedEventType);
 					logger.info("Element removed: " + element.toString());
 					break;
 			}
 		}
 	}
 
-	private void addThingRelatedEvent(String path, JsonNode change, EapEventType eventType) {
+	private void addThingRelatedEvent(String path, JsonNode thingsResponse, EapEventType eventType) {
 		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
 		Matcher matcher = pattern.matcher(path);
 
 		if (matcher.matches()) {
             String item = matcher.group("item");
-            String thingId = change.get("thingId").asText();
-            String policyId = change.get("policyId").asText();
-            String attributes = change.get("attributes").toString();
-            String features = change.get("features").toString();
+            JsonNode thing = thingsResponse.get("items").get(Integer.parseInt(item));
+            String thingId = thing.get("thingId").asText();
+            String policyId = thing.get("policyId").asText();
+            String attributes = thing.get("attributes").toString();
+            String features = thing.get("features").toString();
 
             logger.info("item: " + item);
             logger.info("thingId: " + thingId);
@@ -195,14 +296,15 @@ public class BoschIotAdapter extends EventAdapter {
         }
 	}
 
-	private void addAttributeRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+	private void addAttributeRelatedEvent(String path, JsonNode thingsResponse, EapEventType eventType) {
 		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>[^\\/]+)");
 		Matcher matcher = pattern.matcher(path);
 		if (matcher.matches()) {
 			String item = matcher.group("item");
 			String attribute = matcher.group("attribute");
-			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-			String attributeValue = change.asText();
+			JsonNode thing = thingsResponse.get("items").get(Integer.parseInt(item));
+			String thingId = thing.get("thingId").asText();
+			String attributeValue = thing.get("attributes").get(attribute).asText();
 
 			logger.info("item: " + item);
 			logger.info("thingId: " + thingId);
@@ -218,14 +320,15 @@ public class BoschIotAdapter extends EventAdapter {
 		}
 	}
 
-	private void addFeatureRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+	private void addFeatureRelatedEvent(String path, JsonNode thingsResponse, EapEventType eventType) {
 		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)");
 		Matcher matcher = pattern.matcher(path);
 		if (matcher.matches()) {
 			String item = matcher.group("item");
 			String feature = matcher.group("feature");
-			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-			String featureValue = change.toString();
+			JsonNode thing = thingsResponse.get("items").get(Integer.parseInt(item));
+			String thingId = thing.get("thingId").asText();
+			String featureValue = thing.get("features").get(feature).toString();
 
 			logger.info("item: " + item);
 			logger.info("thingId: " + thingId);
@@ -241,15 +344,16 @@ public class BoschIotAdapter extends EventAdapter {
 		}
 	}
 
-	private void addPropertyRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+	private void addPropertyRelatedEvent(String path, JsonNode thingsResponse, EapEventType eventType) {
 		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)\\/properties\\/(?<property>[^\\/]+)");
 		Matcher matcher = pattern.matcher(path);
 		if (matcher.matches()) {
 			String item = matcher.group("item");
 			String feature = matcher.group("feature");
 			String property = matcher.group("property");
-			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-			String propertyValue = change.asText();
+			JsonNode thing = thingsResponse.get("items").get(Integer.parseInt(item));
+			String thingId = thing.get("thingId").asText();
+			String propertyValue = thing.get("features").get(feature).get("properties").get(property).asText();
 
 			logger.info("item: " + item);
 			logger.info("thingId: " + thingId);
