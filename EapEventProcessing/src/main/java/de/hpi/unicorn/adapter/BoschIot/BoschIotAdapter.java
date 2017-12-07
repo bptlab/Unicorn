@@ -125,12 +125,12 @@ public class BoschIotAdapter extends EventAdapter {
 	private void calculateApiDifference() {
 		JsonNode thingsResponse = getThings();
 		JsonNode difference = JsonDiff.asJson(boschIotOldThings, thingsResponse);
-		addThingsEvents(thingsResponse, difference);
+		addThingsEvents(boschIotOldThings, thingsResponse, difference);
 		boschIotOldThings = thingsResponse;
 	}
 
 
-	private void addThingsEvents(JsonNode response, JsonNode difference) {
+	private void addThingsEvents(JsonNode oldThingsResponse, JsonNode newThingsResponse, JsonNode difference) {
 		Iterator<JsonNode> elements = difference.elements();
 		while (elements.hasNext()) {
 			JsonNode element = elements.next();
@@ -140,131 +140,140 @@ public class BoschIotAdapter extends EventAdapter {
 			}
 			String operation =  element.get("op").asText();
 			String path = element.get("path").asText();
-			String[] splittedPath = element.get("path").asText().split("/");
 			JsonNode value =  element.get("value");
 			switch (operation) {
 				case "add":
-					Pattern pattern;
-					Matcher matcher;
-
-					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
-					matcher = pattern.matcher(path);
-					if (matcher.matches()) {
-						String item = matcher.group("item");
-						String thingId = value.get("thingId").asText();
-						String policyId = value.get("policyId").asText();
-						String attributes = value.get("attributes").toString();
-						String features = value.get("features").toString();
-
-						logger.info("item: " + item);
-						logger.info("thingId: " + thingId);
-						logger.info("policyId: " + policyId);
-						logger.info("attributes: " + attributes);
-						logger.info("features: " + features);
-						logger.info("Thing added!");
-
-						Map<String, Serializable> eventValues = new HashMap<>();
-						eventValues.put("thingId", thingId);
-						eventValues.put("policyId", policyId);
-						eventValues.put("attributes", attributes);
-						eventValues.put("features", features);
-						eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
-
-						break;
-					}
-
-					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>[^\\/]+)");
-					matcher = pattern.matcher(path);
-					if (matcher.matches()) {
-						String item = matcher.group("item");
-						String attribute = matcher.group("attribute");
-						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-						String attributeValue = value.asText();
-
-						logger.info("item: " + item);
-						logger.info("thingId: " + thingId);
-						logger.info("attribute: " + attribute);
-						logger.info("attributeValue: " + attributeValue);
-						logger.info("Attribute added!");
-
-						Map<String, Serializable> eventValues = new HashMap<>();
-						eventValues.put("thingId", thingId);
-						eventValues.put("attribute", attribute);
-						eventValues.put("attributeValue", attributeValue);
-						eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
-
-						break;
-					}
-
-					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)");
-					matcher = pattern.matcher(path);
-					if (matcher.matches()) {
-						String item = matcher.group("item");
-						String feature = matcher.group("feature");
-						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-						String featureValue = value.toString();
-
-						logger.info("item: " + item);
-						logger.info("thingId: " + thingId);
-						logger.info("feature: " + feature);
-						logger.info("featureValue: " + featureValue);
-						logger.info("Feature added!");
-
-						Map<String, Serializable> eventValues = new HashMap<>();
-						eventValues.put("thingId", thingId);
-						eventValues.put("feature", feature);
-						eventValues.put("featureValue", featureValue);
-						eventsToSend.add(new EapEvent(featureAddedEventType, new Date(), eventValues));
-
-						break;
-					}
-
-					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)\\/properties\\/(?<property>[^\\/]+)");
-					matcher = pattern.matcher(path);
-					if (matcher.matches()) {
-						String item = matcher.group("item");
-						String feature = matcher.group("feature");
-						String property = matcher.group("property");
-						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
-						String propertyValue = value.asText();
-
-						logger.info("item: " + item);
-						logger.info("thingId: " + thingId);
-						logger.info("feature: " + feature);
-						logger.info("property: " + property);
-						logger.info("propertyValue: " + propertyValue);
-						logger.info("Property added!");
-
-						Map<String, Serializable> eventValues = new HashMap<>();
-						eventValues.put("thingId", thingId);
-						eventValues.put("feature", feature);
-						eventValues.put("property", property);
-						eventValues.put("propertyValue", propertyValue);
-						eventsToSend.add(new EapEvent(propertyAddedEventType, new Date(), eventValues));
-
-						break;
-					}
-
+					addThingRelatedEvent(path, value, thingAddedEventType);
+					addAttributeRelatedEvent(path, value, newThingsResponse, attributeAddedEventType);
+					addFeatureRelatedEvent(path, value, newThingsResponse, featureAddedEventType);
+					addPropertyRelatedEvent(path, value, newThingsResponse, propertyAddedEventType);
 					logger.info("Element added: " + element.toString());
 					break;
+
 				case "replace":
-					logger.info("Value replaced: " + element.toString());
+					addThingRelatedEvent(path, value, thingAddedEventType);
+					addAttributeRelatedEvent(path, value, newThingsResponse, attributeAddedEventType);
+					addFeatureRelatedEvent(path, value, newThingsResponse, featureAddedEventType);
+					addPropertyRelatedEvent(path, value, newThingsResponse, propertyAddedEventType);
+					logger.info("Element changed: " + element.toString());
 					break;
 				case "remove":
+					addThingRelatedEvent(path, value, thingAddedEventType);
+					addAttributeRelatedEvent(path, value, oldThingsResponse, attributeAddedEventType);
+					addFeatureRelatedEvent(path, value, oldThingsResponse, featureAddedEventType);
+					addPropertyRelatedEvent(path, value, oldThingsResponse, propertyAddedEventType);
 					logger.info("Element removed: " + element.toString());
 					break;
 			}
 		}
 	}
 
+	private void addThingRelatedEvent(String path, JsonNode change, EapEventType eventType) {
+		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
+		Matcher matcher = pattern.matcher(path);
+
+		if (matcher.matches()) {
+            String item = matcher.group("item");
+            String thingId = change.get("thingId").asText();
+            String policyId = change.get("policyId").asText();
+            String attributes = change.get("attributes").toString();
+            String features = change.get("features").toString();
+
+            logger.info("item: " + item);
+            logger.info("thingId: " + thingId);
+            logger.info("policyId: " + policyId);
+            logger.info("attributes: " + attributes);
+            logger.info("features: " + features);
+            logger.info("Thing added!");
+
+            Map<String, Serializable> eventValues = new HashMap<>();
+            eventValues.put("thingId", thingId);
+            eventValues.put("policyId", policyId);
+            eventValues.put("attributes", attributes);
+            eventValues.put("features", features);
+            eventsToSend.add(new EapEvent(eventType, new Date(), eventValues));
+        }
+	}
+
+	private void addAttributeRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>[^\\/]+)");
+		Matcher matcher = pattern.matcher(path);
+		if (matcher.matches()) {
+			String item = matcher.group("item");
+			String attribute = matcher.group("attribute");
+			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+			String attributeValue = change.asText();
+
+			logger.info("item: " + item);
+			logger.info("thingId: " + thingId);
+			logger.info("attribute: " + attribute);
+			logger.info("attributeValue: " + attributeValue);
+			logger.info("Attribute added!");
+
+			Map<String, Serializable> eventValues = new HashMap<>();
+			eventValues.put("thingId", thingId);
+			eventValues.put("attribute", attribute);
+			eventValues.put("attributeValue", attributeValue);
+			eventsToSend.add(new EapEvent(eventType, new Date(), eventValues));
+		}
+	}
+
+	private void addFeatureRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)");
+		Matcher matcher = pattern.matcher(path);
+		if (matcher.matches()) {
+			String item = matcher.group("item");
+			String feature = matcher.group("feature");
+			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+			String featureValue = change.toString();
+
+			logger.info("item: " + item);
+			logger.info("thingId: " + thingId);
+			logger.info("feature: " + feature);
+			logger.info("featureValue: " + featureValue);
+			logger.info("Feature added!");
+
+			Map<String, Serializable> eventValues = new HashMap<>();
+			eventValues.put("thingId", thingId);
+			eventValues.put("feature", feature);
+			eventValues.put("featureValue", featureValue);
+			eventsToSend.add(new EapEvent(eventType, new Date(), eventValues));
+		}
+	}
+
+	private void addPropertyRelatedEvent(String path, JsonNode change, JsonNode thingsResponse, EapEventType eventType) {
+		Pattern pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)\\/properties\\/(?<property>[^\\/]+)");
+		Matcher matcher = pattern.matcher(path);
+		if (matcher.matches()) {
+			String item = matcher.group("item");
+			String feature = matcher.group("feature");
+			String property = matcher.group("property");
+			String thingId = thingsResponse.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+			String propertyValue = change.asText();
+
+			logger.info("item: " + item);
+			logger.info("thingId: " + thingId);
+			logger.info("feature: " + feature);
+			logger.info("property: " + property);
+			logger.info("propertyValue: " + propertyValue);
+			logger.info("Property added!");
+
+			Map<String, Serializable> eventValues = new HashMap<>();
+			eventValues.put("thingId", thingId);
+			eventValues.put("feature", feature);
+			eventValues.put("property", property);
+			eventValues.put("propertyValue", propertyValue);
+			eventsToSend.add(new EapEvent(eventType, new Date(), eventValues));
+		}
+	}
+
+
 	@NotNull
 	private JsonNode getThings() {
-
 	    return getFromAPI(getThingsUrl());
 	}
 
 	private String getThingsUrl() {
-
 		return "https://things.apps.bosch-iot-cloud.com/api/2/search/things";
 	}
 
@@ -276,7 +285,6 @@ public class BoschIotAdapter extends EventAdapter {
 		JsonNode response = null;
 
 		try {
-
 			final HttpGet request = new HttpGet(url);
 			request.addHeader(BasicScheme.authenticate(credentials, "UTF-8", false));
 			request.setHeader("x-cr-api-token", apikey);
@@ -294,14 +302,9 @@ public class BoschIotAdapter extends EventAdapter {
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
 				ResponseHandler<String> responseHandler = new BasicResponseHandler();
 				responseBody = responseHandler.handleResponse(httpResponse);
-
-				//response = new JSONObject(responseBody);
-
 				response = mapper.readTree(responseBody);
 
 			} else {
-				//response = new JSONObject();
-
 				response = mapper.readTree("");
 			}
 			return response;
