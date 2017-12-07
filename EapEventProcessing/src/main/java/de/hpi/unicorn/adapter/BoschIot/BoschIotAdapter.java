@@ -18,13 +18,13 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.json.Json;
 import java.io.Serializable;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class BoschIotAdapter extends EventAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(BoschIotAdapter.class);
@@ -115,50 +115,128 @@ public class BoschIotAdapter extends EventAdapter {
 				continue;
 			}
 			String operation =  element.get("op").asText();
+			String path = element.get("path").asText();
 			String[] splittedPath = element.get("path").asText().split("/");
 			JsonNode value =  element.get("value");
 			switch (operation) {
 				case "add":
-					logger.info("Element added: " + element.toString());
+					// Declare variables
 					String thing, attribute, feature, property;
-					if (splittedPath.length >= 3 && splittedPath[1].equals("items")) {
-						thing = splittedPath[2];
-						logger.info("thing: " + thing);
 
-						if (splittedPath.length >= 5) {
-							if (splittedPath[3].equals("attributes")) {
-								attribute = splittedPath[4];
-								logger.info("attribute: " + attribute);
-								logger.info("Attribute added: " + attribute);
-								logger.info("Attribute value: " + value.asText());
 
-								// TODO
-								Map<String, Serializable> eventValues = new HashMap<>();
-								logger.info("Thing id: " + response.get("items").get(thing).get("thingId").asText());
-								eventValues.put("thingId", response.get("items").get(thing).get("thingId").asText());
-								eventValues.put("attribute", attribute);
-								eventValues.put("attributeValue", value.asText());
-								eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
-							}
-							else if (splittedPath[3].equals("features")) {
-								feature = splittedPath[4];
-								logger.info("feature: " + feature);
+					Pattern pattern;
+					Matcher matcher;
 
-								if (splittedPath.length >= 7 && splittedPath[5].equals("properties")) {
-									property = splittedPath[6];
-									logger.info("property: " + property);
-									logger.info("Property added: " + property);
-									logger.info("Property value: " + value.asText());
-								} else {
-									logger.info("Feature added: " + feature);
-									logger.info("Feature value: " + value.toString());
-								}
-							}
-						} else {
-							logger.info("Thing added: " + thing);
-							logger.info("Thing value: " + value.toString());
+					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
+					matcher = pattern.matcher(path);
+					if (matcher.matches()) {
+						String item = matcher.group("item");
+						String thingId = value.get("thingId").asText();
+						String policyId = value.get("policyId").asText();
+						String attributes = value.get("attributes").toString();
+						String features = value.get("features").toString();
+
+						logger.info("item: " + item);
+						logger.info("thingId: " + thingId);
+						logger.info("policyId: " + policyId);
+						logger.info("attributes: " + attributes);
+						logger.info("features: " + features);
+						logger.info("Thing added!");
+
+						Map<String, Serializable> eventValues = new HashMap<>();
+						eventValues.put("thingId", thingId);
+						eventValues.put("thingId", policyId);
+						eventValues.put("thingId", attributes);
+						eventValues.put("thingId", features);
+						eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
+
+						break;
+					}
+
+					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
+					matcher = pattern.matcher(path);
+					if (matcher.matches()) {
+						logger.info("item: " + matcher.group("item"));
+					}
+
+
+
+
+
+
+
+
+					if (!(splittedPath.length >= 3 && splittedPath[1].equals("items"))) {
+						// Malformed change route
+						break;
+					}
+
+					// THING changed
+					// Item ID found
+					thing = splittedPath[2];
+					logger.info("thing: " + thing);
+
+					if (Pattern.matches("\\/items\\/(?<item>[0-9]*)", path)) {
+						logger.info("MATCH item!");
+					}
+
+					if (!(splittedPath.length >= 5)) {
+						// If url is for example: /items/3
+						logger.info("Thing added: " + thing);
+						logger.info("Thing value: " + value.toString());
+						break;
+					}
+
+					if (Pattern.matches("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>.+)", path)) {
+						logger.info("MATCH attribute!");
+					}
+
+					Pattern attributePattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>.+)");
+					Matcher matcher = attributePattern.matcher(path);
+					if (matcher.matches()) {
+						logger.info("MATCH!");
+						logger.info("item: " + matcher.group("item"));
+						logger.info("attribute: " + matcher.group("attribute"));
+					}
+
+
+
+					// ATTRIBUTE changed
+					if (splittedPath[3].equals("attributes")) {
+						attribute = splittedPath[4];
+						logger.info("attribute: " + attribute);
+						logger.info("Attribute added: " + attribute);
+						logger.info("Attribute value: " + value.asText());
+
+						// TODO
+						Map<String, Serializable> eventValues = new HashMap<>();
+						eventValues.put("thingId", response.get("items").get(Integer.parseInt(thing)).get("thingId").asText());
+						eventValues.put("attribute", attribute);
+						eventValues.put("attributeValue", value.asText());
+						eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
+						break;
+					}
+
+					// FEATURE changed
+					if (splittedPath[3].equals("features")) {
+						feature = splittedPath[4];
+						logger.info("feature: " + feature);
+
+						if (!(splittedPath.length >= 7 && splittedPath[5].equals("properties"))) {
+							logger.info("Feature added: " + feature);
+							logger.info("Feature value: " + value.toString());
+							break;
 						}
 					}
+
+					if (splittedPath.length >= 7 && splittedPath[5].equals("properties")) {
+						property = splittedPath[6];
+						logger.info("property: " + property);
+						logger.info("Property added: " + property);
+						logger.info("Property value: " + value.asText());
+					}
+
+					logger.info("Element added: " + element.toString());
 					break;
 				case "replace":
 					logger.info("Value replaced: " + element.toString());
