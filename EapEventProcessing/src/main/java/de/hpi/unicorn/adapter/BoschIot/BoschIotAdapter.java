@@ -31,12 +31,16 @@ public class BoschIotAdapter extends EventAdapter {
 
 	private static final String THING_ADDED_EVENT_TYPE_NAME = "ThingAdded";
 	private static final String ATTRIBUTE_ADDED_EVENT_TYPE_NAME = "AttributeAdded";
+	private static final String FEATURE_ADDED_EVENT_TYPE_NAME = "FeatureAdded";
+	private static final String PROPERTY_ADDED_EVENT_TYPE_NAME = "PropertyAdded";
 
 	private String username;
 	private String password;
 	private String apikey;
 	private EapEventType thingAddedEventType;
 	private EapEventType attributeAddedEventType;
+	private EapEventType featureAddedEventType;
+	private EapEventType propertyAddedEventType;
 	private List<EapEvent> eventsToSend;
 	private ObjectMapper mapper;
 	private JsonNode boschIotOldThings;
@@ -78,6 +82,16 @@ public class BoschIotAdapter extends EventAdapter {
 			return;
 		}
 
+		if (featureAddedEventType == null && featureAddedEventType() == null) {
+			logger.info("Cannot find Bosch iot attributeAdded event type.");
+			return;
+		}
+
+		if (propertyAddedEventType == null && propertyAddedEventType() == null) {
+			logger.info("Cannot find Bosch iot attributeAdded event type.");
+			return;
+		}
+
 		calculateApiDifference();
 
 		logger.info("Bosch iot adapter produced " + eventsToSend.size() + " events.");
@@ -98,11 +112,21 @@ public class BoschIotAdapter extends EventAdapter {
 		return attributeAddedEventType;
 	}
 
+	private EapEventType featureAddedEventType() {
+		featureAddedEventType = EapEventType.findByTypeName(FEATURE_ADDED_EVENT_TYPE_NAME);
+		return featureAddedEventType;
+	}
+
+	private EapEventType propertyAddedEventType() {
+		propertyAddedEventType = EapEventType.findByTypeName(PROPERTY_ADDED_EVENT_TYPE_NAME);
+		return propertyAddedEventType;
+	}
+
 	private void calculateApiDifference() {
-		JsonNode things = getThings();
-		JsonNode difference = JsonDiff.asJson(boschIotOldThings, things);
-		addThingsEvents(things, difference);
-		boschIotOldThings = things;
+		JsonNode thingsResponse = getThings();
+		JsonNode difference = JsonDiff.asJson(boschIotOldThings, thingsResponse);
+		addThingsEvents(thingsResponse, difference);
+		boschIotOldThings = thingsResponse;
 	}
 
 
@@ -120,10 +144,6 @@ public class BoschIotAdapter extends EventAdapter {
 			JsonNode value =  element.get("value");
 			switch (operation) {
 				case "add":
-					// Declare variables
-					String thing, attribute, feature, property;
-
-
 					Pattern pattern;
 					Matcher matcher;
 
@@ -145,95 +165,84 @@ public class BoschIotAdapter extends EventAdapter {
 
 						Map<String, Serializable> eventValues = new HashMap<>();
 						eventValues.put("thingId", thingId);
-						eventValues.put("thingId", policyId);
-						eventValues.put("thingId", attributes);
-						eventValues.put("thingId", features);
-						eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
+						eventValues.put("policyId", policyId);
+						eventValues.put("attributes", attributes);
+						eventValues.put("features", features);
+						eventsToSend.add(new EapEvent(thingAddedEventType, new Date(), eventValues));
 
 						break;
 					}
 
-					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)");
+					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>[^\\/]+)");
 					matcher = pattern.matcher(path);
 					if (matcher.matches()) {
-						logger.info("item: " + matcher.group("item"));
-					}
+						String item = matcher.group("item");
+						String attribute = matcher.group("attribute");
+						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+						String attributeValue = value.asText();
 
-
-
-
-
-
-
-
-					if (!(splittedPath.length >= 3 && splittedPath[1].equals("items"))) {
-						// Malformed change route
-						break;
-					}
-
-					// THING changed
-					// Item ID found
-					thing = splittedPath[2];
-					logger.info("thing: " + thing);
-
-					if (Pattern.matches("\\/items\\/(?<item>[0-9]*)", path)) {
-						logger.info("MATCH item!");
-					}
-
-					if (!(splittedPath.length >= 5)) {
-						// If url is for example: /items/3
-						logger.info("Thing added: " + thing);
-						logger.info("Thing value: " + value.toString());
-						break;
-					}
-
-					if (Pattern.matches("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>.+)", path)) {
-						logger.info("MATCH attribute!");
-					}
-
-					Pattern attributePattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/attributes\\/(?<attribute>.+)");
-					Matcher matcher = attributePattern.matcher(path);
-					if (matcher.matches()) {
-						logger.info("MATCH!");
-						logger.info("item: " + matcher.group("item"));
-						logger.info("attribute: " + matcher.group("attribute"));
-					}
-
-
-
-					// ATTRIBUTE changed
-					if (splittedPath[3].equals("attributes")) {
-						attribute = splittedPath[4];
+						logger.info("item: " + item);
+						logger.info("thingId: " + thingId);
 						logger.info("attribute: " + attribute);
-						logger.info("Attribute added: " + attribute);
-						logger.info("Attribute value: " + value.asText());
+						logger.info("attributeValue: " + attributeValue);
+						logger.info("Attribute added!");
 
-						// TODO
 						Map<String, Serializable> eventValues = new HashMap<>();
-						eventValues.put("thingId", response.get("items").get(Integer.parseInt(thing)).get("thingId").asText());
+						eventValues.put("thingId", thingId);
 						eventValues.put("attribute", attribute);
-						eventValues.put("attributeValue", value.asText());
+						eventValues.put("attributeValue", attributeValue);
 						eventsToSend.add(new EapEvent(attributeAddedEventType, new Date(), eventValues));
+
 						break;
 					}
 
-					// FEATURE changed
-					if (splittedPath[3].equals("features")) {
-						feature = splittedPath[4];
-						logger.info("feature: " + feature);
+					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)");
+					matcher = pattern.matcher(path);
+					if (matcher.matches()) {
+						String item = matcher.group("item");
+						String feature = matcher.group("feature");
+						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+						String featureValue = value.toString();
 
-						if (!(splittedPath.length >= 7 && splittedPath[5].equals("properties"))) {
-							logger.info("Feature added: " + feature);
-							logger.info("Feature value: " + value.toString());
-							break;
-						}
+						logger.info("item: " + item);
+						logger.info("thingId: " + thingId);
+						logger.info("feature: " + feature);
+						logger.info("featureValue: " + featureValue);
+						logger.info("Feature added!");
+
+						Map<String, Serializable> eventValues = new HashMap<>();
+						eventValues.put("thingId", thingId);
+						eventValues.put("feature", feature);
+						eventValues.put("featureValue", featureValue);
+						eventsToSend.add(new EapEvent(featureAddedEventType, new Date(), eventValues));
+
+						break;
 					}
 
-					if (splittedPath.length >= 7 && splittedPath[5].equals("properties")) {
-						property = splittedPath[6];
+					pattern = Pattern.compile("\\/items\\/(?<item>[0-9]+)\\/features\\/(?<feature>[^\\/]+)\\/properties\\/(?<property>[^\\/]+)");
+					matcher = pattern.matcher(path);
+					if (matcher.matches()) {
+						String item = matcher.group("item");
+						String feature = matcher.group("feature");
+						String property = matcher.group("property");
+						String thingId = response.get("items").get(Integer.parseInt(item)).get("thingId").asText();
+						String propertyValue = value.asText();
+
+						logger.info("item: " + item);
+						logger.info("thingId: " + thingId);
+						logger.info("feature: " + feature);
 						logger.info("property: " + property);
-						logger.info("Property added: " + property);
-						logger.info("Property value: " + value.asText());
+						logger.info("propertyValue: " + propertyValue);
+						logger.info("Property added!");
+
+						Map<String, Serializable> eventValues = new HashMap<>();
+						eventValues.put("thingId", thingId);
+						eventValues.put("feature", feature);
+						eventValues.put("property", property);
+						eventValues.put("propertyValue", propertyValue);
+						eventsToSend.add(new EapEvent(propertyAddedEventType, new Date(), eventValues));
+
+						break;
 					}
 
 					logger.info("Element added: " + element.toString());
