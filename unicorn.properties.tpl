@@ -13,9 +13,9 @@ db.test.url=jdbc:mariadb://$UNICORN_DB_HOST:$UNICORN_DB_PORT/$UNICORN_DB_TEST_DB
 # false = events are not stored in the database and correlation is disabled as it requires persisted events
 de.hpi.unicorn.eventhandling.persistEvents=true
 # JMS
-de.hpi.unicorn.messageQueue.jmsHost=bpt.hpi.uni-potsdam.de
-de.hpi.unicorn.messageQueue.jmsPort=61616
-de.hpi.unicorn.messageQueue.jmsImportChannel=YouMightWantToChangeThis
+de.hpi.unicorn.messageQueue.jmsHost=$UNICORN_JMS_HOST
+de.hpi.unicorn.messageQueue.jmsPort=$UNICORN_JMS_PORT
+de.hpi.unicorn.messageQueue.jmsImportChannel=$UNICORN_JMS_IMPORT_CHANNEL
 # Pre-load of event types located in src/main/resources/predefinedEventTypes
 de.hpi.unicorn.esper.StreamProcessingAdapter.registerPredefinedEventTypes=true
 # Pre-load of transformation rules from src/main/resources/transformationRules.xml
