@@ -78,6 +78,30 @@ public class AdapterPage extends AbstractEapPage {
 				target.add(AdapterPage.this.getFeedbackPanel());
 			}
 		});
+
+		form.add(new AjaxButton("startBoschIot") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit(final AjaxRequestTarget target, final Form form) {
+				super.onSubmit(target, form);
+				AdapterManager.getInstance().startBoschIotAdapter();
+				AdapterPage.this.getFeedbackPanel().success("Adapter started!");
+				target.add(AdapterPage.this.getFeedbackPanel());
+			}
+		});
+
+		form.add(new AjaxButton("stopBoschIot") {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onSubmit(final AjaxRequestTarget target, final Form form) {
+				super.onSubmit(target, form);
+				AdapterManager.getInstance().stopAndRemoveBoschIotAdapter();
+				AdapterPage.this.getFeedbackPanel().success("Adapter stopped!");
+				target.add(AdapterPage.this.getFeedbackPanel());
+			}
+		});
 		this.add(form);
 
 	}
