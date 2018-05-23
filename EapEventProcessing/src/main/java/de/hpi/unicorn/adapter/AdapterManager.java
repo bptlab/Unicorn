@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.hpi.unicorn.adapter.BoschIot.BoschIotAdapter;
+import de.hpi.unicorn.adapter.GoodsTag.GoodsTagAdapter;
 import de.hpi.unicorn.adapter.tfl.TflAdapter;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -59,6 +60,10 @@ public final class AdapterManager {
 				return adapter;
 			case BoschIot:
 				adapter = new BoschIotAdapter(name);
+				this.adapters.put(name, adapter);
+				return adapter;
+			case GoodsTag:
+				adapter = new GoodsTagAdapter(name);
 				this.adapters.put(name, adapter);
 				return adapter;
 			default:

@@ -17,7 +17,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 public abstract class EventAdapter {
 
-	String name = new String();
+	protected String name = new String();
 
 	public EventAdapter(final String name) {
 		this.name = name;
