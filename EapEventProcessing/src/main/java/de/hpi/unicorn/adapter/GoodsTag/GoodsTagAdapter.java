@@ -7,8 +7,21 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SimpleTrigger;
 import org.quartz.impl.StdSchedulerFactory;
+import java.net.URI;
+import javax.websocket.ClientEndpoint;
+import javax.websocket.CloseReason;
+import javax.websocket.ContainerProvider;
+import javax.websocket.OnClose;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
 
 import java.util.Date;
+
+/*
+Example: https://stackoverflow.com/questions/26452903/javax-websocket-client-simple-example
+ */
 
 public class GoodsTagAdapter extends EventAdapter {
 
