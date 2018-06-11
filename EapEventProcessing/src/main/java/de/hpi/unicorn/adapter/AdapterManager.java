@@ -180,4 +180,19 @@ public final class AdapterManager {
 		remove(adapterName);
 	}
 
+	public void startGoodsTagAdapter() {
+		String adapterName = "GoodsTag";
+		GoodsTagAdapter adapter = (GoodsTagAdapter) create(adapterName, AdapterType.GoodsTag);
+
+		if (adapter != null) {
+			start(adapterName);
+		}
+	}
+
+	public void stopAndRemoveGoodsTagAdapter() {
+		String adapterName = "GoodsTag";
+		stop(adapterName);
+		remove(adapterName);
+	}
+
 }

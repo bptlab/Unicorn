@@ -35,12 +35,18 @@ de.hpi.unicorn.email.password=YOUR PASSWORD HERE
 de.hpi.unicorn.semantic.Triplestore.location=./Triplestore
 de.hpi.unicorn.semantic.Triplestore.clean=true
 # Default time interval for polling of events via adapter (in seconds)
-de.hpi.unicorn.adapter.defaultInterval=900
+de.hpi.unicorn.adapter.defaultInterval=10
 # Nokia Here credentials for adapter
 de.hpi.unicorn.adapter.nokiaHereAppID=YOUR HERE APP ID
 de.hpi.unicorn.adapter.nokiaHereAppCode=YOUR HERE APP CODE
 de.hpi.unicorn.adapter.tflAppId=YOUR HERE APP ID
 de.hpi.unicorn.adapter.tflAppCode=YOUR HERE APP CODE
+
+# GoodsTag adapter configuration
+de.hpi.unicorn.adapter.goodsTagUri=ENTER YOUR GOODSTAG WEBSOCKET URI HERE
+de.hpi.unicorn.adapter.goodsTagUsername=ENTER YOUR GOODSTAG USERNAME HERE
+de.hpi.unicorn.adapter.goodsTagPassword=ENTER YOUR GOODSTAG PASSWORD HERE
+
 # Tomcat
 # Make sure that the Maven server profile is defined properly in settings.xml
 # Example for [path to user folder]/.m2/settings.xml:
