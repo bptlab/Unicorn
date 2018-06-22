@@ -38,8 +38,7 @@ import de.hpi.unicorn.esper.StreamProcessingAdapter;
 import de.hpi.unicorn.messageQueue.JMSProvider;
 
 /**
- * The controller for the web application. Most of the initialization is done
- * here.
+ * The controller for the web application. Most of the initialization is done here.
  *
  * @author micha
  */
@@ -47,7 +46,6 @@ public class UNICORNApplication extends WebApplication {
 
 	private StreamProcessingAdapter epAdapter;
 	private static final Logger logger = Logger.getLogger(UNICORNApplication.class);
-
 
 	@Override
 	public Class<? extends WebPage> getHomePage() {
@@ -65,9 +63,9 @@ public class UNICORNApplication extends WebApplication {
 
 		BootstrapSettings bootStrapSettings = new BootstrapSettings();
 		bootStrapSettings.minify(true); // use minimized version of all
-		
+
 		this.getMarkupSettings().setStripWicketTags(true);
-		
+
 		// bootstrap
 		final ThemeProvider themeProvider = new BootswatchThemeProvider() {
 			{
@@ -87,7 +85,8 @@ public class UNICORNApplication extends WebApplication {
 		this.setAuthorizationStrategy();
 
 		// initialize jms event import interface
-		if (JMSProvider.HOST.isEmpty() || JMSProvider.PORT.isEmpty() || JMSProvider.IMPORT_CHANNEL.isEmpty()) {
+		if (JMSProvider.HOST == null || JMSProvider.HOST.isEmpty() || JMSProvider.PORT == null || JMSProvider.PORT.isEmpty()
+				|| JMSProvider.IMPORT_CHANNEL == null || JMSProvider.IMPORT_CHANNEL.isEmpty()) {
 			logger.warn("JMS is not configured. If you want to use it, set properties "
 					+ "de.hpi.unicorn.messageQueue.(jmsHost|jmsPort|jmsImportChannel) in your unicorn.properties");
 		} else {
@@ -100,8 +99,7 @@ public class UNICORNApplication extends WebApplication {
 	}
 
 	/**
-	 * Initializes the authorization strategy for the web application. Pages,
-	 * which implement the {@link AuthenticatedWebPage} interface, are only
+	 * Initializes the authorization strategy for the web application. Pages, which implement the {@link AuthenticatedWebPage} interface, are only
 	 * accessible for authenticated users.
 	 */
 	private void setAuthorizationStrategy() {
