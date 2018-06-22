@@ -46,6 +46,7 @@ de.hpi.unicorn.adapter.tflAppCode=YOUR HERE APP CODE
 de.hpi.unicorn.adapter.goodsTagUri=ENTER YOUR GOODSTAG WEBSOCKET URI HERE
 de.hpi.unicorn.adapter.goodsTagUsername=ENTER YOUR GOODSTAG USERNAME HERE
 de.hpi.unicorn.adapter.goodsTagPassword=ENTER YOUR GOODSTAG PASSWORD HERE
+de.hpi.unicorn.adapter.goodsTagDeviceIds=ENTER YOUR GOODSTAG DEVICE IDS (PIPE SEPARATED LIST) HERE
 
 # Tomcat
 # Make sure that the Maven server profile is defined properly in settings.xml

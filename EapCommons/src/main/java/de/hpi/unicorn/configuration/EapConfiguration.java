@@ -40,6 +40,7 @@ public class EapConfiguration {
 	public static String goodsTagUri = "";
 	public static String goodstagUsername = "";
 	public static String goodsTagPassword = "";
+	public static String goodsTagDeviceIds = "";
 	public static String eMailUser = "";
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
@@ -75,6 +76,7 @@ public class EapConfiguration {
 		goodsTagUri = props.getProperty("de.hpi.unicorn.adapter.goodsTagUri", "");
 		goodstagUsername = props.getProperty("de.hpi.unicorn.adapter.goodsTagUsername", "");
 		goodsTagPassword = props.getProperty("de.hpi.unicorn.adapter.goodsTagPassword", "");
+		goodsTagDeviceIds = props.getProperty("de.hpi.unicorn.adapter.goodsTagDeviceIds", "");
 		eMailUser = props.getProperty("de.hpi.unicorn.email.user", "YOUR GMAIL ADDRESS HERE");
 		eMailPassword = props.getProperty("de.hpi.unicorn.email.password", "YOUR PASSWORD HERE");
 		triplestoreLocation = props.getProperty("de.hpi.unicorn.semantic.Triplestore.location", "./Triplestore");

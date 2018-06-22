@@ -1,11 +1,10 @@
 package de.hpi.unicorn.adapter.GoodsTag;
 
-import de.hpi.unicorn.adapter.AdapterJob;
 import de.hpi.unicorn.adapter.EventAdapter;
+import de.hpi.unicorn.adapter.GoodsTag.STOMP.*;
 import de.hpi.unicorn.configuration.EapConfiguration;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -13,44 +12,38 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.glassfish.jersey.server.Uri;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omg.SendingContext.RunTime;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.impl.StdSchedulerFactory;
 
-import javax.json.JsonException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /*
 Example: https://stackoverflow.com/questions/26452903/javax-websocket-client-simple-example
  */
 
-public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHandler {
+public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STOMPServerMessage> {
 
     private static String C_HTTPS_PREFIX = "https://";
     private static String C_WSS_PREFIX = "wss://";
     private static String C_URI_ACCESS_TOKEN_PARAMETER = "/ws?access_token=";
+    private static String C_URI_NOTIFICATIONS_PATH = "/notifications";
+    private static String C_URI_SUBSCRIPTION_PATH = "/subscribe";
     private static String C_TOKEN_ROUTE = "/oauth/token";
+    private static String C_DEVICE_ID_SEPARATOR = "|";
 
     private String goodsTagUri = "";
     private String goodsTagUsername = "";
     private String goodsTagPassword = "";
+    private String[] goodsTagDeviceIds;
     private String goodsTagAccessToken = "";
     private Date refreshAccessToken = Calendar.getInstance().getTime();
-    private WebSocketClient client = null;
+    private WebSocketClient webSocketClient = null;
+    private STOMPClient stompClient = null;
+    private STOMPSubscription notificationsSubscription = null;
 
 
     public GoodsTagAdapter(String name) {
@@ -59,6 +52,7 @@ public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHan
         this.readGoodsTagUri();
         this.readGoodsTagUsername();
         this.readGoodsTagPassword();
+        this.readGoodsTagDeviceIds();
     }
 
     private void readGoodsTagUri() {
@@ -85,12 +79,22 @@ public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHan
         }
     }
 
+    private void readGoodsTagDeviceIds() {
+        String ids = EapConfiguration.goodsTagDeviceIds;
+
+        if (ids.length() <= 0) {
+            throw new RuntimeException("GoodsTag device ids are not configured. please check your unicorn.properties");
+        }
+
+        this.goodsTagDeviceIds = ids.split(C_DEVICE_ID_SEPARATOR);
+    }
+
     private void disconnect() {
-        if (this.client == null || !this.client.isConnected()) {
+        if (this.webSocketClient == null || !this.webSocketClient.isConnected()) {
             return;
         }
 
-        this.client.close();
+        this.webSocketClient.close();
     }
 
     private String authenticate() {
@@ -160,19 +164,13 @@ public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHan
     }
 
     private void connect() {
-        String wsUri = EapConfiguration.goodsTagUri;
+        this.goodsTagAccessToken = this.authenticate();
 
-        if (wsUri.length() <= 0) {
-            throw new RuntimeException("cannot connect to GoodsTag web socket: No web socket uri configured. Check your unicorn.properties!");
-        }
-
-        String wsAccessToken = this.authenticate();
-
-        if (wsAccessToken.length() <= 0) {
+        if (this.goodsTagAccessToken.length() <= 0) {
             throw new RuntimeException("cannot connect to GoodsTag: access_token not granted!");
         }
 
-        String uriString = C_WSS_PREFIX + wsUri + C_URI_ACCESS_TOKEN_PARAMETER + wsAccessToken;
+        String uriString = C_WSS_PREFIX + this.goodsTagUri + C_URI_ACCESS_TOKEN_PARAMETER + this.goodsTagAccessToken;
 
         try {
             URI uri = new URI(uriString);
@@ -180,24 +178,48 @@ public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHan
             // close existing connection
             this.disconnect();
 
-            this.client = new WebSocketClient(uri);
+            this.webSocketClient = new WebSocketClient(uri);
         }
         catch (URISyntaxException e) {
             System.out.println(String.format("cannot connect to GoodsTag: '%s' is not a valid URI!", uriString));
             throw new RuntimeException(e);
         }
         catch (RuntimeException e) {
-            System.out.println("cannot connect to GoodsTag: web socket client connection was refused");
+            System.out.println("cannot connect to GoodsTag: web socket webSocketClient connection was refused");
             throw e;
         }
 
-        this.client.addMessageHandler(this);
+        this.stompClient = new STOMPClient(this.webSocketClient, this.webSocketClient);
+        this.notificationsSubscription = this.stompClient.subscribe(C_URI_NOTIFICATIONS_PATH);
+        this.notificationsSubscription.addMessageReceiver(this);
+
+        for (String deviceId : this.goodsTagDeviceIds) {
+            this.subscribeToDevice(deviceId);
+        }
+    }
+
+    private void subscribeToDevice(String deviceId) {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("content-type", "application/json");
+
+        JSONObject message = new JSONObject();
+
+        try {
+            message.put("type", "eventSubscribe");
+            message.put("eventType", "device.tag.detect");
+            message.put("source", String.format("urn:device:%s", deviceId));
+
+            this.stompClient.send(C_URI_SUBSCRIPTION_PATH, message.toString(), headers);
+        }
+        catch (JSONException ex) {
+            System.out.println("cannot create subscription message for GoodsTag web socket!");
+        }
     }
 
     @Override
     public void trigger() {
-        // check, whether our client connection was closed.
-        if (this.client != null && this.client.isConnected()) {
+        // check, whether our webSocketClient connection was closed.
+        if (this.webSocketClient != null && this.webSocketClient.isConnected()) {
             return;
         }
 
@@ -212,12 +234,13 @@ public class GoodsTagAdapter extends EventAdapter implements WebSocketMessageHan
     }
 
     @Override
-    public void onMessage(WebSocketClient sender, String message) {
-        if (sender != client) {
-            System.out.println("GoodsTag event adapter received web socket message where 'sender' != 'client'!");
+    public void messageReceived(MessageDispatcher<STOMPServerMessage> dispatcher, STOMPServerMessage message) {
+        if (dispatcher != this.notificationsSubscription) {
+            System.out.println("GoodsTag adapter received message from unknown subscription!");
             return;
         }
 
-        // TODO: build event from message
+        System.out.println(String.format("GoodsTag event received: '%s'", message.getBody()));
+        // TODO: create event from received message
     }
 }

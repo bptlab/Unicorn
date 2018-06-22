@@ -1,5 +1,9 @@
 package de.hpi.unicorn.adapter.GoodsTag;
 
+import de.hpi.unicorn.adapter.GoodsTag.STOMP.MessageDispatcher;
+import de.hpi.unicorn.adapter.GoodsTag.STOMP.MessageReceiver;
+import de.hpi.unicorn.adapter.GoodsTag.STOMP.MessageSender;
+
 import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
@@ -7,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ClientEndpoint
-public class WebSocketClient {
+public class WebSocketClient implements SendHandler, MessageSender<String>, MessageDispatcher<String> {
 
     private Session session;
-    private List<WebSocketMessageHandler> messageHandlers;
+    private List<MessageReceiver<String>> receivers = new ArrayList<>();
     private CloseReason closeReason;
     private boolean isConnected;
 
@@ -24,7 +28,6 @@ public class WebSocketClient {
 
     public WebSocketClient(URI serverURI) {
         this.session = null;
-        this.messageHandlers = new ArrayList<>();
         this.closeReason = null;
         this.isConnected = false;
 
@@ -35,10 +38,6 @@ public class WebSocketClient {
         catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void addMessageHandler(WebSocketMessageHandler messageHandler) {
-        this.messageHandlers.add(messageHandler);
     }
 
     public void close() {
@@ -71,22 +70,52 @@ public class WebSocketClient {
 
     @OnMessage
     public void onMessage(String message) {
-        if (this.messageHandlers.size() <= 0) {
+        System.out.println(String.format("web socket client received message: '%s'", message));
+
+        if (this.receivers.size() <= 0) {
             System.out.println(String.format("web socket client received message ('%s'), but has no message handlers", message));
             return;
         }
 
-        for (WebSocketMessageHandler messageHandler : this.messageHandlers) {
-            messageHandler.onMessage(this, message);
+        for (MessageReceiver<String> receiver : this.receivers) {
+            receiver.messageReceived(this, message);
         }
     }
 
+    @Override
+    public boolean canSend() {
+        return this.isConnected;
+    }
+
+    @Override
     public boolean sendMessage(String message) {
-        if (!this.isConnected) {
+        if (!this.isConnected || this.session == null) {
             return false;
         }
 
-        this.session.getAsyncRemote().sendText(message);
+        this.session.getAsyncRemote().sendText(message, this);
         return true;
+    }
+
+    @Override
+    public void onResult(SendResult sendResult) {
+        if (!sendResult.isOK()) {
+            System.out.println(String.format("cannot send WebSocket message: %s", sendResult.getException().getMessage()));
+        }
+    }
+
+    @Override
+    public boolean canReceive() {
+        return this.isConnected;
+    }
+
+    @Override
+    public void addMessageReceiver(MessageReceiver<String> receiver) {
+        this.receivers.add(receiver);
+    }
+
+    @Override
+    public void removeMessageReceiver(MessageReceiver<String> receiver) {
+        this.receivers.remove(receiver);
     }
 }
