@@ -9,6 +9,7 @@ package de.hpi.unicorn.application;
 
 import javax.jms.JMSException;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
@@ -45,7 +46,8 @@ import de.hpi.unicorn.messageQueue.JMSProvider;
 public class UNICORNApplication extends WebApplication {
 
 	private StreamProcessingAdapter epAdapter;
-	private BootstrapSettings bootStrapSettings;
+	private static final Logger logger = Logger.getLogger(UNICORNApplication.class);
+
 
 	@Override
 	public Class<? extends WebPage> getHomePage() {
@@ -61,21 +63,20 @@ public class UNICORNApplication extends WebApplication {
 	public void init() {
 		super.init();
 
+		BootstrapSettings bootStrapSettings = new BootstrapSettings();
+		bootStrapSettings.minify(true); // use minimized version of all
+		
 		this.getMarkupSettings().setStripWicketTags(true);
-
-		this.bootStrapSettings = new BootstrapSettings();
-		this.bootStrapSettings.minify(true); // use minimized version of all
+		
 		// bootstrap
-
 		final ThemeProvider themeProvider = new BootswatchThemeProvider() {
 			{
 				this.add(new MetroTheme());
 				this.defaultTheme("cerulean");
 			}
 		};
-		this.bootStrapSettings.setThemeProvider(themeProvider);
-
-		Bootstrap.install(this, this.bootStrapSettings);
+		bootStrapSettings.setThemeProvider(themeProvider);
+		Bootstrap.install(this, bootStrapSettings);
 
 		this.mountImages();
 
@@ -83,15 +84,18 @@ public class UNICORNApplication extends WebApplication {
 		PropertyConfigurator.configure(EapConfiguration.getProperties());
 		this.epAdapter = StreamProcessingAdapter.getInstance();
 
-		// initializeEventTypesForShowCase();
-
 		this.setAuthorizationStrategy();
 
 		// initialize jms event import interface
-		try {
-			JMSProvider.receiveMessage(new JmsAdapter(), JMSProvider.HOST, JMSProvider.PORT, JMSProvider.IMPORT_CHANNEL);
-		} catch (final JMSException e) {
-			e.printStackTrace();
+		if (JMSProvider.HOST.isEmpty() || JMSProvider.PORT.isEmpty() || JMSProvider.IMPORT_CHANNEL.isEmpty()) {
+			logger.warn("JMS is not configured. If you want to use it, set properties "
+					+ "de.hpi.unicorn.messageQueue.(jmsHost|jmsPort|jmsImportChannel) in your unicorn.properties");
+		} else {
+			try {
+				JMSProvider.receiveMessage(new JmsAdapter(), JMSProvider.HOST, JMSProvider.PORT, JMSProvider.IMPORT_CHANNEL);
+			} catch (final JMSException e) {
+				logger.error("Failed to connect to JMS", e);
+			}
 		}
 	}
 
@@ -159,9 +163,5 @@ public class UNICORNApplication extends WebApplication {
 	 */
 	public StreamProcessingAdapter getEp() {
 		return this.epAdapter;
-	}
-
-	public void setEp(final StreamProcessingAdapter epAdapter) {
-		this.epAdapter = epAdapter;
 	}
 }
