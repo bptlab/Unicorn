@@ -1,5 +1,7 @@
 package de.hpi.unicorn.adapter.GoodsTag.STOMP;
 
+import com.google.common.collect.Lists;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +21,15 @@ public class STOMPServerMessage {
         if (message == null
                 || message.length() <= 0
                 || message.charAt(message.length() - 1) != C_MESSAGE_END) {
+            System.out.println("Cannot parse STOMP message: message was null, empty or did not end with ^0!");
             return invalidMessage();
         }
 
         Stack<String> messageLines = new Stack<>();
-        messageLines.addAll(Arrays.asList(message.split("\r?\n")));
+        messageLines.addAll(Lists.reverse(Arrays.asList(message.split("\r?\n"))));
 
         if (messageLines.empty()) {
+            System.out.println("Cannot parse STOMP message: message has no lines!");
             return invalidMessage();
         }
 
@@ -36,7 +40,7 @@ public class STOMPServerMessage {
         // parse command
         String commandText = messageLines.pop();
         for (STOMPServerCommand c : STOMPServerCommand.values()) {
-            if (commandText.equalsIgnoreCase(c.toString())) {
+            if (!commandText.equalsIgnoreCase(c.toString())) {
                 continue;
             }
 
@@ -45,6 +49,7 @@ public class STOMPServerMessage {
         }
 
         if (command == STOMPServerCommand.INVALID_COMMAND) {
+            System.out.println(String.format("Cannot parse STOMP message: unrecognized command '%s'", commandText));
             return invalidMessage();
         }
 
@@ -61,6 +66,7 @@ public class STOMPServerMessage {
 
             if (header.length != 2) {
                 // invalid header
+                System.out.println("Cannot parse STOMP message: invalid header format!");
                 return invalidMessage();
             }
 

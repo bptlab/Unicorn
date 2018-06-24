@@ -26,16 +26,15 @@ public class STOMPClientMessageFactory {
         sb.append(command.toString().toUpperCase());
         sb.append(C_ENTRY_SEPARATOR);
 
-        if (headers.size() <= 0) {
-            sb.append(C_ENTRY_SEPARATOR);
-        }
-
         for (Map.Entry<String, String> header : headers.entrySet()) {
             sb.append(header.getKey());
             sb.append(C_HEADER_SEPARATOR);
             sb.append(header.getValue());
             sb.append(C_ENTRY_SEPARATOR);
         }
+
+        // separate header-section from body section
+        sb.append(C_ENTRY_SEPARATOR);
 
         sb.append(body);
         sb.append(C_MESSAGE_END);
@@ -46,6 +45,18 @@ public class STOMPClientMessageFactory {
     public static String newMessage(STOMPClientCommand command, String body) {
         return newMessage(command, body, new HashMap<String, String>());
     }
+
+    //region connect
+    public static String connect(String host) {
+        Map<String, String> headers = new HashMap<>();
+
+        setHeader(headers, C_ACCEPT_VERSION_HEADER, "1.2");
+        setHeader(headers, C_HOST_HEADER, host);
+        setHeader(headers, C_HEARTBEAT_HEADER, "0,0"); // we don't support heart-beat
+
+        return newMessage(STOMPClientCommand.CONNECT, "", headers);
+    }
+    //endregion
 
     //region send
     public static String send(String destination, String body, Map<String, String> headers) {

@@ -25,7 +25,7 @@ import java.util.*;
 Example: https://stackoverflow.com/questions/26452903/javax-websocket-client-simple-example
  */
 
-public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STOMPServerMessage> {
+public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STOMPServerMessage>, STOMPClientConnectHandler {
 
     private static String C_HTTPS_PREFIX = "https://";
     private static String C_WSS_PREFIX = "wss://";
@@ -33,7 +33,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private static String C_URI_NOTIFICATIONS_PATH = "/notifications";
     private static String C_URI_SUBSCRIPTION_PATH = "/subscribe";
     private static String C_TOKEN_ROUTE = "/oauth/token";
-    private static String C_DEVICE_ID_SEPARATOR = "|";
+    private static String C_DEVICE_ID_SEPARATOR = " ";
 
     private String goodsTagUri = "";
     private String goodsTagUsername = "";
@@ -189,13 +189,8 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
             throw e;
         }
 
-        this.stompClient = new STOMPClient(this.webSocketClient, this.webSocketClient);
-        this.notificationsSubscription = this.stompClient.subscribe(C_URI_NOTIFICATIONS_PATH);
-        this.notificationsSubscription.addMessageReceiver(this);
-
-        for (String deviceId : this.goodsTagDeviceIds) {
-            this.subscribeToDevice(deviceId);
-        }
+        this.stompClient = new STOMPClient(C_WSS_PREFIX + this.goodsTagUri, this.webSocketClient, this.webSocketClient);
+        this.stompClient.connect(this);
     }
 
     private void subscribeToDevice(String deviceId) {
@@ -242,5 +237,24 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
 
         System.out.println(String.format("GoodsTag event received: '%s'", message.getBody()));
         // TODO: create event from received message
+    }
+
+    @Override
+    public void connectFinished(STOMPClient sender, boolean connectionSucceeded) {
+        if (sender != this.stompClient) {
+            System.out.println("GoodsTag adapter received 'connection finished' from unknown STOMP client!");
+            return;
+        }
+
+        if (!connectionSucceeded) {
+            return;
+        }
+
+        this.notificationsSubscription = this.stompClient.subscribe(C_URI_NOTIFICATIONS_PATH);
+        this.notificationsSubscription.addMessageReceiver(this);
+
+        for (String deviceId : this.goodsTagDeviceIds) {
+            this.subscribeToDevice(deviceId);
+        }
     }
 }

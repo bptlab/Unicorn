@@ -70,8 +70,6 @@ public class WebSocketClient implements SendHandler, MessageSender<String>, Mess
 
     @OnMessage
     public void onMessage(String message) {
-        System.out.println(String.format("web socket client received message: '%s'", message));
-
         if (this.receivers.size() <= 0) {
             System.out.println(String.format("web socket client received message ('%s'), but has no message handlers", message));
             return;
