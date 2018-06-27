@@ -3,6 +3,10 @@ package de.hpi.unicorn.adapter.GoodsTag;
 import de.hpi.unicorn.adapter.EventAdapter;
 import de.hpi.unicorn.adapter.GoodsTag.STOMP.*;
 import de.hpi.unicorn.configuration.EapConfiguration;
+import de.hpi.unicorn.event.EapEvent;
+import de.hpi.unicorn.event.EapEventType;
+import de.hpi.unicorn.eventhandling.Broker;
+import de.hpi.unicorn.utils.DateUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -12,10 +16,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 
 import java.net.URISyntaxException;
@@ -35,6 +41,14 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private static String C_TOKEN_ROUTE = "/oauth/token";
     private static String C_DEVICE_ID_SEPARATOR = " ";
 
+    private static String C_NFC_UNKNOWN_TAG_SCAN_NAME = "NFCUnknownTagScan";
+    private static String C_NFC_UNMAPPED_TAG_SCAN_NAME = "NFCUnmappedTagScan";
+    private static String C_NFC_USER_SCAN_NAME = "NFCUserScan";
+    private static String C_NFC_BOOK_SCAN_NAME = "NFCBookScan";
+
+    private static String C_GOODSTAG_CARDSCAN = "cardscan";
+    private static String C_GOODSTAG_BOOKSCAN = "bookscan";
+
     private String goodsTagUri = "";
     private String goodsTagUsername = "";
     private String goodsTagPassword = "";
@@ -44,6 +58,12 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private WebSocketClient webSocketClient = null;
     private STOMPClient stompClient = null;
     private STOMPSubscription notificationsSubscription = null;
+    private List<String> processedExecutionResults = new ArrayList<>();
+
+    private EapEventType nfcUnknownTagScan = null;
+    private EapEventType nfcUnmappedTagScan = null;
+    private EapEventType nfcUserScan = null;
+    private EapEventType nfcBookScan = null;
 
 
     public GoodsTagAdapter(String name) {
@@ -211,8 +231,113 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         }
     }
 
+    private void cacheEventTypes() {
+        if (nfcUnknownTagScan == null) {
+            nfcUnknownTagScan = EapEventType.findByTypeName(C_NFC_UNKNOWN_TAG_SCAN_NAME);
+        }
+
+        if (nfcUnmappedTagScan == null) {
+            nfcUnmappedTagScan = EapEventType.findByTypeName(C_NFC_UNMAPPED_TAG_SCAN_NAME);
+        }
+
+        if (nfcUserScan == null) {
+            nfcUserScan = EapEventType.findByTypeName(C_NFC_USER_SCAN_NAME);
+        }
+
+        if (nfcBookScan == null) {
+            nfcBookScan = EapEventType.findByTypeName(C_NFC_BOOK_SCAN_NAME);
+        }
+    }
+
+    private void throwIfContainsError(JSONObject executionResult) throws RuntimeException, JSONException {
+        String errorMessage = executionResult.getString("errorMessage");
+
+
+        if (errorMessage != null) {
+            throw new RuntimeException(errorMessage);
+        }
+    }
+
+    private JSONObject getEnglishTranslation(JSONObject executionResult) throws RuntimeException, JSONException {
+        JSONArray translations = executionResult.getJSONArray("translations");
+
+        if (translations.length() <= 0) {
+            throw new RuntimeException("Cannot get english translation from GoodsTag event!");
+        }
+
+        for (int i = 0; i < translations.length(); i++) {
+            JSONObject translation = translations.getJSONObject(i);
+
+            if (!translation.getString("language").equalsIgnoreCase("en")) {
+                continue;
+            }
+
+            return translation;
+        }
+
+        throw new RuntimeException("Cannot get english translation from GoodsTag event!");
+    }
+
+    private void parseGoodsTagEvent(JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+        String timestampString = goodsTagEvent.getString("time");
+        Date timestamp = DateUtils.parseDate(timestampString);
+
+        if (timestamp == null) {
+            throw new RuntimeException(String.format("Cannot parse date from '%s'", timestampString));
+        }
+
+        JSONObject executionResult = goodsTagEvent.getJSONObject("executionResult");
+
+        throwIfContainsError(executionResult);
+
+        // check, whether this event was processed already
+        // this might happen, if the user holds the tag too close to the scanner for too long
+        if (processedExecutionResults.contains(executionResult.getString("id"))) {
+            return;
+        } else {
+            processedExecutionResults.add(executionResult.getString("id"));
+        }
+
+        JSONObject result = executionResult.getJSONObject("result");
+        String type = result.getString("type");
+
+        if (type.equalsIgnoreCase(C_GOODSTAG_BOOKSCAN)) {
+            parseBookScanEvent(timestamp, result, goodsTagEvent);
+        } else if (type.equalsIgnoreCase(C_GOODSTAG_CARDSCAN)) {
+            parseCardScanEvent(timestamp, result, goodsTagEvent);
+        } else {
+            throw new RuntimeException(String.format("Unknown GoodsTag event type: '%s'", type));
+        }
+    }
+
+    private void parseBookScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+
+    }
+
+    private void parseCardScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+        if (nfcUserScan == null) {
+            throw new RuntimeException(String.format("Cannot send GoodsTag user scan event: Event Type '%s' is missing", C_NFC_USER_SCAN_NAME));
+        }
+
+        Map<String, Serializable> eventValues = new HashMap<>();
+
+        String epc = goodsTagEvent.getJSONObject("data").getString("epc");
+        JSONObject translation = getEnglishTranslation(executionResult);
+
+        eventValues.put("NFCID", epc);
+        eventValues.put("UserId", executionResult.getString("card-id"));
+        eventValues.put("Name", translation.getString("name"));
+
+        // TODO: eventValues.put("Mail", translation.getString("mail"));
+
+        System.out.println("*** NEW GOODSTAG CARD SCAN EVENT ***");
+        Broker.getEventImporter().importEvent(new EapEvent(nfcUserScan, timestamp, eventValues));
+    }
+
     @Override
     public void trigger() {
+        cacheEventTypes();
+
         // check, whether our webSocketClient connection was closed.
         if (this.webSocketClient != null && this.webSocketClient.isConnected()) {
             return;
@@ -235,8 +360,22 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
             return;
         }
 
-        System.out.println(String.format("GoodsTag event received: '%s'", message.getBody()));
-        // TODO: create event from received message
+        //System.out.println(String.format("GoodsTag event received: '%s'", message.getBody()));
+
+        if (!message.containsHeader("content-type") || !message.getHeader("content-type").equalsIgnoreCase("application/json")) {
+            System.out.println("GoodsTag event does not contain a JSON body. This is not supported (yet)!");
+            return;
+        }
+
+        try {
+            JSONObject jsonBody = new JSONObject(message.getBody());
+            parseGoodsTagEvent(jsonBody);
+
+        } catch (JSONException ex) {
+            System.out.println(String.format("Cannot parse GoodsTag event to JSON object: %s", ex.getMessage()));
+        } catch (RuntimeException ex) {
+            System.out.println(String.format("Cannot parse GoodsTag event: %s", ex.getMessage()));
+        }
     }
 
     @Override

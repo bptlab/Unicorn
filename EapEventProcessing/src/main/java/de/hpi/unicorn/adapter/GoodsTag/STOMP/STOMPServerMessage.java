@@ -89,11 +89,11 @@ public class STOMPServerMessage {
     }
 
     private static void setHeader(Map<String, String> headers, String header, String value) {
-        if (headers.containsKey(header)) {
+        if (headers.containsKey(header.toLowerCase())) {
             return;
         }
 
-        headers.put(header, value);
+        headers.put(header.toLowerCase(), value.toLowerCase());
     }
 
     private STOMPServerMessage(STOMPServerCommand command, String body, Map<String, String> headers) {
@@ -119,7 +119,7 @@ public class STOMPServerMessage {
     }
 
     public boolean containsHeader(String header) {
-        return this.headers.containsKey(header);
+        return this.headers.containsKey(header.toLowerCase());
     }
 
     public String getHeader(String header) throws RuntimeException {
@@ -127,7 +127,7 @@ public class STOMPServerMessage {
             throw new RuntimeException(String.format("STOMP message does not contain header '%s'", header));
         }
 
-        return this.headers.get(header);
+        return this.headers.get(header.toLowerCase());
     }
 
     public String getHeader(String header, String defaultValue) {
