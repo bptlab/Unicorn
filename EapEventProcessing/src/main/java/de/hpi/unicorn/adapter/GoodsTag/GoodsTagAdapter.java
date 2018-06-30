@@ -46,8 +46,10 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private static String C_NFC_USER_SCAN_NAME = "NFCUserScan";
     private static String C_NFC_BOOK_SCAN_NAME = "NFCBookScan";
 
-    private static String C_GOODSTAG_CARDSCAN = "cardscan";
-    private static String C_GOODSTAG_BOOKSCAN = "bookscan";
+    private static String C_GOODS_TAG_UNKNOWN_SCAN = "unknownTag";
+    private static String C_GOODS_TAG_UNMAPPED_SCAN = "unmappedTag";
+    private static String C_GOODS_TAG_CARD_SCAN = "cardscan";
+    private static String C_GOODS_TAG_BOOK_SCAN = "bookscan";
 
     private String goodsTagUri = "";
     private String goodsTagUsername = "";
@@ -249,6 +251,32 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         }
     }
 
+    private String getGoodsTagWorkaround(STOMPServerMessage goodsTagEvent) throws RuntimeException {
+        // this is a workaround for a bug, which caused the JSON parser to fail
+        // the bug consists of a JSON key being used twice within the GoodsTag event body
+
+        // TODO: disable this function as soon as the bug in GoodsTag is fixed!
+
+        // we are going to ignore the first few JSON attributes, until we find the "time" key
+        // thus, we can avoid the JSON parser to fail and hence, continue the execution normally
+        String[] keyValueSplit = goodsTagEvent.getBody().split("[:,]");
+        int startIndex = 0;
+
+        for (int i = 0; i < keyValueSplit.length; i += 2) {
+            if (keyValueSplit[i].equalsIgnoreCase("time")) {
+                break;
+            }
+
+            startIndex += keyValueSplit[i].length() + keyValueSplit[i + 1].length() + 2; // add 2, since "split" removed the separators
+        }
+
+        if (startIndex >= goodsTagEvent.getBody().length() || startIndex <= 0) {
+            throw new RuntimeException("Cannot apply workaround for GoodsTag JSON bug!");
+        }
+
+        return "{" + goodsTagEvent.getBody().substring(startIndex); // add the "{" to start the JSON object correctly
+    }
+
     private void throwIfContainsError(JSONObject executionResult) throws RuntimeException, JSONException {
         String errorMessage = executionResult.getString("errorMessage");
 
@@ -301,10 +329,18 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         JSONObject result = executionResult.getJSONObject("result");
         String type = result.getString("type");
 
-        if (type.equalsIgnoreCase(C_GOODSTAG_BOOKSCAN)) {
+        if (type.equalsIgnoreCase(C_GOODS_TAG_BOOK_SCAN)) {
             parseBookScanEvent(timestamp, result, goodsTagEvent);
-        } else if (type.equalsIgnoreCase(C_GOODSTAG_CARDSCAN)) {
+
+        } else if (type.equalsIgnoreCase(C_GOODS_TAG_CARD_SCAN)) {
             parseCardScanEvent(timestamp, result, goodsTagEvent);
+
+        } else if (type.equalsIgnoreCase(C_GOODS_TAG_UNKNOWN_SCAN)) {
+            parseUnknownTagScanEvent(timestamp, result, goodsTagEvent);
+
+        } else if (type.equalsIgnoreCase(C_GOODS_TAG_UNMAPPED_SCAN)) {
+            parseUnmappedTagScanEvent(timestamp, result, goodsTagEvent);
+
         } else {
             throw new RuntimeException(String.format("Unknown GoodsTag event type: '%s'", type));
         }
@@ -326,12 +362,42 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
 
         eventValues.put("NFCID", epc);
         eventValues.put("UserId", executionResult.getString("card-id"));
-        eventValues.put("Name", translation.getString("name"));
+        //eventValues.put("Name", translation.getString("name"));
 
         // TODO: eventValues.put("Mail", translation.getString("mail"));
 
         System.out.println("*** NEW GOODSTAG CARD SCAN EVENT ***");
         Broker.getEventImporter().importEvent(new EapEvent(nfcUserScan, timestamp, eventValues));
+    }
+
+    private void parseUnknownTagScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+        if (nfcUnknownTagScan == null) {
+            throw new RuntimeException(String.format("Cannot send GoodsTag unknown tag scan event: Event Type '%s' is missing", C_NFC_UNKNOWN_TAG_SCAN_NAME));
+        }
+
+        Map<String, Serializable> eventValues = new HashMap<>();
+
+        String epc = goodsTagEvent.getJSONObject("data").getString("epc");
+
+        eventValues.put("NFCID", epc);
+
+        System.out.println("*** NEW GOODSTAG UNKNOWN TAG SCAN EVENT ***");
+        Broker.getEventImporter().importEvent(new EapEvent(nfcUnmappedTagScan, timestamp, eventValues));
+    }
+
+    private void parseUnmappedTagScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+        if (nfcUnmappedTagScan == null) {
+            throw new RuntimeException(String.format("Cannot send GoodsTag unknown tag scan event: Event Type '%s' is missing", C_NFC_UNMAPPED_TAG_SCAN_NAME));
+        }
+
+        Map<String, Serializable> eventValues = new HashMap<>();
+
+        String epc = goodsTagEvent.getJSONObject("data").getString("epc");
+
+        eventValues.put("NFCID", epc);
+
+        System.out.println("*** NEW GOODSTAG UNMAPPED TAG SCAN EVENT ***");
+        Broker.getEventImporter().importEvent(new EapEvent(nfcUnmappedTagScan, timestamp, eventValues));
     }
 
     @Override
@@ -368,7 +434,11 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         }
 
         try {
-            JSONObject jsonBody = new JSONObject(message.getBody());
+            // TODO: remove this, as soon as the GoodsTag JSON bug is fixed:
+            JSONObject jsonBody = new JSONObject(getGoodsTagWorkaround(message));
+
+            // TODO: enable this again, as soon as the GoodsTag JSON bug is fixed:
+            // JSONObject jsonBody = new JSONObject(message.getBody());
             parseGoodsTagEvent(jsonBody);
 
         } catch (JSONException ex) {
