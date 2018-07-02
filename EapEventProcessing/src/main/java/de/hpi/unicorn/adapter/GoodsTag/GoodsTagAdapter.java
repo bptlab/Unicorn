@@ -401,7 +401,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         eventValues.put("NFCID", epc);
 
         System.out.println("*** NEW GOODSTAG UNKNOWN TAG SCAN EVENT ***");
-        Broker.getEventImporter().importEvent(new EapEvent(nfcUnmappedTagScan, timestamp, eventValues));
+        Broker.getEventImporter().importEvent(new EapEvent(nfcUnknownTagScan, timestamp, eventValues));
     }
 
     private void parseUnmappedTagScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
