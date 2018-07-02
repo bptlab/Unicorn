@@ -10,5 +10,6 @@ package de.hpi.unicorn.adapter;
 public enum AdapterType {
 	NokiaHere,
 	TransportForLondon,
-	BoschIot
+	BoschIot,
+	GoodsTag
 }
