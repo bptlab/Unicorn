@@ -379,11 +379,12 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
 
         String epc = goodsTagEvent.getJSONObject("data").getString("epc");
         JSONObject translation = getEnglishTranslation(executionResult.getJSONObject("card"));
+        JSONObject details = translation.getJSONObject("details");
 
         eventValues.put("NFCID", epc);
         eventValues.put("UserId", executionResult.getString("user"));
         eventValues.put("Name", translation.getString("name"));
-        eventValues.put("Mail", translation.getString("mail"));
+        eventValues.put("Mail", details.getString("mail"));
 
         System.out.println("*** NEW GOODSTAG CARD SCAN EVENT ***");
         Broker.getEventImporter().importEvent(new EapEvent(nfcUserScan, timestamp, eventValues));
