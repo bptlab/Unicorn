@@ -51,6 +51,8 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private static String C_GOODS_TAG_CARD_SCAN = "cardscan";
     private static String C_GOODS_TAG_BOOK_SCAN = "bookscan";
 
+    private static long C_GOODS_TAG_EVENT_ACCEPT_INTERVAL = 2000;
+
     private String goodsTagUri = "";
     private String goodsTagUsername = "";
     private String goodsTagPassword = "";
@@ -60,7 +62,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private WebSocketClient webSocketClient = null;
     private STOMPClient stompClient = null;
     private STOMPSubscription notificationsSubscription = null;
-    private List<String> processedExecutionResults = new ArrayList<>();
+    private Map<String, Date> latestProcessedEvents = new HashMap<>();
 
     private EapEventType nfcUnknownTagScan = null;
     private EapEventType nfcUnmappedTagScan = null;
@@ -318,16 +320,21 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
 
         throwIfContainsError(executionResult);
 
-        // check, whether this event was processed already
-        // this might happen, if the user holds the tag too close to the scanner for too long
-        if (processedExecutionResults.contains(executionResult.getString("id"))) {
-            return;
-        } else {
-            processedExecutionResults.add(executionResult.getString("id"));
-        }
-
         JSONObject result = executionResult.getJSONObject("result");
         String type = result.getString("type");
+
+        // check, whether this event was processed already
+        // this might happen, if the user holds the tag too close to the scanner for too long
+        if (latestProcessedEvents.containsKey(type)) {
+            Date lastExecution = latestProcessedEvents.get(type);
+
+            if (lastExecution.getTime() + C_GOODS_TAG_EVENT_ACCEPT_INTERVAL > timestamp.getTime()) {
+                // dont accept event, since it came too early
+                return;
+            }
+        }
+
+        latestProcessedEvents.put(type, timestamp);
 
         if (type.equalsIgnoreCase(C_GOODS_TAG_BOOK_SCAN)) {
             parseBookScanEvent(timestamp, result, goodsTagEvent);
