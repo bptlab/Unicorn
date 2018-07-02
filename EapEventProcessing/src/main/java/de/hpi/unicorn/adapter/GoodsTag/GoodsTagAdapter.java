@@ -263,7 +263,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         int startIndex = 0;
 
         for (int i = 0; i < keyValueSplit.length; i += 2) {
-            if (keyValueSplit[i].equalsIgnoreCase("time")) {
+            if (keyValueSplit[i].equalsIgnoreCase("\"time\"")) {
                 break;
             }
 
@@ -280,8 +280,8 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     private void throwIfContainsError(JSONObject executionResult) throws RuntimeException, JSONException {
         String errorMessage = executionResult.getString("errorMessage");
 
-
-        if (errorMessage != null) {
+        if (!errorMessage.equalsIgnoreCase("null")) {
+            System.out.println(String.format("GoodsTag event error message: '%s'", errorMessage));
             throw new RuntimeException(errorMessage);
         }
     }
@@ -347,7 +347,20 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
     }
 
     private void parseBookScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
+        if (nfcBookScan == null) {
+            throw new RuntimeException(String.format("Cannot send GoodsTag book scan event: Event Type '%s' is missing", C_NFC_BOOK_SCAN_NAME));
+        }
 
+        Map<String, Serializable> eventValues = new HashMap<>();
+
+        String epc = goodsTagEvent.getJSONObject("data").getString("epc");
+        JSONObject translation = getEnglishTranslation(executionResult);
+
+        eventValues.put("NFCID", epc);
+        eventValues.put("ISBN", executionResult.getString("isbn"));
+
+        System.out.println("*** NEW GOODSTAG BOOK SCAN EVENT ***");
+        Broker.getEventImporter().importEvent(new EapEvent(nfcBookScan, timestamp, eventValues));
     }
 
     private void parseCardScanEvent(Date timestamp, JSONObject executionResult, JSONObject goodsTagEvent) throws RuntimeException, JSONException {
@@ -361,10 +374,9 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         JSONObject translation = getEnglishTranslation(executionResult);
 
         eventValues.put("NFCID", epc);
-        eventValues.put("UserId", executionResult.getString("card-id"));
-        //eventValues.put("Name", translation.getString("name"));
-
-        // TODO: eventValues.put("Mail", translation.getString("mail"));
+        eventValues.put("UserId", executionResult.getString("user"));
+        eventValues.put("Name", translation.getString("name"));
+        eventValues.put("Mail", translation.getString("mail"));
 
         System.out.println("*** NEW GOODSTAG CARD SCAN EVENT ***");
         Broker.getEventImporter().importEvent(new EapEvent(nfcUserScan, timestamp, eventValues));
