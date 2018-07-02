@@ -361,7 +361,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         Map<String, Serializable> eventValues = new HashMap<>();
 
         String epc = goodsTagEvent.getJSONObject("data").getString("epc");
-        JSONObject translation = getEnglishTranslation(executionResult);
+        JSONObject translation = getEnglishTranslation(executionResult.getJSONObject("book"));
 
         eventValues.put("NFCID", epc);
         eventValues.put("ISBN", executionResult.getString("isbn"));
@@ -378,7 +378,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
         Map<String, Serializable> eventValues = new HashMap<>();
 
         String epc = goodsTagEvent.getJSONObject("data").getString("epc");
-        JSONObject translation = getEnglishTranslation(executionResult);
+        JSONObject translation = getEnglishTranslation(executionResult.getJSONObject("card"));
 
         eventValues.put("NFCID", epc);
         eventValues.put("UserId", executionResult.getString("user"));
