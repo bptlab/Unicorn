@@ -43,3 +43,5 @@ unicorn.properties
 \.DS_Store
 
 unicorn\.properties\.tpl
+
+host\.env

@@ -322,11 +322,12 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
 
         JSONObject result = executionResult.getJSONObject("result");
         String type = result.getString("type");
+        String epc = goodsTagEvent.getJSONObject("data").getString("epc");
 
-        // check, whether this event was processed already
+        // check, whether this EPC was processed already
         // this might happen, if the user holds the tag too close to the scanner for too long
-        if (latestProcessedEvents.containsKey(type)) {
-            Date lastExecution = latestProcessedEvents.get(type);
+        if (latestProcessedEvents.containsKey(epc)) {
+            Date lastExecution = latestProcessedEvents.get(epc);
 
             if (lastExecution.getTime() + C_GOODS_TAG_EVENT_ACCEPT_INTERVAL > timestamp.getTime()) {
                 // dont accept event, since it came too early
@@ -334,7 +335,7 @@ public class GoodsTagAdapter extends EventAdapter implements MessageReceiver<STO
             }
         }
 
-        latestProcessedEvents.put(type, timestamp);
+        latestProcessedEvents.put(epc, timestamp);
 
         if (type.equalsIgnoreCase(C_GOODS_TAG_BOOK_SCAN)) {
             parseBookScanEvent(timestamp, result, goodsTagEvent);
