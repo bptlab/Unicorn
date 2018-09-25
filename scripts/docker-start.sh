@@ -17,7 +17,7 @@ if [ -z ${UNICORN_DB_TEST_DB+x} ]; then
 fi
 
 cp /Unicorn.war /usr/local/tomcat/webapps/$UNICORN_DEPLOY_NAME.war
-envsubst < /usr/local/tomcat/conf/unicorn_template.properties > /usr/local/tomcat/conf/unicorn.properties
+envsubst < /usr/local/tomcat/conf/unicorn.properties.tpl > /usr/local/tomcat/conf/unicorn.properties
 # TODO why this?!
 #envsubst < /usr/local/tomcat/conf/server-template.xml > /usr/local/tomcat/conf/server.xml
 export CATALINA_OPTS="-Ddb.host=$UNICORN_DB_HOST -Ddb.port=$UNICORN_DB_PORT -Ddb.user=$UNICORN_DB_USER -Ddb.password=$UNICORN_DB_PASSWORD"
