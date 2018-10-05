@@ -44,7 +44,8 @@ public class Persistor {
 	private static Map<String, String> getUpdatedPersistenceMapWithHost() {
 		Map<String, String> persistenceMap = new HashMap<>();
 		String databaseBaseUrl = System.getProperty("db.host") + ":" + System.getProperty("db.port");
-		String url = "jdbc:mariadb://" + databaseBaseUrl + "/eap_development?createDatabaseIfNotExist=true";
+		String databaseName = System.getProperty("db.dev.name", "eap_development");
+		String url = "jdbc:mariadb://" + databaseBaseUrl + "/" + databaseName + "?createDatabaseIfNotExist=true";
 
 		persistenceMap.put("javax.persistence.jdbc.url", url);
 		return persistenceMap;
