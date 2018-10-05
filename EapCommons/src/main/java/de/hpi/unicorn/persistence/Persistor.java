@@ -31,7 +31,7 @@ public class Persistor {
 		if (System.getProperty("db.host") != null && System.getProperty("db.port") != null) {
 			persistenceMap.putAll(getUpdatedPersistenceMapWithHost());
 		}
-		if (System.getProperty("db.user") != null && System.getProperty("db.password") != null) {
+		if (System.getProperty("db.user") != null && System.getProperty("db.passw") != null) {
 			persistenceMap.putAll(getUpdatedPersistenceMapWithUser());
 		}
 		return Persistence.createEntityManagerFactory(PersistenceUnit.DEVELOPMENT.getName(), persistenceMap);
@@ -53,7 +53,7 @@ public class Persistor {
 	private static Map<String, String> getUpdatedPersistenceMapWithUser() {
 		Map<String, String> persistenceMap = new HashMap<>();
 		persistenceMap.put("javax.persistence.jdbc.user", System.getProperty("db.user"));
-		persistenceMap.put("javax.persistence.jdbc.password", System.getProperty("db.password"));
+		persistenceMap.put("javax.persistence.jdbc.password", System.getProperty("db.passw"));
 		return persistenceMap;
 	}
 
