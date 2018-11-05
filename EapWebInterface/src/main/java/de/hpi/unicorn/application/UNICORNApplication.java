@@ -81,7 +81,8 @@ public class UNICORNApplication extends WebApplication {
 		EapConfiguration.initialize();
 		PropertyConfigurator.configure(EapConfiguration.getProperties());
 		this.epAdapter = StreamProcessingAdapter.getInstance();
-
+		// load event types, queries, and transformation rules from database
+		this.epAdapter.loadFromDatabase();
 		this.setAuthorizationStrategy();
 
 		// initialize jms event import interface
