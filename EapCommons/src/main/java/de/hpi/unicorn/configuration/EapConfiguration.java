@@ -10,13 +10,10 @@ package de.hpi.unicorn.configuration;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Enables access to unicorn.properties file
@@ -123,41 +120,5 @@ public class EapConfiguration {
 				return new Properties();
 			}
 		}
-	}
-
-	/**
-	 * The main method configures the persistence.xml of the database and the
-	 * pom.xml of EapWebInterface.
-	 *
-	 * @param args
-	 * @throws IOException void
-	 */
-	public static void main(String[] args) throws IOException {
-		Properties props = getProperties();
-		String content = null;
-		PrintWriter writer = null;
-		String folder = null;
-		Scanner template = null;
-
-		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapCommons" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF";
-		template = new Scanner(new File(folder + File.separator + "persistence_template.xml"));
-		content = template.useDelimiter("\\Z").next();
-		template.close();
-		content = content.replace("${db.dev.url}", props.getProperty("javax.persistence.jdbc.devUrl")).replace("${db.test.url}", props.getProperty("javax.persistence.jdbc.testUrl")).replaceAll(Pattern.quote("${db.user}"), props.getProperty("javax.persistence.jdbc.user")).replaceAll(Pattern.quote("${db.passw}"), props.getProperty("javax.persistence.jdbc.password"));
-		//	TODO: "eclipselink.ddl-generation" with drop-and-create-tables and create-tables;
-
-		writer = new PrintWriter(folder + File.separator + "persistence.xml");
-		writer.print(content);
-		writer.close();
-
-		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapWebInterface";
-		template = new Scanner(new File(folder + File.separator + "pom-default.xml"));
-		content = template.useDelimiter("\\Z").next();
-		template.close();
-		content = content.replace("${tomcat.server}", props.getProperty("org.apache.tomcat.maven.server")).replace("${tomcat.url}", props.getProperty("org.apache.tomcat.maven.url")).replace("${tomcat.path}", props.getProperty("org.apache.tomcat.maven.path"));
-
-		writer = new PrintWriter(folder + File.separator + "pom.xml");
-		writer.print(content);
-		writer.close();
 	}
 }

@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.hpi.bpt</groupId>
         <artifactId>unicorn-parent</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
     </parent>
     <artifactId>unicorn-events</artifactId>
     <name>Unicorn Event Processing Component</name>
