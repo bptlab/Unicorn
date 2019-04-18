@@ -1,10 +1,10 @@
 - name: Home
   link: /Unicorn/
 - name: Usage
-  link: usage
+  link: /Unicorn/usage/
 - name: Development
-  link: development
+  link: /Unicorn/development
 - name: References
-  link: references
+  link: /Unicorn/references
 - name: Contact
-  link: contact
+  link: /Unicorn/contact
