@@ -1,7 +1,7 @@
 - name: Home
   link: /Unicorn/
 - name: Usage
-  link: /Unicorn/usage/
+  link: /Unicorn/usage
 - name: Development
   link: /Unicorn/development
 - name: References
