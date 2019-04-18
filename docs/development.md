@@ -6,7 +6,7 @@ layout: default
 
 ## Installation
 
-The source code of UNICORN can be found at https://github.com/bptlab/Unicorn. On github you also find installation and deployment instructions for the platform. 
+The source code of UNICORN can be found at <https://github.com/bptlab/Unicorn>. On github you also find installation and deployment instructions for the platform. 
 <!-- The user guide for the platform (in German) is available <a href="%ATTACHURLPATH%/Nutzerhandbuch.pdf">here</a>. -->
 
 
