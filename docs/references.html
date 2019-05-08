@@ -3,54 +3,16 @@ title: References
 layout: default
 ---
 
-<script type="text/javascript">
-
-function toggle_visibility(id) {
-  var e = document.getElementById(id);
-  e.style.display = ((e.style.display!='block') ? 'block' : 'none');
-}
-</script>
-
-<style>
-
-.reference {
-  padding-bottom: 1em;
-}
-.under p {
-  display: inline;
-}
-h4, blockquote {
-  margin-bottom: 0.2em;
-} 
-.abstract, .bibtex {
-  display: none;
-  padding: 0.2em 0 0.2em 1em;
-}
-.abstract {
-}
-.bibtex {
-} .bibtex pre {
-  font-size: 80%;
-  border: 0;
-}
-</style>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex.js"></script>
 
 <h1>References</h1>
-<h2>Conference</h2>
 
-<div class="reference" id="reference1">
-  Cabanillas, C., Di Ciccio, C., Mendling, J., Baumgrass, A.. Predictive Task Monitoring for Business Processes. In Business Process Management (BPM). Springer, 2014.
-  <span class="under">
-    <a href="#reference1" onclick="toggle_visibility('abstract1');">abstract</a><p> | </p><a href="#reference1" onclick="toggle_visibility('bibtex1');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract1">
-    <h4>Abstract</h4>
-    <blockquote>Information sources providing real-time status of physical objects have drastically increased in recent times. So far, research in business process monitoring has mainly focused on checking the completion of tasks. However, the availability of real-time information allows for a more detailed tracking of individual business tasks. This paper describes a framework for controlling the safe execution of tasks and signalling possible misbehaviours at runtime. It outlines a real use case on smart logistics and the preliminary results of its application.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex1">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<div class="references">
+
+<h2>Conferences</h2>
+
+<textarea class="reference">
 @inproceedings{baumgrass:2014a,
   abstract={Information sources providing real-time status of physical objects have drastically increased in recent times. So far, research in business process monitoring has mainly focused on checking the completion of tasks. However, the availability of real-time information allows for a more detailed tracking of individual business tasks. This paper describes a framework for controlling the safe execution of tasks and signalling possible misbehaviours at runtime. It outlines a real use case on smart logistics and the preliminary results of its application.},
   author={Cabanillas, C. and Di Ciccio, C. and Mendling, J. and Baumgrass, A.},
@@ -61,24 +23,9 @@ h4, blockquote {
   type={conference},
   year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference2">
-  Herzberg, Nico, Meyer, Andreas, Weske, Mathias. An Event Processing Platform for Business Process Management. In Enterprise Distributed Object Computing (EDOC). pages 107--116, IEEE, 2013.
-  <span class="under">
-    <a href="#reference2" onclick="toggle_visibility('abstract2');">abstract</a><p> | </p><a href="#reference2" onclick="toggle_visibility('bibtex2');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract2">
-    <h4>Abstract</h4>
-    <blockquote>The execution of business processes generates a lot of data comprising final process results as well as information about intermediate activities, both communicated as events. These events may not be correlated to the process they origin from, because the correlation information is usually not present in the event but in so-called context data, which exists orthogonally to the corresponding process. However, in the areas of process monitoring and analysis, events need to be correlated to specific process instances. To close the gap between recorded events without process correlation and required events with process correlation, we propose a framework that enriches recorded events with context data to create events correlated to processes, so-called process events.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex2">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @conference{herzberg2013event,
   abstract = {The execution of business processes generates a lot of data comprising final process results as well as information about intermediate activities, both communicated as events. These events may not be correlated to the process they origin from, because the correlation information is usually not present in the event but in so-called context data, which exists orthogonally to the corresponding process. However, in the areas of process monitoring and analysis, events need to be correlated to specific process instances. To close the gap between recorded events without process correlation and required events with process correlation, we propose a framework that enriches recorded events with context data to create events correlated to processes, so-called process events.},
   author = {Herzberg, Nico and Meyer, Andreas and Weske, Mathias},
@@ -90,26 +37,11 @@ h4, blockquote {
   url = {http://bpt.hpi.uni-potsdam.de/pub/Public/AndreasMeyer/An_Event_Processing_Platform_for_Business_Process_Management.pdf},
   year = {2013}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
 <h2>Workshop</h2>
 
-<div class="reference" id="reference3">
-  Tsun Yin Wong, Susanne Bülow, Mathias Weske. Monitoring Batch Regions in Business Processes. In CAiSE Workshops. Springer, 2015.
-  <span class="under">
-    <a href="#reference3" onclick="toggle_visibility('abstract3');">abstract</a><p> | </p><a href="#reference3" onclick="toggle_visibility('bibtex3');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract3">
-    <h4>Abstract</h4>
-    <blockquote>Recently, batch activities have been introduced to improve the execution of business processes by collectively performing batch activities that belong to different process instances. Using traditional techniques to monitor processes with batch activities leads to inadequate representation of process instances, since monitoring is unaware of batch activities. This paper introduces an approach to monitor batch activities, which also takes into account exceptions in batch clusters at different levels of abstraction. The concepts and techniques introduced are evaluated by a prototypical implementation using real-world event data from the logistics domain.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex3">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @conference{wong2015batch,
   abstract = {Recently, batch activities have been introduced to improve the execution of
   business processes by collectively performing batch activities that belong to
@@ -127,24 +59,9 @@ h4, blockquote {
   type = {workshop},
   year = {2015}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference4">
-  Bülow, Susanne, Backmann, Michael, Herzberg, Nico, Hille, Thomas, Meyer, Andreas, Ulm, Benjamin, Wong, Tsun Yin, Weske, Mathias. Monitoring of Business Processes with Complex Event Processing. In Business Process Management Workshops. pages 277--290, Springer, 2013.
-  <span class="under">
-    <a href="#reference4" onclick="toggle_visibility('abstract4');">abstract</a><p> | </p><a href="#reference4" onclick="toggle_visibility('bibtex4');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract4">
-    <h4>Abstract</h4>
-    <blockquote>Business process monitoring enables a fast and specific overview of the process executions in an enterprise. Traditionally, this kind of monitoring requires a coherent event log. Yet, in reality, execution information is often heterogeneous and distributed. In this paper, we present an approach that enables monitoring of business processes with execution data, independently of the structure and source of the event information. We achieve this by implementing an open source event processing platform combining existing techniques from complex event processing and business process management. Event processing includes transformation for abstraction as well as correlation to process instances and BPMN elements. Monitoring rules are automatically created from BPMN models and executed by the platform.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex4">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @conference{buelow2013monitoring,
   abstract = {Business process monitoring enables a fast and specific overview of the process executions in an enterprise. Traditionally, this kind of monitoring requires a coherent event log. Yet, in reality, execution information is often heterogeneous and distributed. In this paper, we present an approach that enables monitoring of business processes with execution data, independently of the structure and source of the event information. We achieve this by implementing an open source event processing platform combining existing techniques from complex event processing and business process management. Event processing includes transformation for abstraction as well as correlation to process instances and BPMN elements. Monitoring rules are automatically created from BPMN models and executed by the platform.},
   author = {Bülow, Susanne and Backmann, Michael and Herzberg, Nico and Hille, Thomas and  Meyer, Andreas and Ulm, Benjamin and Wong, Tsun Yin and Weske, Mathias},
@@ -156,24 +73,9 @@ h4, blockquote {
   url = {http://bpt.hpi.uni-potsdam.de/pub/Public/AndreasMeyer/Monitoring_of_Business_Processes_with_Complex_Event_Processing.pdf},
   year = {2013}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference5">
-  Baumgrass, A., Herzberg, N., Meyer, A., Weske, M.. BPMN Extension for Business Process Monitoring. In Enterprise Modelling and Information Systems Architectures (EMISA). Gesellschaft fuer Informatik (GI), 2014.
-  <span class="under">
-    <a href="#reference5" onclick="toggle_visibility('abstract5');">abstract</a><p> | </p><a href="#reference5" onclick="toggle_visibility('bibtex5');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract5">
-    <h4>Abstract</h4>
-    <blockquote>The execution of business processes generates a lot of data representing happenings (also called events) that may be utilized for process monitoring and analysis. This, however, is not supported by typical BPMS. Especially, in manual executing business process environments, i.e. not driven by a BPMS, the correlation of events to processes for monitoring and analysis is not trivial. At design-time, Process Event Monitoring Points (PEMP) are used in process models to specify the locations, where particular events are expected. Therewith, occurring events can be assigned to a process during run-time. In this paper, we introduce an extension to BPMN, which implements this connection between process models and events. We show applicability of this extension by applying it to a logistics scenario taken from an EU project.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex5">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @inproceedings{baumgrass:2014b,
   abstract={The execution of business processes generates a lot of data representing happenings (also called events) that may be utilized for process monitoring and analysis. This, however, is not supported by typical BPMS.
   Especially, in manual executing business process environments, i.e. not driven by a BPMS, the correlation of events to processes for monitoring and analysis is not trivial. At design-time, Process Event Monitoring Points (PEMP) are used in process models to specify the locations, where particular events are expected. Therewith, occurring events can be assigned to a process during run-time. In this paper, we introduce an extension to BPMN, which implements this connection between process models and events. We show applicability of this extension by applying it to a logistics scenario taken from an EU project.},
@@ -185,24 +87,9 @@ h4, blockquote {
   type={workshop},
   year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference6">
-  Metzke, T., Rogge-Solti, A., Baumgrass, A., Mendling, J., Weske, M. Enabling Semantic Complex Event Processing in the Domain of Logistics. In Service-Oriented Computing - ICSOC 2013 Workshops. Springer Berlin Heidelberg, 2014.
-  <span class="under">
-    <a href="#reference6" onclick="toggle_visibility('abstract6');">abstract</a><p> | </p><a href="#reference6" onclick="toggle_visibility('bibtex6');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract6">
-    <h4>Abstract</h4>
-    <blockquote>During the execution of business processes, companies generate vast amounts of events, which makes it hard to detect meaningful process information that could be used for process analysis and improvement. Complex event processing (CEP) can help in this matter by providing techniques for continuous analysis of events. The consideration of domain knowledge can increase the performance of reasoning tasks but it is different for each domain and depends on the requirements of these domains. In this paper, an existing approach of combining CEP and ontological knowledge is applied to the domain of logistics. We show the benefits of semantic complex event processing (SCEP) for logistics processes along the specific use case of tracking and tracing goods and processing related events. In particular, we provide a novel domain-specific function that allows to detect meaningful events for a transportation route. For the demonstration, a prototypical implementation of a system enabling SCEP queries is introduced and analyzed in an experiment.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex6">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @inproceedings{metzke:2013,
   abstract={During the execution of business processes, companies generate vast amounts of events, which makes it hard to detect meaningful process information that could be used for process analysis and improvement. Complex event processing (CEP) can help in this matter by providing techniques for continuous analysis of events. The consideration of domain knowledge can increase the performance of reasoning tasks but it is different for each domain and depends on the requirements of these domains. In this paper, an existing approach of combining CEP and ontological knowledge is applied to the domain of logistics. We show the benefits of semantic complex event processing (SCEP) for logistics processes along the specific use case of tracking and tracing goods and processing related events. In particular, we provide a novel domain-specific function that allows to detect meaningful events for a transportation route. For the demonstration, a prototypical implementation of a system enabling SCEP queries is introduced and analyzed in an experiment.},
   author={Metzke, T. and Rogge-Solti, A. and Baumgrass, A. and Mendling, J. and Weske, M},
@@ -213,24 +100,9 @@ h4, blockquote {
   type={workshop},
   year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference7">
-  Backmann, M., Baumgrass, A., Herzberg, N., Meyer, A., Weske, M. Model-driven Event Query Generation for Business Process Monitoring. In Service-Oriented Computing - ICSOC 2013 Workshops. Springer Berlin Heidelberg, 2014.
-  <span class="under">
-    <a href="#reference7" onclick="toggle_visibility('abstract7');">abstract</a><p> | </p><a href="#reference7" onclick="toggle_visibility('bibtex7');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract7">
-    <h4>Abstract</h4>
-    <blockquote>While executing business processes, a variety of events is produced that is valuable for getting insights about the process execution. Specifically, these events can be processed by Complex Event Processing (CEP) engines to deliver a base for business process monitoring. Mobile, flexible, and distributed business processes challenge existing process monitoring techniques, especially if process execution is partially done manually. Thus, it is not trivial to decide where the required business process execution information can be found, how this information can be extracted, and to which point in the process it belongs to. Tackling these challenges, we present a model-driven approach to support the automated creation of (CEP) queries for process monitoring. For this purpose, we decompose a process model that includes monitoring information into its structural components. Those are transformed to (CEP) queries to monitor business process execution based on events. For illustration, we show an implementation for BPMN and describe possible applications.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex7">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @inproceedings{backmann:2013,
   abstract={While executing business processes, a variety of events is produced that is valuable for getting insights about the process execution.
   Specifically, these events can be processed by Complex Event Processing (CEP) engines to deliver a base for business process monitoring.
@@ -248,24 +120,9 @@ h4, blockquote {
   type={workshop},
   year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference8">
-  Herzberg, N., Khovalko, O., Baumgrass, A., Weske, M. Towards Automating the Detection of Event Sources. In Service-Oriented Computing - ICSOC 2013 Workshops. Springer Berlin Heidelberg, 2014.
-  <span class="under">
-    <a href="#reference8" onclick="toggle_visibility('abstract8');">abstract</a><p> | </p><a href="#reference8" onclick="toggle_visibility('bibtex8');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract8">
-    <h4>Abstract</h4>
-    <blockquote>During business process execution, various systems and services produce a variety of data, messages, and events that are valuable for gaining insights about business processes, e.g., to ensure a business process is executed as expected. However, these data, messages, and events usually originate from different kinds of sources, each specified by different kinds of description. This variety makes it difficult to automate the detection of relevant event sources for business process monitoring. In this paper, we present a course of actions to automatically associate different event sources to event object types required for business process monitoring. In particular, in a three-step approach we determine the similarity of event sources to event object types, rank those results, and derive a mapping between their attributes. Thus, relevant event sources and their bindings to specified event object types of business processes can be identified. The approach is implemented and evaluated using schema matching techniques for an use case that is aligned with real-world energy processes, data, messages, and events.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex8">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @inproceedings{herzberg:2013,
   abstract={During business process execution, various systems and services produce a
   variety of data, messages, and events that are valuable for gaining insights
@@ -290,24 +147,9 @@ h4, blockquote {
   type={workshop},
   year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference9">
-  Cabanillas, C., Baumgrass, A., Mendling, J., Rogetzer, P., Bellovoda, B. Towards the Enhancement of Business Process Monitoring for Complex Logistics Chains. In BPM 2013 Workshops (PALS). Springer Berlin Heidelberg, 2013.
-  <span class="under">
-    <a href="#reference9" onclick="toggle_visibility('abstract9');">abstract</a><p> | </p><a href="#reference9" onclick="toggle_visibility('bibtex9');">bibtex</a>
-  </span>
-  <div class="abstract" id="abstract9">
-    <h4>Abstract</h4>
-    <blockquote>Logistics processes have some characteristics which are fundamentally challenging from a business process management perspective. Their execution usually involves multiple parties and information exchanges and has to ensure a certain level of flexibility in order to respond to unexpected events. On the level of monitoring, potential disruptions have to be detected and reactive measures be taken in order to avoid delays and contract penalties. However, current business process management systems do not exactly address these general requirements which call for the integration of techniques from event processing. Unfortunately, activity-based and event-based execution paradigms are not thoroughly in line. In this paper, we untangle conceptual issues in aligning both. We present a set of three challenges in the monitoring of process-oriented complex logistics chains identified based on a real-world scenario consisting of a three-leg intermodal logistics chain for the transportation of goods. Required features that such a monitoring system should provide, as well as related literature referring to these challenges, are also described.</blockquote>
-  </div>
-  <div class="bibtex" id="bibtex9">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @inproceedings{cabanillas:2013,
   abstract={Logistics processes have some characteristics which are fundamentally challenging from a business process management perspective. Their execution usually involves multiple parties and information exchanges and has to ensure a certain level of flexibility in order to respond to unexpected events. On the level of monitoring, potential disruptions have to be detected and reactive measures be taken in order to avoid delays and contract penalties. However, current business process management systems do not exactly address these general requirements which call for the integration of techniques from event processing. Unfortunately, activity-based and event-based execution paradigms are not thoroughly in line. In this paper, we untangle conceptual issues in aligning both. We present a set of three challenges in the monitoring of process-oriented complex logistics chains identified based on a real-world scenario consisting of a three-leg intermodal logistics chain for the transportation of goods. Required features that such a monitoring system should provide, as well as related literature referring to these challenges, are also described.},
   author={Cabanillas, C. and Baumgrass, A. and Mendling, J. and Rogetzer, P. and Bellovoda, B},
@@ -318,22 +160,11 @@ h4, blockquote {
   type={workshop},
   year = {2013}
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
 <h2>Miscellaneous</h2>
 
-<div class="reference" id="reference10">
-  Tobias Duerschmid. Green European Transportation - Forschungsprojekte am HPI. In HPImgzn. 2015.
-  <span class="under">
-    <a href="#reference10" onclick="toggle_visibility('bibtex10');">bibtex</a>
-  </span>
-  <div class="bibtex" id="bibtex10">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @techreport{mgzn:2015,
   Author = {Tobias Duerschmid},
   Booktitle = {HPImgzn},
@@ -343,20 +174,9 @@ h4, blockquote {
   Year = {2015},
   url = {https://hpi.de/fileadmin/user_upload/hpi/dokumente/hpi_mgzn/HPImgzn_Ausgabe16.pdf},
 }
-      </pre>
-    </blockquote>
-  </div>
-</div>
+</textarea>
 
-<div class="reference" id="reference11">
-Baumgrass, A., Dijkman, R.M., Grefen, P.W.P.J., Pourmirza, S., Voelzer, H., Weske, M.. A Software Architecture for a Transportation Control Tower. In BETA Working Paper 461. BETA Research School, Eindhoven, The Netherlands. 2014.
-  <span class="under">
-    <a href="#reference11" onclick="toggle_visibility('bibtex11');">bibtex</a>
-  </span>
-  <div class="bibtex" id="bibtex11">
-    <h4>BibTex</h4>
-    <blockquote>
-      <pre>
+<textarea class="reference">
 @techreport{dijkman:2014,
   Author = {Baumgrass, A. and Dijkman, R.M. and Grefen, P.W.P.J. and Pourmirza, S. and Voelzer, H. and Weske, M.},
   Booktitle = {BETA Working Paper 461. BETA Research School, Eindhoven, The Netherlands},
@@ -367,7 +187,30 @@ Baumgrass, A., Dijkman, R.M., Grefen, P.W.P.J., Pourmirza, S., Voelzer, H., Wesk
   Month = {September},
   Year = {2014}
 }
-      </pre>
-    </blockquote>
-  </div>
+</textarea>
+
 </div>
+
+<div class="bibtex_template">
+<span class="if author" style="font-weight: bold;"> 
+  <span class="author"></span>.
+</span>
+<div style="font-style: italic; display: inline;">
+  <span class="title"></span>,
+</div>
+<div class="if booktitle" style="display: inline;">
+  <span class="booktitle"></span>,
+</div>
+<div class="if publisher" style="display: inline;">
+  <span class="publisher"></span>,
+</div>
+<span class="year"></span>.
+<span class="if url">
+    <a class="url">(paper)</a>
+</span>
+<br><br>
+</div>
+
+
+<div id="bibtex_display" style="display: none;"></div>
+<div id="bibtex_errors"></div>
