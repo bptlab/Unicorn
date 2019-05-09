@@ -368,35 +368,16 @@ function BibtexDisplay() {
 
 }
 
-// original (somewhat)
+// original
 // function bibtex_js_draw() {
 //   $(".bibtex_template").hide();
 //   (new BibtexDisplay()).displayBibtex($("#bibtex_input").val(), $("#bibtex_display"));
 // }
 
-//var bibin = document.getElementById("bibtex_input");
-//var refs = bibin.getElementsByClassName("reference");
-
-// ^ for above...
-// function bibtex_js_draw() {
-//   $(".bibtex_template").hide();
-//   // for(var i = 0; i < refs.length; i++ ) {
-//   //   refs.item(i).innerHTML = (new BibtexDisplay()).displayBibtex(refs.item(i));
-
-//   // }
-//   (new BibtexDisplay()).displayBibtex(bibin.getElementsByClassName("reference")[1].val(), $("#bibtex_display"));
-// }
-
-// ANOTHER TRY...
-
-
 function bibtex_js_draw() {
   $(".bibtex_template").hide();
   var refs = document.querySelectorAll(".reference");
-  var newrefs = refs;
   var content;
-  console.log(refs);
-  console.log(refs[0]);
   for(var i=0; i < refs.length; i++) {
     (new BibtexDisplay()).displayBibtex($(refs[i]).val(), $("#bibtex_display"));
     content = $("#bibtex_display").html();

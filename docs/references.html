@@ -6,6 +6,36 @@ layout: default
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex.js"></script>
 
+<script type="text/javascript">
+function toggleRef(element) {
+    var child = element.firstElementChild;
+    if (child.className === "abstract" && child.style.display == "none") {
+      child.style.display = "block";
+    } else {
+      child.style.display = "none";
+    }
+}
+
+</script>
+
+<style>
+
+.toggle {
+  color: #267CB9
+}
+
+.toggle:hover {
+  cursor: pointer;
+  color: #069;
+}
+
+.abstract {
+  color: #727272;
+  padding: 1em 0 0 0.5em;
+}
+
+</style>
+
 <h1>References</h1>
 
 <div class="references">
@@ -206,8 +236,14 @@ layout: default
 </div>
 <span class="year"></span>.
 <span class="if url">
-    <a class="url">(paper)</a>
+    <a class="url">[paper]</a>
 </span>
+<span class="if abstract">
+  <span class="toggle" onclick="toggleRef(this)">[abstract]
+    <span class="abstract" style="display: none;"></span>
+  </span>
+</span>
+
 <br><br>
 </div>
 
