@@ -382,6 +382,7 @@ function bibtex_js_draw() {
     (new BibtexDisplay()).displayBibtex($(refs[i]).val(), $("#bibtex_display"));
     content = $("#bibtex_display").html();
     $(refs[i]).replaceWith( content );
+    refs[i].style.display = "block";
   }
 }
 
