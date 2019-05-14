@@ -4,19 +4,8 @@ layout: default
 ---
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex.js"></script>
-
-<script type="text/javascript">
-function toggleRef(element) {
-    var child = element.firstElementChild;
-    if (child.className === "abstract" && child.style.display == "none") {
-      child.style.display = "block";
-    } else {
-      child.style.display = "none";
-    }
-}
-
-</script>
+<script type="text/javascript" src="https://cdn.rawgit.com/pcooksey/bibtex-js/ef59e62c/src/bibtex_js.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex-unicorn.js"></script>
 
 <style>
 
@@ -34,7 +23,7 @@ function toggleRef(element) {
   padding: 1em 0 0 0.5em;
 }
 
-.reference {
+.references {
   display: none;
 }
 
@@ -225,7 +214,7 @@ function toggleRef(element) {
 
 </div>
 
-<div class="bibtex_template">
+<div class="bibtex_template" style="display: none;">
 <span class="if author" style="font-weight: bold;"> 
   <span class="author"></span>.
 </span>
