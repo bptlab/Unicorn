@@ -1,0 +1,14 @@
+{
+    "tomcat": {
+        "id": "localDevTomcat",
+        "userprofile": {
+            "user": "tomcatadmin",
+            "password": "adminpassword",
+            "roles": [
+                "manager-gui",
+                "admin-gui",
+                "manager-script"
+            ]
+        }
+    }
+}
