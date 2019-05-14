@@ -1,11 +1,18 @@
-FROM tomcat:8.5.11-jre8
+FROM ubuntu
 
-RUN apt-get update && apt-get install -y gettext-base && \
-    cp /usr/local/tomcat/conf/server.xml /usr/local/tomcat/conf/server-template.xml
+WORKDIR /home
 
-COPY EapWebInterface/target/Unicorn.war /usr/local/tomcat/webapps/Unicorn.war
-COPY unicorn.properties.tpl /usr/local/tomcat/conf/unicorn.properties.tpl
-COPY scripts/docker-start.sh /usr/local/bin/docker-start.sh
-RUN chmod +x /usr/local/bin/docker-start.sh
+# Execute scriptbase image creation
+COPY scripts/image-designer.sh .
+RUN chmod +x image-designer.sh
+RUN ./image-designer.sh
+RUN rm image-designer.sh
 
-ENTRYPOINT ["/usr/local/bin/docker-start.sh"]
+# Tomcat-Port
+EXPOSE 8080
+# MySQL-Port
+EXPOSE 3306
+
+COPY scripts/container-designer.sh .
+RUN chmod +x container-designer.sh 
+ENTRYPOINT [ "./container-designer.sh" ]
