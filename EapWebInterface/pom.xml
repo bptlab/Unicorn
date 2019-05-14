@@ -320,10 +320,9 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <!-- set this properties in your settings.xml -->
-                    <server>${tomcat.server}</server>
-                    <url>${tomcat.url}</url>
-                    <path>${tomcat.path}</path>
+                    <url>http://localhost:8080/manager/text</url>
+                    <server>localDevTomcat</server>
+                    <path>/Unicorn</path>
                 </configuration>
             </plugin>
             <plugin>
