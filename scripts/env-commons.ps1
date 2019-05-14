@@ -31,6 +31,7 @@ function checkForInstance () {
     param(
         [string]$checkString
     )
+    writeInfo($checkString)
     writeInfo("Search for existing instance...")
     foreach ($item in $(docker ps)){
         if ($item -match $checkString){
@@ -49,7 +50,7 @@ function startUnicorn {
         [string]$mountDirectory,
         [string]$volumeName
     )
-    if (checkForInstance($UnicornImage))
+    if (checkForInstance($imageName))
     {
         writeErrorMSG("Unicorn already running")
         Exit
@@ -143,19 +144,13 @@ function buildSrcCode {
         [string]$containerName
     )
     writeInfo("Build Unicorn source code...")
-    docker exec -i -t $containerName ./build.sh
+    docker exec -i -t $containerName sh build.sh
 }
 
 function deployApp {
     param (
-        [string]$containerName,
-        [bool]$skiptest = $true
+        [string]$containerName
     )
     writeInfo("Send app to Tomcat...")
-    if ($skiptest){
-        docker exec -i -t $containerName ./deploy_notests.sh
-    }
-    else {
-        docker exec -i -t $containerName ./deploy.sh
-    }
+    docker exec -i -t $containerName sh deploy_notests.sh
 }
