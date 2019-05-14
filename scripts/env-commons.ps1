@@ -31,7 +31,6 @@ function checkForInstance () {
     param(
         [string]$checkString
     )
-    writeInfo($checkString)
     writeInfo("Search for existing instance...")
     foreach ($item in $(docker ps)){
         if ($item -match $checkString){
@@ -102,12 +101,7 @@ function delExistingVolume {
     )
     if (checkForVolume($volumeName)){
         writeAttentionMSG("Removing existing Unicorn volume...")
-        if ($item -match $volumeName){
-            docker volume rm $volumeName
-        }
-    }
-    else {
-        return
+        docker volume rm $volumeName
     }
 }
 
@@ -144,7 +138,7 @@ function buildSrcCode {
         [string]$containerName
     )
     writeInfo("Build Unicorn source code...")
-    docker exec -i -t $containerName sh build.sh
+    docker exec -i -t $containerName ./build.sh
 }
 
 function deployApp {
@@ -152,5 +146,5 @@ function deployApp {
         [string]$containerName
     )
     writeInfo("Send app to Tomcat...")
-    docker exec -i -t $containerName sh deploy_notests.sh
+    docker exec -i -t $containerName ./deploy_notests.sh
 }
