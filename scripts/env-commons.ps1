@@ -114,7 +114,7 @@ function createVolume {
     param (
         [string]$volumeName
     )
-    writeInfo(Create new volume for Unicorn...)
+    writeInfo("Create new volume for Unicorn...")
     docker volume create $volumeName     
 }
 
@@ -136,4 +136,26 @@ function buildImage {
     )
     writeInfo("Build Unicorn image...")
     docker build -t $imageName ..
+}
+
+function buildSrcCode {
+    param (
+        [string]$containerName
+    )
+    writeInfo("Build Unicorn source code...")
+    docker exec -i -t $containerName ./build.sh
+}
+
+function deployApp {
+    param (
+        [string]$containerName,
+        [bool]$skiptest = $true
+    )
+    writeInfo("Send app to Tomcat...")
+    if ($skiptest){
+        docker exec -i -t $containerName ./deploy_notests.sh
+    }
+    else {
+        docker exec -i -t $containerName ./deploy.sh
+    }
 }
