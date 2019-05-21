@@ -8,7 +8,6 @@ jdk:
 cache:
   directories:
     - $HOME/.m2
-    - /home/travis/.sonar/cache
 
 addons:
   mariadb: '10.0'
@@ -18,10 +17,6 @@ addons:
 
 before_install:
   - mv unicorn_template.properties unicorn.properties
-      
-before_script:
-  - chmod +x sonarqube.sh
-  - ./sonarqube.sh
 
 script: 
   - mvn -Dtest=de.hpi.unicorn.json.importer.*Test -DfailIfNoTests=false -pl EapImport test
