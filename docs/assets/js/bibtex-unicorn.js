@@ -5,9 +5,10 @@
  * Allows user to write notes/subheadings in between references
  */
 $( document ).ready( function bibtex_js_draw_unicorn() {
-  var refs = document.querySelectorAll(".reference");
+  var refs = document.querySelectorAll("textarea.reference");
+  var bibtexDisplay = new BibtexDisplay();
   refs.forEach(ref => {
-    (new BibtexDisplay()).displayBibtex($(ref).val(), $("#bibtex_display") );
+    bibtexDisplay.displayBibtex($(ref).val(), $("#bibtex_display") );
     $(ref).replaceWith( $("#bibtex_display").html() );
   });
   document.querySelector(".references").style.display = "block"; // display page content when finished
@@ -16,7 +17,7 @@ $( document ).ready( function bibtex_js_draw_unicorn() {
 /**
  * Function to toggle the display of each bibtex abstract
  */
-function toggleRef(element) {
+function toggleAbstract(element) {
   var abstractElement = element.querySelector(".abstract");
   abstractElement.style.display = (abstractElement.style.display == "none") ? "block" : "none";
  }
