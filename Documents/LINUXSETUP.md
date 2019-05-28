@@ -1,59 +1,59 @@
-# Installation-Notes for Linux machines
+# Installation Guide for Unicorn on Linux
 
-Detailed description to install Unicorn on a Linux machine. 
+This article describes how to install and run Unicorn on Linux machines.
+
+__Note:__ Think about which way do you prefer to install and run Unicorn: On the one hand you directly install it on your Linux OS as mostly every other software. On the other hand, you use the way based on Docker containers. This arcticle only explains the first way! \
+__Note:__ This article uses Ubuntu 18.04 to explain the installation. \
+__Note:__ Take care that you are owner of sudo privileges!
 
 ## Pre-requisites
+
 To build and run Unicorn you need the following software:
-- JDK 8
+
+- OpenJDK 8
 - Maven 3
-- Apache Tomcat 7.x (or some other container)
+- Apache Tomcat 7.x
 - MySQL server 5.6 or above
 
 ## Preparation
 
-### Download and config JDK 8
-1. Download JDK 8 
+### Set up OpenJDK 8
 
-2. Unzip downloaded archive 
+1. Install OpenJDK 8
+
 ```sh
-tar -xzf archive.tar.gz
+sudo apt-get install openjdk-11-jdk openjdk-11-jre-headless
 ```
 
-3. Copy folder with root privileges to _/opt/Oracle_Java/_
+2. Select OpenJDK 8
 
-4. Install new Java environment, replace VERSION placeholder with correct name of your downloaded version
-```sh 
-sudo update-alternatives --install "/usr/bin/java" "java" "/opt/Oracle_Java/jdk1.8.0_VERSION/bin/java" 1 
-```
 ```sh
-sudo update-alternatives --install "/usr/bin/javac" "javac" "/opt/Oracle_Java/jdk1.8.0_VERSION/bin/javac" 1
-```
-```sh
-sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/opt/Oracle_Java/jdk1.8.0_VERSION/bin/javaws" 1
-```
-```sh
-sudo update-alternatives --install "/usr/bin/jar" "jar" "/opt/Oracle_Java/jdk1.8.0_VERSION/bin/jar" 1 
-``` 
-
-5. Select rigth environment
-```sh 
 sudo update-alternatives --config java
 ```
 
+### Set up Tomcat 7.x
 
-### Download and config Tomcat 7.x
-1. Download Tomcat 7.x
+1. Download Tomcat 7.x \
+ Choose a mirror on <https://tomcat.apache.org/>. Maybe you want to use wget to download the archive.
+
 ```sh
-wget https://www-us.apache.org/dist/tomcat/tomcat-7/v7.0.93/bin/apache-tomcat-7.0.93.tar.gz
+wget <mirror-link>
 ```
+
 2. Unzip downloaded archive
+
 ```sh
 tar -xzf archive.tar.gz
 ```
+
 3. Rename unpacked folder to _Tomcat7_
+
 4. Move folder with Root-Privileges to _/usr/local/_
-5. Add one user profile. For that purpose edit the _/usr/local/Tomcat7/conf/tomcat-users.xml_ like it's shown below and replace _username_ and _password_ individualy
-```xml 
+
+5. Add necessary user profile\
+Edit the _/usr/local/Tomcat7/conf/tomcat-users.xml_ like it's shown below and replace _username_ and _password_ individualy.
+
+```xml
 <?xml version='1.0' encoding='utf-8'?>
 
 <tomcat-users>
@@ -65,36 +65,45 @@ tar -xzf archive.tar.gz
 </tomcat-users>
 ```
 
-6. Change size limitations of webapps by editing the file _/usr/local/Tomcat7/webapps/manager/WEB-INF/web.xml_ and do some changes at place of `` <multipart-config> `` to allow webapps sized up to 150MB
-```xml 
+6. Change size limitations for webapps \
+Edit the file _/usr/local/Tomcat7/webapps/manager/WEB-INF/web.xml_ and do some changes as shown below at place of `` <multipart-config> `` to allow webapps sized up to 150MB.
+
+```xml
+...
 <multipart-config>
 <max-file-size> 152428800 </max-file-size>
 <max-request-size> 152428800 </max-request-size>
 </multipart-config>
-```
-7. Start Tomcat
-```sh
-cd /usr/local/Tomcat7/bin
-./startup.sh
-````
-Note: To stop the Tomcat Server do following:
-```sh
-cd /usr/local/Tomcat7/bin
-./shutdown.sh
+...
 ```
 
-### Download and config Maven
-1. Download and install Maven
-```sh 
+7. Start Tomcat
+
+```sh
+/usr/local/Tomcat7/bin/startup.sh
+````
+
+__Note:__ Do not use sudo privileges because it is an safety issue! \
+__Note:__ If you want to shutdown Tomcat, run _shutdown.sh_ instead of _startup.sh_!
+
+### Set up Maven
+
+1. Install Maven
+
+```sh
 sudo apt-get install maven
 ```
-2. Add necessary configurations to allow deployment to Tomcat-Server 
+
+2. Add Tomcat properties to configuration
+
 ```sh
-cd /usr/share/maven/conf/
-sudo nano settings.xml
+sudo nano /usr/share/maven/conf/settings.xml
 ```
-Add the following configuration at right place and replace _username_ and _password_ by your individual settings defined in Step 5 of the Tomcat configuration instructions
+
+Add the following configuration at right place as shown below and replace _username_ and _password_ by your individual settings defined in step 5 of the Tomcat setup.
+
 ```xml
+...
 <servers>
     <server>
         <id>localDevTomcat</id>
@@ -102,45 +111,66 @@ Add the following configuration at right place and replace _username_ and _passw
         <password>password</password>
     </server>
 </servers>
+...
 ```
 
-### Download and config MySQL
-1. Download necessary packages
-```sh 
+### Set up the MySQL-Server
+
+1. Install MySQL-Server
+
+```sh
 sudo apt-get install mysql-server
 ```
-2. Set a password for user root
-3. Add schemas _eap_testing_ and _eap_development_ in your MySQL-Database
-4. If not already done, start mysql service
+
+2. Start MySQL-Server
+
 ```sh
 sudo service mysql start
 ```
 
-## Install Unicorn
-1. Clone the repository
-3. Copy the file unicorn_template.properties, rename it to unicorn.properties, configure your database credentials and edit following plugin in _/EapWebInterface/pom.xml_
-```xml
-<plugin>
-    <groupId>org.apache.tomcat.maven</groupId>
-    <artifactId>tomcat7-maven-plugin</artifactId>
-    <version>2.2</version>
-    <configuration>
-        <server>localDevTomcat</server>
-        <url>http://localhost:8080/manager/text</url>
-        <path>/Unicorn</path>
-    </configuration>
-</plugin>
-```
+2. Create a password for root user
 
-4. Take care that JDK 8 is still selected
-
-5. Build Unicorn by executing ```mvn install -DskipTests```
-
-### Deployment to Tomcat
-
-1. Copy _unicorn.properties_ to Tomcats configuration
 ```sh
-sudo cp unicorn.properties /usr/local/Tomcat7/
+sudo mysqladmin -u root password 'password'
 ```
-2. Execute ```mvn tomcat7:deploy``` in the EapWebInterface folder to use maven for deployment
 
+__Note:__ Replace _'password'_ by your own without quotes!
+
+3. Add schemas _eap_testing_ and _eap_development_ in your MySQL-Database
+
+```sh
+sudo mysqladmin -u root -p create eap_testing
+sudo mysqladmin -u root -p create eap_development
+```
+
+4. Restart MySQL-Server
+
+```sh
+sudo service mysql stop
+sudo service mysql start
+```
+
+## Install Unicorn
+
+1. Clone the repository
+
+```sh
+git clone https://github.com/bptlab/Unicorn.git
+```
+
+2. Set up Unicorn properties \
+Copy the file unicorn_template.properties, rename it to unicorn.properties and enter your database credentials at rigth place. Move a copy to _/usr/local/Tomcat7/conf/_
+
+4. Build Unicorn
+
+```sh
+mvn install -DskipTests
+```
+
+4. Deploy Unicorn to Tomcat
+
+```sh
+mvn tomcat7:deploy
+```
+
+__Note:__ If you run into an error, check the working directory of Tomcat by reading _/usr/local/Tomcat7/bin/catalina.out_. The file _unicorn.properties_ from step 2 has to exist in the parent directory!
