@@ -5,7 +5,7 @@ layout: default
 
 # Usage
 
-## Usage Tutorial   
+## Usage Tutorial
 
    * A first manual for the usage of UNICORN can be found in the GET deliverable D6.3 'Prototypical Implementation of the Information Aggregation Engine'. This document aims at providing a manual for the interaction with as well as the usage, functions, and implementation of UNICORN, formerly called information aggregation engine. It includes a description of functional as well as non-functional aspects, e.g. its architecture, the technologies used, security, and extension capabilities. It may be downloaded from the <a href="http://getservice-project.eu/en/project/public-deliverables">GET Service website</a>.
 
