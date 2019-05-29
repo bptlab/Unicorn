@@ -1,0 +1,8 @@
+title: Unicorn
+description: A platform for event processing in business process management
+
+theme: jekyll-theme-minimal
+
+logo: /assets/images/unicorn_logo_lg.png
+
+baseurl: /Unicorn
