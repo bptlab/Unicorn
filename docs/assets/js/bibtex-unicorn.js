@@ -8,17 +8,27 @@ $( document ).ready( function bibtex_js_draw_unicorn() {
   var refs = document.querySelectorAll("textarea.reference");
   var bibtexDisplay = new BibtexDisplay();
   refs.forEach(ref => {
-    bibtexDisplay.displayBibtex($(ref).val(), $("#bibtex_display") );
-    $(ref).replaceWith( $("#bibtex_display").html() );
+
+  	var reference = document.createElement("div");
+    reference.className = "reference";
+    bibtexDisplay.displayBibtex($(ref).val(), $(reference) ); // generate formatted content from bibtex-js.js
+    reference.querySelector(".bibtex").innerHTML = ref.innerHTML; // add original bibtex content to reference
+    $(reference.querySelector(".bibtex")).prepend("<h4>Bibtex</h4>");
+    if (reference.querySelector(".abstract")) {
+      $(reference.querySelector(".abstract")).prepend("<h4>Abstract</h4>");
+    }
+    $(ref).replaceWith(reference);
+    
   });
   document.querySelector(".references").style.display = "block"; // display page content when finished
 });
 
 /**
- * Function to toggle the display of each bibtex abstract
+ * Toggles the display of the abstract or bibtex below each reference
  */
-function toggleAbstract(element) {
-  var abstractElement = element.querySelector(".abstract");
-  abstractElement.style.display = (abstractElement.style.display == "none") ? "block" : "none";
+function toggleMore(element,selector) {
+	if (element && selector) {
+		var ele = element.parentNode.querySelector(selector);
+ 		ele.style.display = (ele.style.display == "none") ? "block" : "none";
+	}
  }
-

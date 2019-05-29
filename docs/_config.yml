@@ -5,4 +5,13 @@ theme: jekyll-theme-minimal
 
 logo: /assets/images/unicorn_logo_lg.png
 
-baseurl: /Unicorn
+baseurl: /Unicorn/
+
+permalink: /:title
+
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"

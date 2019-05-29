@@ -6,10 +6,26 @@
 
 /* ----------------Overrides----------------- */
 nav { font-size: 18px !important; } 
+nav a { display: block; }
+a.active { color: rgb(126,182,29);  }
+
 /* stop links from turning bold on hover */
-a:hover, a:focus { font-weight: normal !important } 
+a:hover, a:focus { font-weight: normal !important; } 
 /* Stop using Noto Sans font, Helvetica Neue instead */
 body { 
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-	font: 14px/1.5, "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
+	font: 14px/1.5, "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	color: #586368;
 } 
+h1, h2, h3, h4, h5, h6 { color: #34434B !important; }
+
+@media print, screen and (max-height: 600px) { 
+  header, section, footer { position: static; }
+  footer { margin-top: 90px;}
+}
+
+@media print, screen and (max-width: 960px) {
+	nav a {
+	display: inline;
+	}
+}

@@ -1,33 +1,11 @@
 ---
-title: References
-layout: default
+title: references
+order: 4
 ---
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/pcooksey/bibtex-js/ef59e62c/src/bibtex_js.js"></script>
 <script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex-unicorn.js"></script>
-
-<style>
-
-.toggle {
-  color: #267CB9
-}
-
-.toggle:hover {
-  cursor: pointer;
-  color: #069;
-}
-
-.abstract {
-  color: #727272;
-  padding: 1em 0 0 0.5em;
-}
-
-.references {
-  display: none;
-}
-
-</style>
 
 <h1>References</h1>
 
@@ -231,15 +209,13 @@ layout: default
 <span class="if url">
     <a class="url" target="_blank">[paper]</a>
 </span>
+<span class="toggle" onclick="toggleMore(this,'.bibtex')">[bibtex]</span>
 <span class="if abstract">
-  <span class="toggle" onclick="toggleAbstract(this)">[abstract]
-    <span class="abstract" style="display: none;"></span>
-  </span>
+  <span class="toggle" onclick="toggleMore(this,'.abstract')">[abstract]</span>
+  <span class="abstract" style="display: none;"></span>
+  <span class="bibtex" style="display: none;"></span>
 </span>
-
-<br><br>
+<span class="if !abstract">
+  <span class="bibtex" style="display: none;"></span>
+</span>
 </div>
-
-
-<div id="bibtex_display" style="display: none;"></div>
-<div id="bibtex_errors"></div>

@@ -1,6 +1,6 @@
 ---
-title: Development
-layout: default
+title: development
+order: 3
 ---
 # Development
 

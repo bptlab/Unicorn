@@ -1,6 +1,6 @@
 ---
-title: Usage
-layout: default
+title: usage
+order: 2
 ---
 
 # Usage
