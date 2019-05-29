@@ -1,5 +1,36 @@
 # HOW-TO UNICORN
 
+## Overview of the navigation options
+
+| tag              | sub tag              | functionalities                                                                                                        |
+|------------------|----------------------|------------------------------------------------------------------------------------------------------------------------|
+| Home             |                      | Return to Unicorn' start view                                                                                          |
+| Import           | XML/XLS/XSD          | Import files where events or event types saved structured                                                              |
+|                  | BPMN                 |                                                                                                                        |
+|                  | Replayer             | Simulate a specific sequence of events                                                                                 |
+|                  | Generator            | Generate several events Set, manage, import and export attribute dependencies                                          |
+|                  | Adapter              | Get events from a supported source                                                                                     |
+| Processing       | Event Transformation |                                                                                                                        |
+|                  | Event Correlation    |                                                                                                                        |
+| Event Repository |                      | Manage/ view registered events and event types Create and export event types Manage/ view registered process instances |
+| Queries          | Live                 | Create, manage and monitor live queries                                                                                |
+| Monitoring       | BPM                  |                                                                                                                        |
+|                  | Attribute Charts     |                                                                                                                        |
+|                  | Event Views          |                                                                                                                        |
+| Notifications    |                      | Set and manage notification rules                                                                                      |
+| Export           |                      | Export several events of an event type to supported files                                                              |
+| Sig In           |                      | Create user accounts Log-in to an existing account                                                                     |
+
+## Overview of important file types and their meanings
+
+| file type | importance/ meaning                                                                    |
+|-----------|----------------------------------------------------------------------------------------|
+| .json     | represent recorded attribute dependencies represent recorded event types               |
+| .xsd      | represent recorded event types                                                         |
+| .csv      | represent recorded sequence of events of one event type                                |
+| .xml      | represent recorded event of one event type                                             |
+| .zip      | represent an archive of several events, each one exists as xml-file in the zip-archive |
+
 ## HOW-TO: Register an event type
 
 1. The event type is already descripted in a file\
