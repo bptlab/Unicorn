@@ -13,5 +13,9 @@
             "admin-gui",
             "manager-script"
         ]
+    },
+    "dbfitter": {
+        "timeout": 10,
+        "retries": 20
     }
 }

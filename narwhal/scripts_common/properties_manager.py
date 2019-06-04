@@ -6,6 +6,8 @@ class DockerProperties:
     defaultTomcatPass = "tomcatpassword"
     defaultMySQLPass = "sqlpassword"
 
+    templatePath = "dockerproperties_template.json"
+
     @staticmethod
     def simplePassword(length):
         password = ""
@@ -40,6 +42,10 @@ class DockerProperties:
                 "user":"tomcatadmin",
                 "password":"",
                 "roles":['manager-gui', 'admin-gui', 'manager-script']
+            },
+            "dbfitter":{
+                "timeout":10,
+                "retries":20
             }
         }
         self.setMYSQLPassword(DockerProperties.defaultMySQLPass)
@@ -85,6 +91,16 @@ class DockerProperties:
     def setTomcatPassword(self, new_password):
         self.getTomcatInstace()["password"] = new_password 
 
+    # getters and setters for dbfitter configuration
+    def getDbFitterInstance(self):
+        return self.getComponent("dbfitter")
+
+    def getDbFitterTimeout(self):
+        return self.getDbFitterInstance()["timeout"]
+    
+    def getDbFitterRetries(self):
+        return self.getDbFitterInstance()["retries"]
+
     # replace passwords by randoms if default
     def replaceSecure(self):
         password_length = 8
@@ -103,18 +119,26 @@ def main():
     argumentparser.add_argument("--mysqlpassword", "-mp", type=str, default="", help="Set password for MySQL")
     argumentparser.add_argument("--tomcatpassword", "-tp", type=str, default="", help="Set password for Tomcat" )
     argumentparser.add_argument("--randomsecurity", "-rs", type=int, default=0 ,help="Decide about default passwords")
+    argumentparser.add_argument("--createtemplate", "-ct", type=int, default=0, help="Create new properties template and ignores all other options")
 
     argumentList = argumentparser.parse_args()
 
-    propertiesManager = DockerProperties()
-    propertiesManager.createNormalPropertiesFile()
-    if argumentList.mysqlpassword != "":
-        propertiesManager.setMYSQLPassword(argumentList.mysqlpassword)
-    if argumentList.tomcatpassword != "":
-        propertiesManager.setTomcatPassword(argumentList.tomcatpassword)
-    if argumentList.randomsecurity:
-        propertiesManager.replaceSecure()
-    propertiesManager.saveProperties()
+    propertiesManager = None
+    if argumentList.createtemplate:
+        propertiesManager = DockerProperties(DockerProperties.templatePath)
+        propertiesManager.createNormalPropertiesFile()
+        propertiesManager.saveProperties()
+        return
+    else:
+        propertiesManager = DockerProperties()
+        propertiesManager.createNormalPropertiesFile()
+        if argumentList.mysqlpassword != "":
+            propertiesManager.setMYSQLPassword(argumentList.mysqlpassword)
+        if argumentList.tomcatpassword != "":
+            propertiesManager.setTomcatPassword(argumentList.tomcatpassword)
+        if argumentList.randomsecurity:
+            propertiesManager.replaceSecure()
+        propertiesManager.saveProperties()
 
 if __name__ == "__main__":
     main()

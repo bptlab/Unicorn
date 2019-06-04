@@ -1,5 +1,7 @@
 import mysql.connector
 import properties_manager
+import time
+import sys
 
 class MySQLConfigurationWorker:
     neededSchemas = ["eap_testing", "eap_development"]
@@ -9,12 +11,21 @@ class MySQLConfigurationWorker:
         self.databaseConnector.close()
     
     def createConnection(self, password):
-        self.databaseConnector = mysql.connector.connect(
-            host=self.propertiesManager.getMySQLLink(),
-            user=self.propertiesManager.getMySQLUser(),
-            passwd=password
-        )
-        self.databaseCursor = self.databaseConnector.cursor()    
+        focused_attemps = self.propertiesManager.getDbFitterRetries()
+        while focused_attemps > 0:
+            focused_attemps -= 1
+            try:
+                self.databaseConnector = mysql.connector.connect(
+                    host=self.propertiesManager.getMySQLLink(),
+                    user=self.propertiesManager.getMySQLUser(),
+                    passwd=password
+                )
+                self.databaseCursor = self.databaseConnector.cursor()
+                return
+            except:
+                time.sleep(self.propertiesManager.getDbFitterTimeout())
+                continue
+        sys.exit(1)
     
     def __init__(self):
         self.propertiesManager = properties_manager.DockerProperties()
