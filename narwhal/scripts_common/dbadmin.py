@@ -11,7 +11,7 @@ class MySQLConfigurationWorker:
     def createConnection(self, password):
         self.databaseConnector = mysql.connector.connect(
             host=self.propertiesManager.getMySQLLink(),
-            user=self.propertiesManager.getMySQLUser,
+            user=self.propertiesManager.getMySQLUser(),
             passwd=password
         )
         self.databaseCursor = self.databaseConnector.cursor()    
@@ -24,14 +24,11 @@ class MySQLConfigurationWorker:
         self.databaseCursor = None
         self.createConnection(properties_manager.DockerProperties.defaultMySQLPass)
     
-    # TODO: Debug
     def changePassword(self):
-        self.databaseCursor.execute("USE mysql")
-        self.databaseConnector._execute("ALTER USER {} IDENTIFIED BY {}".format(
+        self.databaseCursor.execute("SET PASSWORD FOR '{}' = '{}'".format(
             self.propertiesManager.getMySQLUser(),
             self.propertiesManager.getMySQLPassword()
         ))
-        self.databaseCursor.execute("FLUSH PRIVILEGES")
         self.quitConnection()
         self.createConnection(self.propertiesManager.getMySQLPassword())
     
