@@ -11,9 +11,10 @@ class DockerProperties:
     @staticmethod
     def simplePassword(length):
         password = ""
-        for i in range(0, length):
+        while length > 0:
             # choose integer N that 97<=N<=122 and find related ascii char C that C in {a,..,z}
             password += chr(randint(97, 122))
+            length -= 1
         return password
     
     def __init__(self, filePath="dockerproperties.json"):
