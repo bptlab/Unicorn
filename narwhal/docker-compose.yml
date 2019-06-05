@@ -7,6 +7,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=sqlpassword
     container_name: unicorn-dbserver
+    volumes:
+      - narwhaldbstore:/var/lib/mysql
   
   databasefitter:
     build:
@@ -16,3 +18,6 @@ services:
       - dbserver
     links:
       - dbserver:databaselink
+
+volumes:
+  narwhaldbstore:
