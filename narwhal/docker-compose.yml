@@ -1,23 +1,34 @@
 version: '3'
 services:
+  # handle database component
   dbserver:
-    image: 'mysql:latest'
+    build:
+      context: ./mysql-srv/
+      dockerfile: ./Dockerfile
     ports: 
       - '3306:3306'
     environment:
-      - MYSQL_ROOT_PASSWORD=sqlpassword
-    container_name: unicorn-dbserver
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    container_name: narwhal-dbserver
     volumes:
-      - narwhaldbstore:/var/lib/mysql
-  
-  databasefitter:
+      - narwhaldbstorage:/var/lib/mysql 
+  # handle manager component
+  coordinator:
     build:
-      context: .
-      dockerfile: ./mysql-admin/Dockerfile
-    depends_on:
-      - dbserver
-    links:
-      - dbserver:databaselink
+      context: ./narwhalcoordinator/
+      dockerfile: ./Dockerfile
+    environment:
+      - DBPASSWD=${DATABASE_PASSWORD}
+      - TOMCATUSER=${TOMCAT_USER}
+      - TOMCATPASSWD=${TOMCAT_PASSWORD}
+    container_name: narwhal-coordinator
 
+  # handle tomcat server
+  #tomcatserver:
+
+  
 volumes:
-  narwhaldbstore:
+  # persistence for database
+  narwhaldbstorage:
+  # persistence for docker
+  narwhalcommonstorage:
