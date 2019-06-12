@@ -1,6 +1,6 @@
 ---
-title: Home
-layout: default
+title: home
+permalink: '/'
 ---
 
 # Home

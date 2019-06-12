@@ -1,15 +1,3 @@
 ---
 ---
-
-@import "{{ site.theme }}";
-
-
-/* ----------------Overrides----------------- */
-nav { font-size: 18px !important; } 
-/* stop links from turning bold on hover */
-a:hover, a:focus { font-weight: normal !important } 
-/* Stop using Noto Sans font, Helvetica Neue instead */
-body { 
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-	font: 14px/1.5, "Helvetica Neue", Helvetica, Arial, sans-serif !important; 
-} 
+@import "main";

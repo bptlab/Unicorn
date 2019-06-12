@@ -1,44 +1,11 @@
 ---
-title: References
-layout: default
+title: references
+permalink: '/references'
 ---
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex.js"></script>
-
-<script type="text/javascript">
-function toggleRef(element) {
-    var child = element.firstElementChild;
-    if (child.className === "abstract" && child.style.display == "none") {
-      child.style.display = "block";
-    } else {
-      child.style.display = "none";
-    }
-}
-
-</script>
-
-<style>
-
-.toggle {
-  color: #267CB9
-}
-
-.toggle:hover {
-  cursor: pointer;
-  color: #069;
-}
-
-.abstract {
-  color: #727272;
-  padding: 1em 0 0 0.5em;
-}
-
-.reference {
-  display: none;
-}
-
-</style>
+<script type="text/javascript" src="https://cdn.rawgit.com/pcooksey/bibtex-js/ef59e62c/src/bibtex_js.js"></script>
+<script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex-unicorn.js"></script>
 
 <h1>References</h1>
 
@@ -225,32 +192,30 @@ function toggleRef(element) {
 
 </div>
 
-<div class="bibtex_template">
+<div class="bibtex_template" style="display: none;">
 <span class="if author" style="font-weight: bold;"> 
   <span class="author"></span>.
 </span>
-<div style="font-style: italic; display: inline;">
+<span style="font-style: italic;">
   <span class="title"></span>,
-</div>
-<div class="if booktitle" style="display: inline;">
+</span>
+<span class="if booktitle">
   <span class="booktitle"></span>,
-</div>
-<div class="if publisher" style="display: inline;">
+</span>
+<span class="if publisher">
   <span class="publisher"></span>,
-</div>
+</span>
 <span class="year"></span>.
 <span class="if url">
-    <a class="url">[paper]</a>
+    <a class="url" target="_blank">[paper]</a>
 </span>
+<span class="toggle" onclick="toggleMore(this,'.bibtex')">[bibtex]</span>
 <span class="if abstract">
-  <span class="toggle" onclick="toggleRef(this)">[abstract]
-    <span class="abstract" style="display: none;"></span>
-  </span>
+  <span class="toggle" onclick="toggleMore(this,'.abstract')">[abstract]</span>
+  <span class="abstract" style="display: none;"></span>
+  <span class="bibtex" style="display: none;"></span>
 </span>
-
-<br><br>
+<span class="if !abstract">
+  <span class="bibtex" style="display: none;"></span>
+</span>
 </div>
-
-
-<div id="bibtex_display" style="display: none;"></div>
-<div id="bibtex_errors"></div>
