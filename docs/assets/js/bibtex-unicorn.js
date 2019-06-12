@@ -13,9 +13,9 @@ $( document ).ready( function bibtex_js_draw_unicorn() {
     reference.className = "reference";
     bibtexDisplay.displayBibtex($(ref).val(), $(reference) ); // generate formatted content from bibtex-js.js
     reference.querySelector(".bibtex").innerHTML = ref.innerHTML; // add original bibtex content to reference
-    $(reference.querySelector(".bibtex")).prepend("<h4>Bibtex</h4>");
+    $(reference.querySelector(".bibtex")).prepend("<h4>Bibtex</h4><hr>");
     if (reference.querySelector(".abstract")) {
-      $(reference.querySelector(".abstract")).prepend("<h4>Abstract</h4>");
+      $(reference.querySelector(".abstract")).prepend("<h4>Abstract</h4><hr>");
     }
     $(ref).replaceWith(reference);
     

@@ -1,6 +1,6 @@
 ---
 title: development
-order: 3
+permalink: '/development'
 ---
 # Development
 
@@ -17,67 +17,67 @@ You can watch a <a href="http://www.youtube.com/watch?v=doAFKwIEp6w">screencast<
 Before the example can be run, you need to <a href="http://www.dwd.de/bvbw/appmanager/bvbw/dwdwwwDesktop?_nfpb=true&_pageLabel=dwdwww_spezielle_nutzer&_state=maximized&_windowLabel=T174800248261285831499722&T174800248261285831499722gsbDocumentPath=Navigation%252FOeffentlichkeit%252FHomepage%252FWetter__Ihre__Website%252Fftp-Zugriff__node.html%253F__nnn%253Dtrue">register at the DWD</a> (Deutscher Wetterdienst = German Weather Agency). The account data must be included in the platform as described in the readme in the <a href="https://github.com/BPT-NH/ComplexEventProcessingPlatform">Github</a>.
 
 To examine the features of the platform by using the test data the following steps must be executed:
-   1. Activate the weather adapter via "Import => Weather/Traffic"
-   1. Create the following event types via "Event Repository => Event type => Create event type"
-      * !ContainerArrival
-         * !ContainerID:Integer
-         * Pier:String
-         * Refrigeration_Status:String
-      * !ReadyForDischarge
-         * !ContainerID:Integer
-         * Pier:String
-         * Refrigeration_Status:String
-         * !ShipID:String
-      * !ContainerDischarged
-         * !ContainerID:Integer
-      * !StoreChilled
-         * !ContainerID:Integer
-         * Warehouse:String
-      * !StoreUnChilled
-         * !ContainerID:Integer
-         * Warehouse:String
-      * !TruckReady
-         * !ContainerID:Integer
-         * !TruckID:String
-      * !ContainerDelivered
-         * !ContainerID:Integer
-         * !TruckID:String
-         * Price:Integer
-   1. Create a process "Transportprocess" via "Event Processing => Correlation"
-   1. Create a simple correlation rule for "Transportprocess" using the above mentioned event types defining the attribute "ContainerID" as correlation attribute
-   1. Upload external knowledge from the file "ListOfContainersAndShips" via "Import -> Excel/XML/XSD" by creating a new event type
-   1. Create a transformation rule via "Event Processing => Transformation => Advanced Rule Editor"
-      * Build pattern
-         a. Add event type "ContainerArrival" and "legend_warnings_CAP"
-         a. Add aliases for both event types (A and B)
-         a. Add three filter expressions for "legend_Warnings_CAP"
-            i. B.msgType = 'Alert'
-            i. B.info.eventCode.value = '52' for wind
-            i. B.info.area.areaDesc = 'Hansestadt Hamburg'
-         a. Add pattern "EVERY" for "ContainerArrival"
-         a. Add pattern "NOT" for "legend_warnings_CAP"
-         a. Add pattern "AND" for "NOT" and "EVERY"
-      * Select attribute values
-         a. Choose event type "ReadyForDischarge" as resulting event type
-         a. Choose as "Transformation time" as timestamp
-         a. Use attributes of event A as source for attributes "Pier", "Refrigeration_Status" and "ContainerID"
-         a. Use external knowledge for attribute "shipID"
-            i. Use event type "ListOfContainersAndShips" with desired attribute "ShipID" and save the rule
-            i. Check "ContainerID" to match with "A.ContainerID" and save the rule again
-            i. Add default value "NO_SHIP_ID_FOUND" and click "save"
-         a. Name and save the transformation rule
-   1. Create a user via "Sign In => Register" and log in
-   1. Create the following query via "Queries => Live"
-      * Name: !OrdersWithRunLongerThan2Days
-      * Query: SELECT !A.ContainerID, (B.Timestamp.getTime() - A.Timestamp.getTime() / (1000 * 60) ) AS run FROM PATTERN [every A=ReadyForDischarge -> every B=ContainerDelivered(!B.ContainerID = !A.ContainerID AND B.Timestamp.getTime() - A.Timestamp.getTime() > (1000*60*60*24*2))]
-   1. Create a query notification for the above query via "Monitoring => Notification"
-   1. Create an event notification for event type "TruckReady" via "Monitoring => Notification"
-   1. Upload file "Transportmodel.bpmn" via "Import => BPMN"
-   1. Create monitoring points by binding the above created event types to the similar named process elements via "Queries => BPMN"
-   1. Import the Excel files via "Import => Excel/XML/XSD" in the following order: "ReadyForDischarge" => "ContainerDischarged" => "StoreChilled" => "StoreUnChilled" => "TruckReady" => "ContainerDelivered"
-   1. See the events in the "Event Repository", the process executions in "Monitoring => BPMN", and the notifications at "Monitoring => Notification"
-   1. Create event views via "Monitoring => Event View"
-   1. Create attribute charts via "Monitoring => Attribute Charts"
+1. Activate the weather adapter via "Import => Weather/Traffic"
+1. Create the following event types via "Event Repository => Event type => Create event type"
+    * !ContainerArrival
+        * !ContainerID:Integer
+        * Pier:String
+        * Refrigeration_Status:String
+    * !ReadyForDischarge
+        * !ContainerID:Integer
+        * Pier:String
+        * Refrigeration_Status:String
+        * !ShipID:String
+    * !ContainerDischarged
+        * !ContainerID:Integer
+    * !StoreChilled
+        * !ContainerID:Integer
+        * Warehouse:String
+    * !StoreUnChilled
+        * !ContainerID:Integer
+        * Warehouse:String
+    * !TruckReady
+        * !ContainerID:Integer
+        * !TruckID:String
+    * !ContainerDelivered
+        * !ContainerID:Integer
+        * !TruckID:String
+        * Price:Integer
+1. Create a process "Transportprocess" via "Event Processing => Correlation"
+1. Create a simple correlation rule for "Transportprocess" using the above mentioned event types defining the attribute "ContainerID" as correlation attribute
+1. Upload external knowledge from the file "ListOfContainersAndShips" via "Import -> Excel/XML/XSD" by creating a new event type
+1. Create a transformation rule via "Event Processing => Transformation => Advanced Rule Editor"
+    * Build pattern
+        1. Add event type "ContainerArrival" and "legend_warnings_CAP"
+        1. Add aliases for both event types (A and B)
+        1. Add three filter expressions for "legend_Warnings_CAP"  
+            1. B.msgType = 'Alert'
+            1. B.info.eventCode.value = '52' for wind
+            1. B.info.area.areaDesc = 'Hansestadt Hamburg'
+        1. Add pattern "EVERY" for "ContainerArrival"
+        1. Add pattern "NOT" for "legend_warnings_CAP"
+        1. Add pattern "AND" for "NOT" and "EVERY"
+    * Select attribute values
+        1. Choose event type "ReadyForDischarge" as resulting event type
+        1. Choose as "Transformation time" as timestamp
+        1. Use attributes of event A as source for attributes "Pier", "Refrigeration_Status" and "ContainerID"
+        1. Use external knowledge for attribute "shipID"
+            1. Use event type "ListOfContainersAndShips" with desired attribute "ShipID" and save the rule
+            1. Check "ContainerID" to match with "A.ContainerID" and save the rule again
+            1. Add default value "NO_SHIP_ID_FOUND" and click "save"
+        1. Name and save the transformation rule
+1. Create a user via "Sign In => Register" and log in
+1. Create the following query via "Queries => Live"
+    * Name: !OrdersWithRunLongerThan2Days
+    * Query: SELECT !A.ContainerID, (B.Timestamp.getTime() - A.Timestamp.getTime() / (1000 * 60) ) AS run FROM PATTERN [every A=ReadyForDischarge -> every B=ContainerDelivered(!B.ContainerID = !A.ContainerID AND B.Timestamp.getTime() - A.Timestamp.getTime() > (1000*60*60*24*2))]
+1. Create a query notification for the above query via "Monitoring => Notification"
+1. Create an event notification for event type "TruckReady" via "Monitoring => Notification"
+1. Upload file "Transportmodel.bpmn" via "Import => BPMN"
+1. Create monitoring points by binding the above created event types to the similar named process elements via "Queries => BPMN"
+1. Import the Excel files via "Import => Excel/XML/XSD" in the following order: "ReadyForDischarge" => "ContainerDischarged" => "StoreChilled" => "StoreUnChilled" => "TruckReady" => "ContainerDelivered"
+1. See the events in the "Event Repository", the process executions in "Monitoring => BPMN", and the notifications at "Monitoring => Notification"
+1. Create event views via "Monitoring => Event View"
+1. Create attribute charts via "Monitoring => Attribute Charts"
 
 ## BPMN Extension
 BPMN is a widely accepted standard for process modeling. Although it does not provide native language elements to model node life cycles and PEMPs (see <a href="http://bpt.hpi.uni-potsdam.de/pub/Public/NicoHerzberg/Enriching_Raw_Events_to_Enable_Process_Intelligence.pdf">[1]</a>), it provides its own extension mechanism. We use this extension mechanism to transform models to platform-specific models and code.

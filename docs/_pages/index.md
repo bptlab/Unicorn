@@ -1,6 +1,6 @@
 ---
 title: home
-order: 1
+permalink: '/'
 ---
 
 # Home

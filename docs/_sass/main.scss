@@ -1,0 +1,146 @@
+/*---variables---*/
+$font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$primary-color: #267CB9;
+$secondary-color: #7EB61D;
+$porcelain: #EFF2F3;
+
+/*---mobile-first flexbox layout---*/
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+}
+.container > * { padding: 30px; }
+
+header { 
+  order: 1;
+  text-align: center;
+}
+
+nav { 
+  order: 2;
+  text-align: center;
+}
+nav a { margin-right: 1em; }
+
+section { 
+  order: 3;
+  background-color: #fff;
+}
+
+footer { 
+  order: 4;
+  text-align: center;
+}
+
+img { max-width: 100%; }
+
+/*---grid layout for larger screens---*/
+@media (min-width: 780px) {
+
+  .container {
+    display: grid;
+    grid-template-columns: [sidebar] 300px [content] auto;
+    grid-template-rows: [line1] 180px [line2] auto [line3] 180px [line4] auto [line5];
+    justify-content: start;
+    grid-gap: 10px 10px;
+  }
+
+  .sidebar {
+    grid-column: sidebar;
+    grid-row: line1 / line5;
+    background-color: $porcelain;
+    border-radius: 10px;
+    min-height: 630px;
+  }
+
+  header {
+    grid-column: sidebar;
+    grid-row: line1;
+    text-align: center;
+  }
+
+  nav {
+    grid-column: sidebar;
+    grid-row: line2;
+    text-align: left;
+  }
+  nav > a { display: block; }
+
+  footer {
+    grid-column: sidebar;
+    grid-row: line3;
+    text-align: left;
+  }
+
+  section {
+    max-width: 800px;
+    grid-column: content;
+    grid-row: line1 / line5;
+    margin-right: 10px;
+  }
+
+  .bibtex {
+    width: 45vw;
+    max-width: 100%;
+    margin-right: none;
+  }
+}
+
+/*---general css---*/
+nav { font-size: 18px; } 
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+} 
+a:hover {
+  color: darken($primary-color, 10);
+}
+a.active { color: $secondary-color;  }
+
+body { 
+  font: 16px/1.5 $font-stack;
+  color: #586368;
+} 
+
+h1, h2, h3, h4, h5, h6 { color: #34434B; }
+
+::selection {
+  background: lighten($primary-color, 40); /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: lighten($primary-color, 40); /* Gecko Browsers */
+}
+
+/*---references css---*/
+.references {
+  display: none;
+}
+
+.reference {
+  padding: 6px 0 6px 12px;
+  margin-bottom: 6px;
+}
+
+.toggle {
+  color: $primary-color;
+} 
+.toggle:hover {
+  cursor: pointer;
+  color: darken($primary-color, 10);
+}
+
+.abstract, .bibtex {
+  color: #586368;
+  margin: 12px 12px 6px 0px;
+  padding: 0px 0px 0px 12px;
+  border-left: solid 4px $primary-color;
+  display: none;
+}
+
+.bibtex {
+  font-family: monospace;
+  white-space: pre;
+  overflow-x: scroll;
+}
