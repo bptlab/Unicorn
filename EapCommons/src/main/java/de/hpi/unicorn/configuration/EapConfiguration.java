@@ -10,13 +10,10 @@ package de.hpi.unicorn.configuration;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Scanner;
-import java.util.regex.Pattern;
 
 /**
  * Enables access to unicorn.properties file
@@ -34,6 +31,13 @@ public class EapConfiguration {
 	public static String nokiaHereAppCode = "";
 	public static String tflAppId = "";
 	public static String tflAppCode = "";
+	public static String boschIotUsername = "";
+	public static String boschIotPassword = "";
+	public static String boschIotApiKey = "";
+	public static String goodsTagUri = "";
+	public static String goodstagUsername = "";
+	public static String goodsTagPassword = "";
+	public static String goodsTagDeviceIds = "";
 	public static String eMailUser = "";
 	public static String eMailPassword = "";
 	public static String triplestoreLocation = "";
@@ -63,6 +67,13 @@ public class EapConfiguration {
 		nokiaHereAppCode = props.getProperty("de.hpi.unicorn.adapter.nokiaHereAppCode", "");
 		tflAppId = props.getProperty("de.hpi.unicorn.adapter.tflAppId", "");
 		tflAppCode = props.getProperty("de.hpi.unicorn.adapter.tflAppCode", "");
+		boschIotUsername = props.getProperty("de.hpi.unicorn.adapter.boschIotUsername", "");
+		boschIotPassword = props.getProperty("de.hpi.unicorn.adapter.boschIotPassword", "");
+		boschIotApiKey = props.getProperty("de.hpi.unicorn.adapter.boschIotApiKey", "");
+		goodsTagUri = props.getProperty("de.hpi.unicorn.adapter.goodsTagUri", "");
+		goodstagUsername = props.getProperty("de.hpi.unicorn.adapter.goodsTagUsername", "");
+		goodsTagPassword = props.getProperty("de.hpi.unicorn.adapter.goodsTagPassword", "");
+		goodsTagDeviceIds = props.getProperty("de.hpi.unicorn.adapter.goodsTagDeviceIds", "");
 		eMailUser = props.getProperty("de.hpi.unicorn.email.user", "YOUR GMAIL ADDRESS HERE");
 		eMailPassword = props.getProperty("de.hpi.unicorn.email.password", "YOUR PASSWORD HERE");
 		triplestoreLocation = props.getProperty("de.hpi.unicorn.semantic.Triplestore.location", "./Triplestore");
@@ -109,41 +120,5 @@ public class EapConfiguration {
 				return new Properties();
 			}
 		}
-	}
-
-	/**
-	 * The main method configures the persistence.xml of the database and the
-	 * pom.xml of EapWebInterface.
-	 *
-	 * @param args
-	 * @throws IOException void
-	 */
-	public static void main(String[] args) throws IOException {
-		Properties props = getProperties();
-		String content = null;
-		PrintWriter writer = null;
-		String folder = null;
-		Scanner template = null;
-
-		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapCommons" + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "META-INF";
-		template = new Scanner(new File(folder + File.separator + "persistence_template.xml"));
-		content = template.useDelimiter("\\Z").next();
-		template.close();
-		content = content.replace("${db.dev.url}", props.getProperty("javax.persistence.jdbc.devUrl")).replace("${db.test.url}", props.getProperty("javax.persistence.jdbc.testUrl")).replaceAll(Pattern.quote("${db.user}"), props.getProperty("javax.persistence.jdbc.user")).replaceAll(Pattern.quote("${db.passw}"), props.getProperty("javax.persistence.jdbc.password"));
-		//	TODO: "eclipselink.ddl-generation" with drop-and-create-tables and create-tables;
-
-		writer = new PrintWriter(folder + File.separator + "persistence.xml");
-		writer.print(content);
-		writer.close();
-
-		folder = props.getProperty("de.hpi.unicorn.projectFolder") + File.separator + "EapWebInterface";
-		template = new Scanner(new File(folder + File.separator + "pom-default.xml"));
-		content = template.useDelimiter("\\Z").next();
-		template.close();
-		content = content.replace("${tomcat.server}", props.getProperty("org.apache.tomcat.maven.server")).replace("${tomcat.url}", props.getProperty("org.apache.tomcat.maven.url")).replace("${tomcat.path}", props.getProperty("org.apache.tomcat.maven.path"));
-
-		writer = new PrintWriter(folder + File.separator + "pom.xml");
-		writer.print(content);
-		writer.close();
 	}
 }

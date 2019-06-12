@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.hpi.bpt</groupId>
         <artifactId>unicorn-parent</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
     </parent>
     <artifactId>unicorn-events</artifactId>
     <name>Unicorn Event Processing Component</name>
@@ -65,6 +65,17 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
             <version>5.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.flipkart.zjsonpatch</groupId>
+            <artifactId>zjsonpatch</artifactId>
+            <version>0.3.6</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/javax.websocket/javax.websocket-client-api -->
+        <dependency>
+            <groupId>javax.websocket</groupId>
+            <artifactId>javax.websocket-client-api</artifactId>
+            <version>1.1</version>
         </dependency>
     </dependencies>
 

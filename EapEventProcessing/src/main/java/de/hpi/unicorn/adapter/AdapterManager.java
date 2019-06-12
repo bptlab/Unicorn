@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hpi.unicorn.adapter.BoschIot.BoschIotAdapter;
+import de.hpi.unicorn.adapter.GoodsTag.GoodsTagAdapter;
 import de.hpi.unicorn.adapter.tfl.TflAdapter;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -54,6 +56,14 @@ public final class AdapterManager {
 				return adapter;
 			case TransportForLondon:
 				adapter = new TflAdapter(name);
+				this.adapters.put(name, adapter);
+				return adapter;
+			case BoschIot:
+				adapter = new BoschIotAdapter(name);
+				this.adapters.put(name, adapter);
+				return adapter;
+			case GoodsTag:
+				adapter = new GoodsTagAdapter(name);
 				this.adapters.put(name, adapter);
 				return adapter;
 			default:
@@ -151,6 +161,36 @@ public final class AdapterManager {
 
 	public void stopAndRemoveTflAdapter() {
 		String adapterName = "TransportForLondon";
+		stop(adapterName);
+		remove(adapterName);
+	}
+
+	public void startBoschIotAdapter() {
+		String adapterName = "BoschIot";
+		BoschIotAdapter adapter = (BoschIotAdapter) create(adapterName, AdapterType.BoschIot);
+
+		if (adapter != null) {
+			start(adapterName);
+		}
+	}
+
+	public void stopAndRemoveBoschIotAdapter() {
+		String adapterName = "BoschIot";
+		stop(adapterName);
+		remove(adapterName);
+	}
+
+	public void startGoodsTagAdapter() {
+		String adapterName = "GoodsTag";
+		GoodsTagAdapter adapter = (GoodsTagAdapter) create(adapterName, AdapterType.GoodsTag);
+
+		if (adapter != null) {
+			start(adapterName);
+		}
+	}
+
+	public void stopAndRemoveGoodsTagAdapter() {
+		String adapterName = "GoodsTag";
 		stop(adapterName);
 		remove(adapterName);
 	}
