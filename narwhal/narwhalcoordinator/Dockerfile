@@ -8,6 +8,7 @@ WORKDIR /home
 COPY ["./*", "./"]
 
 RUN apk add --no-cache python3 && \
-    rm Dockerfile
+    rm Dockerfile && \
+    chmod +x coordinator.sh
 
 CMD ["sh", "coordinator.sh"]
