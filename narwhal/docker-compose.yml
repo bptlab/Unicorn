@@ -12,6 +12,7 @@ services:
     container_name: narwhal-dbserver
     volumes:
       - narwhaldbstorage:/var/lib/mysql 
+  
   # handle manager component
   coordinator:
     build:
@@ -22,13 +23,23 @@ services:
       - TOMCATUSER=${TOMCAT_USER}
       - TOMCATPASSWD=${TOMCAT_PASSWORD}
     container_name: narwhal-coordinator
+    volumes:
+      - narwhalconfigs:/home/configs
 
   # handle tomcat server
-  #tomcatserver:
+  tomcatserver:
+    build: 
+      context: ./tomcat-srv
+      dockerfile: ./Dockerfile
+    container_name: narwhal-tomcatsrv
+    ports: 
+      - 8888:8080
+    volumes:
+      - narwhalconfigs:/home/configs
 
   
 volumes:
   # persistence for database
   narwhaldbstorage:
-  # persistence for docker
-  narwhalcommonstorage:
+  # storage for config files
+  narwhalconfigs:
