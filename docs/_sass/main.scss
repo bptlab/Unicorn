@@ -19,9 +19,14 @@ header {
 
 nav { 
   order: 2;
-  text-align: center;
 }
 nav a { margin-right: 1em; }
+nav li { list-style-type: none; }
+nav ul { 
+  display: flex; 
+  flex-flow: row wrap;
+  justify-content: center;
+}
 
 section { 
   order: 3;
@@ -36,19 +41,19 @@ footer {
 img { max-width: 100%; }
 
 /*---grid layout for larger screens---*/
-@media (min-width: 780px) {
+@media (min-width: 900px) {
 
   .container {
     display: grid;
     grid-template-columns: [sidebar] 300px [content] auto;
-    grid-template-rows: [line1] 180px [line2] auto [line3] 180px [line4] auto [line5];
+    grid-template-rows: [line1] 180px [line2] auto [line3] 240px [line4];
     justify-content: start;
     grid-gap: 10px 10px;
   }
 
   .sidebar {
     grid-column: sidebar;
-    grid-row: line1 / line5;
+    grid-row: line1 / line4;
     background-color: $porcelain;
     border-radius: 10px;
     min-height: 630px;
@@ -63,20 +68,26 @@ img { max-width: 100%; }
   nav {
     grid-column: sidebar;
     grid-row: line2;
-    text-align: left;
   }
-  nav > a { display: block; }
+  nav ul {
+    display: block;
+    padding-inline-start: 0px;
+    position: sticky;
+    position: -webkit-sticky;
+    top: 80px;
+  }
 
   footer {
     grid-column: sidebar;
     grid-row: line3;
     text-align: left;
+    align-self: end;
   }
 
   section {
     max-width: 800px;
     grid-column: content;
-    grid-row: line1 / line5;
+    grid-row: line1 / line4;
     margin-right: 10px;
   }
 
