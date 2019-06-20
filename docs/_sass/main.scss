@@ -155,3 +155,15 @@ h1, h2, h3, h4, h5, h6 { color: #34434B; }
   white-space: pre;
   overflow-x: scroll;
 }
+
+.btn {
+  display: inline;
+  border-radius: 5px;
+  padding: 2px 1px 3px 3px;
+}
+.btn:hover {
+  cursor: pointer;
+}
+.bibtex h4 {
+  display: inline;
+}

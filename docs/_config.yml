@@ -7,6 +7,9 @@ baseurl: /Unicorn
 
 include: ['_pages']
 
+plugins:
+  - jekyll-octicons
+
 defaults:
   -
     scope:

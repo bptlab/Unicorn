@@ -3,8 +3,8 @@ title: references
 permalink: '/references'
 ---
 
-<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript" src="https://cdn.rawgit.com/pcooksey/bibtex-js/ef59e62c/src/bibtex_js.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
 <script type="text/javascript" src="{{ site.baseurl }}/assets/js/bibtex-unicorn.js"></script>
 
 <h1>References</h1>
