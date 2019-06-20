@@ -6,7 +6,7 @@
     <groupId>de.hpi.bpt</groupId>
     <artifactId>unicorn-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.6</version>
+    <version>1.5</version>
     <name>Unicorn Parent Project</name>
 
     <modules>

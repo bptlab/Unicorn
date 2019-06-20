@@ -81,13 +81,14 @@ public class StreamProcessingAdapter implements Serializable {
 	/**
 	 * Constructor. Called by {@link StreamProcessingAdapter.getInstance()}
 	 * <p>
-	 * Does the following steps: 1) initializes Esper, 2) initializes traffic
-	 * and weather adapters, 3) loads predefined event types 4) loads predefined
-	 * transformation rules (if so configured in the properties file)
-	 * 
+	 * Does the following steps: 1) initializes Esper 2) loads event types, live
+	 * queries and transformation rules from the database 3) initializes traffic
+	 * and weather adapters 4) loads predefined event types 5) loads predefined
+	 * transformation rules
 	 */
 	private StreamProcessingAdapter() {
 		this.initializeEsper();
+		this.loadFromDatabase();
 		this.initializeAdapter();
 		if (EapConfiguration.registerPredefinedEventTypes) {
 			this.registerPredefinedEventTypes();
@@ -170,7 +171,7 @@ public class StreamProcessingAdapter implements Serializable {
 	 * Loads event types, live queries and transformation rules from the
 	 * database and registers them with Esper.
 	 */
-	public void loadFromDatabase() {
+	private void loadFromDatabase() {
 		// 1. Event types
 		for (final EapEventType eventType : EapEventType.findAll()) {
 			this.addEventType(eventType);

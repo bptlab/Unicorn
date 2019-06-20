@@ -13,9 +13,9 @@ db.test.url=jdbc:mariadb://$UNICORN_DB_HOST:$UNICORN_DB_PORT/$UNICORN_DB_TEST_DB
 # false = events are not stored in the database and correlation is disabled as it requires persisted events
 de.hpi.unicorn.eventhandling.persistEvents=true
 # JMS
-de.hpi.unicorn.messageQueue.jmsHost=$UNICORN_JMS_HOST
-de.hpi.unicorn.messageQueue.jmsPort=$UNICORN_JMS_PORT
-de.hpi.unicorn.messageQueue.jmsImportChannel=$UNICORN_JMS_IMPORT_CHANNEL
+de.hpi.unicorn.messageQueue.jmsHost=bpt.hpi.uni-potsdam.de
+de.hpi.unicorn.messageQueue.jmsPort=61616
+de.hpi.unicorn.messageQueue.jmsImportChannel=YouMightWantToChangeThis
 # Pre-load of event types located in src/main/resources/predefinedEventTypes
 de.hpi.unicorn.esper.StreamProcessingAdapter.registerPredefinedEventTypes=true
 # Pre-load of transformation rules from src/main/resources/transformationRules.xml
@@ -35,19 +35,12 @@ de.hpi.unicorn.email.password=YOUR PASSWORD HERE
 de.hpi.unicorn.semantic.Triplestore.location=./Triplestore
 de.hpi.unicorn.semantic.Triplestore.clean=true
 # Default time interval for polling of events via adapter (in seconds)
-de.hpi.unicorn.adapter.defaultInterval=10
+de.hpi.unicorn.adapter.defaultInterval=900
 # Nokia Here credentials for adapter
 de.hpi.unicorn.adapter.nokiaHereAppID=YOUR HERE APP ID
 de.hpi.unicorn.adapter.nokiaHereAppCode=YOUR HERE APP CODE
 de.hpi.unicorn.adapter.tflAppId=YOUR HERE APP ID
 de.hpi.unicorn.adapter.tflAppCode=YOUR HERE APP CODE
-
-# GoodsTag adapter configuration
-de.hpi.unicorn.adapter.goodsTagUri=ENTER YOUR GOODSTAG WEBSOCKET URI HERE
-de.hpi.unicorn.adapter.goodsTagUsername=ENTER YOUR GOODSTAG USERNAME HERE
-de.hpi.unicorn.adapter.goodsTagPassword=ENTER YOUR GOODSTAG PASSWORD HERE
-de.hpi.unicorn.adapter.goodsTagDeviceIds=ENTER YOUR GOODSTAG DEVICE IDS (SPACE SEPARATED LIST) HERE
-
 # Tomcat
 # Make sure that the Maven server profile is defined properly in settings.xml
 # Example for [path to user folder]/.m2/settings.xml:

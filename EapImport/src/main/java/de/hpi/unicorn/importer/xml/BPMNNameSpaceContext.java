@@ -38,7 +38,7 @@ public class BPMNNameSpaceContext implements NamespaceContext {
 	}
 
 	@Override
-	public Iterator<String> getPrefixes(final String namespace) {
+	public Iterator<?> getPrefixes(final String namespace) {
 		return null;
 	}
 

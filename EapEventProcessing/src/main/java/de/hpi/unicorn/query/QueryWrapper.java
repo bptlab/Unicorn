@@ -423,7 +423,6 @@ public class QueryWrapper extends Persistable {
 
 	@Override
 	public QueryWrapper remove() {
-		//TODO: removing query with notification rule fails with foreign key constraint violation. WHY?
 		// remove from Esper
 		StreamProcessingAdapter.getInstance().remove(this);
 		// remove notification rules

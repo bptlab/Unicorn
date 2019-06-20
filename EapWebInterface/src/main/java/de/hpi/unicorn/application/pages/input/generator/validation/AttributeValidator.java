@@ -22,7 +22,7 @@ public abstract class AttributeValidator implements IValidator<String> {
             case INTEGER:
                 return new IntegerRangeValidator();
             case STRING:
-                return new RegexValidator(Pattern.compile("\\w+(?:(?:\\s|\\-|\\,\\s|\\:)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s|\\:)\\w+)*)*"));
+                return new RegexValidator(Pattern.compile("\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*(?:;\\w+(?:(?:\\s|\\-|\\,\\s)\\w+)*)*"));
             case FLOAT:
                 return new RegexValidator(Pattern.compile("\\d+(?:\\.\\d+)?(?:;\\d+(?:\\.\\d+)?)*"));
             case DATE:
