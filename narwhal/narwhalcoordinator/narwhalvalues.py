@@ -6,7 +6,7 @@ class NarwhalProperties:
     defaultTomcatPass = "tomcatpassword"
     defaultMySQLPass = "sqlpassword"
 
-    defaultFilePath = "dockerproperties.json"
+    fileHandlerSuffix = "dockerproperties.json"
 
     @staticmethod
     def simplePassword(length):
@@ -30,8 +30,8 @@ class NarwhalProperties:
     def getEnvTomcatPass():
         return os.getenv("TOMCATPASSWD", NarwhalProperties.defaultTomcatPass)
     
-    def __init__(self, fileRef=defaultFilePath):
-        self.filePath = fileRef
+    def __init__(self, fileRef=""):
+        self.filePath = fileRef + NarwhalProperties.fileHandlerSuffix
         self.properties = None
         self.createFile()
 
@@ -150,7 +150,7 @@ class NarwhalProperties:
 def main():
     cmdArgsHandler = argparse.ArgumentParser(description="Module to organise attributes for Narwhal")
     cmdArgsHandler.add_argument("-s", "--secureMode", type=int, default=0, help="Avoid default passphrases. Default 0")
-    cmdArgsHandler.add_argument("-f", "--filePath", type=str, default=NarwhalProperties.defaultFilePath, help="Set path for properties file.")
+    cmdArgsHandler.add_argument("-f", "--filePath", type=str, default="", help="Set path to properties file.")
     parsedArgs = cmdArgsHandler.parse_args()
     propertiesManager = NarwhalProperties(parsedArgs.filePath)
     propertiesManager.generateStandardStructure()
