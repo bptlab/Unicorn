@@ -1,18 +1,7 @@
 import narwhalvalues, argparse
+import xml.etree.ElementTree as xmlWorker
 
 class TomcatProperties:
-    user_template = """
-    <?xml version="1.0" encoding="UTF-8"?>
-    <tomcat-users 
-        xmlns="http://tomcat.apache.org/xml"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://tomcat.apache.org/xml tomcat-users.xsd"
-        version="1.0">
-    <role rolename='manager-gui'/>
-    <role rolename='admin-gui'/>
-    <role rolename='manager-script'/>
-    <user username='{}' password='{}' roles='{}'/>
-    </tomcat-users> """
 
     @staticmethod
     def rolesListToString(rolesList):
@@ -24,23 +13,27 @@ class TomcatProperties:
     
     def __init__(self, workdir):
         self.path = workdir
-        self.userconfig = ""
+        self.userconfig = None
         self.webconfig = ""
-        self.commonValuesHandler = narwhalvalues.NarwhalProperties()        
+        self.commonValuesHandler = narwhalvalues.NarwhalProperties(workdir)        
         self.commonValuesHandler.loadProperties()
     
     def generateUserConfig(self):
-        self.userconfig = TomcatProperties.user_template.format(
-            self.commonValuesHandler.getTomcatUser(),
-            self.commonValuesHandler.getTomcatPassword(),
-            TomcatProperties.rolesListToString(
-                self.commonValuesHandler.getTomcatUserRoles()
-            )
-        )
+        # create basic structure 
+        self.userconfig = xmlWorker.Element('tomcat-users')
+        # add roles
+        for role in self.commonValuesHandler.getTomcatUserRoles():
+            xmlWorker.SubElement(self.userconfig, 'role').set('rolename', role)
+        # add user with password and it's privileges
+        tmp = xmlWorker.SubElement(self.userconfig, 'user')
+        tmp.set('username', self.commonValuesHandler.getTomcatUser())
+        tmp.set('password', self.commonValuesHandler.getTomcatPassword())
+        tmp.set('roles', TomcatProperties.rolesListToString(self.commonValuesHandler.getTomcatUserRoles()))
 
     def writeUserConfigToFile(self):
+        structure_string = xmlWorker.tostring(self.userconfig, encoding='utf8').decode('utf8')
         fileHandler = open(self.path + "tomcat-users.xml", "w")
-        fileHandler.write(self.userconfig)
+        fileHandler.write(structure_string)
         fileHandler.close()
 
     def loadWebConfig(self):
