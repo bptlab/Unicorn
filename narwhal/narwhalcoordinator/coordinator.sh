@@ -3,7 +3,8 @@
 # starts in /home
 
 python3 narwhalvalues.py -s 1 -f configs/
-# python3 unicornproperties.py
+
+python3 unicornproperties.py -n configs/ -d configs/
 
 # wait until raise flag that all config files are prepared
 while [ ! -f "./configs/coordinator.work" ]
