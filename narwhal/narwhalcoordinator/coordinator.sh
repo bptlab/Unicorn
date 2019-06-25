@@ -16,3 +16,5 @@ rm ./configs/coordinator.work
 python3 tomcatproperties.py -p configs/
 # signalize tomcat that config files are ready
 touch ./configs/coordinator.finished
+
+# signalize maven to start build and deploy
