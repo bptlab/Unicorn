@@ -1,0 +1,4 @@
+DATABASE_PASSWORD=yourdbpasswd
+TOMCAT_USER=tomcatadmin
+TOMCAT_PASSWORD=yourtomcatpasswd
+Unicorn_Directory=pathToYourRepository
