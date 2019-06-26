@@ -41,4 +41,4 @@ epp.log
 unicorn.properties
 
 \.DS_Store
-narwhal/scripts_common/dockerproperties.json
+dockerproperties.json
