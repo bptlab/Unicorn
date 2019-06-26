@@ -36,6 +36,16 @@ services:
       - 8888:8080
     volumes:
       - narwhalconfigs:/home/configs
+  
+  # handle maven builder
+  mavenbuilder:
+    build:
+      context: ./mavenworker
+      dockerfile: ./Dockerfile
+    container_name: narwhal-mavenbuilder
+    volumes:
+      - narwhalconfigs:/home/configs
+      - ${Unicorn_Directory}:/home/source
 
   
 volumes:
