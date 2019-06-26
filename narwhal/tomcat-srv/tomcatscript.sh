@@ -14,7 +14,7 @@ echo "Config files found!"
 mv /home/configs/web.xml /usr/local/tomcat/webapps/manager/WEB-INF/web.xml
 mv /home/configs/tomcat-users.xml /usr/local/tomcat/conf/tomcat-users.xml
 cp /home/configs/unicorn.properties /home/conf/unicorn.properties
-mv /home/configs/Unicorn.war /usr/local/tomcat/webapps/Unicorn.war
+cp /home/configs/Unicorn.war /usr/local/tomcat/webapps/Unicorn.war
 
 # start Tomcat server like original container CMD
 /usr/local/tomcat/bin/catalina.sh run
