@@ -43,7 +43,7 @@ class NarwhalProperties:
             "mysql": {
                 "user":"root",
                 "password":"",
-                "link":"databaselink"
+                "link":"dbserver"
             },
             "tomcat": {
                 "id":"localDevTomcat",

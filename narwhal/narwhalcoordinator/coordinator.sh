@@ -1,20 +1,16 @@
 #!/bin/sh
 
 # starts in /home
+# external volumes: /home/configs
 
+mv ./web-template.xml ./configs/web-template.xml
+
+# generate all configurations
+echo "Generate narwhalvalues from environment..."
 python3 narwhalvalues.py -s 1 -f configs/
-
+echo "Generate unicorn.properties"
 python3 unicornproperties.py -n configs/ -d configs/
-
-# wait until raise flag that all config files are prepared
-while [ ! -f "./configs/coordinator.work" ]
-do
-    sleep 1s
-done
-# delete flag raised by tomcat
-rm ./configs/coordinator.work
+echo "Generate tomcat config files"
 python3 tomcatproperties.py -p configs/
-# signalize tomcat that config files are ready
-touch ./configs/coordinator.finished
 
-# signalize maven to start build and deploy
+echo "Coordinator finished"
