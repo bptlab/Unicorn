@@ -3,6 +3,10 @@
 # starts at /home
 # external volumes: /home/confgis & /home/source
 
+# if already builded, do nothing
+if [ -f "/home/configs/Unicorn.war" ] 
+then exit 0
+fi
 
 # wait until raise flag that all config files are prepared
 while [ ! -f "/home/configs/unicorn.properties" ]
