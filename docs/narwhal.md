@@ -23,3 +23,5 @@
     ```sh
     docker-compose down
     ```
+
+NOTE: If you want to restart/ turn off the service, follow the steps seven and eight. 
