@@ -66,5 +66,5 @@ The Narwhal environment is made up of three different services, the database ser
 ![Narwhal organisation concept](./assets/images/narwhal-process-overview.png)
 
 All services start simultaneously. On the one hand, the database service configures itself independend from the other services. On the one hand, the Tomcat server and the Maven builder require configurations created by the coordinator service. The coordinator service creates configs based on the environment settings in the .env file. If every configuration file is created, the coordinator services ends. In case of missing or insufficient credentials, the coordinator generates random ones because of security issues. \
-If its result does not already exists, the Maven builder holds out for the unicorn.properties. If everything is checked, it copies the original source code from the host filesystem and builds the Unicorn.war. 
+If its result does not already exists, the Maven builder holds out for the unicorn.properties. If everything is checked, it copies the original source code from the host filesystem and builds the Unicorn.war. The Maven builder dies as same as the coordinator after its work is done.
 Exists every required configuration file and the Unicorn.war, the Tomcat server service begins to start the Tomcat server.
