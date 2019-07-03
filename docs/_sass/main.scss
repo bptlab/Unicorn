@@ -2,7 +2,6 @@
 $font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $primary-color: #267CB9;
 $secondary-color: #7EB61D;
-$porcelain: #EFF2F3;
 
 /*---mobile-first flexbox layout---*/
 .container {
@@ -10,27 +9,44 @@ $porcelain: #EFF2F3;
   flex-direction: column;
   margin: 10px;
 }
-.container > * { padding: 30px; }
+.container > * { padding: 12px; }
+
+h1 { margin-top: 0px; }
 
 header { 
   order: 1;
   text-align: center;
 }
 
-nav { 
+.nav-wrapper { 
   order: 2;
+  text-align: right;
 }
-nav a { margin-right: 1em; }
-nav li { list-style-type: none; }
+
+nav li { 
+  list-style-type: none; 
+  margin-right: 1em;
+}
 nav ul { 
   display: flex; 
   flex-flow: row wrap;
   justify-content: center;
+  text-align: left;
+  padding-inline-start: 0px;
 }
+
+#github-link {
+  border: 2px solid lighten($primary-color,15);
+  border-radius: 6px;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.18);
+  padding: 10px;
+  font-size: 14px;
+  text-align: left;
+}
+// small { display: block; }
 
 section { 
   order: 3;
-  background-color: #fff;
 }
 
 footer { 
@@ -46,18 +62,11 @@ img { max-width: 100%; }
   .container {
     display: grid;
     grid-template-columns: [sidebar] 300px [content] auto;
-    grid-template-rows: [line1] 180px [line2] auto [line3] 240px [line4];
+    grid-template-rows: [line1] 180px [line2] auto [line3] 180px [line4];
     justify-content: start;
     grid-gap: 10px 10px;
   }
-
-  .sidebar {
-    grid-column: sidebar;
-    grid-row: line1 / line4;
-    background-color: $porcelain;
-    border-radius: 10px;
-    min-height: 630px;
-  }
+  .container > * { padding: 30px; }
 
   header {
     grid-column: sidebar;
@@ -65,16 +74,25 @@ img { max-width: 100%; }
     text-align: center;
   }
 
-  nav {
+  .nav-wrapper {
     grid-column: sidebar;
     grid-row: line2;
+    text-align: left;
   }
-  nav ul {
-    display: block;
-    padding-inline-start: 0px;
+
+  .sticky {
     position: sticky;
     position: -webkit-sticky;
     top: 80px;
+  }
+
+  nav ul {
+    display: block;
+    padding-inline-start: 0px;
+  }
+
+  #github-link {
+    margin: 18px 0px 0px;
   }
 
   footer {
@@ -116,6 +134,7 @@ body {
 } 
 
 h1, h2, h3, h4, h5, h6 { color: #34434B; }
+h1 { font-size: 2em; }
 
 ::selection {
   background: lighten($primary-color, 40); /* WebKit/Blink Browsers */
