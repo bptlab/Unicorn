@@ -43,11 +43,8 @@ nav ul {
   font-size: 14px;
   text-align: left;
 }
-// small { display: block; }
 
-section { 
-  order: 3;
-}
+section { order: 3; }
 
 footer { 
   order: 4;
@@ -91,9 +88,7 @@ img { max-width: 100%; }
     padding-inline-start: 0px;
   }
 
-  #github-link {
-    margin: 18px 0px 0px;
-  }
+  #github-link { margin: 18px 0px 0px; }
 
   footer {
     grid-column: sidebar;
@@ -123,9 +118,7 @@ a {
   color: $primary-color;
   text-decoration: none;
 } 
-a:hover {
-  color: darken($primary-color, 10);
-}
+a:hover { color: darken($primary-color, 10); }
 a.active { color: $secondary-color;  }
 
 body { 
@@ -144,18 +137,14 @@ h1 { font-size: 2em; }
 }
 
 /*---references css---*/
-.references {
-  display: none;
-}
+.references { display: none; }
 
 .reference {
   padding: 6px 0 6px 12px;
   margin-bottom: 6px;
 }
 
-.toggle {
-  color: $primary-color;
-} 
+.toggle { color: $primary-color; } 
 .toggle:hover {
   cursor: pointer;
   color: darken($primary-color, 10);
@@ -180,9 +169,5 @@ h1 { font-size: 2em; }
   border-radius: 5px;
   padding: 2px 1px 3px 3px;
 }
-.btn:hover {
-  cursor: pointer;
-}
-.bibtex h4 {
-  display: inline;
-}
+.btn:hover { cursor: pointer; }
+.bibtex h4 { display: inline; }
