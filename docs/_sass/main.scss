@@ -2,16 +2,24 @@
 $font-stack: "Helvetica Neue", Helvetica, Arial, sans-serif;
 $primary-color: #267CB9;
 $secondary-color: #7EB61D;
+$text-light: #586368;
+$text-dark: #34434B;
 
 /*---mobile-first flexbox layout---*/
 .container {
   display: flex;
   flex-direction: column;
-  margin: 10px;
 }
 .container > * { padding: 12px; }
 
-h1 { margin-top: 0px; }
+body { 
+  font: 16px/1.5 $font-stack;
+  color: $text-light;
+} 
+
+h1, h2, h3, h4, h5, h6 { color: $text-dark; }
+h1 { font-size: 2em; }
+h1:first-of-type { margin-top: 0px; }
 
 header { 
   order: 1;
@@ -23,19 +31,32 @@ header {
   text-align: right;
 }
 
+nav { font-size: 18px; }
 nav li { 
   list-style-type: none; 
   margin-right: 1em;
 }
+nav li:last-of-type { margin-right: 0em; }
 nav ul { 
   display: flex; 
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: center;
-  text-align: left;
-  padding-inline-start: 0px;
+  text-align: center;
+  padding-left: 0px;
 }
 
+.subnav {
+  display: block;
+  font-size: 14px;
+  padding-left: 0px;
+  border-top: 2px solid $secondary-color;
+  border-left: none;
+  text-align: center;
+}
+.subnav li { margin-right: 0px; }
+
 #github-link {
+  background: #fff;
   border: 2px solid lighten($primary-color,15);
   border-radius: 6px;
   box-shadow: 0px 2px 4px rgba(0,0,0,0.18);
@@ -50,6 +71,21 @@ footer {
   order: 4;
   text-align: center;
 }
+
+::selection {
+  background: lighten($primary-color, 40); /* WebKit/Blink Browsers */
+}
+::-moz-selection {
+  background: lighten($primary-color, 40); /* Gecko Browsers */
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+} 
+a:hover { color: darken($primary-color, 20); }
+a.active { color: $secondary-color;  }
+a.active:hover { color: darken($secondary-color, 20); }
 
 img { max-width: 100%; }
 
@@ -79,16 +115,23 @@ img { max-width: 100%; }
 
   .sticky {
     position: sticky;
-    position: -webkit-sticky;
+    position: -webkit-sticky; /* Safari */
     top: 80px;
   }
 
   nav ul {
     display: block;
-    padding-inline-start: 0px;
+    text-align: left;
   }
 
-  #github-link { margin: 18px 0px 0px; }
+  .subnav {
+    padding-left: 12px;
+    border-left: solid 2px $secondary-color;
+    border-top: none;
+  }
+  .subnav li { text-align: left; }
+
+  #github-link { margin-top: 18px; }
 
   footer {
     grid-column: sidebar;
@@ -111,36 +154,11 @@ img { max-width: 100%; }
   }
 }
 
-/*---general css---*/
-nav { font-size: 18px; } 
-
-a {
-  color: $primary-color;
-  text-decoration: none;
-} 
-a:hover { color: darken($primary-color, 10); }
-a.active { color: $secondary-color;  }
-
-body { 
-  font: 16px/1.5 $font-stack;
-  color: #586368;
-} 
-
-h1, h2, h3, h4, h5, h6 { color: #34434B; }
-h1 { font-size: 2em; }
-
-::selection {
-  background: lighten($primary-color, 40); /* WebKit/Blink Browsers */
-}
-::-moz-selection {
-  background: lighten($primary-color, 40); /* Gecko Browsers */
-}
-
 /*---references css---*/
 .references { display: none; }
 
 .reference {
-  padding: 6px 0 6px 12px;
+  padding: 6px 0px 6px 12px;
   margin-bottom: 6px;
 }
 
@@ -151,9 +169,8 @@ h1 { font-size: 2em; }
 }
 
 .abstract, .bibtex {
-  color: #586368;
   margin: 12px 12px 6px 0px;
-  padding: 0px 0px 0px 12px;
+  padding-left: 12px;
   border-left: solid 4px $primary-color;
   display: none;
 }
