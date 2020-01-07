@@ -1,6 +1,8 @@
 # Unicorn
 An event processing platform build on top of [Esper](http://espertech.com/products/esper.php). It was developed by the [Business Process Technology group](http://bpt.hpi.uni-potsdam.de) at the [Hasso-Plattner-Institut](http://hpi.de) in the course of several student projects.
 
+__More info on [the website](https://bptlab.github.io/Unicorn/).__
+
 ## Pre-requisites 
 To build and run Unicorn you need the following software:
 - Maven 3
