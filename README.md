@@ -28,12 +28,3 @@ You can manually deploy Unicorn by copying the resulting war file in EapWebInter
 ## Getting Started
 
 You can now start your browser and visit the Unicorn platform running on your tomcat application server, per default it is deployed to http://localhost:8080/Unicorn
-
-### Creating event types
-
-### Importing events
-
-
-## Further Information
-
-Please visit http://bpt.hpi.uni-potsdam.de/UNICORN for further information
